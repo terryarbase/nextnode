@@ -1,10 +1,15 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
+import _ from 'lodash';
+import { Columns } from 'FieldTypes';
 
 import TableRow from './ItemsTableRow';
 import DragDrop from './ItemsTableDragDrop';
 
 import { TABLE_CONTROL_COLUMN_WIDTH } from '../../../../../constants';
+
+// generate by this for realtime edit control column
+const RealTimeCol = ['BooleanColumn'];
 
 const ItemsTable = React.createClass({
 	propTypes: {
@@ -13,7 +18,9 @@ const ItemsTable = React.createClass({
 		deleteTableItem: PropTypes.func.isRequired,
 		handleSortSelect: PropTypes.func.isRequired,
 		items: PropTypes.object.isRequired,
+		realTimeInfo: PropTypes.object.isRequired,
 		list: PropTypes.object.isRequired,
+		noedit: PropTypes.bool.isRequired,
 		manageMode: PropTypes.bool.isRequired,
 		rowAlert: PropTypes.object.isRequired,
 	},
@@ -58,6 +65,7 @@ const ItemsTable = React.createClass({
 
 		// map each heading column
 		const cellMap = this.props.columns.map(col => {
+			const ColumnType = Columns[col.type] || Columns.__unrecognised__;
 			const isSelected = activeSortPath && activeSortPath.path === col.path;
 			const isInverted = isSelected && activeSortPath.invert;
 			const buttonTitle = `Sort by ${col.label}${isSelected && !isInverted ? ' (desc)' : ''}`;
@@ -65,21 +73,50 @@ const ItemsTable = React.createClass({
 				'th-sort--asc': isSelected && !isInverted,
 				'th-sort--desc': isInverted,
 			});
+			// disable if manage mode is on and noedit is turned off
+			const isRealTimeCol = !manageMode && !noedit 
+							&& ColumnType.displayName 
+							&& _.includes(RealTimeCol, ColumnType.displayName);
+			var classnames = [];
 
+			if (isRealTimeCol) {
+				classnames = [ ...classnames, 'ItemList__realtime--Col' ];
+			}
 			return (
-				<th key={col.path} colSpan="1">
-					<button
-						className={colClassName}
-						onClick={() => {
-							this.props.handleSortSelect(
-								col.path,
-								isSelected && !isInverted
-							);
-						}}
-						title={buttonTitle}>
-						{col.label}
-						<span className="th-sort__icon" />
-					</button>
+				<th key={col.path} colSpan="1" className={classnames.join(' ')}>
+					
+					{
+						isRealTimeCol ? 
+						<div>
+							<ColumnType
+								list={this.props.list}
+								col={col}
+								noedit={noedit}
+								onChange={value => {
+									this.props.onChange({
+										stateName: 'realTimeCol',
+										key: col.path,
+										path: 'all',
+										value,
+									});
+								}}
+							/>
+						</div> : null
+					}
+					<div>
+						<button
+							className={colClassName}
+							onClick={() => {
+								this.props.handleSortSelect(
+									col.path,
+									isSelected && !isInverted
+								);
+							}}
+							title={buttonTitle}>
+							{col.label}
+							<span className="th-sort__icon" />
+						</button>
+					</div>
 				</th>
 			);
 		});
@@ -94,7 +131,7 @@ const ItemsTable = React.createClass({
 		);
 	},
 	render () {
-		const { items } = this.props;
+		const { items, realTimeInfo, noedit } = this.props;
 		if (!items.results.length) return null;
 
 		const tableBody = (this.props.list.sortable) ? (
@@ -109,6 +146,8 @@ const ItemsTable = React.createClass({
 							sortOrder={item.sortOrder || 0}
 							id={item.id}
 							item={item}
+							noedit={noedit}
+							currentValue={realTimeInfo && realTimeInfo[item.id]}
 							{...this.props}
 						/>
 					);

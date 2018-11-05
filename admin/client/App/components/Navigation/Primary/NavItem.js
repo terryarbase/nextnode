@@ -16,7 +16,7 @@ const PrimaryNavItem = React.createClass({
 		label: PropTypes.string,
 		title: PropTypes.string,
 		to: PropTypes.string,
-		onClick: PropTypes.function,
+		onClick: PropTypes.func,
 	},
 	getInitialState () {
 		const { style } = this.props;

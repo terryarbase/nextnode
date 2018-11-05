@@ -61,6 +61,8 @@ const ListView = React.createClass({
 			manageMode: false,
 			showCreateForm: false,
 			showUpdateForm: false,
+			realTimeCol: null,	// store all of real time col state
+			realTimeInfo: null,	// store the real time edit content
 		};
 	},
 	componentWillMount () {
@@ -153,7 +155,6 @@ const ListView = React.createClass({
 		const list = this.props.currentList;
 		const itemCount = pluralize(checkedItems, ('* ' + list.singular.toLowerCase()), ('* ' + list.plural.toLowerCase()));
 		const itemIds = Object.keys(checkedItems);
-
 		this.setState({
 			confirmationDialog: {
 				isOpen: true,
@@ -201,9 +202,11 @@ const ListView = React.createClass({
 			<ListManagement
 				checkedItemCount={Object.keys(checkedItems).length}
 				handleDelete={this.massDelete}
+				realTimeInfo={this.state.realTimeInfo}
 				handleSelect={this.handleManagementSelect}
 				handleToggle={() => this.toggleManageMode(!manageMode)}
 				isOpen={manageMode}
+				// realTimeEditFields={currentList.realtimeEditFields}
 				itemCount={this.props.items.count}
 				itemsPerPage={this.props.lists.page.size}
 				nodelete={currentList.nodelete}
@@ -399,7 +402,40 @@ const ListView = React.createClass({
 	// ==============================
 	// COMMON
 	// ==============================
-
+	/*
+	** Real time Data / col Storage
+	** @Terry Chan
+	*/
+	onChangeRealTime({ stateName, key, path, value }) {
+		// window.console.warn('Real Time Edit: ', path, value);
+		const currentState = this.state[stateName] || {};
+		var newInfo = { ...[currentState] };
+		if (key) {
+			if (newInfo[key]) {
+				newInfo = {
+					...newInfo,
+					...{
+						[key]: {
+							...newInfo[key],
+							...{
+								[path]: value,
+							},
+						},
+					},
+				}
+			} else {
+				newInfo = {
+					...newInfo,
+					...{
+						[key]: {
+							[path]: value,
+						},
+					},
+				}
+			}
+			this.setState({ [stateName]: currentState });
+		}
+	},
 	handleSortSelect (path, inverted) {
 		if (inverted) path = '-' + path;
 		this.props.dispatch(setActiveSort(path));
@@ -497,11 +533,14 @@ const ListView = React.createClass({
 								deleteTableItem={this.deleteTableItem}
 								handleSortSelect={this.handleSortSelect}
 								items={this.props.items}
+								onChange={this.onChangeRealTime}
 								list={this.props.currentList}
 								manageMode={this.state.manageMode}
 								rowAlert={this.props.rowAlert}
+								realTimeInfo={this.state.realTimeInfo || {}}
 								currentPage={this.props.lists.page.index}
 								pageSize={this.props.lists.page.size}
+								noedit={this.props.currentList.noedit}
 								drag={this.props.lists.drag}
 								dispatch={this.props.dispatch}
 							/>
@@ -533,7 +572,6 @@ const ListView = React.createClass({
 		);
 	},
 	render () {
-		// console.log('Keystone: ', Keystone);
 		if (!this.props.ready) {
 			return (
 				<Center height="50vh" data-screen-id="list">
@@ -541,6 +579,7 @@ const ListView = React.createClass({
 				</Center>
 			);
 		}
+
 		return (
 			<div data-screen-id="list">
 				{this.renderBlankState()}

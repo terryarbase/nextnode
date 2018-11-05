@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import _ from 'lodash';
 import {
 	Button,
 	GlyphButton,
@@ -17,6 +18,7 @@ function ListManagement ({
 	itemsPerPage,
 	nodelete,
 	noedit,
+	realTimeInfo={},
 	selectAllItemsLoading,
 	...props
 }) {
@@ -27,7 +29,7 @@ function ListManagement ({
 	const buttonNoteStyles = { color: '#999', fontWeight: 'normal' };
 
 	// delete button
-	const actionButtons = isOpen && (
+	const deleteActionButtons = !nodelete && isOpen && (
 		<Section>
 			<GlyphButton
 				color="cancel"
@@ -37,6 +39,21 @@ function ListManagement ({
 				position="left"
 				variant="link">
 				Delete
+			</GlyphButton>
+		</Section>
+	);
+
+	// realtime edit button
+	const realEditActionButtons = !noedit && _.keys(realTimeInfo).length && (
+		<Section>
+			<GlyphButton
+				color="cancel"
+				disabled={!checkedItemCount}
+				glyph="pencil"
+				onClick={handleDelete}
+				position="left"
+				variant="link">
+				Save
 			</GlyphButton>
 		</Section>
 	);
@@ -86,16 +103,14 @@ function ListManagement ({
 	return (
 		<div>
 			<Group style={{ float: 'left', marginRight: '.75em', marginBottom: 0 }}>
-				{
-					!nodelete ? 
-					<Section>
-						<Button active={isOpen} onClick={() => handleToggle(!isOpen)}>
-							Manage
-						</Button>
-					</Section> : null
-				}
+				<Section>
+					<Button active={isOpen} onClick={() => handleToggle(!isOpen)}>
+						Manage
+					</Button>
+				</Section>
 				{selectButtons}
-				{actionButtons}
+				{deleteActionButtons}
+				{realEditActionButtons}
 				{selectedCountText}
 			</Group>
 		</div>

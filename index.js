@@ -32,6 +32,7 @@ var Keystone = function () {
 		'admin path': 'keystone',
 		'compress': true,
 		'headless': false,
+		'localization': false,
 		'logger': ':method :url :status :response-time ms',
 		'auto update': false,
 		'model prefix': null,
@@ -131,6 +132,8 @@ Keystone.prototype.start = require('./lib/core/start');
 Keystone.prototype.wrapHTMLError = require('./lib/core/wrapHTMLError');
 Keystone.prototype.createKeystoneHash = require('./lib/core/createKeystoneHash');
 Keystone.prototype.createRoleModel = require('./lib/core/createRoleModel');
+
+Keystone.prototype.createLocalization = require('./lib/core/createLocalization');
 
 /* Deprecation / Change warnings for 0.4 */
 Keystone.prototype.routes = function () {

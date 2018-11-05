@@ -25,7 +25,7 @@ const classes = {
 };
 
 const App = (props) => {
-	console.log(props);
+	// console.log(props);
 	const listsByPath = require('../utils/lists').listsByPath;
 	let children = props.children;
 	// Determine show the nav, excluding dashboard

@@ -21,6 +21,7 @@ results
 coverage
 coverage.html
 .cover*
+admin/bundles*
 lib-cov
 
 docs/_dist

@@ -10,7 +10,6 @@ module.exports = function IndexRoute (req, res) {
 	_.forEach(keystone.lists, function (list, key) {
 		lists[key] = list.getOptions();
 	});
-
 	var UserList = keystone.list(keystone.get('user model'));
 
 	var backUrl = keystone.get('back url');
@@ -104,7 +103,7 @@ module.exports = function IndexRoute (req, res) {
 			domain: keystone.get('ga domain'),
 		},
 		keystone: keystoneData,
-		title: keystone.get('name') || 'Keystone',
+		title: keystone.get('name') || 'NextNode',
 	};
 
 	var cloudinaryConfig = keystone.get('cloudinary config');

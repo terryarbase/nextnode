@@ -20,6 +20,7 @@ module.exports = [
 	'marked',
 	'moment',
 	'numeral',
+	'immutable',
 	'qs',
 	'react-addons-css-transition-group',
 	'react-alt-text',

@@ -23,6 +23,7 @@ var DEFAULT_OPTION_KEYS = [
 	'base64Image',
 	'col',
 	'noedit',
+	'realedit',
 	'nocol',
 	'nosort',
 	'indent',
@@ -79,7 +80,6 @@ function Field (list, path, options) {
 			return evalDependsOn(opts.dependsOn, this.toObject());
 		};
 	}
-
 	// Add the field to the schema
 	this.addToSchema(options._isNested ? options._nestedSchema : this.list.schema);
 

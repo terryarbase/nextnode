@@ -1,5 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
+import _ from 'lodash';
 
 import ListControl from '../ListControl';
 
@@ -21,6 +22,9 @@ const ItemsRow = React.createClass({
 		index: React.PropTypes.number,
 		items: React.PropTypes.object,
 		list: React.PropTypes.object,
+		noedit: React.PropTypes.bool,
+		currentValue: React.PropTypes.object,
+		onChange: React.PropTypes.func,
 		// Injected by React DnD:
 		isDragging: React.PropTypes.bool,         // eslint-disable-line react/sort-prop-types
 		connectDragSource: React.PropTypes.func,  // eslint-disable-line react/sort-prop-types
@@ -36,11 +40,33 @@ const ItemsRow = React.createClass({
 			'ItemList__row--success': this.props.rowAlert.success === itemId,
 			'ItemList__row--failure': this.props.rowAlert.fail === itemId,
 		});
+		const { currentValue, noedit } = this.props;
 		// item fields
 		var cells = this.props.columns.map((col, i) => {
 			var ColumnType = Columns[col.type] || Columns.__unrecognised__;
 			var linkTo = !i ? `${Keystone.adminPath}/${this.props.list.path}/${itemId}` : undefined;
-			return <ColumnType key={col.path} list={this.props.list} col={col} data={item} linkTo={linkTo} />;
+			return <ColumnType
+				key={col.path}
+				list={this.props.list}
+				col={col}
+				// data={item}
+				noedit={noedit}
+				currentValue={
+					// use original data value instead of realtime value
+					currentValue && _.has(currentValue, col.path) ? 
+					currentValue[col.path] : item.fields[col.path]
+				}
+				linkTo={linkTo}
+				onChange={value => {
+					// window.console.warn('col >>>>>>>>>>> ', value, col);
+					this.props.onChange({
+						stateName: 'realTimeInfo',
+						key: itemId,
+						path: col.path,
+						value,
+					});
+				}}
+			/>;
 		});
 
 		// add sortable icon when applicable

@@ -18,7 +18,16 @@ module.exports = function (keystone, app, callback) {
 	var forceSsl = (keystone.get('ssl') === 'force');
 
 	keystone.httpServer = http
-	.createServer(app)
+	.createServer((req, res) => {
+		if (forceSsl) {
+			console.log('The http server to be run in HTTPS - ', `https://${req.headers.host}${req.url}`);
+			res.writeHead(301, { 
+				'Location': `https://${req.headers.host}${req.url}`,
+			});
+	    	res.end();
+	    }
+	    return app(req, res);
+	})
 	.listen(port, host, function ready (err) {
 		if (err) { return callback(err); }
 

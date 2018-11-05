@@ -13,6 +13,7 @@ var path = require('path');
 var str = require('string-to-stream');
 
 function buildFieldTypesStream (fieldTypes) {
+	// console.log('>>>>>>>>>>>> ', fieldTypes);
 	var src = '';
 	var types = Object.keys(fieldTypes);
 	['Column', 'Field', 'Filter'].forEach(function (i) {
