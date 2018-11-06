@@ -11,14 +11,17 @@ import {
 function ListManagement ({
 	checkedItemCount,
 	handleDelete,
+	handleRealTimeSave,
 	handleSelect,
 	handleToggle,
 	isOpen,
 	itemCount,
 	itemsPerPage,
+	isRealTimeSaveMode,
 	nodelete,
 	noedit,
 	realTimeInfo={},
+	realTimeCol={},
 	selectAllItemsLoading,
 	...props
 }) {
@@ -44,19 +47,25 @@ function ListManagement ({
 	);
 
 	// realtime edit button
-	const realEditActionButtons = !noedit && _.keys(realTimeInfo).length && (
-		<Section>
-			<GlyphButton
-				color="cancel"
-				disabled={!checkedItemCount}
-				glyph="pencil"
-				onClick={handleDelete}
-				position="left"
-				variant="link">
-				Save
-			</GlyphButton>
-		</Section>
-	);
+	const realEditActionButtons = () => {
+		if (!noedit && isRealTimeSaveMode) {
+			const disabled = isOpen || (!_.keys(realTimeInfo).length && !_.keys(realTimeCol).length);
+			return (
+				<Section>
+					<GlyphButton
+						color="cancel"
+						disabled={disabled}
+						glyph="pencil"
+						onClick={handleRealTimeSave}
+						position="left"
+						variant="link">
+						Save All
+					</GlyphButton>
+				</Section>
+			);
+		}
+		return null;
+	};
 
 	// select buttons
 	const allVisibleButtonIsActive = checkedItemCount === itemCount;
@@ -108,9 +117,9 @@ function ListManagement ({
 						Manage
 					</Button>
 				</Section>
+				{realEditActionButtons()}
 				{selectButtons}
 				{deleteActionButtons}
-				{realEditActionButtons}
 				{selectedCountText}
 			</Group>
 		</div>

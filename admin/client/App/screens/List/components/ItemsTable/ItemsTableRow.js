@@ -25,6 +25,8 @@ const ItemsRow = React.createClass({
 		noedit: React.PropTypes.bool,
 		currentValue: React.PropTypes.object,
 		onChange: React.PropTypes.func,
+		realTimeCol: React.PropTypes.object,
+		realTimeInfo: React.PropTypes.object,
 		// Injected by React DnD:
 		isDragging: React.PropTypes.bool,         // eslint-disable-line react/sort-prop-types
 		connectDragSource: React.PropTypes.func,  // eslint-disable-line react/sort-prop-types
@@ -40,27 +42,44 @@ const ItemsRow = React.createClass({
 			'ItemList__row--success': this.props.rowAlert.success === itemId,
 			'ItemList__row--failure': this.props.rowAlert.fail === itemId,
 		});
-		const { currentValue, noedit } = this.props;
+		const { noedit, realTimeCol, realTimeInfo, manageMode } = this.props;
 		// item fields
 		var cells = this.props.columns.map((col, i) => {
 			var ColumnType = Columns[col.type] || Columns.__unrecognised__;
 			var linkTo = !i ? `${Keystone.adminPath}/${this.props.list.path}/${itemId}` : undefined;
+			// use original data value instead of realtime value
+			var value;
+
+			/*
+			** if realtime action is triggered
+			*/
+			if (realTimeCol && _.keys(realTimeCol).length ||
+				realTimeInfo && _.keys(realTimeInfo).length) {
+				// if real time col content is not canceled by real time row content
+				// then refer to real time col content
+				if (realTimeCol[col.path] !== null) {
+					value = realTimeCol[col.path];
+				// otherwise, if the real time row is triggered
+				} else if (realTimeInfo && realTimeInfo[itemId] && realTimeInfo[itemId][col.path]) {
+					value = realTimeInfo[itemId][col.path];
+				}
+			// otherwise, use the defaul value of result list
+			} else {
+				value = item.fields[col.path];
+			}
+ 			// window.console.warn('col >>>>>>>>>>> ', noedit, manageMode);
 			return <ColumnType
 				key={col.path}
 				list={this.props.list}
 				col={col}
-				// data={item}
-				noedit={noedit}
-				currentValue={
-					// use original data value instead of realtime value
-					currentValue && _.has(currentValue, col.path) ? 
-					currentValue[col.path] : item.fields[col.path]
-				}
+				data={item}
+				noedit={manageMode || noedit}
+				currentValue={value}
 				linkTo={linkTo}
 				onChange={value => {
 					// window.console.warn('col >>>>>>>>>>> ', value, col);
 					this.props.onChange({
-						stateName: 'realTimeInfo',
+						// stateName: 'realTimeInfo',
 						key: itemId,
 						path: col.path,
 						value,

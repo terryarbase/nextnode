@@ -6,6 +6,7 @@
 import React from 'react';
 // import { findDOMNode } from 'react-dom'; // TODO re-implement focus when ready
 import numeral from 'numeral';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import {
@@ -175,6 +176,24 @@ const ListView = React.createClass({
 			},
 		});
 	},
+	realTimeSave () {
+		this.setState({
+			confirmationDialog: {
+				isOpen: true,
+				label: 'Save',
+				body: (
+					<div>
+						Are you sure you want to save those items?
+					</div>
+				),
+				onConfirmation: () => {
+					// this.props.dispatch(deleteItems(itemIds));
+					// this.toggleManageMode();
+					this.removeConfirmationDialog();
+				},
+			},
+		});
+	},
 	handleManagementSelect (selection) {
 		if (selection === 'all') this.checkAllItems();
 		if (selection === 'none') this.uncheckAllTableItems();
@@ -197,20 +216,21 @@ const ListView = React.createClass({
 	renderManagement () {
 		const { checkedItems, manageMode, selectAllItemsLoading } = this.state;
 		const { currentList } = this.props;
-
 		return (
 			<ListManagement
 				checkedItemCount={Object.keys(checkedItems).length}
 				handleDelete={this.massDelete}
-				realTimeInfo={this.state.realTimeInfo}
+				handleRealTimeSave={this.realTimeSave}
 				handleSelect={this.handleManagementSelect}
 				handleToggle={() => this.toggleManageMode(!manageMode)}
 				isOpen={manageMode}
-				// realTimeEditFields={currentList.realtimeEditFields}
+				realTimeInfo={this.state.realTimeInfo}
+				realTimeCol={this.state.realTimeCol}
 				itemCount={this.props.items.count}
 				itemsPerPage={this.props.lists.page.size}
 				nodelete={currentList.nodelete}
 				noedit={currentList.noedit}
+				isRealTimeSaveMode={!!currentList.realtimeEditFields.length}
 				selectAllItemsLoading={selectAllItemsLoading}
 			/>
 		);
@@ -403,13 +423,36 @@ const ListView = React.createClass({
 	// COMMON
 	// ==============================
 	/*
-	** Real time Data / col Storage
+	** Real time Col Data Storage
 	** @Terry Chan
 	*/
-	onChangeRealTime({ stateName, key, path, value }) {
-		// window.console.warn('Real Time Edit: ', path, value);
-		const currentState = this.state[stateName] || {};
-		var newInfo = { ...[currentState] };
+	onChangeRealTimeCol({ key, path, value }) {
+	 	// window.console.warn('Real Time Col Edit: ', key, path, value);
+	 	const { realTimeCol = {}, realTimeInfo = {} } = this.state;
+	 	var newColInfo = { ...realTimeCol };
+	 	var newInfo = { ...realTimeInfo };
+	 	newColInfo = {
+			...newColInfo,
+			...{
+				[key]: value,
+			},
+		}
+
+	 	// remove all of related to this path value in Realtime Info
+	 	_.forOwn(newInfo, (current, id) => {
+	 		current[key] = value;
+	 	});
+		this.setState({ realTimeCol: newColInfo, realTimeInfo: newInfo });
+	},
+	/*
+	** Real time Data Storage
+	** @Terry Chan
+	*/
+	onChangeRealTime({ key, path, value }) {
+	 	// window.console.warn('Real Time Edit: ', key, path, value);
+	 	const { realTimeCol = {}, realTimeInfo = {} } = this.state;
+	 	var newInfo = { ...realTimeInfo };
+	 	var newColInfo = { ...realTimeCol };
 		if (key) {
 			if (newInfo[key]) {
 				newInfo = {
@@ -433,7 +476,16 @@ const ListView = React.createClass({
 					},
 				}
 			}
-			this.setState({ [stateName]: currentState });
+			newColInfo = {
+				...newColInfo,
+				...{
+					[path]: null,
+				},
+			};
+			this.setState({
+				realTimeInfo: newInfo,
+				realTimeCol: newColInfo,
+			});
 		}
 	},
 	handleSortSelect (path, inverted) {
@@ -534,10 +586,12 @@ const ListView = React.createClass({
 								handleSortSelect={this.handleSortSelect}
 								items={this.props.items}
 								onChange={this.onChangeRealTime}
+								onColChange={this.onChangeRealTimeCol}
 								list={this.props.currentList}
 								manageMode={this.state.manageMode}
 								rowAlert={this.props.rowAlert}
 								realTimeInfo={this.state.realTimeInfo || {}}
+								realTimeCol={this.state.realTimeCol || {}}
 								currentPage={this.props.lists.page.index}
 								pageSize={this.props.lists.page.size}
 								noedit={this.props.currentList.noedit}
@@ -572,6 +626,7 @@ const ListView = React.createClass({
 		);
 	},
 	render () {
+
 		if (!this.props.ready) {
 			return (
 				<Center height="50vh" data-screen-id="list">

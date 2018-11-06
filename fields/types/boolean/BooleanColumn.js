@@ -9,22 +9,48 @@ var BooleanColumn = React.createClass({
 		col: React.PropTypes.object,
 		data: React.PropTypes.object,
 		realedit: React.PropTypes.bool,
+		// is pure element without td
+		isPure: React.PropTypes.bool,
 		noedit: React.PropTypes.bool,
 		currentValue: React.PropTypes.bool,
 	},
+	renderCheckBox() {
+		const {
+			col: {
+				field: {
+					realedit,
+				},
+			},
+			currentValue,
+			noedit,
+			onChange
+		} = this.props;
+		
+		return <Checkbox 
+			readonly={noedit || !realedit}
+			checked={currentValue}
+			onChange={onChange}
+		/>
+	},
 	renderValue () {
-		const { col: { type, field: { realedit } }, currentValue } = this.props;
+		const {
+			col: {
+				type,
+			},
+		} = this.props;
 		return (
-			<ItemsTableValue truncate={false} field={this.props.col.type}>
-				<Checkbox 
-					readonly={noedit || !realedit}
-					checked={currentValue}
-					onChange={this.props.onChange}
-				/>
+			<ItemsTableValue truncate={false} field={type}>
+				{this.renderCheckBox()}
 			</ItemsTableValue>
 		);
 	},
 	render () {
+		const {
+			isPure,
+		} = this.props;
+		if (isPure) {
+			return this.renderCheckBox();
+		}
 		return (
 			<ItemsTableCell>
 				{this.renderValue()}

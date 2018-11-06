@@ -19,6 +19,7 @@ const ItemsTable = React.createClass({
 		handleSortSelect: PropTypes.func.isRequired,
 		items: PropTypes.object.isRequired,
 		realTimeInfo: PropTypes.object.isRequired,
+		realTimeCol: PropTypes.object.isRequired,
 		list: PropTypes.object.isRequired,
 		noedit: PropTypes.bool.isRequired,
 		manageMode: PropTypes.bool.isRequired,
@@ -57,7 +58,7 @@ const ItemsTable = React.createClass({
 
 		// set active sort
 		const activeSortPath = this.props.activeSort.paths[0];
-
+		const { manageMode, noedit, items, realTimeCol } = this.props;
 		// pad first col when controls are available
 		const cellPad = listControlCount ? (
 			<th colSpan={listControlCount} />
@@ -73,37 +74,43 @@ const ItemsTable = React.createClass({
 				'th-sort--asc': isSelected && !isInverted,
 				'th-sort--desc': isInverted,
 			});
-			// disable if manage mode is on and noedit is turned off
-			const isRealTimeCol = !manageMode && !noedit 
-							&& ColumnType.displayName 
-							&& _.includes(RealTimeCol, ColumnType.displayName);
-			var classnames = [];
-
+			/*
+			** disable if 
+			** manage mode is on
+			** noedit is turned off
+			** at least one item result
+			*/
+			const isRealTimeCol = !noedit 
+							&& ColumnType.displayName
+							&& _.includes(RealTimeCol, ColumnType.displayName)
+							&& items.results && items.results.length;
+			var classNames = [];
+			const currentValue = realTimeCol && _.has(realTimeCol, col.path) ? 
+				realTimeCol[col.path] : null;
 			if (isRealTimeCol) {
-				classnames = [ ...classnames, 'ItemList__realtime--Col' ];
+				classNames = [ ...classNames, 'ItemList__realtime--Col' ];
 			}
+
 			return (
-				<th key={col.path} colSpan="1" className={classnames.join(' ')}>
-					
+				<th key={col.path} colSpan="1" className={classNames.join(' ')}>
 					{
 						isRealTimeCol ? 
-						<div>
-							<ColumnType
+						<ColumnType
 								list={this.props.list}
 								col={col}
-								noedit={noedit}
+								data={items[0]}
+								noedit={manageMode || noedit}
+								isPure={true}
+								currentValue={currentValue}
 								onChange={value => {
-									this.props.onChange({
-										stateName: 'realTimeCol',
+									this.props.onColChange({
 										key: col.path,
-										path: 'all',
 										value,
 									});
 								}}
-							/>
-						</div> : null
+						/>
+						: null
 					}
-					<div>
 						<button
 							className={colClassName}
 							onClick={() => {
@@ -116,7 +123,6 @@ const ItemsTable = React.createClass({
 							{col.label}
 							<span className="th-sort__icon" />
 						</button>
-					</div>
 				</th>
 			);
 		});
@@ -131,7 +137,13 @@ const ItemsTable = React.createClass({
 		);
 	},
 	render () {
-		const { items, realTimeInfo, noedit } = this.props;
+		const {
+			items,
+			realTimeInfo,
+			noedit,
+			realTimeCol,
+			manageMode,
+		} = this.props;
 		if (!items.results.length) return null;
 
 		const tableBody = (this.props.list.sortable) ? (
@@ -144,10 +156,12 @@ const ItemsTable = React.createClass({
 							deleteTableItem={this.props.deleteTableItem}
 							index={i}
 							sortOrder={item.sortOrder || 0}
+							realTimeCol={realTimeCol}
+							realTimeInfo={realTimeInfo}
 							id={item.id}
 							item={item}
 							noedit={noedit}
-							currentValue={realTimeInfo && realTimeInfo[item.id]}
+							// currentValue={realTimeInfo && realTimeInfo[item.id]}
 							{...this.props}
 						/>
 					);
