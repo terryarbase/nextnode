@@ -40,6 +40,7 @@ import {
 	setCurrentPage,
 	selectList,
 	clearCachedQuery,
+	realtimeSave,
 } from './actions';
 
 import {
@@ -176,6 +177,59 @@ const ListView = React.createClass({
 			},
 		});
 	},
+	getRealTimeFormDate () {
+		var { realTimeCol = {} } = this.state;
+		const { realTimeInfo } = this.state;
+		const formData = new FormData();
+		const removeNull = obj => _(obj).omitBy(_.isUndefined).omitBy(_.isNull).value();
+		// construct col realtime content
+		if (realTimeCol) {
+			// remove all of null and undefined properties
+			realTimeCol = removeNull(realTimeCol);
+			var colData = {};
+			_.forOwn(realTimeCol, (current, key) => {
+				if (current !== null) {
+					// formData.append(key, current);
+					colData = {
+						...colData,
+						...{
+							[key]: current,
+						},
+					};
+				}
+			});
+			if (colData) {
+				formData.append('colreal', JSON.stringify(colData));
+			}
+		}
+		// construct multiple realtime row content
+		if (realTimeInfo) {
+			_.forOwn(realTimeInfo, (current, id) => {
+				// remove all of sub properties specified in col realtime content
+				_.forOwn(current, (obj, sid) => {
+					if (_.has(realTimeCol, sid)) {
+						current[sid] = null;
+					}
+				});
+				current = removeNull(current);
+				// still has sub properties, then needs to be pushed to api update
+				// prevent duplicated update 
+				if (_.keys(current).length) {
+					formData.append('item[]', 
+						JSON.stringify({
+							...current,
+							id,
+						})
+					);
+				}
+			});
+		}
+		// window.console.warn('Realtime FormData:');
+		// for (var pair of formData.entries()) {
+		//     console.log(pair[0], JSON.parse(pair[1])); 
+		// }
+		return formData;
+	},
 	realTimeSave () {
 		this.setState({
 			confirmationDialog: {
@@ -187,7 +241,9 @@ const ListView = React.createClass({
 					</div>
 				),
 				onConfirmation: () => {
-					// this.props.dispatch(deleteItems(itemIds));
+					this.props.dispatch(
+						realtimeSave(this.getRealTimeFormDate())
+					);
 					// this.toggleManageMode();
 					this.removeConfirmationDialog();
 				},
@@ -626,7 +682,6 @@ const ListView = React.createClass({
 		);
 	},
 	render () {
-
 		if (!this.props.ready) {
 			return (
 				<Center height="50vh" data-screen-id="list">

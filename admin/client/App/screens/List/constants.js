@@ -35,3 +35,7 @@ export const RESET_DRAG_ITEMS = 'app/List/RESET_DRAG_ITEMS';
 export const SET_DRAG_ITEM = 'app/List/SET_DRAG_ITEM';
 export const SET_DRAG_INDEX = 'app/List/SET_DRAG_INDEX';
 export const DRAG_MOVE_ITEM = 'app/List/DRAG_MOVE_ITEM';
+// Realtime 
+export const REALTIME_SAVING = 'app/List/REALTIME_SAVING';
+export const REALTIME_SAVED = 'app/List/REALTIME_SAVED';
+export const REALTIME_SAVE_ERROR = 'app/List/REALTIME_SAVE_ERROR';

@@ -70,6 +70,10 @@ import {
 	moveItem,
 } from './dragdrop';
 
+import {
+	realtimeSave,
+} from './list';
+
 export {
 	setFilter,
 	clearFilter,
@@ -89,4 +93,5 @@ export {
 	setRowAlert,
 	moveItem,
 	downloadItems,
+	realtimeSave,
 };

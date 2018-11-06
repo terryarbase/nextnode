@@ -13,6 +13,10 @@ import {
 	SET_DRAG_ITEM,
 	SET_DRAG_INDEX,
 	DRAG_MOVE_ITEM,
+	// realtime
+	REALTIME_SAVING,
+	REALTIME_SAVED,
+	REALTIME_SAVE_ERROR,
 } from '../constants';
 
 import {
@@ -44,6 +48,11 @@ const initialState = {
 		item: false,
 		clonedItems: false,
 		index: false,
+	},
+	realTime: {
+		isLoading: false,
+		results: [],
+		error: null,
 	},
 };
 
@@ -221,6 +230,31 @@ function lists (state = initialState, action) {
 				items: {
 					...state.items,
 					results: itemsWithoutItem,
+				},
+			});
+			
+		case REALTIME_SAVING:
+			return assign({}, state, {
+				realTime: {
+					...state.realTime,
+					isLoading: true,
+					error: null,
+				},
+			});
+		case REALTIME_SAVED:
+			return assign({}, state, {
+				realTime: {
+					...state.realTime,
+					isLoading: false,
+					results: action.list,
+				},
+			});
+		case REALTIME_SAVE_ERROR:
+			return assign({}, state, {
+				realTime: {
+					...state.realTime,
+					isLoading: false,
+					error: action.err,
 				},
 			});
 		default:

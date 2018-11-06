@@ -60,7 +60,7 @@ module.exports = function IndexRoute (req, res) {
 		brand: keystone.get('brand'),
 		csrf: { header: {} },
 		devMode: !!process.env.KEYSTONE_DEV,
-		lists: lists,
+		lists,
 		nav: keystone.nav,
 		orphanedLists: orphanedLists,
 		signoutUrl: keystone.get('signout url'),
