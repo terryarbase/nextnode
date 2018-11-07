@@ -10,6 +10,9 @@ const assign = require('object-assign');
 // Filters for truthy elements in an array
 const truthy = (i) => i;
 
+// delegated flag field name
+const delegatedField = 'delegated';
+
 /**
  * Get the columns of a list, structured by fields and headings
  *
@@ -92,28 +95,29 @@ const List = function (options) {
  * @param  {FormData} formData The submitted form data
  * @param  {Function} callback Called after the API call
  */
-List.prototype.postIt = function (formData, callback) {
-	xhr({
-		url: `${Keystone.adminPath}/api/${this.path}/realtime?ts=${Math.random()}`,
-		responseType: 'json',
-		method: 'POST',
-		headers: assign({}, Keystone.csrf.header),
-		body: formData,
-	}, (err, resp, data) => {
-		if (err) callback(err);
-		// handle unexpected JSON string not parsed
-		data = typeof data === 'string' ? JSON.parse(data) : data;
-		if (resp.statusCode === 200) {
-			callback(null, data);
-		} else {
-			// NOTE: xhr callback will be called with an Error if
-			//  there is an error in the browser that prevents
-			//  sending the request. A HTTP 500 response is not
-			//  going to cause an error to be returned.
-			callback(data, null);
-		}
-	});
-};
+// List.prototype.realtimeSave = function (formData, callback) {
+// 	console.log(this);
+// 	xhr({
+// 		url: `${Keystone.adminPath}/api/${this.path}/realtime?ts=${Math.random()}`,
+// 		responseType: 'json',
+// 		method: 'POST',
+// 		headers: assign({}, Keystone.csrf.header),
+// 		body: formData,
+// 	}, (err, resp, data) => {
+// 		if (err) callback(err);
+// 		// handle unexpected JSON string not parsed
+// 		data = typeof data === 'string' ? JSON.parse(data) : data;
+// 		if (resp.statusCode === 200) {
+// 			callback(null, data);
+// 		} else {
+// 			// NOTE: xhr callback will be called with an Error if
+// 			//  there is an error in the browser that prevents
+// 			//  sending the request. A HTTP 500 response is not
+// 			//  going to cause an error to be returned.
+// 			callback(data, null);
+// 		}
+// 	});
+// };
 /**
  * (GET) Execute an item via specific api url
  *
@@ -196,6 +200,32 @@ List.prototype.createItem = function (formData, callback) {
 			//  sending the request. A HTTP 500 response is not
 			//  going to cause an error to be returned.
 			callback(data, null);
+		}
+	});
+};
+
+/**
+ * Update many items
+ *
+ * @param  {String}   id       The id of the item we want to update
+ * @param  {FormData} formData The submitted form data
+ * @param  {Function} callback Called after the API call
+ */
+List.prototype.updateItems = function (formData, callback) {
+	xhr({
+		url: `${Keystone.adminPath}/api/${this.path}/update?ts=${Math.random()}`,
+		responseType: 'json',
+		method: 'POST',
+		headers: assign({}, Keystone.csrf.header),
+		body: formData,
+	}, (err, resp, data) => {
+		if (err) return callback(err);
+		// handle unexpected JSON string not parsed
+		data = typeof data === 'string' ? JSON.parse(data) : data;
+		if (resp.statusCode === 200) {
+			callback(null, data);
+		} else {
+			callback(data);
 		}
 	});
 };

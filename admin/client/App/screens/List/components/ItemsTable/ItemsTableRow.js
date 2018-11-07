@@ -34,10 +34,11 @@ const ItemsRow = React.createClass({
 		connectDragPreview: React.PropTypes.func, // eslint-disable-line react/sort-prop-types
 	},
 	renderRow (item) {
-		const itemId = item.id;
+		// const itemId = item.id;
+		const { id: itemId, fields } = item;
 		const rowClassname = classnames({
 			'ItemList__row--dragging': this.props.isDragging,
-			'ItemList__row--selected': this.props.checkedItems[itemId],
+			'ItemList__row--selected': this.props.checkedItems[itemId] && !item.delegated,
 			'ItemList__row--manage': this.props.manageMode,
 			'ItemList__row--success': this.props.rowAlert.success === itemId,
 			'ItemList__row--failure': this.props.rowAlert.fail === itemId,
@@ -49,12 +50,12 @@ const ItemsRow = React.createClass({
 			var linkTo = !i ? `${Keystone.adminPath}/${this.props.list.path}/${itemId}` : undefined;
 			// use original data value instead of realtime value
 			var value;
-
 			/*
 			** if realtime action is triggered
 			*/
-			if (realTimeCol && _.keys(realTimeCol).length ||
-				realTimeInfo && _.keys(realTimeInfo).length) {
+			// console.log('>>>>>>>>>', item, item.delegated);
+			if ((realTimeCol && _.keys(realTimeCol).length ||
+				realTimeInfo && _.keys(realTimeInfo).length) && !item.delegated) {
 				// if real time col content is not canceled by real time row content
 				// then refer to real time col content
 				if (realTimeCol[col.path] !== null) {
@@ -67,23 +68,30 @@ const ItemsRow = React.createClass({
 			} else {
 				value = item.fields[col.path];
 			}
- 			// window.console.warn('col >>>>>>>>>>> ', noedit, manageMode);
+			var restrictDelegated = false;
+			// console.log('col.fields: ', col);
+			// if the record is restricted by the delegated field, then no realtime edit is allowed.
+			if (col.field && col.field.restrictDelegated && item.delegated) {
+				restrictDelegated = true;
+			}
 			return <ColumnType
 				key={col.path}
 				list={this.props.list}
 				col={col}
 				data={item}
-				noedit={manageMode || noedit}
+				noedit={manageMode || noedit || restrictDelegated}
 				currentValue={value}
 				linkTo={linkTo}
 				onChange={value => {
 					// window.console.warn('col >>>>>>>>>>> ', value, col);
-					this.props.onChange({
-						// stateName: 'realTimeInfo',
-						key: itemId,
-						path: col.path,
-						value,
-					});
+					// if (!fields.delegated) {
+						this.props.onChange({
+							// stateName: 'realTimeInfo',
+							key: itemId,
+							path: col.path,
+							value,
+						});
+					// }
 				}}
 			/>;
 		});
@@ -95,14 +103,16 @@ const ItemsRow = React.createClass({
 
 		// add delete/check icon when applicable
 		if (!this.props.list.nodelete) {
-			cells.unshift(this.props.manageMode ? (
+			cells.unshift(this.props.manageMode && !item.delegated ? (
 				<ListControl key="_check" type="check" active={this.props.checkedItems[itemId]} />
 			) : (
-				<ListControl key="_delete" onClick={(e) => this.props.deleteTableItem(item, e)} type="delete" />
+				!item.delegated ? <ListControl key="_delete" onClick={(e) => this.props.deleteTableItem(item, e)} type="delete" /> : <td key="_delegated" />
 			));
 		}
 
-		var addRow = (<tr key={'i' + item.id} onClick={this.props.manageMode ? (e) => this.props.checkTableItem(item, e) : null} className={rowClassname}>{cells}</tr>);
+		var addRow = (<tr key={'i' + item.id} onClick={
+			this.props.manageMode && !item.delegated ? (e) => this.props.checkTableItem(item, e) : null
+		} className={rowClassname}>{cells}</tr>);
 
 		if (this.props.list.sortable) {
 			return (

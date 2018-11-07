@@ -29,6 +29,7 @@ var DEFAULT_OPTION_KEYS = [
 	'indent',
 	'hidden',
 	'collapse',
+	'restrictDelegated',
 	'dependsOn',
 	'autoCleanup',
 ];

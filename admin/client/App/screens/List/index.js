@@ -178,44 +178,44 @@ const ListView = React.createClass({
 		});
 	},
 	getRealTimeFormDate () {
-		var { realTimeCol = {} } = this.state;
+		// var { realTimeCol = {} } = this.state;
 		const { realTimeInfo } = this.state;
 		const formData = new FormData();
 		const removeNull = obj => _(obj).omitBy(_.isUndefined).omitBy(_.isNull).value();
 		// construct col realtime content
-		if (realTimeCol) {
-			// remove all of null and undefined properties
-			realTimeCol = removeNull(realTimeCol);
-			var colData = {};
-			_.forOwn(realTimeCol, (current, key) => {
-				if (current !== null) {
-					// formData.append(key, current);
-					colData = {
-						...colData,
-						...{
-							[key]: current,
-						},
-					};
-				}
-			});
-			if (colData) {
-				formData.append('colreal', JSON.stringify(colData));
-			}
-		}
+		// if (realTimeCol) {
+		// 	// remove all of null and undefined properties
+		// 	realTimeCol = removeNull(realTimeCol);
+		// 	var colData = {};
+		// 	_.forOwn(realTimeCol, (current, key) => {
+		// 		if (current !== null) {
+		// 			// formData.append(key, current);
+		// 			colData = {
+		// 				...colData,
+		// 				...{
+		// 					[key]: current,
+		// 				},
+		// 			};
+		// 		}
+		// 	});
+		// 	if (colData) {
+		// 		formData.append('colreal', JSON.stringify(colData));
+		// 	}
+		// }
 		// construct multiple realtime row content
 		if (realTimeInfo) {
 			_.forOwn(realTimeInfo, (current, id) => {
 				// remove all of sub properties specified in col realtime content
-				_.forOwn(current, (obj, sid) => {
-					if (_.has(realTimeCol, sid)) {
-						current[sid] = null;
-					}
-				});
+				// _.forOwn(current, (obj, sid) => {
+				// 	if (_.has(realTimeCol, sid)) {
+				// 		current[sid] = null;
+				// 	}
+				// });
 				current = removeNull(current);
 				// still has sub properties, then needs to be pushed to api update
 				// prevent duplicated update 
 				if (_.keys(current).length) {
-					formData.append('item[]', 
+					formData.append('items[]', 
 						JSON.stringify({
 							...current,
 							id,
@@ -224,10 +224,10 @@ const ListView = React.createClass({
 				}
 			});
 		}
-		// window.console.warn('Realtime FormData:');
-		// for (var pair of formData.entries()) {
-		//     console.log(pair[0], JSON.parse(pair[1])); 
-		// }
+		window.console.warn('Realtime FormData:');
+		for (var pair of formData.entries()) {
+		    console.log(pair[0], JSON.parse(pair[1])); 
+		}
 		return formData;
 	},
 	realTimeSave () {
@@ -282,7 +282,7 @@ const ListView = React.createClass({
 				isOpen={manageMode}
 				realTimeInfo={this.state.realTimeInfo}
 				realTimeCol={this.state.realTimeCol}
-				itemCount={this.props.items.count}
+				itemCount={this.props.items.editCount}
 				itemsPerPage={this.props.lists.page.size}
 				nodelete={currentList.nodelete}
 				noedit={currentList.noedit}
@@ -394,21 +394,25 @@ const ListView = React.createClass({
 
 	checkTableItem (item, e) {
 		e.preventDefault();
-		const newCheckedItems = { ...this.state.checkedItems };
-		const itemId = item.id;
-		if (this.state.checkedItems[itemId]) {
-			delete newCheckedItems[itemId];
-		} else {
-			newCheckedItems[itemId] = true;
+		if (!item.delegated) {
+			const newCheckedItems = { ...this.state.checkedItems };
+			const itemId = item.id;
+			if (this.state.checkedItems[itemId]) {
+				delete newCheckedItems[itemId];
+			} else {
+				newCheckedItems[itemId] = true;
+			}
+			this.setState({
+				checkedItems: newCheckedItems,
+			});
 		}
-		this.setState({
-			checkedItems: newCheckedItems,
-		});
 	},
 	checkAllTableItems () {
 		const checkedItems = {};
 		this.props.items.results.forEach(item => {
-			checkedItems[item.id] = true;
+			if (!item.delegated) {
+				checkedItems[item.id] = true;
+			}
 		});
 		this.setState({
 			checkedItems: checkedItems,
@@ -422,7 +426,9 @@ const ListView = React.createClass({
 		var self = this;
 		this.props.currentList.loadItems({ expandRelationshipFilters: false, filters: {} }, function (err, data) {
 			data.results.forEach(item => {
-				checkedItems[item.id] = true;
+				if (!item.delegated) {
+					checkedItems[item.id] = true;
+				}
 			});
 			self.setState({
 				checkedItems: checkedItems,
@@ -480,13 +486,15 @@ const ListView = React.createClass({
 	// ==============================
 	/*
 	** Real time Col Data Storage
+	** restrictDelegated: if the col is restricted by delegated field, then ignore
 	** @Terry Chan
 	*/
 	onChangeRealTimeCol({ key, path, value }) {
+		const { items } = this.props;
 	 	// window.console.warn('Real Time Col Edit: ', key, path, value);
-	 	const { realTimeCol = {}, realTimeInfo = {} } = this.state;
+	 	const { realTimeCol = {} } = this.state;
 	 	var newColInfo = { ...realTimeCol };
-	 	var newInfo = { ...realTimeInfo };
+	 	var newInfo = {};
 	 	newColInfo = {
 			...newColInfo,
 			...{
@@ -495,9 +503,21 @@ const ListView = React.createClass({
 		}
 
 	 	// remove all of related to this path value in Realtime Info
-	 	_.forOwn(newInfo, (current, id) => {
-	 		current[key] = value;
-	 	});
+	 	_.forEach(items.results, item => {
+	 		if (!item.delegated) {
+		 		newInfo = {
+		 			...newInfo,
+		 			...{
+		 				[item.id]: {
+		 					[key]: value,
+		 				}
+		 			}
+		 		}
+		 	}
+	 	})
+	 	// _.forOwn(newInfo, (current, id) => {
+	 	// 	current[key] = value;
+	 	// });
 		this.setState({ realTimeCol: newColInfo, realTimeInfo: newInfo });
 	},
 	/*
@@ -682,6 +702,7 @@ const ListView = React.createClass({
 		);
 	},
 	render () {
+		console.log(this.state.realTimeInfo);
 		if (!this.props.ready) {
 			return (
 				<Center height="50vh" data-screen-id="list">

@@ -28,24 +28,15 @@ export function realtimeSave (formData = new FormData()) {
 		dispatch({
 			type: REALTIME_SAVING,
 		});
-		return;
-		// // Take a snapshot of the current redux state.
-		// // Hold a reference to the currentList in state.
-		const { 
-			lists: {
-				currentList: {
-					postIt,
-				},
-			},
-		} = getState();
-
-		postIt(formData, (err, items) => {
+		const state = getState();
+		const currentList = state.lists.currentList;
+		currentList.updateItems(formData, (err, items) => {
 			if (items) {
 				// Successfully resolve this request in redux and set the loadCounter back to zero.
-				dispatch(itemsLoaded(items));
+				dispatch(realtimeSaved(items));
 			} else {
 				// Catch this error in redux and set the loadCounter back to zero.
-				dispatch(itemLoadingError(err));
+				dispatch(realtimeSavedError(err));
 			}
 		});
 	};

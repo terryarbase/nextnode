@@ -96,6 +96,15 @@ module.exports = function createDynamicRouter (keystone) {
 			new Account(req, res).updateMyProfile();
 		}
 	);
+	// realtime save
+	// router.post('/api/:list/realtime',
+	// 	initList,
+	// 	checkPermission(2),
+	// 	(req, res) => {
+	// 		console.log('>>>>>>>>>', req.body, req.query);
+	// 	}
+	// );
+	router.post('/api/:list/delete', initList, checkPermission(2), require('../api/list/delete'));
 	router.post('/api/:list/delete', initList, checkPermission(2), require('../api/list/delete'));
 	// items
 	router.get('/api/:list/:id', initList, checkPermission(1, { allowBasic: true }), require('../api/item/get'));

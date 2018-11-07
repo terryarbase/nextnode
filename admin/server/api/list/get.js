@@ -1,4 +1,5 @@
 var async = require('async');
+const _ = require('lodash');
 var assign = require('object-assign');
 var listToArray = require('list-to-array');
 
@@ -65,16 +66,18 @@ module.exports = function (req, res) {
 			res.logError('admin/server/api/list/get', 'database error finding items', err);
 			return res.apiError('database error', err);
 		}
-
+		var results;
+		var editCount;
+		if (includeResults) {
+			results = _.map(items, item => req.list.getData(item, fields, req.query.expandRelationshipFields));
+			editCount = _.filter(items, item => !item.delegated).length;
+		} else {
+			count = null;
+		}
 		return res.json({
-			results: includeResults
-				? items.map(function (item) {
-					return req.list.getData(item, fields, req.query.expandRelationshipFields);
-				})
-				: undefined,
-			count: includeCount
-				? count
-				: undefined,
+			results,
+			count,
+			editCount,
 		});
 	});
 };

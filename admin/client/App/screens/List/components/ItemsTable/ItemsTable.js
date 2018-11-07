@@ -90,7 +90,6 @@ const ItemsTable = React.createClass({
 			if (isRealTimeCol) {
 				classNames = [ ...classNames, 'ItemList__realtime--Col' ];
 			}
-
 			return (
 				<th key={col.path} colSpan="1" className={classNames.join(' ')}>
 					{
