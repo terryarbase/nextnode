@@ -84,7 +84,7 @@ const isJson = param => {
 // module.exports = updateItems;
 module.exports = function (req, res) {
 	async.map(req.body.items, function (param, done) {
-		const data = isJson(param);
+		var data = isJson(param);
 		req.list.model.findById(data.id, function (err, item) {
 			if (err) return done({ statusCode: 500, error: 'database error', detail: err, id: data.id });
 			if (!item) return done({ statusCode: 404, error: 'not found', id: data.id });

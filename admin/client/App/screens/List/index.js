@@ -224,10 +224,10 @@ const ListView = React.createClass({
 				}
 			});
 		}
-		window.console.warn('Realtime FormData:');
-		for (var pair of formData.entries()) {
-		    console.log(pair[0], JSON.parse(pair[1])); 
-		}
+		// window.console.warn('Realtime FormData:');
+		// for (var pair of formData.entries()) {
+		//     console.log(pair[0], JSON.parse(pair[1])); 
+		// }
 		return formData;
 	},
 	realTimeSave () {

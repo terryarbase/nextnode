@@ -93,7 +93,7 @@ const ItemsTable = React.createClass({
 			return (
 				<th key={col.path} colSpan="1" className={classNames.join(' ')}>
 					{
-						isRealTimeCol ? 
+						isRealTimeCol && items.editCount ? 
 						<ColumnType
 								list={this.props.list}
 								col={col}
