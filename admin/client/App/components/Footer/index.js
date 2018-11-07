@@ -60,7 +60,7 @@ var Footer = React.createClass({
 						KeystoneJS
 					</a>
 					<span> version {version}.</span>
-					{this.renderUser()}
+					{/* {this.renderUser()} */}
 				</Container>
 			</footer>
 		);
@@ -77,8 +77,8 @@ const classes = {
 		boxShadow: '0 -1px 0 rgba(0, 0, 0, 0.1)',
 		color: theme.color.gray40,
 		fontSize: theme.font.size.small,
-		paddingBottom: 30,
-		paddingTop: 40,
+		paddingBottom: 20,
+		paddingTop: 20,
 		textAlign: 'center',
 	},
 	link: {

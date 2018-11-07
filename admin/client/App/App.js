@@ -9,6 +9,7 @@ import { Link } from 'react-router';
 import { css } from 'glamor';
 
 import MobileNavigation from './components/Navigation/Mobile';
+import AdminMenuNav from './components/Navigation/AdminMenu/AdminMenuNav';
 import PrimaryNavigation from './components/Navigation/Primary';
 import SecondaryNavigation from './components/Navigation/Secondary';
 import Footer from './components/Footer';
@@ -16,7 +17,7 @@ import Footer from './components/Footer';
 const classes = {
 	wrapper: {
 		display: 'flex',
-		flexDirection: 'column',
+		flexDirection: 'row',
 		minHeight: '100vh',
 	},
 	body: {
@@ -57,19 +58,11 @@ const App = (props) => {
 	const { style: { nav } } = Keystone;
 	return (
 		<div className={css(classes.wrapper)}>
-			<header>
-				<MobileNavigation
-					brand={Keystone.brand}
+			{isShowNav ?
+			<div className="admin-menu-wrap">
+				<AdminMenuNav
+					currentSectionKey={currentSectionKey}
 					currentListKey={props.params.listId}
-					currentSectionKey={currentSectionKey}
-					sections={Keystone.nav.sections}
-					signoutUrl={Keystone.signoutUrl}
-					User={Keystone.User}
-					user={Keystone.user}
-					style={nav}
-				/>
-				<PrimaryNavigation
-					currentSectionKey={currentSectionKey}
 					brand={Keystone.brand}
 					sections={Keystone.nav.sections}
 					signoutUrl={Keystone.signoutUrl}
@@ -78,26 +71,51 @@ const App = (props) => {
 					style={nav}
 					showNav={isShowNav}
 				/>
-				{/* If a section is open currently, show the secondary nav */}
-				{(currentSection) ? (
-					<SecondaryNavigation
+			</div> : null}
+			<div className="content-wrap">
+				<header>
+					<MobileNavigation
+						brand={Keystone.brand}
 						currentListKey={props.params.listId}
-						lists={currentSection.lists}
-						itemId={props.params.itemId}
+						currentSectionKey={currentSectionKey}
+						sections={Keystone.nav.sections}
+						signoutUrl={Keystone.signoutUrl}
+						User={Keystone.User}
+						user={Keystone.user}
+						style={nav}
 					/>
-				) : null}
-			</header>
-			<main className={css(classes.body)}>
-				{children}
-			</main>
-			<Footer
-				appversion={Keystone.appversion}
-				backUrl={Keystone.backUrl}
-				brand={Keystone.brand}
-				User={Keystone.User}
-				user={Keystone.user}
-				version={Keystone.version}
-			/>
+					<PrimaryNavigation
+						currentSectionKey={currentSectionKey}
+						brand={Keystone.brand}
+						sections={Keystone.nav.sections}
+						signoutUrl={Keystone.signoutUrl}
+						User={Keystone.User}
+						user={Keystone.user}
+						style={nav}
+						showNav={isShowNav}
+					/>
+					{/* If a section is open currently, show the secondary nav */}
+					{/* {(currentSection) ? (
+						<SecondaryNavigation
+							currentListKey={props.params.listId}
+							lists={currentSection.lists}
+							itemId={props.params.itemId}
+						/>
+					) : null} */}
+					{/* <div className="block"></div> */}
+				</header>
+				<main className={css(classes.body)}>
+					{children}
+				</main>
+				<Footer
+					appversion={Keystone.appversion}
+					backUrl={Keystone.backUrl}
+					brand={Keystone.brand}
+					User={Keystone.User}
+					user={Keystone.user}
+					version={Keystone.version}
+				/>
+			</div>
 		</div>
 	);
 };

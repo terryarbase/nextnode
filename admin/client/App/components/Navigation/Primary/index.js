@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { css } from 'glamor';
 import { Link } from 'react-router';
 import { Container } from '../../../elemental';
@@ -107,10 +108,25 @@ var PrimaryNavigation = React.createClass({
 			</PrimaryNavItem>
 		);
 	},
+	renderLanguageSwitcher() {
+		return (
+			<DropdownButton
+				bsStyle={"language"}
+				title={"Language"}
+				key={1}
+				id={"language-switcher"}
+			>
+				<MenuItem eventKey="1">繁</MenuItem>
+				<MenuItem eventKey="2">簡</MenuItem>
+				<MenuItem eventKey="3">ENG</MenuItem>
+			</DropdownButton>
+		)
+	},
 	// Render the link to the webpage
 	renderFrontLink () {
 		return (
 			<ul className="app-nav app-nav--primary app-nav--right">
+				{/* {this.renderLanguageSwitcher()} */}
 				{this.renderBackButton()}
 				{this.renderAccountSettingButton()}
 				{this.renderSignout()}
@@ -161,18 +177,19 @@ var PrimaryNavigation = React.createClass({
 			);
 		});
 	},
+
 	render () {
 		if (!this.state.navIsVisible) return null;
 		return (
 			<div className="primary-header">
 				<div className="primary-header-tools">
 					<Container clearFloatingChildren>
-						{this.renderBrand()}
+						{/* {this.renderBrand()} */}
 						{this.renderFrontLink()}
 						{this.renderUserBlock()}
 					</Container>
 				</div>
-				{
+				{/* {
 					this.props.showNav ? 
 					<nav className="primary-navbar">
 						<Container clearFloatingChildren>
@@ -181,7 +198,7 @@ var PrimaryNavigation = React.createClass({
 							</ul>
 						</Container>
 					</nav> : null
-				}
+				} */}
 				<AccountSetting
 					isOpen={this.state.accountSettingIsVisible}
 					onCancel={this.onPopoutSetting}
