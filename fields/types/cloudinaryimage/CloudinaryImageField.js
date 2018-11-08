@@ -7,7 +7,7 @@ work out whether we're going to support deleting through the UI.
 import React, { PropTypes } from 'react';
 import Field from '../Field';
 import cloudinaryResize from '../../../admin/client/utils/cloudinaryResize';
-import downloadImage from '../../../admin/client/utils/downloadImage';
+// import downloadImage from '../../../admin/client/utils/downloadImage';
 import { Button, FormField, FormInput, FormNote } from '../../../admin/client/App/elemental';
 
 import ImageThumbnail from '../../components/ImageThumbnail';
