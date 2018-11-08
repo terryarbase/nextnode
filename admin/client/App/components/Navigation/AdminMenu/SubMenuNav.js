@@ -27,6 +27,16 @@ var SubMenuNav = React.createClass({
 			isActive: this.props.currentListKey && this.props.currentListKey === list.path,
 		});
 	},
+	onClick (evt) {
+		// If it's the currently active navigation item and we're not on the item view,
+		// clear the query params on click
+		if (isActive && !this.props.itemId) {
+			evt.preventDefault();
+			this.props.dispatch(
+				setActiveList(this.props.currentList, this.props.currentListKey)
+			);
+		}
+	},
 	// Render the navigation
 	renderNavigation (lists) {
 		const navigation = Object.keys(lists).map((key) => {
@@ -35,16 +45,6 @@ var SubMenuNav = React.createClass({
 			const href = list.external ? list.path : `${Keystone.adminPath}/${list.path}`;
 			const isActive = this.props.currentListKey && this.props.currentListKey === list.path;
 			const className = isActive ? 'active' : null;
-			const onClick = (evt) => {
-				// If it's the currently active navigation item and we're not on the item view,
-				// clear the query params on click
-				if (isActive && !this.props.itemId) {
-					evt.preventDefault();
-					this.props.dispatch(
-						setActiveList(this.props.currentList, this.props.currentListKey)
-					);
-				}
-			};
 
 			return (
 				<SubMenuNavItem
@@ -53,7 +53,7 @@ var SubMenuNav = React.createClass({
 					path={list.path}
 					className={className}
 					href={href}
-					onClick={onClick}
+					onClick={this.onClick}
 				>
 					{list.label}
 				</SubMenuNavItem>

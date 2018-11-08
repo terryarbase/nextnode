@@ -12,7 +12,7 @@ const Languages = Map({
 	en: {
 		value: 'en',
 		label: 'English',
-		delegated: true, // the record must exists in
+		// delegated: true, // the record must exists in
 	},
 	zhtw: {
 		value: 'zhtw',

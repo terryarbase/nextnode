@@ -86,6 +86,7 @@ module.exports = function IndexRoute (req, res) {
 			importcss: keystone.get('wysiwyg importcss') || '',
 		} },
 	};
+	console.log('>>', keystone.nav);
 	keystoneData.csrf.header[keystone.security.csrf.CSRF_HEADER_KEY] = keystone.security.csrf.getToken(req, res);
 
 	var codemirrorPath = keystone.get('codemirror url path')

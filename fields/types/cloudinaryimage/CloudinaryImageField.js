@@ -86,12 +86,12 @@ module.exports = Field.create({
 			? this.state.userSelectedFile.name
 			: `${public_id}.${format} (${width}×${height})`;
 	},
-	getImageSource (height = 90) {
+	getImageSource ({ height = 90, resizable = true }) {
 		// TODO: This lets really wide images break the layout
 		let src;
-		if (this.hasLocal()) {
+		if (this.hasLocal() || !resizable) {
 			src = this.state.dataUri;
-		} else if (this.hasExisting()) {
+		} else if (this.hasExisting() && resizable) {
 			src = cloudinaryResize(this.props.value.public_id, {
 				crop: 'fit',
 				height: height,
@@ -188,7 +188,7 @@ module.exports = Field.create({
 		return (
 			<Lightbox
 				currentImage={0}
-				images={[{ src: this.getImageSource(600) }]}
+				images={[{ src: this.getImageSource({ height: 600 }) }]}
 				isOpen={this.state.lightboxIsVisible}
 				onClose={this.closeLightbox}
 				showImageCount={false}
@@ -209,7 +209,7 @@ module.exports = Field.create({
 		return (
 			<ImageThumbnail
 				component="a"
-				href={this.getImageSource(600)}
+				href={this.getImageSource({ height: 600 })}
 				onClick={shouldOpenLightbox && this.openLightbox}
 				mask={mask}
 				target="__blank"
@@ -267,6 +267,12 @@ module.exports = Field.create({
 	renderImageToolbar () {
 		return (
 			<div key={this.props.path + '_toolbar'} className="image-toolbar">
+				{
+					this.hasImage() ? 
+					<a href={this.getImageSource({ resizable: false })} download={true}>
+						Original Image
+					</a> : null
+				}
 				<Button onClick={this.triggerFileBrowser}>
 					{this.hasImage() ? 'Change' : 'Upload'} Image
 				</Button>
