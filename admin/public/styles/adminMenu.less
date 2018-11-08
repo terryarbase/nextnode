@@ -1,0 +1,124 @@
+.admin-menu-wrap {
+    position: relative;
+    background-color: @admin-menu-section-bg;
+    flex: 0 0 @admin-menu-width;
+    // Child default setting
+    a {
+        &:hover,
+        &:visited,
+        &:focus, {
+            text-decoration: none;
+            outline: 0;
+        }
+    }
+    ul, li {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+    // Admin Menu
+    .admin-menu {
+        position: absolute;
+        z-index: 50;
+        width: @admin-menu-width;
+    }
+    // Logo
+    .admin-menu-logo-container {
+        display: table;
+        width: 100%;
+        background-color: @admin-menu-logo-bg;
+        padding: @admin-menu-logo-padding-vertical @admin-menu-logo-padding-horizontal;
+        border-bottom: 1px solid #ccc;
+        .admin-menu-logo {
+            display: table-cell;
+            height: 50px;
+            vertical-align: middle;
+            text-align: center;
+        }
+        .admin-menu-logo > img {
+            max-height: 50px;
+            max-width: 150px;
+        }
+    }
+    // Admin menu
+    .admin-menu-navbar a {
+        display: block;
+        color: @admin-menu-section-text-color;
+        padding: @admin-menu-list-item-padding-vertical @admin-menu-list-item-padding-horizontal;
+    }
+    .admin-menu-item {
+        position: relative;
+        background-color: @admin-menu-section-bg;
+        &.hover {
+            &::before {
+                content: "";
+                width: 5px;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                background-color: @admin-menu-section-hover-text-color;
+            }
+            .admin-menu-item-link {
+                background-color: @admin-menu-section-hover-bg;
+                color: @admin-menu-section-hover-text-color;
+            }
+            &::after {
+                content: " ";
+                height: 0;
+                width: 0;
+                position: absolute;
+                top: 50%;
+                right: 0;
+                border: 8px solid transparent;
+                pointer-events: none;
+                border-right-color: @admin-menu-sub-menu-bg;
+                margin-top: -8px;
+            }
+            .sub-menu-list {
+                position: absolute;
+                top: 0;
+                right: -100%;
+                box-shadow: 2px 2px 10px 0 rgba(0, 0, 0, 0.2);
+            }
+        }
+        &.active {
+            .admin-menu-item-link {
+                position: relative;
+                background-color: @admin-menu-section-active-bg;
+                color: @admin-menu-section-active-text-color;
+                font-weight: bold;
+                &::after {
+                    content: " ";
+                    height: 0;
+                    width: 0;
+                    position: absolute;
+                    top: 50%;
+                    right: 0;
+                    border: 8px solid transparent;
+                    pointer-events: none;
+                    border-right-color: @body-bg;
+                    margin-top: -8px;
+                }
+            }
+        }
+        .sub-menu-list {
+            .sub-menu-item {
+                .sub-menu-link {
+                    background-color: @admin-menu-sub-menu-bg;
+                    color: @admin-menu-sub-menu-text-color;
+                }
+                &.active > .sub-menu-link {
+                    color: @admin-menu-sub-menu-active-text-color;
+                    font-weight: bold;
+                }
+                &:not(.active) .sub-menu-link:hover {
+                    background-color: @admin-menu-sub-menu-hover-bg;
+                    color: @admin-menu-sub-menu-hover-text-color;
+                    border-right: 5px solid;
+                }
+            }
+        }
+    }
+}
