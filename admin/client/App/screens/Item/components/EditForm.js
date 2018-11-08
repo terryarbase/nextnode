@@ -8,6 +8,7 @@ import {
 	Grid,
 	ResponsiveText,
 } from '../../../elemental';
+import { Alert } from '../../../elemental';
 
 import { Fields } from 'FieldTypes';
 import { fade } from '../../../../utils/color';
@@ -240,7 +241,6 @@ var EditForm = React.createClass({
 	},
 	renderFormElements () {
 		var headings = 0;
-
 		return this.props.list.uiElements.map((el, index) => {
 			// Don't render the name field if it is the header since it'll be rendered in BIG above
 			// the list. (see renderNameField method, this is the reverse check of the one it does)
@@ -267,6 +267,23 @@ var EditForm = React.createClass({
 				if (index === 0 && this.state.focusFirstField) {
 					props.autoFocus = true;
 				}
+
+				props = {
+					...props,
+					...{
+						restrictDelegated: field.restrictDelegated,
+					},
+				};
+				// if (delegated && field.restrictDelegated) {
+				// 	props = {
+				// 		...props,
+				// 		...{
+				// 			disabled: true,
+				// 		},
+				// 	};
+				// }
+
+				// props.disabled = true;
 				return React.createElement(Fields[field.type], props);
 			}
 		}, this);
@@ -384,6 +401,19 @@ var EditForm = React.createClass({
 			</div>
 		) : null;
 	},
+	renderWarning () {
+		const { values: { delegated } } = this.state;
+		if (delegated) {
+			const { list: { key } } = this.props;
+			return (
+				<Alert color="warning">
+					{
+						`This is a Delegated ${key}. You are not allowed to update full content.`
+					}
+				</Alert>
+			);
+		}
+	},
 	render () {
 		return (
 			<form ref="editForm" className="EditForm-container">
@@ -392,7 +422,8 @@ var EditForm = React.createClass({
 					<Grid.Col large="three-quarters">
 						<Form layout="horizontal" component="div">
 							{this.renderNameField()}
-							{this.renderKeyOrId()}
+							{this.renderWarning()}
+							{/* this.renderKeyOrId() */}
 							{this.renderFormElements()}
 							{this.renderTrackingMeta()}
 						</Form>

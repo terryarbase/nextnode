@@ -61,6 +61,8 @@ var Base = module.exports.Base = {
 		return this.props.collapse && !this.props.value;
 	},
 	shouldRenderField () {
+		const { restrictDelegated, values: { delegated } } = this.props;
+		if (restrictDelegated && delegated) return false;
 		if (this.props.mode === 'create') return true;
 		return !this.props.noedit;
 	},
@@ -74,11 +76,12 @@ var Base = module.exports.Base = {
 		return <FormNote html={this.props.note} />;
 	},
 	renderField () {
-		const { autoFocus, value, inputProps } = this.props;
+		const { autoFocus, value, inputProps, disabled } = this.props;
 		return (
 			<FormInput {...{
 				...inputProps,
 				autoFocus,
+				disabled,
 				autoComplete: 'off',
 				name: this.getInputName(this.props.path),
 				onChange: this.valueChanged,
@@ -125,7 +128,8 @@ var Base = module.exports.Base = {
 		if (this.props.base64Image) {
 			return this.renderBaseImages();
 		}
-		return <FormInput noedit autoComplete="off">{this.props.value}</FormInput>;
+		// console.log('this.props.value: ', this.props.value);
+		return <FormInput noedit={true}>{this.props.value}</FormInput>;
 	},
 	renderUI () {
 		var wrapperClassName = classnames(
@@ -133,7 +137,6 @@ var Base = module.exports.Base = {
 			this.props.className,
 			{ 'field-monospace': this.props.monospace }
 		);
-		// console.log(this.props);
 		return (
 			<FormField htmlFor={this.props.path} label={this.props.label} className={wrapperClassName} cropLabel>
 				<div className={'FormField__inner field-size-' + this.props.size}>
@@ -193,7 +196,7 @@ module.exports.create = function (spec) {
 			if (this.state.isCollapsed) {
 				return this.renderCollapse();
 			}
-			return this.renderUI();
+			return this.renderUI(...this.props);
 		},
 	};
 
