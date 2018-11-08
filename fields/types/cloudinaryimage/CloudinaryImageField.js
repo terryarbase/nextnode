@@ -7,7 +7,7 @@ work out whether we're going to support deleting through the UI.
 import React, { PropTypes } from 'react';
 import Field from '../Field';
 import cloudinaryResize from '../../../admin/client/utils/cloudinaryResize';
-import downloadImage from '../../../admin/client/utils/downloadImage';
+// import downloadImage from '../../../admin/client/utils/downloadImage';
 import { Button, FormField, FormInput, FormNote } from '../../../admin/client/App/elemental';
 
 import ImageThumbnail from '../../components/ImageThumbnail';
@@ -271,16 +271,21 @@ module.exports = Field.create({
 	},
 
 	renderImageToolbar () {
+		const { value: { signature, format } } = this.props;
+		const filename = `${signature}.${format}`;
 		return (
 			<div key={this.props.path + '_toolbar'} className="image-toolbar">
 				{
 					this.hasImage() ? 
-					<Button variant="link" onClick={() => {
-						const { value: { signature, format, url } } = this.props;
-						downloadImage(url, `${signature}.${format}`);
-					}}>
-						Original Image
-					</Button> : null
+					// <Button variant="link" onClick={() => {
+					// 	const { value: { signature, format, url } } = this.props;
+					// 	downloadImage(url, `${signature}.${format}`);
+					// }}>
+					// 	Original Image
+					// </Button> : null
+					<a href={this.getImageSource({ resizable: false })} download={filename}>
+						Download Original Image
+					</a> : null
 				}
 				<Button onClick={this.triggerFileBrowser}>
 					{this.hasImage() ? 'Change' : 'Upload'} Image
