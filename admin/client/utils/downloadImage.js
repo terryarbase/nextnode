@@ -16,4 +16,4 @@ const downloadImage = (url, filename) => {
 	});
 }
 
-module.exports = cloudinaryResize;
+module.exports = downloadImage;
