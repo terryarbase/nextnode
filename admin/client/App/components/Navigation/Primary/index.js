@@ -183,7 +183,7 @@ var PrimaryNavigation = React.createClass({
 		return (
 			<div className="primary-header">
 				<div className="primary-header-tools">
-					<Container clearFloatingChildren>
+					<Container className="primary-header-container" clearFloatingChildren>
 						{
 							!this.props.showNav ? 
 							this.renderBrand() : null
