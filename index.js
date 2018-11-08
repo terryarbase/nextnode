@@ -36,6 +36,11 @@ var Keystone = function () {
 		'logger': ':method :url :status :response-time ms',
 		'auto update': false,
 		'model prefix': null,
+		/*
+		** @Terry Chan 26/10/2018
+		** for generate localization
+		*/
+		'locale': 'en',
 		'module root': moduleRoot,
 		'frame guard': 'sameorigin',
 		'cache admin bundles': true,
