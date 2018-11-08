@@ -53,7 +53,7 @@ const ItemsRow = React.createClass({
 			/*
 			** if realtime action is triggered
 			*/
-			// console.log('>>>>>>>>>', item, item.delegated);
+			// console.log('>>>>>>>>>', item);
 			if ((realTimeCol && _.keys(realTimeCol).length ||
 				realTimeInfo && _.keys(realTimeInfo).length) && !item.delegated) {
 				// if real time col content is not canceled by real time row content

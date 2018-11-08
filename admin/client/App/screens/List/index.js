@@ -86,7 +86,10 @@ const ListView = React.createClass({
 		// We've opened a new list from the client side routing, so initialize
 		// again with the new list id
 		const isReady = this.props.lists.ready && nextProps.lists.ready;
-		if (isReady && checkForQueryChange(nextProps, this.props)) {
+		const isRealTimeChanged = this.props.realLoading && !nextProps.realLoading;
+		// console.log('>>>>>>> ', isRealTimeChanged);
+		if ((isReady && checkForQueryChange(nextProps, this.props)) || isRealTimeChanged) {
+			this.setState({ realTimeInfo: null, realTimeCol: null });
 			this.props.dispatch(selectList(nextProps.params.listId));
 		}
 	},
@@ -132,10 +135,14 @@ const ListView = React.createClass({
 			this.handleSearchClear();
 		}
 	},
+	handlePageChange(i) {
+		this.setState({ realTimeCol: null, realTimeInfo: null });
+		this.props.dispatch(setCurrentPage(i));
+	},
 	handlePageSelect (i) {
 		// If the current page index is the same as the index we are intending to pass to redux, bail out.
 		if (i === this.props.lists.page.index) return;
-		return this.props.dispatch(setCurrentPage(i));
+		return this.handlePageChange(i);
 	},
 	toggleManageMode (filter = !this.state.manageMode) {
 		this.setState({
@@ -701,34 +708,43 @@ const ListView = React.createClass({
 			</BlankState>
 		);
 	},
+	renderSpinner () {
+		return (
+			<Center height="50vh" data-screen-id="list">
+				<Spinner />
+			</Center>
+		);
+	},
 	render () {
-		console.log(this.state.realTimeInfo);
+		// console.log(this.state.realTimeInfo, this.state.realTimeCol);
 		if (!this.props.ready) {
-			return (
-				<Center height="50vh" data-screen-id="list">
-					<Spinner />
-				</Center>
-			);
+			return this.renderSpinner();
 		}
 
 		return (
 			<div data-screen-id="list">
-				{this.renderBlankState()}
-				{this.renderActiveState()}
-				<CreateForm
-					err={Keystone.createFormErrors}
-					isOpen={this.state.showCreateForm}
-					list={this.props.currentList}
-					onCancel={this.closeCreateModal}
-					onCreate={this.onCreate}
-				/>
-				<UpdateForm
-					isOpen={this.state.showUpdateForm}
-					itemIds={Object.keys(this.state.checkedItems)}
-					list={this.props.currentList}
-					onCancel={() => this.toggleUpdateModal(false)}
-				/>
-				{this.renderConfirmationDialog()}
+				{
+					this.props.realLoading ? 
+					this.renderSpinner() : 
+					<div>
+						{this.renderBlankState()}
+						{this.renderActiveState()}
+						<CreateForm
+							err={Keystone.createFormErrors}
+							isOpen={this.state.showCreateForm}
+							list={this.props.currentList}
+							onCancel={this.closeCreateModal}
+							onCreate={this.onCreate}
+						/>
+						<UpdateForm
+							isOpen={this.state.showUpdateForm}
+							itemIds={Object.keys(this.state.checkedItems)}
+							list={this.props.currentList}
+							onCancel={() => this.toggleUpdateModal(false)}
+						/>
+						{this.renderConfirmationDialog()}
+					</div>
+				}
 			</div>
 		);
 	},
@@ -745,5 +761,7 @@ module.exports = connect((state) => {
 		ready: state.lists.ready,
 		rowAlert: state.lists.rowAlert,
 		active: state.active,
+		realLoading: state.lists.realTime.isLoading,
+		realError: state.lists.realTime.error,
 	};
 })(ListView);

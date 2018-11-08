@@ -125,7 +125,7 @@ var Base = module.exports.Base = {
 		if (this.props.base64Image) {
 			return this.renderBaseImages();
 		}
-		return <FormInput noedit>{this.props.value}</FormInput>;
+		return <FormInput noedit autoComplete="off">{this.props.value}</FormInput>;
 	},
 	renderUI () {
 		var wrapperClassName = classnames(
