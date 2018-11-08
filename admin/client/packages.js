@@ -21,7 +21,7 @@ module.exports = [
 	'moment',
 	'numeral',
 	'immutable',
-	// 'axios',
+	'axios',
 	// 'js-file-download',
 	'qs',
 	'react-addons-css-transition-group',
