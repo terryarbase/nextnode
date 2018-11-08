@@ -86,7 +86,8 @@ module.exports = Field.create({
 			? this.state.userSelectedFile.name
 			: `${public_id}.${format} (${width}×${height})`;
 	},
-	getImageSource ({ height = 90, resizable = true }) {
+	getImageSource (options) {
+		const { height = 90, resizable = true } = options;
 		// TODO: This lets really wide images break the layout
 		let src;
 		if (this.hasLocal() || !resizable) {
