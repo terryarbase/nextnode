@@ -103,6 +103,7 @@ const ItemsTable = React.createClass({
 								currentValue={currentValue}
 								onChange={value => {
 									this.props.onColChange({
+										col,
 										key: col.path,
 										value,
 									});
@@ -142,6 +143,7 @@ const ItemsTable = React.createClass({
 			noedit,
 			realTimeCol,
 			manageMode,
+			isRestricted,
 		} = this.props;
 		if (!items.results.length) return null;
 
@@ -159,6 +161,7 @@ const ItemsTable = React.createClass({
 							realTimeInfo={realTimeInfo}
 							id={item.id}
 							item={item}
+							isRestricted={isRestricted}
 							noedit={noedit}
 							// currentValue={realTimeInfo && realTimeInfo[item.id]}
 							{...this.props}

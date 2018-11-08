@@ -487,7 +487,9 @@ const ListView = React.createClass({
 			constrainTableWidth: !this.state.constrainTableWidth,
 		});
 	},
-
+	isRestricted ({ field: { restrictDelegated } }, { delegated }) {
+		return restrictDelegated && delegated;
+	},
 	// ==============================
 	// COMMON
 	// ==============================
@@ -496,32 +498,34 @@ const ListView = React.createClass({
 	** restrictDelegated: if the col is restricted by delegated field, then ignore
 	** @Terry Chan
 	*/
-	onChangeRealTimeCol({ key, path, value }) {
+	onChangeRealTimeCol({ col, key, path, value }) {
 		const { items } = this.props;
 	 	// window.console.warn('Real Time Col Edit: ', key, path, value);
-	 	const { realTimeCol = {} } = this.state;
+	 	const { realTimeCol = {}, realTimeInfo = {} } = this.state;
 	 	var newColInfo = { ...realTimeCol };
-	 	var newInfo = {};
+	 	var newInfo = { ...realTimeInfo };
 	 	newColInfo = {
 			...newColInfo,
 			...{
 				[key]: value,
 			},
 		}
-
 	 	// remove all of related to this path value in Realtime Info
 	 	_.forEach(items.results, item => {
-	 		if (!item.delegated) {
+	 		if (!this.isRestricted(col, item)) {
 		 		newInfo = {
 		 			...newInfo,
 		 			...{
 		 				[item.id]: {
-		 					[key]: value,
-		 				}
-		 			}
-		 		}
+		 					...newInfo[item.id],
+		 					...{
+			 					[key]: value,
+			 				},
+			 			},
+		 			},
+		 		};
 		 	}
-	 	})
+	 	});
 	 	// _.forOwn(newInfo, (current, id) => {
 	 	// 	current[key] = value;
 	 	// });
@@ -671,6 +675,7 @@ const ListView = React.createClass({
 								onChange={this.onChangeRealTime}
 								onColChange={this.onChangeRealTimeCol}
 								list={this.props.currentList}
+								isRestricted={this.isRestricted}
 								manageMode={this.state.manageMode}
 								rowAlert={this.props.rowAlert}
 								realTimeInfo={this.state.realTimeInfo || {}}
