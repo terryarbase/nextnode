@@ -281,7 +281,7 @@ module.exports = Field.create({
 						const { value: { signature, format, url } } = this.props;
 						downloadImage(url, `${signature}.${format}`);
 					}}>
-						Original Image
+						Download Original Image
 					</Button> : null
 					// <a 
 					// 	href={`data:application/octet-stream, ${encodeURIComponent(this.getImageSource({ resizable: false }))}`}
