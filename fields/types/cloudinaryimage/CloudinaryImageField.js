@@ -90,15 +90,19 @@ module.exports = Field.create({
 		const { height = 90, resizable = true } = options;
 		// TODO: This lets really wide images break the layout
 		let src;
-		if (this.hasLocal() || !resizable) {
+		if (this.hasLocal()) {
 			src = this.state.dataUri;
-		} else if (this.hasExisting() && resizable) {
-			src = cloudinaryResize(this.props.value.public_id, {
-				crop: 'fit',
-				height: height,
-				format: 'jpg',
-				secure: this.props.secure,
-			});
+		} else if (this.hasExisting()) {
+			if (resizable) {
+				src = cloudinaryResize(this.props.value.public_id, {
+					crop: 'fit',
+					height: height,
+					format: 'jpg',
+					secure: this.props.secure,
+				});
+			} else {
+				src = this.props.value.url;
+			}
 		}
 
 		return src;
@@ -270,9 +274,11 @@ module.exports = Field.create({
 			<div key={this.props.path + '_toolbar'} className="image-toolbar">
 				{
 					this.hasImage() ? 
-					<a href={this.getImageSource({ resizable: false })} download={true}>
-						Original Image
-					</a> : null
+					<Button variant="link">
+						<a href={this.getImageSource({ resizable: false })} download={true} target="_blank">
+							Original Image
+						</a>
+					</Button> : null
 				}
 				<Button onClick={this.triggerFileBrowser}>
 					{this.hasImage() ? 'Change' : 'Upload'} Image
