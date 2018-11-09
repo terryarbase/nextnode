@@ -24,7 +24,17 @@
 // Sections
 
 // remove the padding from Link style Buttons on either side to keep everything aligned correctly
+.Toolbar__section-inline {
+	margin-right: 10px;
+	> div {
+		display: inline-block;
+		vertical-align: middle;
+		&:first-child{
+			margin-right: 10px;
 
+		}
+	}
+}
 .Toolbar__section--left {
 	float: left;
 
@@ -38,4 +48,10 @@
 	> .Button--link:last-child {
 		padding-right: 0;
 	}
+}
+
+#language-switcher{
+	border: 0;
+	padding: 0 30px;
+	line-height: 2.3em;
 }

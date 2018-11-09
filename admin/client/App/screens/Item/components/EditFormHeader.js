@@ -151,7 +151,8 @@ export const EditFormHeader = React.createClass({
 	renderLanguageSelector() {
 		if (this.props.isLocale) {
 			return (
-				<ToolbarSection right>
+				<ToolbarSection right className="Toolbar__section-inline">
+					<div>Edit Language</div>
 					<LocalizationSelector language={this.props.currentLang} />
 				</ToolbarSection>
 			);
