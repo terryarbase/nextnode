@@ -102,7 +102,7 @@ module.exports = Field.create({
 					secure: this.props.secure,
 				});
 			} else {
-				src = this.props.value.url;
+				src = this.props.value.secure_url;
 			}
 		}
 
