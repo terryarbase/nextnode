@@ -278,8 +278,8 @@ module.exports = Field.create({
 				{
 					this.hasImage() ? 
 					<Button variant="link" onClick={() => {
-						const { value: { signature, format, url } } = this.props;
-						downloadImage(url, `${signature}.${format}`);
+						const { value: { signature, format, secure_url } } = this.props;
+						downloadImage(secure_url, `${signature}.${format}`);
 					}}>
 						Download Original Image
 					</Button> : null
