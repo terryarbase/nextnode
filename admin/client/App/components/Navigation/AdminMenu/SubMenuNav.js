@@ -39,7 +39,7 @@ var SubMenuNav = React.createClass({
 	},
 	// Render the navigation
 	renderNavigation (lists) {
-		const navigation = Object.keys(lists).map((key) => {
+		const navigation = Object.keys(lists).map(key => {
 			const list = lists[key];
 			// Get the link and the classname
 			const href = list.external ? list.path : `${Keystone.adminPath}/${list.path}`;
