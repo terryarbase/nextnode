@@ -1,5 +1,5 @@
 import React from 'react';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
+import { Dropdown, MenuItem } from 'react-bootstrap';
 
 var LocalizationSelector = React.createClass({
 	displayName: 'LocalizationSelector',
@@ -19,23 +19,37 @@ var LocalizationSelector = React.createClass({
 				key={key}
 				active={language === localization[key].value}
 				eventKey={localization[key].value}>
-				{localization[key].label}
+				{
+					localization[key].icon ? 
+					<img
+						src={`data:image/png;base64,${localization[key].icon}`}
+						alt={localization[key].label}
+					/> : null
+				}
+				<span>{localization[key].label}{language === localization[key].value ? ' (Default)' : ''}</span>
 			</MenuItem>
 		);
 	},
 	renderLanguageSwitcher() {
 		const { language } = this.props;
 		const { localization } = Keystone;
-		console.log(localization[language], localization, language);
+		// console.log(localization[language], localization, language);
 		return (
-			<DropdownButton
-				bsStyle="default"
-				key={language}
-				title={localization[language] ? localization[language].label : ''}
-				id="language-switcher"
-			>
-				{this.renderLanguageSelection(language, localization)}
-			</DropdownButton>
+			<Dropdown id="language-switcher">
+			    <Dropdown.Toggle>
+			      	{
+						localization[language].icon ? 
+						<img
+							src={`data:image/png;base64,${localization[language].icon}`}
+							alt={localization[language].label}
+						/> : null
+					}
+			      	{localization[language] ? localization[language].label : ''}
+			    </Dropdown.Toggle>
+			    <Dropdown.Menu>
+			    	{this.renderLanguageSelection(language, localization)}
+    			</Dropdown.Menu>
+    		</Dropdown>
 		)
 	},
 

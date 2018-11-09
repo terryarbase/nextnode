@@ -1,10 +1,13 @@
-var _ = require('lodash');
-var express = require('express');
-var grappling = require('grappling-hook');
-var path = require('path');
-var utils = require('keystone-utils');
-var importer = require('./lib/core/importer');
+const _ = require('lodash');
+const express = require('express');
+const grappling = require('grappling-hook');
+const path = require('path');
+const utils = require('keystone-utils');
+const i18n = require('i18n');
 
+const importer = require('./lib/core/importer');
+var locales = require('./locales');
+locales = locales.toJS();
 /**
  * Don't use process.cwd() as it breaks module encapsulation
  * Instead, let's use module.parent if it's present, or the module itself if there is no parent (probably testing keystone directly if that's the case)
@@ -23,6 +26,17 @@ var moduleRoot = (function (_rootPath) {
  */
 var Keystone = function () {
 	grappling.mixin(this).allowHooks('pre:static', 'pre:dynamic', 'pre:bodyparser', 'pre:session', 'pre:logger', 'pre:admin', 'pre:routes', 'pre:render', 'updates', 'signin', 'signout');
+	
+	const rootPath = path.resolve(__dirname);
+	const defaultLang = 'en';
+	/*
+	** Localization
+	*/
+	i18n.configure({
+	    locales: _.keys(locales),
+	    directory: `${rootPath}/locales`,
+	});
+
 	this.lists = {};
 	this.fieldTypes = {};
 	this.paths = {};
@@ -40,8 +54,8 @@ var Keystone = function () {
 		** @Terry Chan 26/10/2018
 		** for generate localization
 		*/
-		'locale': 'en',
-		'app root': path.resolve(__dirname),
+		'locale': defaultLang,
+		'app root': rootPath,
 		'static lang path': 'static/locale.json',	// json file for generated language static file 
 		'module root': moduleRoot,
 		'frame guard': 'sameorigin',
