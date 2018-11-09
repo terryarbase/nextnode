@@ -487,7 +487,7 @@ const ListView = React.createClass({
 			constrainTableWidth: !this.state.constrainTableWidth,
 		});
 	},
-	isRestricted ({ field: { restrictDelegated } }, { delegated }) {
+	isRestricted ({ field: { restrictDelegated=false } }, { delegated }) {
 		return restrictDelegated && delegated;
 	},
 	// ==============================
