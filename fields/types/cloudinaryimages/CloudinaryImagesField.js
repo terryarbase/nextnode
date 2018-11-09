@@ -12,6 +12,7 @@ import Field from '../Field';
 import { Button, FormField, FormNote } from '../../../admin/client/App/elemental';
 import Lightbox from 'react-images';
 import cloudinaryResize from '../../../admin/client/utils/cloudinaryResize';
+import downloadImage from '../../../admin/client/utils/downloadImage';
 import Thumbnail from './CloudinaryImagesThumbnail';
 import HiddenFileInput from '../../components/HiddenFileInput';
 import FileChangeMessage from '../../components/FileChangeMessage';
@@ -65,14 +66,22 @@ module.exports = Field.create({
 	},
 	getThumbnail (props, index) {
 		return (
-			<Thumbnail
-				key={`thumbnail-${index}`}
-				inputName={this.getInputName(this.props.path)}
-				openLightbox={(e) => this.openLightbox(e, index)}
-				shouldRenderActionButton={this.shouldRenderField()}
-				toggleDelete={this.removeImage.bind(this, index)}
-				{...props}
-			/>
+			<div>
+				<Thumbnail
+					key={`thumbnail-${index}`}
+					inputName={this.getInputName(this.props.path)}
+					openLightbox={(e) => this.openLightbox(e, index)}
+					shouldRenderActionButton={this.shouldRenderField()}
+					toggleDelete={this.removeImage.bind(this, index)}
+					{...props}
+				/>
+				<Button variant="link" onClick={() => {
+					const { value: { signature, format, secure_url } } = props.img;
+					downloadImage(secure_url, `${signature}.${format}`);
+				}}>
+					Download Original Image
+				</Button> : null
+			</div>
 		);
 	},
 

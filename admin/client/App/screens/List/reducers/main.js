@@ -23,7 +23,7 @@ import {
 	DELETE_ITEM,
 } from '../../Item/constants';
 
-const initialState = {
+var initialState = {
 	loadingRef: null,
 	loadCounter: 0,
 	currentList: null,
@@ -54,7 +54,23 @@ const initialState = {
 		results: [],
 		error: null,
 	},
+	locale: {
+		active: false,
+	},
 };
+
+/* initial default language if localization is on  */
+if (Keystone.localization) {
+	initialState = {
+		...initialState,
+		...{
+			locale: {
+				current: Keystone.defaultLanguage.value,
+				active: true,
+			},
+		},
+	}
+}
 
 // Rekey the lists in the state with their paths for easier matching with the
 // URL parameters

@@ -2,6 +2,8 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var multer = require('multer');
 
+const requestMiddleware = require('../middleware/request');
+
 module.exports = function createDynamicRouter (keystone) {
 	// ensure keystone nav has been initialised
 	// TODO: move this elsewhere (on demand generation, or client-side?)
@@ -23,8 +25,8 @@ module.exports = function createDynamicRouter (keystone) {
 
 	// Bind the request to the keystone instance
 	router.use(function (req, res, next) {
-		req.keystone = keystone;
-		next();
+		requestMiddleware(req, res, next, keystone);
+		// req.keystone = keystone;
 	});
 
 	if (keystone.get('healthchecks')) {

@@ -41,6 +41,8 @@ var Keystone = function () {
 		** for generate localization
 		*/
 		'locale': 'en',
+		'app root': path.resolve(__dirname),
+		'static lang path': 'static/locale.json',	// json file for generated language static file 
 		'module root': moduleRoot,
 		'frame guard': 'sameorigin',
 		'cache admin bundles': true,
@@ -139,6 +141,9 @@ Keystone.prototype.createKeystoneHash = require('./lib/core/createKeystoneHash')
 Keystone.prototype.createRoleModel = require('./lib/core/createRoleModel');
 
 Keystone.prototype.createLocalization = require('./lib/core/createLocalization');
+
+// Keystone.prototype.hooks = function() {};
+// hooks.prototype.localization = require('./lib/core/hook/localization');
 
 /* Deprecation / Change warnings for 0.4 */
 Keystone.prototype.routes = function () {

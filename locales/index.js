@@ -17,6 +17,7 @@ const Languages = Map({
 	zhtw: {
 		value: 'zhtw',
 		label: '繁體中文',
+		active: true,
 	},
 	zhcn: {
 		value: 'zhcn',

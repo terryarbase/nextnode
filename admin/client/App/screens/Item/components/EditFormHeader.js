@@ -8,6 +8,7 @@ import EditFormHeaderSearch from './EditFormHeaderSearch';
 import { Link } from 'react-router';
 
 import Drilldown from './Drilldown';
+import LocalizationSelector from '../../../components/Localization';
 import { GlyphButton, ResponsiveText } from '../../../elemental';
 
 export const EditFormHeader = React.createClass({
@@ -147,11 +148,21 @@ export const EditFormHeader = React.createClass({
 			</GlyphButton>
 		);
 	},
+	renderLanguageSelector() {
+		if (this.props.isLocale) {
+			return (
+				<ToolbarSection right>
+					<LocalizationSelector language={this.props.currentLang} />
+				</ToolbarSection>
+			);
+		}
+	},
 	render () {
 		return (
 			<Toolbar>
 				{this.renderDrilldown()}
 				{this.renderInfo()}
+				{this.renderLanguageSelector()}
 			</Toolbar>
 		);
 	},

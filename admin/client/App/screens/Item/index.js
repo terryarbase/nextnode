@@ -16,7 +16,6 @@ import Alert from '../../elemental/Alert';
 import EditForm from './components/EditForm';
 import EditFormHeader from './components/EditFormHeader';
 import RelatedItemsList from './components/RelatedItemsList/RelatedItemsList';
-// import FlashMessages from '../../shared/FlashMessages';
 
 import {
 	selectItem,
@@ -151,7 +150,6 @@ var ItemView = React.createClass({
 				</Center>
 			);
 		}
-
 		// When we have the data, render the item view with it
 		return (
 			<div data-screen-id="item">
@@ -161,6 +159,8 @@ var ItemView = React.createClass({
 							<EditFormHeader
 								list={this.props.currentList}
 								data={this.props.data}
+								isLocale={this.props.isLocale}
+								currentLang={this.props.currenLanguage}
 								toggleCreate={this.toggleCreateModal}
 							/>
 							<CreateForm
@@ -190,6 +190,8 @@ module.exports = connect((state) => ({
 	ready: state.item.ready,
 	error: state.item.error,
 	currentList: state.lists.currentList,
+	currenLanguage: state.lists.locale.current,
+	isLocale: state.lists.locale.active,
 	relationshipData: state.item.relationshipData,
 	drag: state.item.drag,
 }))(ItemView);
