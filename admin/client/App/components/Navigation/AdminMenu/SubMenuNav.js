@@ -27,11 +27,11 @@ var SubMenuNav = React.createClass({
 			isActive: this.props.currentListKey && this.props.currentListKey === list.path,
 		});
 	},
-	onClick (evt) {
+	onClick (e, isActive) {
 		// If it's the currently active navigation item and we're not on the item view,
 		// clear the query params on click
 		if (isActive && !this.props.itemId) {
-			evt.preventDefault();
+			e.preventDefault();
 			this.props.dispatch(
 				setActiveList(this.props.currentList, this.props.currentListKey)
 			);
@@ -53,7 +53,7 @@ var SubMenuNav = React.createClass({
 					path={list.path}
 					className={className}
 					href={href}
-					onClick={this.onClick}
+					onClick={(e) => this.onClick(e, isActive)}
 				>
 					{list.label}
 				</SubMenuNavItem>
