@@ -6,7 +6,7 @@ var LocalizationSelector = React.createClass({
 	propTypes: {
 		language: React.PropTypes.string,
 		localization: React.PropTypes.bool,
-		onSelect: React.PropTypes.func,
+		onChangeLanguage: React.PropTypes.func,
 	},
 	getInitialState () {
 		return {
@@ -35,7 +35,7 @@ var LocalizationSelector = React.createClass({
 		const { localization } = Keystone;
 		// console.log(localization[language], localization, language);
 		return (
-			<Dropdown id="language-switcher">
+			<Dropdown id="language-switcher" onSelect={this.props.onChangeLanguage}>
 			    <Dropdown.Toggle>
 			      	{
 						localization[language].icon ? 

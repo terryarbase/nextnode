@@ -2,6 +2,7 @@ import {
 	REALTIME_SAVING,
 	REALTIME_SAVED,
 	REALTIME_SAVE_ERROR,
+	SET_LOCALIZATION,
 } from '../constants';
 
 /*
@@ -40,5 +41,15 @@ export function realtimeSave (formData = new FormData()) {
 			}
 		});
 	};
+}
+
+/*
+** Localization
+*/
+export function setCurrentLanguage (current) {
+	return dispatch => dispatch({
+		type: SET_LOCALIZATION,
+		current,
+	});
 }
 

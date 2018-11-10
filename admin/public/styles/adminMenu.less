@@ -28,7 +28,7 @@
         display: table;
         width: 100%;
         background-color: @admin-menu-logo-bg;
-        padding: @admin-menu-logo-padding-vertical @admin-menu-logo-padding-horizontal;
+        padding: 0 @admin-menu-logo-padding-horizontal;
         border-bottom: 1px solid #ccc;
         .admin-menu-logo {
             display: table-cell;
@@ -37,7 +37,7 @@
             text-align: center;
         }
         .admin-menu-logo > img {
-            max-height: 50px;
+            max-height: 30px;
             max-width: 150px;
         }
     }
@@ -50,6 +50,11 @@
     .admin-menu-item {
         position: relative;
         background-color: @admin-menu-section-bg;
+        a{
+            &.admin-menu-item-link {
+                padding: 15px;        
+            }
+        }
         &.hover {
             &::before {
                 content: "";
@@ -62,7 +67,7 @@
             }
             .admin-menu-item-link {
                 background-color: @admin-menu-section-hover-bg;
-                color: @admin-menu-section-hover-text-color;
+                color: @admin-menu-section-hover-text-color;    
             }
             &::after {
                 content: " ";

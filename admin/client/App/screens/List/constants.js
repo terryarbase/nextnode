@@ -39,3 +39,5 @@ export const DRAG_MOVE_ITEM = 'app/List/DRAG_MOVE_ITEM';
 export const REALTIME_SAVING = 'app/List/REALTIME_SAVING';
 export const REALTIME_SAVED = 'app/List/REALTIME_SAVED';
 export const REALTIME_SAVE_ERROR = 'app/List/REALTIME_SAVE_ERROR';
+// Localiation
+export const SET_LOCALIZATION = 'app/List/SET_LOCALIZATION';

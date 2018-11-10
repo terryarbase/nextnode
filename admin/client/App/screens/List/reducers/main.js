@@ -17,6 +17,7 @@ import {
 	REALTIME_SAVING,
 	REALTIME_SAVED,
 	REALTIME_SAVE_ERROR,
+	SET_LOCALIZATION,
 } from '../constants';
 
 import {
@@ -271,6 +272,13 @@ function lists (state = initialState, action) {
 					...state.realTime,
 					isLoading: false,
 					error: action.err,
+				},
+			});
+		case SET_LOCALIZATION: 
+			return assign({}, state, {
+				locale: {
+					...state.locale,
+					current: action.current,
 				},
 			});
 		default:

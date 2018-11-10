@@ -24,6 +24,7 @@ import {
 
 import {
 	selectList,
+	setCurrentLanguage,
 } from '../List/actions';
 
 var ItemView = React.createClass({
@@ -65,6 +66,9 @@ var ItemView = React.createClass({
 		// Redirect to newly created item path
 		const list = this.props.currentList;
 		this.context.router.push(`${Keystone.adminPath}/${list.path}/${item.id}`);
+	},
+	onChangeLanguage (lang) {
+		this.props.dispatch(setCurrentLanguage(lang));
 	},
 	// Open and close the create new item modal
 	toggleCreateModal (visible) {
@@ -162,6 +166,7 @@ var ItemView = React.createClass({
 								isLocale={this.props.isLocale}
 								currentLang={this.props.currenLanguage}
 								toggleCreate={this.toggleCreateModal}
+								onChangeLanguage={this.onChangeLanguage}
 							/>
 							<CreateForm
 								list={this.props.currentList}
