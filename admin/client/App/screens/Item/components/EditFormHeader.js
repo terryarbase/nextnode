@@ -155,6 +155,7 @@ export const EditFormHeader = React.createClass({
 					<div>Edit Language</div>
 					<LocalizationSelector
 						language={this.props.currentLang}
+						defaultLanguage={this.props.defaultLanguage}
 						onChangeLanguage={this.props.onChangeLanguage} />
 				</ToolbarSection>
 			);

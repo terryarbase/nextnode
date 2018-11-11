@@ -4,8 +4,9 @@ import { Dropdown, MenuItem } from 'react-bootstrap';
 var LocalizationSelector = React.createClass({
 	displayName: 'LocalizationSelector',
 	propTypes: {
-		language: React.PropTypes.string,
+		languag: React.PropTypes.string,
 		localization: React.PropTypes.bool,
+		defaultLang: React.PropTypes.string,
 		onChangeLanguage: React.PropTypes.func,
 	},
 	getInitialState () {
@@ -13,7 +14,7 @@ var LocalizationSelector = React.createClass({
 			accountSettingIsVisible: false,
 		};
 	},
-	renderLanguageSelection(language, localization) {
+	renderLanguageSelection(defaultLanguage, language, localization) {
 		return Object.keys(localization).map(key => 
 			<MenuItem
 				key={key}
@@ -26,12 +27,12 @@ var LocalizationSelector = React.createClass({
 						alt={localization[key].label}
 					/> : null
 				}
-				<span>{localization[key].label}{language === localization[key].value ? ' (Default)' : ''}</span>
+				<span>{localization[key].label}{defaultLanguage === localization[key].value ? ' (Default)' : ''}</span>
 			</MenuItem>
 		);
 	},
 	renderLanguageSwitcher() {
-		const { language } = this.props;
+		const { language, defaultLanguage } = this.props;
 		const { localization } = Keystone;
 		// console.log(localization[language], localization, language);
 		return (
@@ -47,7 +48,7 @@ var LocalizationSelector = React.createClass({
 			      	{localization[language] ? localization[language].label : ''}
 			    </Dropdown.Toggle>
 			    <Dropdown.Menu>
-			    	{this.renderLanguageSelection(language, localization)}
+			    	{this.renderLanguageSelection(defaultLanguage, language, localization)}
     			</Dropdown.Menu>
     		</Dropdown>
 		)

@@ -17,6 +17,8 @@ const CreateForm = React.createClass({
 		err: React.PropTypes.object,
 		isOpen: React.PropTypes.bool,
 		list: React.PropTypes.object,
+		defaultLang: React.PropTypes.string,
+		currentLang: React.PropTypes.string,
 		onCancel: React.PropTypes.func,
 		onCreate: React.PropTypes.func,
 	},

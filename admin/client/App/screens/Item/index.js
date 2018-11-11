@@ -164,7 +164,8 @@ var ItemView = React.createClass({
 								list={this.props.currentList}
 								data={this.props.data}
 								isLocale={this.props.isLocale}
-								currentLang={this.props.currenLanguage}
+								currentLang={this.props.currentLanguage}
+								defaultLang={this.props.defaultLanguage}
 								toggleCreate={this.toggleCreateModal}
 								onChangeLanguage={this.onChangeLanguage}
 							/>
@@ -172,12 +173,16 @@ var ItemView = React.createClass({
 								list={this.props.currentList}
 								isOpen={this.state.createIsOpen}
 								onCancel={() => this.toggleCreateModal(false)}
+								defaultLang={this.props.defaultLanguage}
+								currentLang={this.props.currentLanguage}
 								onCreate={(item) => this.onCreate(item)}
 							/>
 							<EditForm
 								list={this.props.currentList}
 								data={this.props.data}
 								dispatch={this.props.dispatch}
+								defaultLang={this.props.defaultLanguage}
+								currentLang={this.props.currentLanguage}
 								router={this.context.router}
 							/>
 						</Container>
@@ -195,7 +200,8 @@ module.exports = connect((state) => ({
 	ready: state.item.ready,
 	error: state.item.error,
 	currentList: state.lists.currentList,
-	currenLanguage: state.lists.locale.current,
+	currentLanguage: state.lists.locale.current,
+	defaultLanguage: state.lists.locale.default,
 	isLocale: state.lists.locale.active,
 	relationshipData: state.item.relationshipData,
 	drag: state.item.drag,

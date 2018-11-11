@@ -1,16 +1,35 @@
 # Next-nodecms Changelog
 
-## 1.0.1 
-About Enhancements - Terry Chan 04/08/2018 (Last Updated at 11/09/2018)
-Enhancements includes:
+## 1.0.2
+### About Multilingual and Layout
+Terry Chan 11/11/2018 (Last Updated at 11/11/2018)
 
-Common Improvements
+Common Improvements:
+* Added Realtime edit field (Support Types.Boolean)
+* Added Realtime select all function (Support Types.Boolean)
+* Delegated Record Restrictions
+
+Multilingual Improvements:
+* Auto create multilingual schema for management language support for List schema
+* Added List multilingual setting
+* Added individual field multilingual setting 
+* Auto add multilingual to Types.Text, Types.Textarea, Types.TextArray, Types.Html, Types.Url, Types.Name
+* Added AdminUI Language Selector
+
+Layout Improvements:
+* Add sidemenu for navigation menu
+
+## 1.0.1 
+### Common Enhancements
+Terry Chan 04/08/2018 (Last Updated at 11/09/2018)
+
+Common Improvements:
 * Added timestamp to each of api call for ETag caching issue (no-cache) - Hotfixing
 * Added system lock (Needs to create related presave logic for Incorrect Password Count)
 * Added 'nav style' for adminUI nav styling
 * Added base64Image flag for textbox to show up the image
 
-List Improvements 
+List Improvements:
 * Added single flag for each of list button in list view (e.g. delete, scaler, filter button)
   1. nodelete
   2. nofilter
@@ -18,5 +37,9 @@ List Improvements
 * Replaced CSV file download to Excel file, fix unicode Chinese Characters
 * Fixed display Manage button if nodelete is true 
 
-Item Improvements
+Item Improvements:
 * Textarea field supports newline break for display in readonly
+
+Account Imrpovements:
+* Added Account Lock/Unlock functions
+* Added Change Password popup function
