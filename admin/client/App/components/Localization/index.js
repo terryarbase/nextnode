@@ -1,20 +1,25 @@
 import React from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
+import {
+	setCurrentLanguage,
+} from '../../screens/List/actions';
 
 var LocalizationSelector = React.createClass({
 	displayName: 'LocalizationSelector',
 	propTypes: {
-		languag: React.PropTypes.string,
-		localization: React.PropTypes.bool,
+		language: React.PropTypes.string,
 		defaultLang: React.PropTypes.string,
-		onChangeLanguage: React.PropTypes.func,
+		localization: React.PropTypes.bool,
 	},
 	getInitialState () {
 		return {
 			accountSettingIsVisible: false,
 		};
 	},
-	renderLanguageSelection(defaultLanguage, language, localization) {
+	onChangeLanguage (lang) {
+		this.props.dispatch(setCurrentLanguage(lang));
+	},
+	renderLanguageSelection(defaultLang, language, localization) {
 		return Object.keys(localization).map(key => 
 			<MenuItem
 				key={key}
@@ -27,16 +32,16 @@ var LocalizationSelector = React.createClass({
 						alt={localization[key].label}
 					/> : null
 				}
-				<span>{localization[key].label}{defaultLanguage === localization[key].value ? ' (Default)' : ''}</span>
+				<span>{localization[key].label}{defaultLang === localization[key].value ? ' (Default)' : ''}</span>
 			</MenuItem>
 		);
 	},
 	renderLanguageSwitcher() {
-		const { language, defaultLanguage } = this.props;
+		const { defaultLang, language } = this.props;
 		const { localization } = Keystone;
 		// console.log(localization[language], localization, language);
 		return (
-			<Dropdown id="language-switcher" onSelect={this.props.onChangeLanguage}>
+			<Dropdown id="language-switcher" onSelect={this.onChangeLanguage}>
 			    <Dropdown.Toggle>
 			      	{
 						localization[language].icon ? 
@@ -48,7 +53,7 @@ var LocalizationSelector = React.createClass({
 			      	{localization[language] ? localization[language].label : ''}
 			    </Dropdown.Toggle>
 			    <Dropdown.Menu>
-			    	{this.renderLanguageSelection(defaultLanguage, language, localization)}
+			    	{this.renderLanguageSelection(defaultLang, language, localization)}
     			</Dropdown.Menu>
     		</Dropdown>
 		)

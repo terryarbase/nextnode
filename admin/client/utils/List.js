@@ -118,6 +118,78 @@ const List = function (options) {
 // 		}
 // 	});
 // };
+
+
+/*
+** Shared function for obtaining the value from changing or current values of state
+** Support Multlingual
+** Terry Chan
+** 12/11/2018
+*/
+List.prototype.getProperlyValue = function({ field, values, isLocale, currentLang }) {
+	var current = values[field.path];
+	// prevent set multilingual from true to false
+	if (isLocale && field && field.multilingual) {
+		if (typeof current !== 'string') {
+			current = current[currentLang] || '';
+		} else if (current){
+			current = {
+				[currentLang]: current,
+			};
+		}
+	}
+	return current;
+};
+List.prototype.getProperlyChangedValue = function({ currentValue, path, value, isLocale, currentLang }) {
+	const fields = this.fields;
+	var values = { ...currentValue };
+	if (isLocale && fields[path] && fields[path].multilingual) {
+		values = {
+			...values,
+			...{
+				[path]: {
+					...values[path],
+					...{
+						[currentLang]: value,
+					},
+				},
+			},
+		};
+	} else {
+		values = {
+			...values,
+			...{
+				[path]: value,
+			},
+		};
+	}
+	return values;
+};
+
+/*
+** turn any missing multilingual format value to form data
+** Terry Chan
+** 12/11/2018
+*/
+List.prototype.getFormCreateData = function({ isLocale, formData, values }) {
+	const fields = this.fields;
+	try {
+		for (const pair of formData.entries()) {
+			const key = pair[0];
+			if (values[key] && isLocale && fields[key].multilingual) {
+				// formData.set(key, );
+				if (typeof values[key] === 'object') {
+					formData.set(key, JSON.stringify(values[key]));
+				}
+			}
+		}
+	} catch (err) {
+		console.log('Error to parse formdata: ', err);
+	} finally {
+		return formData;
+	}
+};
+
 /**
  * (GET) Execute an item via specific api url
  *

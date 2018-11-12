@@ -735,8 +735,12 @@ const ListView = React.createClass({
 						{this.renderBlankState()}
 						{this.renderActiveState()}
 						<CreateForm
+							dispatch={this.props.dispatch}
 							err={Keystone.createFormErrors}
 							isOpen={this.state.showCreateForm}
+							isLocale={this.props.isLocale}
+							currentLang={this.props.currentLanguage}
+							defaultLang={this.props.defaultLanguage}
 							list={this.props.currentList}
 							onCancel={this.closeCreateModal}
 							onCreate={this.onCreate}
@@ -763,6 +767,9 @@ module.exports = connect((state) => {
 		currentList: state.lists.currentList,
 		items: state.lists.items,
 		page: state.lists.page,
+		currentLanguage: state.lists.locale.current,
+		isLocale: state.lists.locale.active,
+		defaultLanguage: state.lists.locale.default,
 		ready: state.lists.ready,
 		rowAlert: state.lists.rowAlert,
 		active: state.active,

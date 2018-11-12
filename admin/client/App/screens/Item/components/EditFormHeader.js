@@ -16,6 +16,8 @@ export const EditFormHeader = React.createClass({
 	propTypes: {
 		data: React.PropTypes.object,
 		list: React.PropTypes.object,
+		defaultLang: React.PropTypes.string,
+		currentLang: React.PropTypes.string,
 		toggleCreate: React.PropTypes.func,
 	},
 	getInitialState () {
@@ -149,17 +151,18 @@ export const EditFormHeader = React.createClass({
 		);
 	},
 	renderLanguageSelector() {
-		if (this.props.isLocale) {
+		if (this.props.isLocale && this.props.list.multilingual) {
 			return (
 				<ToolbarSection right className="Toolbar__section-inline">
 					<div>Edit Language</div>
 					<LocalizationSelector
+						{ ...this.props }
 						language={this.props.currentLang}
-						defaultLanguage={this.props.defaultLanguage}
-						onChangeLanguage={this.props.onChangeLanguage} />
+						defaultLang={this.props.defaultLang} />
 				</ToolbarSection>
 			);
 		}
+		return null;
 	},
 	render () {
 		return (
