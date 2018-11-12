@@ -9,6 +9,8 @@ import vkey from 'vkey';
 import AlertMessages from './AlertMessages';
 import { Fields } from 'FieldTypes';
 import InvalidFieldType from './InvalidFieldType';
+import ToolbarSection from '../screens/Item/components/Toolbar/ToolbarSection';
+import LocalizationSelector from '../components/Localization';
 import { Button, Form, Modal } from '../elemental';
 
 const CreateForm = React.createClass({
@@ -18,6 +20,8 @@ const CreateForm = React.createClass({
 		isOpen: React.PropTypes.bool,
 		list: React.PropTypes.object,
 		onCancel: React.PropTypes.func,
+		isLocale: React.PropTypes.bool,
+		currentLang: React.PropTypes.string,
 		onCreate: React.PropTypes.func,
 	},
 	getDefaultProps () {
@@ -35,6 +39,7 @@ const CreateForm = React.createClass({
 			var FieldComponent = Fields[field.type];
 			values[field.path] = FieldComponent.getDefaultValue(field);
 		});
+		// console.log('>>>>>>>>>', values);
 		return {
 			values: values,
 			alerts: {},
@@ -52,28 +57,66 @@ const CreateForm = React.createClass({
 		}
 	},
 	// Handle input change events
-	handleChange (event) {
-		var values = assign({}, this.state.values);
-		values[event.path] = event.value;
+	handleChange ({ path, value }) {
+		const { isLocale, currentLang } = this.props;
+		const { values: currentValue } = this.state;
+		const values = this.props.list.getProperlyChangedValue({
+			isLocale,
+			currentLang,
+			path,
+			value,
+			currentValue,
+		});
 		this.setState({
-			values: values,
+			values,
 		});
 	},
 	// Set the props of a field
 	getFieldProps (field) {
-		var props = assign({}, field);
-		props.value = this.state.values[field.path];
-		props.values = this.state.values;
-		props.onChange = this.handleChange;
-		props.mode = 'create';
-		props.key = field.path;
-		return props;
+		const { isLocale, currentLang } = this.props;
+		const { values } = this.state;
+		// console.log(currentLang, values);
+		return {
+			...field,
+			value: this.props.list.getProperlyValue({ field, isLocale, currentLang, values }),
+			values,
+			onChange: this.handleChange,
+			mode: 'create',
+			key: field.path,
+		};
+	},
+	renderLanguageSelector() {
+		if (this.props.isLocale && this.props.list.multilingual) {
+			return (
+				<ToolbarSection left className="Toolbar__section-inline create">
+					<div>Edit Language</div>
+					<LocalizationSelector
+						{ ...this.props }
+						language={this.props.currentLang}
+						defaultLang={this.props.defaultLang} />
+				</ToolbarSection>
+			);
+		}
+		return null;
 	},
 	// Create a new item when the form is submitted
 	submitForm (event) {
 		event.preventDefault();
 		const createForm = event.target;
-		const formData = new FormData(createForm);
+		// get basic formdata first
+		var formData = new FormData(createForm);
+		const { isLocale } = this.props;
+		const { values } = this.state;
+		// convert multilingual field to formdata
+		formData = this.props.list.getFormCreateData({
+			formData,
+			values,
+			isLocale,
+		});
+		// for (var pair of formData.entries()) {
+		// 	console.log(pair[0]+ ', ' + pair[1]); 
+		// }
+		// return;
 		this.props.list.createItem(formData, (err, data) => {
 			if (data) {
 				if (this.props.onCreate) {
@@ -129,7 +172,7 @@ const CreateForm = React.createClass({
 			}
 			form.push(React.createElement(Fields[nameField.type], nameFieldProps));
 		}
-		console.log('list.initialFields: ', list.initialFields);
+		// console.log('list.initialFields: ', list.initialFields);
 		// Render inputs for all initial fields
 		Object.keys(list.initialFields).forEach(key => {
 			var field = list.fields[list.initialFields[key]];
@@ -158,6 +201,7 @@ const CreateForm = React.createClass({
 				/>
 				<Modal.Body>
 					<AlertMessages alerts={this.state.alerts} />
+					{this.renderLanguageSelector()}
 					{form}
 				</Modal.Body>
 				<Modal.Footer>

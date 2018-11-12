@@ -68,6 +68,7 @@ if (Keystone.localization) {
 			locale: {
 				current: Keystone.defaultLanguage.value,
 				active: true,
+				default: Keystone.defaultLanguage.value,
 			},
 		},
 	}

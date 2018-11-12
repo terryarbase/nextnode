@@ -293,7 +293,7 @@ var EditForm = React.createClass({
 			return null;
 		}
 
-		const { loading } = this.state;
+		const { loading, values: { delegated } } = this.state;
 		const loadingButtonText = loading ? 'Saving' : 'Save';
 
 		// Padding must be applied inline so the FooterBar can determine its
@@ -321,7 +321,7 @@ var EditForm = React.createClass({
 							/>
 						</Button>
 					)}
-					{!this.props.list.nodelete && (
+					{!this.props.list.nodelete && !delegated && (
 						<Button disabled={loading} onClick={this.toggleDeleteDialog} variant="link" color="delete" style={styles.deleteButton} data-button="delete">
 							<ResponsiveText
 								hiddenXS={`delete ${this.props.list.singular.toLowerCase()}`}

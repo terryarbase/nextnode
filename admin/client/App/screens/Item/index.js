@@ -24,7 +24,7 @@ import {
 
 import {
 	selectList,
-	setCurrentLanguage,
+	// setCurrentLanguage,
 } from '../List/actions';
 
 var ItemView = React.createClass({
@@ -67,9 +67,9 @@ var ItemView = React.createClass({
 		const list = this.props.currentList;
 		this.context.router.push(`${Keystone.adminPath}/${list.path}/${item.id}`);
 	},
-	onChangeLanguage (lang) {
-		this.props.dispatch(setCurrentLanguage(lang));
-	},
+	// onChangeLanguage (lang) {
+	// 	this.props.dispatch(setCurrentLanguage(lang));
+	// },
 	// Open and close the create new item modal
 	toggleCreateModal (visible) {
 		this.setState({
@@ -161,16 +161,21 @@ var ItemView = React.createClass({
 					<div>
 						<Container>
 							<EditFormHeader
+								dispatch={this.props.dispatch}
 								list={this.props.currentList}
 								data={this.props.data}
 								isLocale={this.props.isLocale}
-								currentLang={this.props.currenLanguage}
+								currentLang={this.props.currentLanguage}
+								defaultLang={this.props.defaultLanguage}
 								toggleCreate={this.toggleCreateModal}
-								onChangeLanguage={this.onChangeLanguage}
 							/>
 							<CreateForm
+								dispatch={this.props.dispatch}
 								list={this.props.currentList}
 								isOpen={this.state.createIsOpen}
+								isLocale={this.props.isLocale}
+								currentLang={this.props.currentLanguage}
+								defaultLang={this.props.defaultLanguage}
 								onCancel={() => this.toggleCreateModal(false)}
 								onCreate={(item) => this.onCreate(item)}
 							/>
@@ -195,8 +200,9 @@ module.exports = connect((state) => ({
 	ready: state.item.ready,
 	error: state.item.error,
 	currentList: state.lists.currentList,
-	currenLanguage: state.lists.locale.current,
+	currentLanguage: state.lists.locale.current,
 	isLocale: state.lists.locale.active,
+	defaultLanguage: state.lists.locale.default,
 	relationshipData: state.item.relationshipData,
 	drag: state.item.drag,
 }))(ItemView);

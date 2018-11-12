@@ -22,6 +22,7 @@ coverage
 coverage.html
 .cover*
 admin/bundles*
+static/locale.json
 lib-cov
 
 docs/_dist

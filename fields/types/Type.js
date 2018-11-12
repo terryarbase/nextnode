@@ -32,6 +32,7 @@ var DEFAULT_OPTION_KEYS = [
 	'restrictDelegated',
 	'dependsOn',
 	'autoCleanup',
+	'multilingual',
 ];
 
 /**
