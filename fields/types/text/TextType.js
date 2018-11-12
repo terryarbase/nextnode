@@ -18,6 +18,7 @@ text.properName = 'Text';
 util.inherits(text, FieldType);
 
 text.prototype.validateInput = function (data, callback) {
+	// console.log(this.options.isMultilingual);
 	var max = this.options.max;
 	var min = this.options.min;
 	var value = this.getValueFromData(data);

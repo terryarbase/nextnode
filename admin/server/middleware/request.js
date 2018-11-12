@@ -20,8 +20,21 @@ const getStaticLanguageFile = async (nextNode) => {
 module.exports = async function (req, res, next, nextNode) {
 	req.keystone = nextNode;
 	if (nextNode.get('localization')) {
-		req.localization = await getStaticLanguageFile(nextNode);
-		req.defaultLanguage = _.find(req.localization, lang => lang.delegated);
+		// if (!req.headers.langf) {
+		// 	return res.status(404).json({ error: 'invalid list path' });
+		// }
+		const localization = await getStaticLanguageFile(nextNode);
+		const defaultLanguage = _.find(localization, lang => lang.delegated).value;
+		req.locales = {
+			// localization language set
+			localization,
+			// default language to pickup the data
+			defaultLanguage,
+			// adminUI current language
+			langd: req.headers.langd || defaultLanguage.value,
+		};
+		// req.localization = await getStaticLanguageFile(nextNode);
+		// req.defaultLanguage = _.find(req.localization, lang => lang.delegated);
 	}
 	next();
 };

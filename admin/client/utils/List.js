@@ -251,14 +251,18 @@ List.prototype.postIt = function (url, formData, callback) {
  * Create an item via the API
  *
  * @param  {FormData} formData The submitted form data
+ * @param  {Object} data for extra header
  * @param  {Function} callback Called after the API call
  */
-List.prototype.createItem = function (formData, callback) {
+List.prototype.createItem = function (formData, options = {}, callback) {
 	xhr({
 		url: `${Keystone.adminPath}/api/${this.path}/create?ts=${Math.random()}`,
 		responseType: 'json',
 		method: 'POST',
-		headers: assign({}, Keystone.csrf.header),
+		headers: {
+			...Keystone.csrf.header,
+			...options.headers,
+		},
 		body: formData,
 	}, (err, resp, data) => {
 		if (err) callback(err);

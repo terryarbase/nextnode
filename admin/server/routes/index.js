@@ -109,9 +109,9 @@ module.exports = function IndexRoute (req, res) {
 	/*
 	** Localization
 	*/
-	if (req.localization) {
-		keystoneData.localization = req.localization;
-		keystoneData.defaultLanguage = req.defaultLanguage;
+	if (req.locales && req.locales.localization) {
+		keystoneData.localization = req.locales.localization;
+		keystoneData.defaultLanguage = req.locales.defaultLanguage;
 	}
 
 	var cloudinaryConfig = keystone.get('cloudinary config');

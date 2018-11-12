@@ -107,7 +107,7 @@ const CreateForm = React.createClass({
 		const createForm = event.target;
 		// get basic formdata first
 		var formData = new FormData(createForm);
-		const { isLocale } = this.props;
+		const { isLocale, currentLang } = this.props;
 		const { values } = this.state;
 		// convert multilingual field to formdata
 		formData = this.props.list.getFormCreateData({
@@ -119,7 +119,7 @@ const CreateForm = React.createClass({
 		// 	console.log(pair[0]+ ', ' + pair[1]); 
 		// }
 		// return;
-		this.props.list.createItem(formData, (err, data) => {
+		this.props.list.createItem(formData, { headers: { langd: currentLang } }, (err, data) => {
 			if (data) {
 				if (this.props.onCreate) {
 					this.props.onCreate(data);

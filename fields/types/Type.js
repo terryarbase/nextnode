@@ -101,7 +101,18 @@ function Field (list, path, options) {
 	});
 
 }
-
+/**
+ * Sets the dynamic option in runtime
+ * Usually used for API requests
+ */
+Field.prototype.setOptions = function (options) {
+	const optionKeys = _.keys(options);
+	if (optionKeys.length) {
+		_.forEach(optionKeys, key => {
+			this.options[key] = options[key];
+		});
+	}
+}
 /**
  * Gets the options for the Field, as used by the React components
  */
@@ -361,5 +372,6 @@ Field.prototype.updateItem = function (item, data, callback) {
  * @api public
  */
 Field.prototype.getValueFromData = function (data, subpath) {
+	// console.log(this.options.isMultilingual, this.path);
 	return this._path.get(data, subpath);
 };

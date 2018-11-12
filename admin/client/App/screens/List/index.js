@@ -110,7 +110,7 @@ const ListView = React.createClass({
 	},
 	createAutocreate () {
 		const list = this.props.currentList;
-		list.createItem(null, (err, data) => {
+		list.createItem(null, {}, (err, data) => {
 			if (err) {
 				// TODO Proper error handling
 				alert('Something went wrong, please try again!');
