@@ -39,7 +39,7 @@ var LocalizationSelector = React.createClass({
 	renderLanguageSwitcher() {
 		const { defaultLang, language } = this.props;
 		const { localization } = Keystone;
-		// console.log(localization[language], localization, language);
+		// console.log(Keystone, localization, language);
 		return (
 			<Dropdown id="language-switcher" onSelect={this.onChangeLanguage}>
 			    <Dropdown.Toggle>

@@ -25,15 +25,16 @@ module.exports = function (req, res) {
 	} else {
 		newData = { ...body };
 	}
-	// console.log('>>>>> ', newData);
+	// console.log('>>>>> ', newData.name.en);
 	const item = new req.list.model();
-	req.list.updateItem(item, body, {
+	req.list.updateItem(item, newData, {
 		files: req.files,
 		ignoreNoEdit: true,
 		user: req.user,
 		lang: locales && locales.langd,
 		isMultilingual: !!locales,
 		defaultLang: locales && locales.defaultLanguage,
+		supportLang: locales && locales.localization,
 	}, function (err) {
 		if (err) {
 			var status = err.error === 'validation errors' ? 400 : 500;

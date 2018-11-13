@@ -47,7 +47,6 @@ function validateFieldType (field, path, type) {
 list.prototype.addToSchema = function (schema) {
 	var field = this;
 	var mongoose = this.list.keystone.mongoose;
-
 	var fields = this.fields = {};
 	var fieldsArray = this.fieldsArray = [];
 	var fieldsSpec = this.options.fields;

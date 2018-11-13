@@ -26,8 +26,13 @@ text.prototype.validateInput = function (data, callback) {
 	if (max && typeof value === 'string') {
 		result = value.length < max;
 	}
+	/*
+	** Logical Concern for less and equals than
+	** Terry Chan
+	** 13/11/2018
+	*/
 	if (min && typeof value === 'string') {
-		result = value.length > min;
+		result = value.length >= min;
 	}
 	utils.defer(callback, result);
 };

@@ -5,6 +5,7 @@ var _ = require('lodash');
 var assign = require('object-assign');
 var di = require('asyncdi');
 var marked = require('marked');
+const mongoose = require('mongoose');
 var Path = require('../../lib/path');
 var utils = require('keystone-utils');
 var evalDependsOn = require('../utils/evalDependsOn.js');
@@ -84,7 +85,6 @@ function Field (list, path, options) {
 	}
 	// Add the field to the schema
 	this.addToSchema(options._isNested ? options._nestedSchema : this.list.schema);
-
 	// Add pre-save handler to the list if this field watches others
 	if (options._isNested && this.options.watch) {
 		throw new Error('Nested fields do not support the `watch` option.');
@@ -255,6 +255,10 @@ definePrototypeGetters(Field, {
  */
 Field.prototype.addToSchema = function (schema) {
 	var ops = (this._nativeType) ? _.defaults({ type: this._nativeType }, this.options) : this.options;
+	// console.log(this.path, ops, this.options);
+	if (ops.multilingual) {
+		ops.type = mongoose.Schema.Types.Mixed;
+	}
 	schema.path(this.path, ops);
 	this.bindUnderscoreMethods();
 };
