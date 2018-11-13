@@ -23,7 +23,7 @@ util.inherits(geopoint, FieldType);
  * Adds a 2dsphere indexed lat/lng pair
  */
 geopoint.prototype.addToSchema = function (schema) {
-	schema.path(this.path, _.defaults({ type: [Number], index: '2dsphere' }, this.options));
+	schema.path(this.path, _.defaults({ type: [Number], index: '2dsphere' }, this.schemaOptions));
 	this.bindUnderscoreMethods();
 };
 

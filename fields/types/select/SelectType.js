@@ -55,10 +55,10 @@ util.inherits(select, FieldType);
 select.prototype.addToSchema = function (schema) {
 	var field = this;
 	this.paths = {
-		data: this.options.dataPath || this.path + 'Data',
-		label: this.options.labelPath || this.path + 'Label',
-		options: this.options.optionsPath || this.path + 'Options',
-		map: this.options.optionsMapPath || this.path + 'OptionsMap',
+		data: this.schemaOptions.dataPath || this.path + 'Data',
+		label: this.schemaOptions.labelPath || this.path + 'Label',
+		options: this.schemaOptions.optionsPath || this.path + 'Options',
+		map: this.schemaOptions.optionsMapPath || this.path + 'OptionsMap',
 	};
 	schema.path(this.path, _.defaults({
 		type: this._nativeType,
@@ -66,7 +66,7 @@ select.prototype.addToSchema = function (schema) {
 		set: function (val) {
 			return (val === '' || val === null || val === false) ? undefined : val;
 		},
-	}, this.options));
+	}, this.schemaOptions));
 	schema.virtual(this.paths.data).get(function () {
 		return field.map[this.get(field.path)];
 	});

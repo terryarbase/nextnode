@@ -53,6 +53,17 @@ function Field (list, path, options) {
 	
 	this.type = this.constructor.name;
 	this.options = _.defaults({}, options, this.defaults);
+	/*
+	** Special for multilingual field 
+	** Convert to Mixed schema type no matter it is any kind of field type for Keystone.Types
+	** Terry Chan
+	** 14/11/2018
+	*/
+	this.schemaOptions = assign({}, this.options);
+	// console.log(">>>>>>>>>> ", this.schemaOptions);
+	if (this.schemaOptions.multilingual) {
+		this.schemaOptions = assign({}, this.schemaOptions, { type: mongoose.Schema.Types.Mixed });
+	}
 	this.label = options.label || utils.keyToLabel(this.path);
 	this.typeDescription = options.typeDescription || this.typeDescription || this.type;
 
@@ -254,8 +265,7 @@ definePrototypeGetters(Field, {
  * Overridden by some fieldType Classes
  */
 Field.prototype.addToSchema = function (schema) {
-	var ops = (this._nativeType) ? _.defaults({ type: this._nativeType }, this.options) : this.options;
-	// console.log(this.path, ops, this.options);
+	var ops = (this._nativeType) ? _.defaults({ type: this._nativeType }, this.schemaOptions) : this.schemaOptions;
 	if (ops.multilingual) {
 		ops.type = mongoose.Schema.Types.Mixed;
 	}

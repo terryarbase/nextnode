@@ -49,7 +49,7 @@ list.prototype.addToSchema = function (schema) {
 	var mongoose = this.list.keystone.mongoose;
 	var fields = this.fields = {};
 	var fieldsArray = this.fieldsArray = [];
-	var fieldsSpec = this.options.fields;
+	var fieldsSpec = this.schemaOptions.fields;
 	var itemSchema = new mongoose.Schema();
 
 	if (typeof fieldsSpec !== 'object' || !Object.keys(fieldsSpec).length) {
@@ -105,8 +105,8 @@ list.prototype.addToSchema = function (schema) {
 		fieldsArray.push(newField);
 	});
 
-	if (this.options.decorateSchema) {
-		this.options.decorateSchema(itemSchema);
+	if (this.schemaOptions.decorateSchema) {
+		this.schemaOptions.decorateSchema(itemSchema);
 	}
 
 	schema.add(this._path.addTo({}, [itemSchema]));

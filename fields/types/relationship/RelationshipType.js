@@ -71,13 +71,13 @@ relationship.prototype.addToSchema = function (schema) {
 	var field = this;
 	var def = {
 		type: this._nativeType,
-		ref: this.options.ref,
-		index: (this.options.index ? true : false),
-		required: (this.options.required ? true : false),
-		unique: (this.options.unique ? true : false),
+		ref: this.schemaOptions.ref,
+		index: (this.schemaOptions.index ? true : false),
+		required: (this.schemaOptions.required ? true : false),
+		unique: (this.schemaOptions.unique ? true : false),
 	};
 	this.paths = {
-		refList: this.options.refListPath || this.path + 'RefList',
+		refList: this.schemaOptions.refListPath || this.path + 'RefList',
 	};
 	schema.path(this.path, this.many ? [def] : def);
 	schema.virtual(this.paths.refList).get(function () {

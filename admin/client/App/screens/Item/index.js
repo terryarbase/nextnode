@@ -183,6 +183,9 @@ var ItemView = React.createClass({
 								list={this.props.currentList}
 								data={this.props.data}
 								dispatch={this.props.dispatch}
+								isLocale={this.props.isLocale}
+								currentLang={this.props.currentLanguage}
+								defaultLang={this.props.defaultLanguage}
 								router={this.context.router}
 							/>
 						</Container>

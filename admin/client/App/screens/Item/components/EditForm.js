@@ -74,6 +74,9 @@ var EditForm = React.createClass({
 		this.__isMounted = false;
 	},
 	getFieldProps (field) {
+		const { isLocale, currentLang } = this.props;
+		const { values } = this.state;
+
 		const props = assign({}, field);
 		const alerts = this.state.alerts;
 		// Display validation errors inline
@@ -85,17 +88,25 @@ var EditForm = React.createClass({
 				props.isValid = false;
 			}
 		}
-		props.value = this.state.values[field.path] || field.defaultValue;
-		props.values = this.state.values;
+		props.value = this.props.list.getProperlyValue({ field, isLocale, currentLang, values });
+		props.values = values;
 		props.onChange = this.handleChange;
 		props.mode = 'edit';
 		return props;
 	},
-	handleChange (event) {
-		const values = assign({}, this.state.values);
-
-		values[event.path] = event.value;
-		this.setState({ values });
+	handleChange ({ path, value }) {
+		const { isLocale, currentLang } = this.props;
+		const { values: currentValue } = this.state;
+		const values = this.props.list.getProperlyChangedValue({
+			isLocale,
+			currentLang,
+			path,
+			value,
+			currentValue,
+		});
+		this.setState({
+			values,
+		});
 	},
 
 	toggleDeleteDialog () {

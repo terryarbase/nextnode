@@ -56,7 +56,7 @@ util.inherits(location, FieldType);
 location.prototype.addToSchema = function (schema) {
 
 	var field = this;
-	var options = this.options;
+	var options = this.schemaOptions;
 
 	var paths = this.paths = {
 		number: this.path + '.number',
