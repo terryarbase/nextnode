@@ -106,7 +106,7 @@ var EditForm = React.createClass({
 			value,
 			currentValue,
 		});
-
+		console.log(values);
 		this.setState({
 			values,
 		});
@@ -240,6 +240,7 @@ var EditForm = React.createClass({
 	renderNameField () {
 		var nameField = this.props.list.nameField;
 		var nameFieldIsFormHeader = this.props.list.nameFieldIsFormHeader;
+		console.log(nameField);
 		var wrapNameField = field => (
 			<div className="EditForm__name-field">
 				{field}

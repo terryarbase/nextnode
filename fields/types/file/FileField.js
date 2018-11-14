@@ -18,11 +18,11 @@ import ImageThumbnail from '../../components/ImageThumbnail';
 
 let uploadInc = 1000;
 
-const buildInitialState = (props) => ({
+const buildInitialState = (props, forceInit) => ({
 	action: null,
 	removeExisting: false,
 	uploadFieldPath: `File-${props.path}-${++uploadInc}`,
-	userSelectedFile: null,
+	userSelectedFile: forceInit ? null : props.value,
 });
 
 module.exports = Field.create({
@@ -54,9 +54,23 @@ module.exports = Field.create({
 	},
 	componentWillUpdate (nextProps) {
 		// Show the new filename when it's finished uploading
-		if (this.props.value.filename !== nextProps.value.filename) {
-			this.setState(buildInitialState(nextProps));
+		console.log('old: ', this.props.value);
+		console.log('new: ', nextProps.value);
+		if ((this.props.value && !nextProps.value) || 
+			this.props.value.filename !== nextProps.value.filename ||
+			this.props.value.name !== nextProps.value.name) {
+			const state = buildInitialState(nextProps);
+			// console.log('>>>>>>', state);
+			this.setState(state);
 		}
+
+		// if ((this.props.value && !nextProps.value)) {
+		// 	this.setState(buildInitialState(nextProps));
+		// } else if (this.props.value.filename !== nextProps.value.filename) {
+		// 	const state = buildInitialState(nextProps);
+		// 	// console.log('>>>>>>', state);
+		// 	this.setState(state);
+		// }
 	},
 
 	// ==============================
@@ -70,6 +84,7 @@ module.exports = Field.create({
 		return this.props.value && !!this.props.value.filename;
 	},
 	getFilename () {
+		console.log(this.state.userSelectedFile);
 		return this.state.userSelectedFile
 			? this.state.userSelectedFile.name
 			: this.props.value.filename;
@@ -89,14 +104,14 @@ module.exports = Field.create({
 		});
 		this.props.onChange({
 			path: this.props.path,
-			value: this.state.uploadFieldPath,
+			value: userSelectedFile,
 		});
 	},
 	handleRemove (e) {
 		var state = {};
 
 		if (this.state.userSelectedFile) {
-			state = buildInitialState(this.props);
+			state = buildInitialState(this.props, true);
 		} else if (this.hasExisting()) {
 			state.removeExisting = true;
 
@@ -114,11 +129,21 @@ module.exports = Field.create({
 				}
 			}
 		}
-
 		this.setState(state);
+		console.log('state: ', state);
+		// handle callback to client UI onchange
+		this.props.onChange({
+			path: this.props.path,
+			value: state.userSelectedFile,
+		});
 	},
 	undoRemove () {
-		this.setState(buildInitialState(this.props));
+		const rollbackState = buildInitialState(this.props);
+		this.setState(rollbackState);
+		this.props.onChange({
+			path: this.props.path,
+			value: rollbackState.userSelectedFile,
+		});
 	},
 
 	// ==============================
@@ -232,7 +257,6 @@ module.exports = Field.create({
 				{this.hasFile() && this.renderClearButton()}
 			</div>
 		);
-
 		return (
 			<div data-field-name={path} data-field-type="file">
 				<FormField label={label} htmlFor={path}>
