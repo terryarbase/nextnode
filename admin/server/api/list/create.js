@@ -13,11 +13,18 @@ module.exports = function (req, res) {
 	*/
 	if (locales && multilingual && _.keys(body).length) {
 		_.forOwn(body, (b, key) => {
-			if (fields[key].options.multilingual) {
+			if (fields[key] && fields[key].options.multilingual) {
 				newData = {
 					...newData,
 					...{
 						[key]: req.list.convertJson(b),
+					},
+				};
+			} else {
+				newData = {
+					...newData,
+					...{
+						[key]: b,
 					},
 				};
 			}

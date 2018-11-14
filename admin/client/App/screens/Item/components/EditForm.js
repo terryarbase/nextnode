@@ -95,6 +95,8 @@ var EditForm = React.createClass({
 		return props;
 	},
 	handleChange ({ path, value }) {
+		// const { path, value } = e;
+		// console.log(path, value);
 		const { isLocale, currentLang } = this.props;
 		const { values: currentValue } = this.state;
 		const values = this.props.list.getProperlyChangedValue({
@@ -104,6 +106,7 @@ var EditForm = React.createClass({
 			value,
 			currentValue,
 		});
+
 		this.setState({
 			values,
 		});
@@ -141,14 +144,25 @@ var EditForm = React.createClass({
 	updateItem () {
 		const { data, list } = this.props;
 		const editForm = this.refs.editForm;
-
+		var formData = new FormData(editForm);
+		const { isLocale, currentLang } = this.props;
+		const { values } = this.state;
+		// convert multilingual field to formdata
+		formData = this.props.list.getFormCreateData({
+			formData,
+			values,
+			isLocale,
+		});
 		// Fix for Safari where XHR form submission fails when input[type=file] is empty
 		// https://stackoverflow.com/questions/49614091/safari-11-1-ajax-xhr-form-submission-fails-when-inputtype-file-is-empty
 		$(editForm).find("input[type='file']").each(function () {
 			if ($(this).get(0).files.length === 0) { $(this).prop('disabled', true); }
 		});
 
-		const formData = new FormData(editForm);
+		for (var pair of formData.entries()) {
+			console.log(pair[0]+ ', ' + pair[1]); 
+		}
+		return;
 
 		$(editForm).find("input[type='file']").each(function () {
 			if ($(this).get(0).files.length === 0) { $(this).prop('disabled', false); }
@@ -293,7 +307,6 @@ var EditForm = React.createClass({
 				// 		},
 				// 	};
 				// }
-
 				// props.disabled = true;
 				return React.createElement(Fields[field.type], props);
 			}

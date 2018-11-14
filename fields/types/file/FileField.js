@@ -84,9 +84,12 @@ module.exports = Field.create({
 	},
 	handleFileChange (event) {
 		const userSelectedFile = event.target.files[0];
-
 		this.setState({
 			userSelectedFile: userSelectedFile,
+		});
+		this.props.onChange({
+			path: this.props.path,
+			value: this.state.uploadFieldPath,
 		});
 	},
 	handleRemove (e) {

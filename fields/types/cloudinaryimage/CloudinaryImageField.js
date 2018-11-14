@@ -120,6 +120,10 @@ module.exports = Field.create({
 		const userSelectedFile = event.target.files[0];
 
 		this.setState({ userSelectedFile });
+		// this.props.onChange({
+		// 	path: this.props.path,
+		// 	value: this.state.uploadFieldPath,
+		// });
 	},
 
 	// Toggle the lightbox
