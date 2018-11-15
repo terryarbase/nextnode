@@ -54,8 +54,8 @@ module.exports = Field.create({
 	},
 	componentWillUpdate (nextProps) {
 		// Show the new filename when it's finished uploading
-		console.log('old: ', this.props.value);
-		console.log('new: ', nextProps.value);
+		// console.log('old: ', this.props.value);
+		// console.log('new: ', nextProps.value);
 		if ((this.props.value && !nextProps.value) || 
 			this.props.value.filename !== nextProps.value.filename ||
 			this.props.value.name !== nextProps.value.name) {
@@ -84,7 +84,7 @@ module.exports = Field.create({
 		return this.props.value && !!this.props.value.filename;
 	},
 	getFilename () {
-		console.log(this.state.userSelectedFile);
+		// console.log(this.state.userSelectedFile);
 		return this.state.userSelectedFile
 			? this.state.userSelectedFile.name
 			: this.props.value.filename;
@@ -102,9 +102,10 @@ module.exports = Field.create({
 		this.setState({
 			userSelectedFile: userSelectedFile,
 		});
+		// console.log('uploadFieldPath name: ', this.state.uploadFieldPath);
 		this.props.onChange({
 			path: this.props.path,
-			value: userSelectedFile,
+			value: userSelectedFile ? `upload:${this.state.uploadFieldPath}` : null,
 		});
 	},
 	handleRemove (e) {
@@ -130,11 +131,10 @@ module.exports = Field.create({
 			}
 		}
 		this.setState(state);
-		console.log('state: ', state);
 		// handle callback to client UI onchange
 		this.props.onChange({
 			path: this.props.path,
-			value: state.userSelectedFile,
+			value: null,
 		});
 	},
 	undoRemove () {
@@ -143,6 +143,7 @@ module.exports = Field.create({
 		this.props.onChange({
 			path: this.props.path,
 			value: rollbackState.userSelectedFile,
+			value: rollbackState.userSelectedFile ? `upload:${rollbackState.uploadFieldPath}` : null,
 		});
 	},
 

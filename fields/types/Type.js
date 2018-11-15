@@ -34,6 +34,7 @@ var DEFAULT_OPTION_KEYS = [
 	'dependsOn',
 	'autoCleanup',
 	'multilingual',
+	'stateless',
 ];
 
 /**

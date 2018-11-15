@@ -725,7 +725,7 @@ const ListView = React.createClass({
 		if (!this.props.ready) {
 			return this.renderSpinner();
 		}
-		console.log(this.props.currentLanguage, this.props.defaultLanguage);
+
 		return (
 			<div data-screen-id="list">
 				{

@@ -36,6 +36,7 @@ const CreateForm = React.createClass({
 		// Set the field values to their default values when first rendering the
 		// form. (If they have a default value, that is)
 		var values = {};
+		this.statelessUI = {}; // special for file upload element
 		Object.keys(this.props.list.fields).forEach(key => {
 			var field = this.props.list.fields[key];
 			var FieldComponent = Fields[field.type];
@@ -115,10 +116,7 @@ const CreateForm = React.createClass({
 			values,
 			isLocale,
 		});
-		// for (var pair of formData.entries()) {
-		// 	console.log(pair[0]+ ', ' + pair[1]); 
-		// }
-		// return;
+		
 		this.props.list.createItem(formData, { headers: { langd: currentLang } }, (err, data) => {
 			if (data) {
 				if (this.props.onCreate) {
@@ -160,6 +158,7 @@ const CreateForm = React.createClass({
 		var form = [];
 		var list = this.props.list;
 		var nameField = this.props.list.nameField;
+		const { currentLang } = this.props;
 		var focusWasSet;
 
 		// If the name field is an initial one, we need to render a proper
@@ -186,13 +185,43 @@ const CreateForm = React.createClass({
 			}
 			// Get the props for the input field
 			var fieldProps = this.getFieldProps(field);
+			var element = React.createElement(Fields[field.type], fieldProps);
 			// If there was no focusRef set previously, set the current field to
 			// be the one to be focussed. Generally the first input field, if
 			// there's an initial name field that takes precedence.
 			if (!focusWasSet) {
 				fieldProps.autoFocus = focusWasSet = true;
 			}
-			form.push(React.createElement(Fields[field.type], fieldProps));
+			if (field.stateless && field.multilingual) {
+				if (this.statelessUI[field.path]) {
+					element = this.statelessUI[field.path][currentLang] || element;
+				}
+				// store the stateless element to state, no matter it is existing
+				this.statelessUI = {
+					...this.statelessUI,
+					...{
+						[field.path]: {
+							...this.statelessUI[field.path],
+							...{
+								[currentLang]: element,
+							}
+						}
+					}
+				}
+				const keys = Object.keys(this.statelessUI[field.path]);
+				if (keys && keys.length) {
+					keys.forEach(key => {
+						form.push(
+							<div key={key} style={{ display: key === currentLang ? 'block' : 'none' }}>
+								{this.statelessUI[field.path][key]}
+							</div>
+						);
+					});
+				}
+			} else {
+				form.push(element);
+			}
+			// form.push(React.createElement(Fields[field.type], fieldProps));
 		});
 
 		return (

@@ -15,8 +15,14 @@ function file (list, path, options) {
 		throw new Error('Invalid Configuration\n\n'
 			+ 'File fields (' + list.key + '.' + path + ') require storage to be provided.');
 	}
-	this.storage = options.storage;
-	file.super_.call(this, list, path, options);
+	const newOptions = {
+		...options,
+		...{
+			stateless: true,	// for create ui element state
+		},
+	};
+	this.storage = newOptions.storage;
+	file.super_.call(this, list, path, newOptions);
 }
 file.properName = 'File';
 util.inherits(file, FieldType);
@@ -49,6 +55,7 @@ file.prototype.upload = function (item, file, callback) {
 	debug('[%s.%s] Uploading file for item %s:', this.list.key, this.path, item.id, file);
 	this.storage.uploadFile(file, function (err, result) {
 		if (err) return callback(err);
+		// console.log('[%s.%s] Uploaded file for item %s with result:', field.list.key, field.path, item.id, result);
 		debug('[%s.%s] Uploaded file for item %s with result:', field.list.key, field.path, item.id, result);
 		item.set(field.path, result);
 		callback(null, result);
@@ -70,7 +77,7 @@ file.prototype.reset = function (item) {
  * Deletes the stored file and resets the field value
  */
 // TODO: Should we accept a callback here? Seems like a good idea.
-file.prototype.remove = function (item) {
+file.prototype.remove = function (item, subPath) {
 	this.storage.removeFile(item.get(this.path));
 	this.reset();
 };

@@ -27,6 +27,8 @@ import { deleteItem } from '../actions';
 
 import { upcase } from '../../../../utils/string';
 
+// const WrapperComponent = ({ display, children }) => (<div style={{ display: display ? 'block' : 'none' }}>{children}</div>);
+
 function getNameFromData (data) {
 	if (typeof data === 'object') {
 		if (typeof data.first === 'string' && typeof data.last === 'string') {
@@ -59,12 +61,14 @@ var EditForm = React.createClass({
 		list: React.PropTypes.object,
 	},
 	getInitialState () {
+		this.statelessUI = {}; // special for file upload element
 		return {
 			values: assign({}, this.props.data.fields),
 			confirmationDialog: null,
 			loading: false,
 			lastValues: null, // used for resetting
 			focusFirstField: !this.props.list.nameField && !this.props.list.nameFieldIsFormHeader,
+			// statelessUI: {},	// special for file upload element
 		};
 	},
 	componentDidMount () {
@@ -106,7 +110,6 @@ var EditForm = React.createClass({
 			value,
 			currentValue,
 		});
-		console.log(values);
 		this.setState({
 			values,
 		});
@@ -240,7 +243,6 @@ var EditForm = React.createClass({
 	renderNameField () {
 		var nameField = this.props.list.nameField;
 		var nameFieldIsFormHeader = this.props.list.nameFieldIsFormHeader;
-		console.log(nameField);
 		var wrapNameField = field => (
 			<div className="EditForm__name-field">
 				{field}
@@ -267,7 +269,9 @@ var EditForm = React.createClass({
 	},
 	renderFormElements () {
 		var headings = 0;
-		return this.props.list.uiElements.map((el, index) => {
+		const { currentLang } = this.props;
+		var elements = [];
+		this.props.list.uiElements.forEach((el, index) => {
 			// Don't render the name field if it is the header since it'll be rendered in BIG above
 			// the list. (see renderNameField method, this is the reverse check of the one it does)
 			if (
@@ -280,38 +284,75 @@ var EditForm = React.createClass({
 				headings++;
 				el.options.values = this.state.values;
 				el.key = 'h-' + headings;
-				return React.createElement(FormHeading, el);
+				elements = [ ...elements, React.createElement(FormHeading, el) ];
 			}
 
 			if (el.type === 'field') {
 				var field = this.props.list.fields[el.field];
 				var props = this.getFieldProps(field);
-				if (typeof Fields[field.type] !== 'function') {
-					return React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path });
-				}
-				props.key = field.path;
-				if (index === 0 && this.state.focusFirstField) {
-					props.autoFocus = true;
-				}
-
 				props = {
 					...props,
 					...{
 						restrictDelegated: field.restrictDelegated,
 					},
 				};
-				// if (delegated && field.restrictDelegated) {
-				// 	props = {
-				// 		...props,
-				// 		...{
-				// 			disabled: true,
-				// 		},
-				// 	};
-				// }
-				// props.disabled = true;
-				return React.createElement(Fields[field.type], props);
+				if (typeof Fields[field.type] !== 'function') {
+					elements = [ ...elements, React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path }) ];
+				}
+				props.key = field.path;
+				if (index === 0 && this.state.focusFirstField) {
+					props.autoFocus = true;
+				}
+
+				var element = React.createElement(Fields[field.type], props);
+				// prevent stateless file element to be rendered again, get from state
+				if (field.stateless && field.multilingual) {
+					if (this.statelessUI[field.path]) {
+						element = this.statelessUI[field.path][currentLang] || element;
+					}
+					// store the stateless element to state, no matter it is existing
+					this.statelessUI = {
+						...this.statelessUI,
+						...{
+							[field.path]: {
+								...this.statelessUI[field.path],
+								...{
+									[currentLang]: element,
+								}
+							}
+						}
+					}
+					const keys = Object.keys(this.statelessUI[field.path]);
+					if (keys && keys.length) {
+						keys.forEach(key => {
+							elements = [ 
+								...elements,
+								<div key={key} style={{ display: key === currentLang ? 'block' : 'none' }}>
+									{this.statelessUI[field.path][key]}
+								</div>
+							];
+						});
+					}
+					
+					// if (statelessUI[field.path] && statelessUI[field.path][currentLang]) {
+					// 	elements = [ ...elements, statelessUI[field.path][currentLang] ]
+					// } else {
+					// 	elements = [ ...elements, element ];
+					// }
+					// // store the stateless element to state
+					// statelessUI[field.path] = {
+					// 	...statelessUI[field.path],
+					// 	...{
+					// 		[currentLang]: element,
+					// 	}
+					// }
+				} else {
+					elements = [ ...elements, element ];
+				}
 			}
-		}, this);
+		});
+
+		return elements;
 	},
 	renderFooterBar () {
 		if (this.props.list.noedit && this.props.list.nodelete) {

@@ -55,7 +55,14 @@ function cloudinaryimages (list, path, options) {
 
 	this.compressor = options.compressor;
 
-	cloudinaryimages.super_.call(this, list, path, options);
+	const newOptions = {
+		...options,
+		...{
+			stateless: true,	// for create ui element state
+		},
+	};
+
+	cloudinaryimages.super_.call(this, list, path, newOptions);
 
 	// validate cloudinary config
 	if (!keystone.get('cloudinary config')) {

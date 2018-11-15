@@ -32,7 +32,6 @@ module.exports = function (req, res) {
 	} else {
 		newData = { ...body };
 	}
-	// console.log('>>>>> ', newData.name.en);
 	const item = new req.list.model();
 	req.list.updateItem(item, newData, {
 		files: req.files,

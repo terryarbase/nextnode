@@ -48,7 +48,14 @@ function localfiles (list, path, options) {
 		options.overwrite = true;
 	}
 
-	localfiles.super_.call(this, list, path, options);
+	const newOptions = {
+		...options,
+		...{
+			stateless: true,	// for create ui element state
+		},
+	};
+
+	localfiles.super_.call(this, list, path, newOptions);
 
 	// validate destination dir
 	if (!options.dest) {
