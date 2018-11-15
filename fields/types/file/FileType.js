@@ -1,5 +1,7 @@
 var FieldType = require('../Type');
 var util = require('util');
+const _ = require('lodash');
+const mongoose = require('mongoose');
 var utils = require('keystone-utils');
 
 var debug = require('debug')('keystone:fields:file');
@@ -34,14 +36,19 @@ file.prototype.addToSchema = function (schema) {
 
 	var field = this;
 
-	this.paths = {};
-	// add field paths from the storage schema
-	Object.keys(this.storage.schema).forEach(function (path) {
-		field.paths[path] = field.path + '.' + path;
-	});
-
-	var schemaPaths = this._path.addTo({}, this.storage.schema);
-	schema.add(schemaPaths);
+	const ops = this.schemaOptions;
+	if (ops.multilingual) {
+		ops.type = mongoose.Schema.Types.Mixed;
+		schema.path(this.path, ops);
+	} else {
+		this.paths = {};
+		// add field paths from the storage schema
+		Object.keys(this.storage.schema).forEach(function (path) {
+			field.paths[path] = field.path + '.' + path;
+		});
+		var schemaPaths = this._path.addTo({}, this.storage.schema);
+		schema.add(schemaPaths);
+	}
 
 	this.bindUnderscoreMethods();
 };
@@ -49,7 +56,7 @@ file.prototype.addToSchema = function (schema) {
 /**
  * Uploads a new file
  */
-file.prototype.upload = function (item, file, callback) {
+file.prototype.upload = function (item, file, options, callback) {
 	var field = this;
 	// TODO; Validate there is actuall a file to upload
 	debug('[%s.%s] Uploading file for item %s:', this.list.key, this.path, item.id, file);
@@ -57,7 +64,17 @@ file.prototype.upload = function (item, file, callback) {
 		if (err) return callback(err);
 		// console.log('[%s.%s] Uploaded file for item %s with result:', field.list.key, field.path, item.id, result);
 		debug('[%s.%s] Uploaded file for item %s with result:', field.list.key, field.path, item.id, result);
-		item.set(field.path, result);
+		/*
+		** set sub path
+		** Terry Chan
+		*/
+		var newResult = result;
+		if (options.subPath) {
+			const subPath = options.subPath;
+			newResult = item.get(field.path) || {};
+			newResult[subPath] = result;
+		} 
+		item.set(field.path, newResult);
 		callback(null, result);
 	});
 };
@@ -65,11 +82,19 @@ file.prototype.upload = function (item, file, callback) {
 /**
  * Resets the field value
  */
-file.prototype.reset = function (item) {
+file.prototype.reset = function (item, option) {
+	const ops = this.schemaOptions;
 	var value = {};
-	Object.keys(this.storage.schema).forEach(function (path) {
-		value[path] = null;
-	});
+	if (ops.multilingual) {
+		if (options.subPath) {
+			const currentValue = item.get(this.path);
+			value = _.omit(currentValue, options.subPath);
+		}
+	} else {
+		Object.keys(this.storage.schema).forEach(function (path) {
+			value[path] = null;
+		});
+	}
 	item.set(this.path, value);
 };
 
@@ -77,9 +102,14 @@ file.prototype.reset = function (item) {
  * Deletes the stored file and resets the field value
  */
 // TODO: Should we accept a callback here? Seems like a good idea.
-file.prototype.remove = function (item, subPath) {
-	this.storage.removeFile(item.get(this.path));
-	this.reset();
+file.prototype.remove = function (item, subPath, option) {
+	var target = item.get(this.path);
+	if (options.subPath) {
+		const langFile = item.get(this.path);
+		target = langFile[options.subPath];
+	}
+	this.storage.removeFile(target);
+	this.reset(item, options);
 };
 
 /**
@@ -167,10 +197,13 @@ file.prototype.updateItem = function (item, data, files, callback) {
 	// Prepare values
 	var value = this.getValueFromData(data);
 	var uploadedFile;
+	const options = { 
+		subPath: data['__subPath'],
+	};
 
 	// Providing the string "remove" removes the file and resets the field
 	if (value === 'remove') {
-		this.remove(item);
+		this.remove(item, null, options);
 		utils.defer(callback);
 	}
 
@@ -189,18 +222,25 @@ file.prototype.updateItem = function (item, data, files, callback) {
 
 	// If we have a file to upload, we do that and stop here
 	if (uploadedFile) {
-		return this.upload(item, uploadedFile, callback);
+		return this.upload(item, uploadedFile, options, callback);
 	}
 
 	// Empty / null values reset the field
 	if (value === null || value === '' || (typeof value === 'object' && !Object.keys(value).length)) {
-		this.reset(item);
+		this.reset(item, options);
 		value = undefined;
 	}
 
 	// If there is a valid value at this point, set it on the field
 	if (typeof value === 'object') {
-		item.set(this.path, value);
+		if (options.subPath) {
+			const subPath = options.subPath;
+			const currentPathValue = item.get(this.path) || {};
+			currentPathValue[subPath] = value;
+			item.set(this.path, currentPathValue);
+		} else {
+			item.set(this.path, value);
+		}
 	}
 	utils.defer(callback);
 };

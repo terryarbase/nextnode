@@ -51,6 +51,9 @@ function Field (list, path, options) {
 	this.list = list;
 	this._path = new Path(path);
 	this.path = path;
+
+	// multilingual subpath
+	this.subPath = null;
 	
 	this.type = this.constructor.name;
 	this.options = _.defaults({}, options, this.defaults);
@@ -180,6 +183,16 @@ Field.prototype.getData = function (item) {
 	return item.get(this.path);
 };
 
+Field.prototype.getSubPathItemData = function (item, subPath) {
+	const currentPathValue = item.get(this.path);
+	// console.log('currentPathValue: ', item);
+	return currentPathValue[subPath] || {};
+}
+
+// Field.prototype.setSubPathItemData = function (item, subPathValue, value, subPath) {
+// 	const currentPathValue = item.get(this.path);
+// 	return currentPathValue[subPath];
+// }
 /**
  * Field watching implementation
  */
