@@ -22,7 +22,7 @@ const buildInitialState = (props, forceInit) => ({
 	action: null,
 	removeExisting: false,
 	uploadFieldPath: `File-${props.path}-${++uploadInc}`,
-	userSelectedFile: forceInit ? null : props.value,
+	userSelectedFile: null,
 		// ((typeof props.value === 'object') ? null : props.value),
 		// prevent update model with uploaded object info 
 });

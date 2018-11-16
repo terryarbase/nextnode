@@ -142,9 +142,10 @@ List.prototype.getProperlyValue = function({ field, values, isLocale, currentLan
 };
 List.prototype.getProperlyChangedValue = function({ currentValue, path, value, isLocale, currentLang }) {
 	const fields = this.fields;
-	console.log(path, value);
 	var values = { ...currentValue };
-	if (isLocale && fields[path] && fields[path].multilingual) {
+	if (!value && values[path]) {
+		delete values[path];
+	} else if (isLocale && fields[path] && fields[path].multilingual) {
 		values = {
 			...values,
 			...{
