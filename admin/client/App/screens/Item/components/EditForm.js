@@ -92,7 +92,9 @@ var EditForm = React.createClass({
 				props.isValid = false;
 			}
 		}
+		console.log(values);
 		props.value = this.props.list.getProperlyValue({ field, isLocale, currentLang, values });
+		console.log(props.value);
 		props.values = values;
 		props.onChange = this.handleChange;
 		props.mode = 'edit';
@@ -161,11 +163,6 @@ var EditForm = React.createClass({
 		$(editForm).find("input[type='file']").each(function () {
 			if ($(this).get(0).files.length === 0) { $(this).prop('disabled', true); }
 		});
-
-		for (var pair of formData.entries()) {
-			console.log(pair[0]+ ', ' + pair[1]); 
-		}
-		return;
 
 		$(editForm).find("input[type='file']").each(function () {
 			if ($(this).get(0).files.length === 0) { $(this).prop('disabled', false); }

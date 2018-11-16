@@ -23,6 +23,8 @@ const buildInitialState = (props, forceInit) => ({
 	removeExisting: false,
 	uploadFieldPath: `File-${props.path}-${++uploadInc}`,
 	userSelectedFile: forceInit ? null : props.value,
+		// ((typeof props.value === 'object') ? null : props.value),
+		// prevent update model with uploaded object info 
 });
 
 module.exports = Field.create({
@@ -131,6 +133,7 @@ module.exports = Field.create({
 			}
 		}
 		this.setState(state);
+		console.log('>>>>>>>>>>>');
 		// handle callback to client UI onchange
 		this.props.onChange({
 			path: this.props.path,
@@ -142,7 +145,6 @@ module.exports = Field.create({
 		this.setState(rollbackState);
 		this.props.onChange({
 			path: this.props.path,
-			value: rollbackState.userSelectedFile,
 			value: rollbackState.userSelectedFile ? `upload:${rollbackState.uploadFieldPath}` : null,
 		});
 	},
@@ -249,6 +251,7 @@ module.exports = Field.create({
 		);
 	},
 	renderUI () {
+		// console.log(this.state.userSelectedFile);
 		const { label, note, path } = this.props;
 		const buttons = (
 			<div style={this.hasFile() ? { marginTop: '1em' } : null}>

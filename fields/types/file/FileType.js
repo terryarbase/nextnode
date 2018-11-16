@@ -70,10 +70,9 @@ file.prototype.upload = function (item, file, options, callback) {
 		*/
 		var newResult = result;
 		if (options.subPath) {
-			const subPath = options.subPath;
 			newResult = item.get(field.path) || {};
-			newResult[subPath] = result;
-		} 
+			newResult[options.subPath] = result;
+		}
 		item.set(field.path, newResult);
 		callback(null, result);
 	});
@@ -82,13 +81,16 @@ file.prototype.upload = function (item, file, options, callback) {
 /**
  * Resets the field value
  */
-file.prototype.reset = function (item, option) {
+file.prototype.reset = function (item, options) {
 	const ops = this.schemaOptions;
 	var value = {};
 	if (ops.multilingual) {
 		if (options.subPath) {
 			const currentValue = item.get(this.path);
 			value = _.omit(currentValue, options.subPath);
+		}
+		if (value && !_.keys(value).length) {
+			value = null;
 		}
 	} else {
 		Object.keys(this.storage.schema).forEach(function (path) {
@@ -102,7 +104,7 @@ file.prototype.reset = function (item, option) {
  * Deletes the stored file and resets the field value
  */
 // TODO: Should we accept a callback here? Seems like a good idea.
-file.prototype.remove = function (item, subPath, option) {
+file.prototype.remove = function (item, subPath, options) {
 	var target = item.get(this.path);
 	if (options.subPath) {
 		const langFile = item.get(this.path);
@@ -174,9 +176,29 @@ file.prototype.validateRequiredInput = function (item, data, callback) {
 };
 
 file.prototype.getData = function(item){
-	var value = item.get(this.path);
-	value.publicPath = this.storage.adapter.options.publicPath;
-	return value;
+	const value = item.get(this.path);
+	const validLang = this.list.isMultilingualFormat(value);
+	var newValue = {};
+	console.log(validLang);
+	if (validLang.length) {
+		validLang.forEach(key => {
+			newValue = {
+				...newValue,
+				...{
+					[key]: {
+						...value[key],
+						...{
+							publicPath: this.storage.adapter.options.publicPath,
+						},
+					},
+				},
+			};
+		});
+	} else {
+		newValue= { ...value, ...{ publicPath: this.storage.adapter.options.publicPath } };
+	}
+	console.log(newValue);
+	return newValue;
 };
 
 /**
@@ -207,6 +229,8 @@ file.prototype.updateItem = function (item, data, files, callback) {
 		utils.defer(callback);
 	}
 
+
+	
 	// Find an uploaded file in the files argument, either referenced in the
 	// data argument or named with the field path / field_upload path + suffix
 	if (typeof value === 'string' && value.substr(0, 7) === 'upload:') {
@@ -215,11 +239,11 @@ file.prototype.updateItem = function (item, data, files, callback) {
 		uploadedFile = this.getValueFromData(files) || this.getValueFromData(files, '_upload');
 	}
 
+
 	// Ensure a valid file was uploaded, else null out the value
 	if (uploadedFile && !uploadedFile.path) {
 		uploadedFile = undefined;
 	}
-
 	// If we have a file to upload, we do that and stop here
 	if (uploadedFile) {
 		return this.upload(item, uploadedFile, options, callback);
