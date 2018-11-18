@@ -127,10 +127,11 @@ const List = function (options) {
 ** 12/11/2018
 */
 List.prototype.getProperlyValue = function({ field, values, isLocale, currentLang }) {
+	// console.log(field.path, values);
 	var current = values[field.path];
 	// prevent set multilingual from true to false
 	if (isLocale && field && field.multilingual) {
-		if (typeof current !== 'string') {
+		if (current && typeof current !== 'string') {
 			current = current[currentLang] || '';
 		} else if (current){
 			current = {
@@ -143,9 +144,7 @@ List.prototype.getProperlyValue = function({ field, values, isLocale, currentLan
 List.prototype.getProperlyChangedValue = function({ currentValue, path, value, isLocale, currentLang }) {
 	const fields = this.fields;
 	var values = { ...currentValue };
-	if (!value && values[path]) {
-		delete values[path];
-	} else if (isLocale && fields[path] && fields[path].multilingual) {
+	if (isLocale && fields[path] && fields[path].multilingual) {
 		values = {
 			...values,
 			...{

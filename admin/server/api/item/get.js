@@ -4,6 +4,7 @@ var listToArray = require('list-to-array');
 
 module.exports = function (req, res) {
 	var keystone = req.keystone;
+	const { locales } = req;
 	var query = req.list.model.findById(req.params.id);
 	var fields = req.query.fields;
 	if (fields === 'false') {
@@ -112,7 +113,15 @@ module.exports = function (req, res) {
 					detail: err,
 				});
 			}
-			res.json(_.assign(req.list.getData(item, fields), {
+			const data = req.list.getData(item, fields, null, {
+				lang: locales && locales.langd,
+				// list: false,	// flag to identify the value whether is specificed
+				isMultilingual: !!locales,
+				defaultLang: locales && locales.defaultLanguage,
+				supportLang: locales && locales.localization,
+			});
+
+			res.json(_.assign(data, {
 				drilldown: drilldown,
 			}));
 		});

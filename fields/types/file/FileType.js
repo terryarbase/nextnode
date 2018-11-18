@@ -74,7 +74,10 @@ file.prototype.upload = function (item, file, options, callback) {
 			newResult[options.subPath] = result;
 		}
 		item.set(field.path, newResult);
-		callback(null, result);
+		// console.log('>>>>>upload>>>', options.subPath, newResult);
+		// special for Mixed type without auto detecting
+		// item.markModified(field.path);
+		callback(null, newResult);
 	});
 };
 
@@ -86,18 +89,20 @@ file.prototype.reset = function (item, options) {
 	var value = {};
 	if (ops.multilingual) {
 		if (options.subPath) {
-			const currentValue = item.get(this.path);
-			value = _.omit(currentValue, options.subPath);
+			value = item.get(this.path);
+			delete value[options.subPath];
 		}
-		if (value && !_.keys(value).length) {
+		if (!Object.keys(value).length) {
 			value = null;
-		}
+		} 
 	} else {
 		Object.keys(this.storage.schema).forEach(function (path) {
 			value[path] = null;
 		});
 	}
 	item.set(this.path, value);
+	// special for Mixed type without auto detecting
+	// item.markModified(this.path);
 };
 
 /**
@@ -110,7 +115,7 @@ file.prototype.remove = function (item, subPath, options) {
 		const langFile = item.get(this.path);
 		target = langFile[options.subPath];
 	}
-	this.storage.removeFile(target);
+	this.storage.removeFile(target, function() {});
 	this.reset(item, options);
 };
 
@@ -140,7 +145,7 @@ function validateInput (value) {
 	// undefined, null and empty values are always valid
 	if (value === undefined || value === null || value === '') return true;
 	// If a string is provided, check it is an upload or delete instruction
-	if (typeof value === 'string' && /^(upload\:)|(delete$)/.test(value)) return true;
+	if (typeof value === 'string' && /^(upload\:)|(delete$)|(remove$)/.test(value)) return true;
 	// If the value is an object with a filename property, it is a stored value
 	// TODO: Need to actually check a dynamic path based on the adapter
 	if (typeof value === 'object' && value.filename) return true;
@@ -177,9 +182,9 @@ file.prototype.validateRequiredInput = function (item, data, callback) {
 
 file.prototype.getData = function(item){
 	const value = item.get(this.path);
-	const validLang = this.list.isMultilingualFormat(value);
+	const validLang = this.list.isMultilingualFormat(value, this.list.initialSupportLang);
 	var newValue = {};
-	console.log(validLang);
+	console.log(this.path, validLang, value, this.list.initialSupportLang);
 	if (validLang.length) {
 		validLang.forEach(key => {
 			newValue = {
@@ -194,10 +199,10 @@ file.prototype.getData = function(item){
 				},
 			};
 		});
-	} else {
-		newValue= { ...value, ...{ publicPath: this.storage.adapter.options.publicPath } };
+	} else if (value) {
+		newValue = { ...value, ...{ publicPath: this.storage.adapter.options.publicPath } };
 	}
-	console.log(newValue);
+	// console.log(newValue);
 	return newValue;
 };
 
@@ -226,6 +231,7 @@ file.prototype.updateItem = function (item, data, files, callback) {
 	// Providing the string "remove" removes the file and resets the field
 	if (value === 'remove') {
 		this.remove(item, null, options);
+		// return callback();
 		utils.defer(callback);
 	}
 
@@ -239,7 +245,6 @@ file.prototype.updateItem = function (item, data, files, callback) {
 		uploadedFile = this.getValueFromData(files) || this.getValueFromData(files, '_upload');
 	}
 
-
 	// Ensure a valid file was uploaded, else null out the value
 	if (uploadedFile && !uploadedFile.path) {
 		uploadedFile = undefined;
@@ -248,7 +253,7 @@ file.prototype.updateItem = function (item, data, files, callback) {
 	if (uploadedFile) {
 		return this.upload(item, uploadedFile, options, callback);
 	}
-
+	// console.log('value: ', value);
 	// Empty / null values reset the field
 	if (value === null || value === '' || (typeof value === 'object' && !Object.keys(value).length)) {
 		this.reset(item, options);
@@ -260,11 +265,15 @@ file.prototype.updateItem = function (item, data, files, callback) {
 		if (options.subPath) {
 			const subPath = options.subPath;
 			const currentPathValue = item.get(this.path) || {};
+			//console.log('>>>>>>>>>>', options.subPath, currentPathValue);
 			currentPathValue[subPath] = value;
 			item.set(this.path, currentPathValue);
 		} else {
 			item.set(this.path, value);
 		}
+		// special for Mixed type without auto detecting
+		// item.markModified(this.path);
+		// console.log('>>>>>set object: ', options.subPath, value);
 	}
 	utils.defer(callback);
 };

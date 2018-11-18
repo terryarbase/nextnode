@@ -80,7 +80,6 @@ var EditForm = React.createClass({
 	getFieldProps (field) {
 		const { isLocale, currentLang } = this.props;
 		const { values } = this.state;
-
 		const props = assign({}, field);
 		const alerts = this.state.alerts;
 		// Display validation errors inline
@@ -156,6 +155,10 @@ var EditForm = React.createClass({
 			values,
 			isLocale,
 		});
+		// for (var pair of formData.entries()) {
+		//     console.log(pair[0]+ ', ' + pair[1]); 
+		// }
+		// return;
 		// Fix for Safari where XHR form submission fails when input[type=file] is empty
 		// https://stackoverflow.com/questions/49614091/safari-11-1-ajax-xhr-form-submission-fails-when-inputtype-file-is-empty
 		$(editForm).find("input[type='file']").each(function () {
@@ -182,6 +185,7 @@ var EditForm = React.createClass({
 				});
 			} else {
 				// Success, display success flash messages, replace values
+				this.statelessUI = {};
 				// TODO: Update key value
 				this.setState({
 					alerts: {
@@ -303,8 +307,13 @@ var EditForm = React.createClass({
 				// prevent stateless file element to be rendered again, get from state
 				if (field.stateless && field.multilingual) {
 					if (this.statelessUI[field.path]) {
+						// once remove then recreate the element
+						// if (!(typeof this.statelessUI[field.path] === 'string' && 
+							// this.statelessUI[field.path] === '')) {
 						element = this.statelessUI[field.path][currentLang] || element;
+						// }
 					}
+					// console.log(element);
 					// store the stateless element to state, no matter it is existing
 					this.statelessUI = {
 						...this.statelessUI,
@@ -328,19 +337,6 @@ var EditForm = React.createClass({
 							];
 						});
 					}
-					
-					// if (statelessUI[field.path] && statelessUI[field.path][currentLang]) {
-					// 	elements = [ ...elements, statelessUI[field.path][currentLang] ]
-					// } else {
-					// 	elements = [ ...elements, element ];
-					// }
-					// // store the stateless element to state
-					// statelessUI[field.path] = {
-					// 	...statelessUI[field.path],
-					// 	...{
-					// 		[currentLang]: element,
-					// 	}
-					// }
 				} else {
 					elements = [ ...elements, element ];
 				}

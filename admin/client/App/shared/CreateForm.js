@@ -116,7 +116,6 @@ const CreateForm = React.createClass({
 			values,
 			isLocale,
 		});
-		
 		this.props.list.createItem(formData, { headers: { langd: currentLang } }, (err, data) => {
 			if (data) {
 				if (this.props.onCreate) {

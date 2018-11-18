@@ -403,3 +403,54 @@ Field.prototype.getValueFromData = function (data, subpath) {
 	// console.log(this.options.isMultilingual, this.path);
 	return this._path.get(data, subpath);
 };
+
+/*
+** Convert single value to multilingual value, and vice versa
+** Terry Chan
+** 18/11/2018
+*/
+Field.prototype.getValueFromElasticData = function(data, subpath) {
+	var value = this.getValueFromData(data, subpath);
+	console.log(value);
+	return this.getElasticData(value);
+}
+Field.prototype.getElasticData = function (data, options={}) {
+	const supportingLanguage = this.list.initialSupportLang;
+	const defaultLanguage = options.defaultLang || 'en';
+	const turnOnMultilingual = this.options.multilingual;
+	const isMultilingualStructure = this.list.isMultilingualFormat(data, supportingLanguage).length;
+	var newData = data;
+	if (turnOnMultilingual) {
+		// string value or other object structure
+		if (!isMultilingualStructure) {
+			if (typeof data !== 'object') {
+				const keys = _.keys(supportingLanguage);
+				if (keys.length) {
+					newData = {};
+					_.forEach(keys, key => {
+						newData = {
+							...newData,
+							...{
+								[key]: data,
+							},
+						};
+					});
+				}
+			} else {
+				newData = {
+					[defaultLanguage]: data,
+				};
+			}
+		} else if (!isMultilingualStructure && typeof data === 'object') {
+			newData = {
+				[defaultLanguage]: data,
+			};
+		}
+	// the field is turned off to single language and the current data structure is multilingual
+	} else if (isMultilingualStructure) {
+		// since default language field is mandatary field, this must have value
+		newData = data || data[defaultLanguage];
+	}
+
+	return newData;
+};

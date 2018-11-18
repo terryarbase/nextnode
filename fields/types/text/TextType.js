@@ -22,6 +22,12 @@ text.prototype.validateInput = function (data, callback) {
 	var max = this.options.max;
 	var min = this.options.min;
 	var value = this.getValueFromData(data);
+	/*
+	** casting to string, prevent input number directly
+	** Terry Chan
+	** 19/11/2018
+	*/ 
+	value = String(value);
 	var result = value === undefined || value === null || typeof value === 'string';
 	if (max && typeof value === 'string') {
 		result = value.length < max;

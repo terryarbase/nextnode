@@ -83,6 +83,7 @@ module.exports = Field.create({
 		return this.hasExisting() || !!this.state.userSelectedFile;
 	},
 	hasExisting () {
+		// console.log('hasFile ', this.props.value);
 		return this.props.value && !!this.props.value.filename;
 	},
 	getFilename () {
@@ -133,11 +134,10 @@ module.exports = Field.create({
 			}
 		}
 		this.setState(state);
-		console.log('>>>>>>>>>>>');
 		// handle callback to client UI onchange
 		this.props.onChange({
 			path: this.props.path,
-			value: null,
+			value: '',
 		});
 	},
 	undoRemove () {
@@ -251,7 +251,7 @@ module.exports = Field.create({
 		);
 	},
 	renderUI () {
-		// console.log(this.state.userSelectedFile);
+		// console.log(this.state.userSelectedFile, );
 		const { label, note, path } = this.props;
 		const buttons = (
 			<div style={this.hasFile() ? { marginTop: '1em' } : null}>
