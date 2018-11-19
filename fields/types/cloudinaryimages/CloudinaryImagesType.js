@@ -191,7 +191,6 @@ cloudinaryimages.prototype.addToSchema = function (schema) {
 	ImageSchema.method('thumbnail', function (width, height, options) {
 		return src(this, addSize({ crop: 'thumb', gravity: 'faces' }, width, height, options));
 	});
-
 	if (ops.multilingual) {
 		ops.type = keystone.mongoose.Schema.Types.Mixed;
 		schema.path(this.path, ops);
@@ -241,8 +240,9 @@ cloudinaryimages.prototype.format = function (item) {
  * Gets the field's data from an Item, as used by the React components
  */
 cloudinaryimages.prototype.getData = function (item) {
-	var value = item.get(this.path);
-	return Array.isArray(value) ? value : [];
+	// var value = item.get(this.path);
+	// return Array.isArray(value) ? value : [];
+	return item.get(this.path);
 };
 
 /**
@@ -465,7 +465,15 @@ cloudinaryimages.prototype.updateItem = async function(item, data, files, callba
 		if (err) return callback(err);
 		result = result.filter(truthy);
 		if (options.subPath) {
-			value[options.subPath] = result;
+			value = {
+				...value,
+				...{
+					[options.subPath]: [
+						...value[options.subPath],
+						result,
+					],
+				},
+			};
 			item.set(this.path, value);
 		} else {
 			item.set(field.path, result);

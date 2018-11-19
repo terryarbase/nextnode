@@ -32,7 +32,7 @@ function CloudinaryImagesThumbnail ({
 			const { signature, format, secure_url } = value;
 			downloadImage(secure_url, `${signature}.${format}`);
 		}}>
-			Download Original Image
+			Download
 		</Button>
 	) : null;
 
@@ -45,6 +45,7 @@ function CloudinaryImagesThumbnail ({
 		float: 'left',
 		marginBottom: 10,
 		marginRight: 10,
+		textAlign: 'center',
 	};
 
 	return (
@@ -60,10 +61,8 @@ function CloudinaryImagesThumbnail ({
 					<img src={imageSourceSmall} style={{ height: 90 }} />
 				</ImageThumbnail>
 				{actionButton}
-				{input}
-			</div>
-			<div>
 				{downloadButton}
+				{input}
 			</div>
 		</div>
 	);

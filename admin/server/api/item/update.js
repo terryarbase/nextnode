@@ -8,7 +8,8 @@ module.exports = function (req, res) {
 	const { params: { id }, body, locales } = req;
 	// locales, list: { options: { multilingual }, fields } } = req;
 	const newData = req.list.prepareCorrectParam(body);
-
+ 	console.log(newData);
+	return;
 	req.list.model.findById(id, function (err, item) {
 		if (err) return res.status(500).json({ error: 'database error', detail: err });
 		if (!item) return res.status(404).json({ error: 'not found', id });

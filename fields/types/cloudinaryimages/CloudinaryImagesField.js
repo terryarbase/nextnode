@@ -46,7 +46,10 @@ module.exports = Field.create({
 	},
 	buildInitialState (props) {
 		const uploadFieldPath = `CloudinaryImages-${props.path}-${++uploadInc}`;
-		const thumbnails = props.value ? props.value.map((img, index) => {
+		var { value = [] } = props;
+		// special for uploaded image object only
+		value = value && value.filter(v => typeof v !== 'string');
+		const thumbnails = value.map((img, index) => {
 			return this.getThumbnail({
 				value: img,
 				imageSourceSmall: cloudinaryResize(img.public_id, {
@@ -61,7 +64,7 @@ module.exports = Field.create({
 					secure: props.secure,
 				}),
 			}, index);
-		}) : [];
+		});
 		return { thumbnails, uploadFieldPath };
 	},
 	getThumbnail (props, index) {
@@ -115,16 +118,25 @@ module.exports = Field.create({
 	// ==============================
 	// METHODS
 	// ==============================
-
 	removeImage (index) {
-		const newThumbnails = [...this.state.thumbnails];
-		const target = newThumbnails[index];
+		const thumbnails = [...this.state.thumbnails];
+		const target = thumbnails[index];
+		const { value } = this.props;
 		// const { props: { children } } = target;
+		const isDeleted = !target.props.isDeleted;
 		// Use splice + clone to toggle the isDeleted prop
-		newThumbnails.splice(index, 1, cloneElement(target, {
-			isDeleted: !target.props.isDeleted,
+		thumbnails.splice(index, 1, cloneElement(target, {
+			isDeleted,
 		}));
-		this.setState({ thumbnails: newThumbnails });
+		this.setState({ thumbnails });
+
+		this.props.onChange({
+			path: this.props.path,
+			value: value && value.filter((v, i) => {
+				console.log(index, isDeleted, !(i === index && isDeleted));
+				return !(i === index && isDeleted);
+			}),
+		});
 	},
 	getCount (key) {
 		var count = 0;
@@ -142,11 +154,15 @@ module.exports = Field.create({
 
 		this.setState({
 			thumbnails: this.state.thumbnails.filter(function (thumb) {
-				// const { props: { children } } = thumb;
-				// return children.length && !children[0].props.isQueued;
 				return !thumb.props.isQueued;
 			}),
 		});
+		// this.props.onChange({
+		// 	path: this.props.path,
+		// 	value: this.props.value.filter(thumb => {
+		// 		return !thumb.props.isQueued;
+		// 	}),
+		// });
 	},
 	uploadFile (event) {
 		if (!window.FileReader) {
@@ -176,10 +192,14 @@ module.exports = Field.create({
 			this.setState({
 				thumbnails: [...this.state.thumbnails, ...thumbnails],
 			});
-			// this.props.onChange({
-			// 	path: this.props.path,
-			// 	value: this.state.thumbnails ? `upload:${this.state.uploadFieldPath}` : null,
-			// });
+
+			if (thumbnails) {
+				console.log('new: ', [ ...this.props.value, `upload:${this.state.uploadFieldPath}` ]);
+				this.props.onChange({
+					path: this.props.path,
+					value: [ ...this.props.value, `upload:${this.state.uploadFieldPath}` ],
+				});
+			}
 		});
 	},
 

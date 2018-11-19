@@ -147,6 +147,7 @@ class Base64ImageResizer{
 		return new Promise(resolve => {
 		    sharp(buffer)
 		    	.resize(width, height)
+		    	.withMetadata()
 		    	.toBuffer((err, data, info) => {
 		    		if (err) {
 		    			throw(err);
