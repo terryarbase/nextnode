@@ -1,7 +1,8 @@
 var FieldType = require('../Type');
 var util = require('util');
 const _ = require('lodash');
-const mongoose = require('mongoose');
+const keystone = require('../../../');
+// const mongoose = require('mongoose');
 var utils = require('keystone-utils');
 
 var debug = require('debug')('keystone:fields:file');
@@ -38,7 +39,7 @@ file.prototype.addToSchema = function (schema) {
 
 	const ops = this.schemaOptions;
 	if (ops.multilingual) {
-		ops.type = mongoose.Schema.Types.Mixed;
+		ops.type = keystone.mongoose.Schema.Types.Mixed;
 		schema.path(this.path, ops);
 	} else {
 		this.paths = {};
@@ -184,7 +185,7 @@ file.prototype.getData = function(item){
 	const value = item.get(this.path);
 	const validLang = this.list.isMultilingualFormat(value, this.list.initialSupportLang);
 	var newValue = {};
-	console.log(this.path, validLang, value, this.list.initialSupportLang);
+	// console.log(this.path, validLang, value, this.list.initialSupportLang);
 	if (validLang.length) {
 		validLang.forEach(key => {
 			newValue = {

@@ -8,34 +8,7 @@ module.exports = function (req, res) {
 	const { params: { id }, body, locales } = req;
 	// locales, list: { options: { multilingual }, fields } } = req;
 	const newData = req.list.prepareCorrectParam(body);
-	/*
-	** if turn on localization and the list is supporting multilingual
-	** then convert the multilingual field to json object also
-	*/
-	// if (locales && multilingual && _.keys(body).length) {
-	// 	_.forOwn(body, (b, key) => {
-	// 		var data = req.list.convertJson(b);
 
-	// 		if (fields[key] && fields[key].options.multilingual) {
-	// 			newData = {
-	// 				...newData,
-	// 				...{
-	// 					[key]: data,
-	// 				},
-	// 			};
-	// 		} else {
-	// 			newData = {
-	// 				...newData,
-	// 				...{
-	// 					[key]: data,
-	// 				},
-	// 			};
-	// 		}
-	// 	});
-	// } else {
-	// 	newData = { ...body };
-	// }
-	console.log(newData);
 	req.list.model.findById(id, function (err, item) {
 		if (err) return res.status(500).json({ error: 'database error', detail: err });
 		if (!item) return res.status(404).json({ error: 'not found', id });

@@ -59,7 +59,8 @@ module.exports = Field.create({
 		// Reset the action state when the value changes
 		// TODO: We should add a check for a new item ID in the store
 		// if (this.props.value.public_id !== nextProps.value.public_id) {
-		if (this.props.value && nextProps.value && this.props.value.public_id !== nextProps.value.public_id) {
+			if ((this.props.value && !nextProps.value) || 
+				(this.props.value && nextProps.value && this.props.value.public_id !== nextProps.value.public_id)) {
 			this.setState({
 				removeExisting: false,
 				userSelectedFile: null,
@@ -120,10 +121,10 @@ module.exports = Field.create({
 		const userSelectedFile = event.target.files[0];
 
 		this.setState({ userSelectedFile });
-		// this.props.onChange({
-		// 	path: this.props.path,
-		// 	value: this.state.uploadFieldPath,
-		// });
+		this.props.onChange({
+			path: this.props.path,
+			value: userSelectedFile ? `upload:${this.state.uploadFieldPath}` : null,
+		});
 	},
 
 	// Toggle the lightbox
@@ -166,7 +167,11 @@ module.exports = Field.create({
 				loading: false,
 				userSelectedFile: file,
 			});
-			this.props.onChange({ file: file });
+			this.props.onChange({
+				file: file,
+				path: this.props.path, 
+				value: this.state.userSelectedFile ? `upload:${this.state.uploadFieldPath}` : null,
+			});
 		};
 	},
 
@@ -181,9 +186,18 @@ module.exports = Field.create({
 		}
 
 		this.setState(state);
+		this.props.onChange({
+			path: this.props.path,
+			value: '',
+		});
 	},
 	undoRemove () {
-		this.setState(buildInitialState(this.props));
+		const rollbackState = buildInitialState(this.props);
+		this.setState(rollbackState);
+		this.props.onChange({
+			path: this.props.path,
+			value: rollbackState.userSelectedFile ? `upload:${rollbackState.uploadFieldPath}` : null,
+		});
 	},
 
 	// ==============================
@@ -280,7 +294,7 @@ module.exports = Field.create({
 		return (
 			<div key={this.props.path + '_toolbar'} className="image-toolbar">
 				{
-					this.hasImage() ? 
+					this.hasExisting() ? 
 					<Button variant="link" onClick={() => {
 						const { value: { signature, format, secure_url } } = this.props;
 						downloadImage(secure_url, `${signature}.${format}`);

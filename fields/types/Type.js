@@ -411,7 +411,6 @@ Field.prototype.getValueFromData = function (data, subpath) {
 */
 Field.prototype.getValueFromElasticData = function(data, subpath) {
 	var value = this.getValueFromData(data, subpath);
-	console.log(value);
 	return this.getElasticData(value);
 }
 Field.prototype.getElasticData = function (data, options={}) {
@@ -420,6 +419,7 @@ Field.prototype.getElasticData = function (data, options={}) {
 	const turnOnMultilingual = this.options.multilingual;
 	const isMultilingualStructure = this.list.isMultilingualFormat(data, supportingLanguage).length;
 	var newData = data;
+	// console.log(this.path, isMultilingualStructure, newData, turnOnMultilingual);
 	if (turnOnMultilingual) {
 		// string value or other object structure
 		if (!isMultilingualStructure) {
@@ -449,7 +449,7 @@ Field.prototype.getElasticData = function (data, options={}) {
 	// the field is turned off to single language and the current data structure is multilingual
 	} else if (isMultilingualStructure) {
 		// since default language field is mandatary field, this must have value
-		newData = data || data[defaultLanguage];
+		newData = data[defaultLanguage];
 	}
 
 	return newData;

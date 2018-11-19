@@ -99,7 +99,7 @@ cloudinaryimages.prototype.addToSchema = function (schema) {
 	var cloudinary = require('cloudinary');
 	var mongoose = keystone.mongoose;
 	var field = this;
-
+	const ops = this.schemaOptions;
 	this.paths = {
 		// virtuals
 		folder: this.path + '.folder',
@@ -192,7 +192,12 @@ cloudinaryimages.prototype.addToSchema = function (schema) {
 		return src(this, addSize({ crop: 'thumb', gravity: 'faces' }, width, height, options));
 	});
 
-	schema.add(this._path.addTo({}, [ImageSchema]));
+	if (ops.multilingual) {
+		ops.type = keystone.mongoose.Schema.Types.Mixed;
+		schema.path(this.path, ops);
+	} else {
+		schema.add(this._path.addTo({}, [ImageSchema]));
+	}
 
 	this.removeImage = function (item, id, method, callback) {
 		var images = item.get(field.path);
@@ -267,6 +272,28 @@ cloudinaryimages.prototype.getOptions = function () {
 };
 
 /**
+ * Resets the field value
+ */
+// cloudinaryimages.prototype.reset = function (item, options) {
+// 	const ops = this.schemaOptions;
+// 	var value = getEmptyValue();
+// 	if (ops.multilingual) {
+// 		if (options.subPath) {
+// 			value = item.get(this.path);
+// 			delete value[options.subPath];
+// 		}
+// 		if (!Object.keys(value).length) {
+// 			value = null;
+// 		} 
+// 	} else {
+// 		value = getEmptyValue();
+// 	}
+// 	item.set(this.path, value);
+// 	// special for Mixed type without auto detecting
+// 	// item.markModified(this.path);
+// };
+
+/**
  * Updates the value for this field in the item from a data object
  */
 cloudinaryimages.prototype.updateItem = async function(item, data, files, callback) {
@@ -280,7 +307,14 @@ cloudinaryimages.prototype.updateItem = async function(item, data, files, callba
 	var cloudinary = require('cloudinary');
 	var field = this;
 	var values = this.getValueFromData(data);
-	var oldValues = item.get(this.path);
+	const options = { 
+		subPath: data['__subPath'],
+	};
+	var value = item.get(this.path);
+	var oldValues = [];
+	if (options.subPath) {
+		oldValues = value[options.subPath];
+	}
 
 	// TODO: This logic needs to block uploading of files from the data argument,
 	// see CloudinaryImage for a reference on how it should be implemented
@@ -291,7 +325,16 @@ cloudinaryimages.prototype.updateItem = async function(item, data, files, callba
 			if (field.options.autoCleanup) {
 				cleanUp(oldValues, []);
 			}
-			item.set(field.path, []);
+			if (options.subPath) {
+				item.set(field.path, {
+					...value,
+					...{
+						[option.subPath]: [],
+					},
+				});
+			} else {
+				item.set(field.path, []);
+			}
 		}
 		return process.nextTick(callback);
 	}
@@ -421,7 +464,12 @@ cloudinaryimages.prototype.updateItem = async function(item, data, files, callba
 		cleanUp(oldValues, values);
 		if (err) return callback(err);
 		result = result.filter(truthy);
-		item.set(field.path, result);
+		if (options.subPath) {
+			value[options.subPath] = result;
+			item.set(this.path, value);
+		} else {
+			item.set(field.path, result);
+		}
 		return callback();
 	});
 };

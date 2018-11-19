@@ -40,7 +40,7 @@ module.exports = Field.create({
 		// TODO: We should add a check for a new item ID in the store
 		const value = _.map(this.props.value, 'public_id').join();
 		const nextValue = _.map(nextProps.value, 'public_id').join();
-		if (value !== nextValue) {
+		if ((this.props.value && !nextProps.value) || value !== nextValue) {
 			this.setState(this.buildInitialState(nextProps));
 		}
 	},
@@ -65,6 +65,8 @@ module.exports = Field.create({
 		return { thumbnails, uploadFieldPath };
 	},
 	getThumbnail (props, index) {
+		const { value } = props;
+		console.log(props);
 		return (
 			<div>
 				<Thumbnail
@@ -75,12 +77,16 @@ module.exports = Field.create({
 					toggleDelete={this.removeImage.bind(this, index)}
 					{...props}
 				/>
-				<Button variant="link" onClick={() => {
-					const { value: { signature, format, secure_url } } = props.img;
-					downloadImage(secure_url, `${signature}.${format}`);
-				}}>
-					Download Original Image
-				</Button> : null
+				{
+					value && value.img && value.img.public_id ?
+					<Button variant="link" onClick={() => {
+						const { value: { signature, format, secure_url } } = props.img;
+						downloadImage(secure_url, `${signature}.${format}`);
+					}}>
+						Download Original Image
+					</Button> : null
+				}
+				
 			</div>
 		);
 	},
@@ -126,10 +132,11 @@ module.exports = Field.create({
 	removeImage (index) {
 		const newThumbnails = [...this.state.thumbnails];
 		const target = newThumbnails[index];
-
+		const { props: { children } } = target;
+		console.log('>>>>>>', children[0], children[0].props.isDeleted);
 		// Use splice + clone to toggle the isDeleted prop
 		newThumbnails.splice(index, 1, cloneElement(target, {
-			isDeleted: !target.props.isDeleted,
+			isDeleted: children.length && !children[0].props.isDeleted,
 		}));
 
 		this.setState({ thumbnails: newThumbnails });
@@ -138,7 +145,9 @@ module.exports = Field.create({
 		var count = 0;
 
 		this.state.thumbnails.forEach((thumb) => {
-			if (thumb && thumb.props[key]) count++;
+			const { props: { children } } = thumb;
+			if (children.length && children[0].props[key]) count++;
+			// if (thumb && thumb.props[key]) count++;
 		});
 
 		return count;
@@ -148,7 +157,9 @@ module.exports = Field.create({
 
 		this.setState({
 			thumbnails: this.state.thumbnails.filter(function (thumb) {
-				return !thumb.props.isQueued;
+				const { props: { children } } = thumb;
+				return children.length && !children[0].props.isQueued;
+				// return !thumb.props.isQueued;
 			}),
 		});
 	},
@@ -166,7 +177,6 @@ module.exports = Field.create({
 			}
 			files.push(f);
 		}
-
 		let index = this.state.thumbnails.length;
 		async.mapSeries(files, (file, callback) => {
 			const reader = new FileReader();
@@ -181,6 +191,10 @@ module.exports = Field.create({
 			this.setState({
 				thumbnails: [...this.state.thumbnails, ...thumbnails],
 			});
+			// this.props.onChange({
+			// 	path: this.props.path,
+			// 	value: this.state.thumbnails ? `upload:${this.state.uploadFieldPath}` : null,
+			// });
 		});
 	},
 

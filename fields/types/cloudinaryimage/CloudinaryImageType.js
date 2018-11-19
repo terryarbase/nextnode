@@ -102,6 +102,8 @@ cloudinaryimage.prototype.addToSchema = function (schema) {
 
 	var field = this;
 
+	const ops = this.schemaOptions;
+	var schemaPaths = {};
 	var paths = this.paths = {
 		// cloudinary fields
 		public_id: this.path + '.public_id',
@@ -119,34 +121,27 @@ cloudinaryimage.prototype.addToSchema = function (schema) {
 		// form paths
 		select: this.path + '_select',
 	};
-
-	var schemaPaths = this._path.addTo({}, {
-		public_id: String,
-		version: Number,
-		signature: String,
-		format: String,
-		resource_type: String,
-		url: String,
-		width: Number,
-		height: Number,
-		secure_url: String,
-	});
-
-	schema.add(schemaPaths);
+	if (ops.multilingual) {
+		ops.type = keystone.mongoose.Schema.Types.Mixed;
+		schema.path(this.path, ops);
+	} else {
+		schemaPaths = this._path.addTo({}, {
+			public_id: String,
+			version: Number,
+			signature: String,
+			format: String,
+			resource_type: String,
+			url: String,
+			width: Number,
+			height: Number,
+			secure_url: String,
+		});
+		schema.add(schemaPaths);
+	}
 
 	var exists = function (item) {
 		return (item.get(paths.public_id) ? true : false);
 	};
-
-	// The .exists virtual indicates whether an image is stored
-	schema.virtual(paths.exists).get(function () {
-		return schemaMethods.exists.apply(this);
-	});
-
-	// The .folder virtual returns the cloudinary folder used to upload/select images
-	schema.virtual(paths.folder).get(function () {
-		return schemaMethods.folder.apply(this);
-	});
 
 	var src = function (item, options) {
 		if (!exists(item)) {
@@ -268,6 +263,16 @@ cloudinaryimage.prototype.addToSchema = function (schema) {
 		return schemaMethods[method].apply(item, Array.prototype.slice.call(arguments, 2));
 	};
 
+	// The .exists virtual indicates whether an image is stored
+	schema.virtual(paths.exists).get(function () {
+		return schemaMethods.exists.apply(this);
+	});
+
+	// The .folder virtual returns the cloudinary folder used to upload/select images
+	schema.virtual(paths.folder).get(function () {
+		return schemaMethods.folder.apply(this);
+	});
+
 	this.bindUnderscoreMethods();
 };
 
@@ -373,6 +378,46 @@ function trimSupportedFileExtensions (publicId) {
 }
 
 /**
+ * Resets the field value
+ */
+cloudinaryimage.prototype.reset = function (item, options) {
+	const ops = this.schemaOptions;
+	var value = getEmptyValue();
+	if (ops.multilingual) {
+		if (options.subPath) {
+			value = item.get(this.path);
+			delete value[options.subPath];
+		}
+		if (!Object.keys(value).length) {
+			value = null;
+		} 
+	} else {
+		value = getEmptyValue();
+	}
+	item.set(this.path, value);
+	// special for Mixed type without auto detecting
+	// item.markModified(this.path);
+};
+
+/**
+ * After upload a new file
+ */
+cloudinaryimage.prototype.upload = function (item, result, options, callback) {
+	/*
+	** set sub path
+	** Terry Chan
+	*/
+	var newResult = result;
+	if (options.subPath) {
+		newResult = item.get(this.path) || {};
+		newResult[options.subPath] = result;
+	}
+
+	item.set(this.path, newResult);
+	return callback();
+};
+
+/**
  * Updates the value for this field in the item from a data object
  * TODO: It is not possible to remove an existing value and upload a new image
  * in the same action, this should be supported
@@ -393,6 +438,9 @@ cloudinaryimage.prototype.updateItem = function (item, data, files, callback) {
 	// Prepare values
 	var value = this.getValueFromData(data);
 	var uploadedFile;
+	const options = { 
+		subPath: data['__subPath'],
+	};
 
 	// Providing the string "remove" or "delete" removes the file and resets the field
 	if (value === 'remove' || value === 'delete') {
@@ -400,7 +448,8 @@ cloudinaryimage.prototype.updateItem = function (item, data, files, callback) {
 			if (result.error) {
 				callback(result.error);
 			} else {
-				item.set(field.path, getEmptyValue());
+				this.reset(item, options);
+				//item.set(field.path, getEmptyValue());
 				callback();
 			}
 		});
@@ -476,8 +525,7 @@ cloudinaryimage.prototype.updateItem = function (item, data, files, callback) {
 				if (result.error) {
 					return callback(result.error);
 				} else {
-					item.set(field.path, result);
-					return callback();
+					return field.upload(item, result, options, callback);
 				}
 			}, uploadOptions);
 		});
@@ -487,12 +535,24 @@ cloudinaryimage.prototype.updateItem = function (item, data, files, callback) {
 
 	// Empty / null values reset the field
 	if (value === null || value === '' || (typeof value === 'object' && !Object.keys(value).length)) {
-		value = getEmptyValue();
+		this.reset(item, options);
+		value = undefined;
+		// value = getEmptyValue();
 	}
 
 	// If there is a valid value at this point, set it on the field
+	// if (typeof value === 'object') {
+	// 	item.set(this.path, value);
+	// }
 	if (typeof value === 'object') {
-		item.set(this.path, value);
+		if (options.subPath) {
+			const subPath = options.subPath;
+			const currentPathValue = item.get(this.path) || {};
+			currentPathValue[subPath] = value;
+			item.set(this.path, currentPathValue);
+		} else {
+			item.set(this.path, value);
+		}
 	}
 	utils.defer(callback);
 };
