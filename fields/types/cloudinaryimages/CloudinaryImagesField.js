@@ -12,7 +12,7 @@ import Field from '../Field';
 import { Button, FormField, FormNote } from '../../../admin/client/App/elemental';
 import Lightbox from 'react-images';
 import cloudinaryResize from '../../../admin/client/utils/cloudinaryResize';
-import downloadImage from '../../../admin/client/utils/downloadImage';
+// import downloadImage from '../../../admin/client/utils/downloadImage';
 import Thumbnail from './CloudinaryImagesThumbnail';
 import HiddenFileInput from '../../components/HiddenFileInput';
 import FileChangeMessage from '../../components/FileChangeMessage';
@@ -66,28 +66,15 @@ module.exports = Field.create({
 	},
 	getThumbnail (props, index) {
 		const { value } = props;
-		console.log(props);
 		return (
-			<div>
-				<Thumbnail
-					key={`thumbnail-${index}`}
-					inputName={this.getInputName(this.props.path)}
-					openLightbox={(e) => this.openLightbox(e, index)}
-					shouldRenderActionButton={this.shouldRenderField()}
-					toggleDelete={this.removeImage.bind(this, index)}
-					{...props}
-				/>
-				{
-					value && value.img && value.img.public_id ?
-					<Button variant="link" onClick={() => {
-						const { value: { signature, format, secure_url } } = props.img;
-						downloadImage(secure_url, `${signature}.${format}`);
-					}}>
-						Download Original Image
-					</Button> : null
-				}
-				
-			</div>
+			<Thumbnail
+				key={`thumbnail-${index}`}
+				inputName={this.getInputName(this.props.path)}
+				openLightbox={(e) => this.openLightbox(e, index)}
+				shouldRenderActionButton={this.shouldRenderField()}
+				toggleDelete={this.removeImage.bind(this, index)}
+				{...props}
+			/>
 		);
 	},
 
@@ -132,22 +119,20 @@ module.exports = Field.create({
 	removeImage (index) {
 		const newThumbnails = [...this.state.thumbnails];
 		const target = newThumbnails[index];
-		const { props: { children } } = target;
-		console.log('>>>>>>', children[0], children[0].props.isDeleted);
+		// const { props: { children } } = target;
 		// Use splice + clone to toggle the isDeleted prop
 		newThumbnails.splice(index, 1, cloneElement(target, {
-			isDeleted: children.length && !children[0].props.isDeleted,
+			isDeleted: !target.props.isDeleted,
 		}));
-
 		this.setState({ thumbnails: newThumbnails });
 	},
 	getCount (key) {
 		var count = 0;
 
 		this.state.thumbnails.forEach((thumb) => {
-			const { props: { children } } = thumb;
-			if (children.length && children[0].props[key]) count++;
-			// if (thumb && thumb.props[key]) count++;
+			// const { props: { children } } = thumb;
+			// if (children.length && children[0].props[key]) count++;
+			if (thumb && thumb.props[key]) count++;
 		});
 
 		return count;
@@ -157,9 +142,9 @@ module.exports = Field.create({
 
 		this.setState({
 			thumbnails: this.state.thumbnails.filter(function (thumb) {
-				const { props: { children } } = thumb;
-				return children.length && !children[0].props.isQueued;
-				// return !thumb.props.isQueued;
+				// const { props: { children } } = thumb;
+				// return children.length && !children[0].props.isQueued;
+				return !thumb.props.isQueued;
 			}),
 		});
 	},

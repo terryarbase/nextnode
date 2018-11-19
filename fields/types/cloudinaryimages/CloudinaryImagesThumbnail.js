@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Button } from '../../../admin/client/App/elemental';
+import downloadImage from '../../../admin/client/utils/downloadImage';
 import ImageThumbnail from '../../components/ImageThumbnail';
 
 function CloudinaryImagesThumbnail ({
@@ -26,6 +27,15 @@ function CloudinaryImagesThumbnail ({
 		</Button>
 	) : null;
 
+	const downloadButton = value && value.public_id ? (
+		<Button variant="link" onClick={() => {
+			const { signature, format, secure_url } = value;
+			downloadImage(secure_url, `${signature}.${format}`);
+		}}>
+			Download Original Image
+		</Button>
+	) : null;
+
 	const input = (!isQueued && !isDeleted && value) ? (
 		<input type="hidden" name={inputName} value={JSON.stringify(value)} />
 	) : null;
@@ -38,18 +48,23 @@ function CloudinaryImagesThumbnail ({
 	};
 
 	return (
-		<div style={imageStyles}>
-			<ImageThumbnail
-				component={imageSourceLarge ? 'a' : 'span'}
-				href={!!imageSourceLarge && imageSourceLarge}
-				onClick={!!imageSourceLarge && openLightbox}
-				mask={mask}
-				target={!!imageSourceLarge && '__blank'}
-			>
-				<img src={imageSourceSmall} style={{ height: 90 }} />
-			</ImageThumbnail>
-			{actionButton}
-			{input}
+		<div>
+			<div style={imageStyles}>
+				<ImageThumbnail
+					component={imageSourceLarge ? 'a' : 'span'}
+					href={!!imageSourceLarge && imageSourceLarge}
+					onClick={!!imageSourceLarge && openLightbox}
+					mask={mask}
+					target={!!imageSourceLarge && '__blank'}
+				>
+					<img src={imageSourceSmall} style={{ height: 90 }} />
+				</ImageThumbnail>
+				{actionButton}
+				{input}
+			</div>
+			<div>
+				{downloadButton}
+			</div>
 		</div>
 	);
 
