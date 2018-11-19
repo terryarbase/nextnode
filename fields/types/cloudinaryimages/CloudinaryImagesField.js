@@ -33,6 +33,7 @@ module.exports = Field.create({
 		getDefaultValue: () => ([]),
 	},
 	getInitialState () {
+		this.queuingElements = {};
 		return this.buildInitialState(this.props);
 	},
 	componentWillUpdate (nextProps) {
@@ -40,16 +41,21 @@ module.exports = Field.create({
 		// TODO: We should add a check for a new item ID in the store
 		const value = _.map(this.props.value, 'public_id').join();
 		const nextValue = _.map(nextProps.value, 'public_id').join();
-		if ((this.props.value && !nextProps.value) || value !== nextValue) {
+		// console.log('bind', nextProps.value, '>>>', this.props.value);
+		if ((this.props.value && !nextProps.value) 
+			|| this.props.value.length !== nextProps.value.length
+			|| value !== nextValue) {
 			this.setState(this.buildInitialState(nextProps));
 		}
 	},
 	buildInitialState (props) {
 		const uploadFieldPath = `CloudinaryImages-${props.path}-${++uploadInc}`;
-		var { value = [] } = props;
+		this.key = `upload:${uploadFieldPath}`;
+		var { value } = props;
+		if (!Array.isArray(value)) value = [];
 		// special for uploaded image object only
 		value = value && value.filter(v => typeof v !== 'string');
-		const thumbnails = value.map((img, index) => {
+		var thumbnails = value.map((img, index) => {
 			return this.getThumbnail({
 				value: img,
 				imageSourceSmall: cloudinaryResize(img.public_id, {
@@ -65,6 +71,7 @@ module.exports = Field.create({
 				}),
 			}, index);
 		});
+		thumbnails = [ ...thumbnails, ...this.queuingElements ];
 		return { thumbnails, uploadFieldPath };
 	},
 	getThumbnail (props, index) {
@@ -118,10 +125,16 @@ module.exports = Field.create({
 	// ==============================
 	// METHODS
 	// ==============================
+	savableImage(thumbnails) {
+		const { value } = this.props;
+		return value.filter((v, i) => 
+			typeof v === 'string' || (thumbnails[i] && !thumbnails[i].props.isDeleted)
+		);
+	},
 	removeImage (index) {
 		const thumbnails = [...this.state.thumbnails];
 		const target = thumbnails[index];
-		const { value } = this.props;
+		// const { value } = this.props;
 		// const { props: { children } } = target;
 		const isDeleted = !target.props.isDeleted;
 		// Use splice + clone to toggle the isDeleted prop
@@ -129,13 +142,13 @@ module.exports = Field.create({
 			isDeleted,
 		}));
 		this.setState({ thumbnails });
-
+		var value = this.savableImage(thumbnails);
+		if (this.hasFiles()) {
+			value = [ ...value, this.key ];
+		}
 		this.props.onChange({
 			path: this.props.path,
-			value: value && value.filter((v, i) => {
-				console.log(index, isDeleted, !(i === index && isDeleted));
-				return !(i === index && isDeleted);
-			}),
+			value,
 		});
 	},
 	getCount (key) {
@@ -157,12 +170,10 @@ module.exports = Field.create({
 				return !thumb.props.isQueued;
 			}),
 		});
-		// this.props.onChange({
-		// 	path: this.props.path,
-		// 	value: this.props.value.filter(thumb => {
-		// 		return !thumb.props.isQueued;
-		// 	}),
-		// });
+		this.props.onChange({
+			path: this.props.path,
+			value: [],
+		});
 	},
 	uploadFile (event) {
 		if (!window.FileReader) {
@@ -189,15 +200,25 @@ module.exports = Field.create({
 				}, index++));
 			};
 		}, (err, thumbnails) => {
+			const thumbs = [...this.state.thumbnails, ...thumbnails];
 			this.setState({
-				thumbnails: [...this.state.thumbnails, ...thumbnails],
+				thumbnails: thumbs,
 			});
 
 			if (thumbnails) {
-				console.log('new: ', [ ...this.props.value, `upload:${this.state.uploadFieldPath}` ]);
+				this.queuingElements = {
+					...this.queuingElements,
+					...{
+						[this.key]: thumbnails,
+					},
+				};
+				// console.log('new: ', [ ...this.props.value, `upload:${this.state.uploadFieldPath}` ]);
 				this.props.onChange({
 					path: this.props.path,
-					value: [ ...this.props.value, `upload:${this.state.uploadFieldPath}` ],
+					value: [
+						...this.savableImage(thumbs),
+						`upload:${this.state.uploadFieldPath}`,
+					],
 				});
 			}
 		});

@@ -36,7 +36,8 @@ function cleanUp (oldValues, newValues) {
 	});
 
 	var removedItemsCloudinaryIds = _.difference(oldvalIds, newValIds);
-
+	// console.log('cleanUp: ', removedItemsCloudinaryIds);
+	// console.log('each: ', oldvalIds, newValIds);
 	// We never wait to return on the images being removed
 	async.map(removedItemsCloudinaryIds, function (id, next) {
 		cloudinary.uploader.destroy(id, function (result) {
@@ -310,10 +311,10 @@ cloudinaryimages.prototype.updateItem = async function(item, data, files, callba
 	const options = { 
 		subPath: data['__subPath'],
 	};
-	var value = item.get(this.path);
+	var value = item.get(this.path) || {};
 	var oldValues = [];
 	if (options.subPath) {
-		oldValues = value[options.subPath];
+		oldValues = value[options.subPath] || [];
 	}
 
 	// TODO: This logic needs to block uploading of files from the data argument,
@@ -464,17 +465,15 @@ cloudinaryimages.prototype.updateItem = async function(item, data, files, callba
 		cleanUp(oldValues, values);
 		if (err) return callback(err);
 		result = result.filter(truthy);
+		// console.log('value[options.subPath]: ', value, options.subPath, value[options.subPath]);
 		if (options.subPath) {
-			value = {
+			const newValue = {
 				...value,
 				...{
-					[options.subPath]: [
-						...value[options.subPath],
-						result,
-					],
-				},
+					[options.subPath]: result,
+				}
 			};
-			item.set(this.path, value);
+			item.set(field.path, newValue);
 		} else {
 			item.set(field.path, result);
 		}
