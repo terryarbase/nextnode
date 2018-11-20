@@ -5,9 +5,23 @@ module.exports = function (req, res) {
 	async.map(req.body.items, function (param, done) {
 		var data = req.list.convertJson(param);
 		req.list.model.findById(data.id, function (err, item) {
-			if (err) return done({ statusCode: 500, error: 'database error', detail: err, id: data.id });
-			if (!item) return done({ statusCode: 404, error: 'not found', id: data.id });
-			req.list.updateItem(item, data, { files: req.files, user: req.user }, function (err) {
+			if (err) return done({
+				statusCode: 500,
+				error: req.t.__('msg_db_error_withoutReason'),
+				detail: err,
+				id: data.id,
+			});
+			if (!item) return done({
+				statusCode: 404,
+				error: req.t.__('msg_user_notfound'),
+				id: data.id,
+			});
+				
+			req.list.updateItem(item, data, {
+				files: req.files,
+				user: req.user,
+				__: req.t.__,
+			}, function (err) {
 				if (err) {
 					err.id = data.id;
 					// validation errors send http 400; everything else sends http 500

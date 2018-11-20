@@ -3,7 +3,7 @@ const _ = require('lodash');
 module.exports = function (req, res) {
 	var keystone = req.keystone;
 	if (!keystone.security.csrf.validate(req)) {
-		return res.apiError(403, 'invalid csrf');
+		return res.apiError(403, req.t.__('msg_invalid_csrf'));
 	}
 	const { body, locales, list: { options: { multilingual }, fields } } = req;
 	var newData = {};
@@ -37,6 +37,7 @@ module.exports = function (req, res) {
 		files: req.files,
 		ignoreNoEdit: true,
 		user: req.user,
+		__: req.t.__,
 		lang: locales && locales.langd,
 		isMultilingual: !!locales,
 		defaultLang: locales && locales.defaultLanguage,
@@ -44,7 +45,9 @@ module.exports = function (req, res) {
 	}, function (err) {
 		if (err) {
 			var status = err.error === 'validation errors' ? 400 : 500;
-			var error = err.error === 'database error' ? err.detail : err;
+			const error = this.req.t.__('msg_db_error', {
+                reason: err.error === 'database error' ?  err.detail : err
+            });
 			return res.apiError(status, error);
 		}
 		res.json(req.list.getData(item));

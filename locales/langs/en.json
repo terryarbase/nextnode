@@ -1,9 +1,18 @@
 {
 	"msg_db_error": "The execution in database is abnormal. The Reason: {{reason}}",
-	"msg_db_error_withoutReson": "The execution in database is abnormal",
+	"msg_db_error_withoutReason": "The execution in database is abnormal",
 	"msg_invalid_csrf": "Invalid Cross-Site Request Forgery (CSRF). Please refresh the screen ant try again.",
 	"msg_user_notfound": "The request user is not found",
 	"msg_request_filed_invalid": "The requested fields must be undefined, a string, or an array.",
 
-	"msg_drilldown_invalid": "Drilldown for {{key}} is invalid: field at path {{path}} is not a relationship."
+	"msg_drilldown_invalid": "Drilldown for {{key}} is invalid: field at path {{path}} is not a relationship.",
+	"msg_nodelete_permission": "The list cannot be deleted.",
+	"msg_delete_yourself": "You should not be abled to delete yourself.",
+	"msg_permission_denied": "You are not permited.",
+	"msg_invalid_path_update": "Invalid path specified in fields to update {{fields}} for list {{key}}.",
+
+	"title_notallowed": "Not Allowed",
+	"title_validation_error": "Validation Errors",
+	"title_field_error": "Field Errors",
+	"title_invalid_configuration": "Invalid Configuration"
 }

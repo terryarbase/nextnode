@@ -16,7 +16,7 @@ module.exports = function (req, res) {
 			fields = listToArray(fields);
 		}
 		if (fields && !Array.isArray(fields)) {
-			return res.status(401).json({ error: 'fields must be undefined, a string, or an array' });
+			return res.status(401).json({ error: req.t.__('msg_request_filed_invalid') });
 		}
 	}
 	var filters = req.query.filters;
@@ -64,7 +64,7 @@ module.exports = function (req, res) {
 	], function (err, count, items) {
 		if (err) {
 			res.logError('admin/server/api/list/get', 'database error finding items', err);
-			return res.apiError('database error', err);
+			return res.apiError(req.t.__('msg_db_error_withoutReason'), err);
 		}
 		var results;
 		var editCount;

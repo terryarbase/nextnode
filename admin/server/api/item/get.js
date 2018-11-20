@@ -19,7 +19,7 @@ module.exports = function (req, res) {
 	query.exec(function (err, item) {
 
 		if (err) return res.status(500).json({
-			err: req.t.__('msg_db_error_withoutReson'),
+			err: req.t.__('msg_db_error_withoutReason'),
 			detail: err,
 		});
 		if (!item) return res.status(404).json({
@@ -120,7 +120,7 @@ module.exports = function (req, res) {
 		async.parallel(tasks, function (err) {
 			if (err) {
 				return res.status(500).json({
-					err: req.t.__('msg_db_error_withoutReson'),
+					err: req.t.__('msg_db_error_withoutReason'),
 					detail: err,
 				});
 			}
