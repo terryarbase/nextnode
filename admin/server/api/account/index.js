@@ -19,7 +19,7 @@ class Account {
 
     securityRequired() {
     	if (!this.keystone.security.csrf.validate(this.req)) {
-			return this.res.apiError(403, 'invalid csrf');
+			return this.res.apiError(403, this.req.t.__('msg_invalid_csrf'));
 		}
     }
 
@@ -33,7 +33,7 @@ class Account {
 	    } = this;
     	try {
 	    	const item = await model.findById(id);
-			if (!item) return res.apiError(404, 'User not found');
+			if (!item) return res.apiError(404, this.req.t.__('msg_user_notfound'));
 			this.item = item;
 	    } catch (err) {
 	    	return res.apiError(500, err);
@@ -72,7 +72,9 @@ class Account {
     		// console.log('>>>>>>>>', err);
 			if (err) {
 				var status = err.error === 'validation errors' ? 400 : 500;
-				var error = err.error === 'database error' ? err.detail : err;
+				const error = this.req.t.__('msg_db_error', {
+                    reason: err.error === 'database error' ?  err.detail : err
+                });
 				return res.apiError(status, error);
 			}
 			res.json(list.getData(item));

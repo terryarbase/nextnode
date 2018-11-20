@@ -14,12 +14,18 @@ module.exports = function (req, res) {
 		fields = listToArray(fields);
 	}
 	if (fields && !Array.isArray(fields)) {
-		return res.status(401).json({ error: 'fields must be undefined, a string, or an array' });
+		return res.status(401).json({ error: req.t.__('msg_request_filed_invalid') });
 	}
 	query.exec(function (err, item) {
 
-		if (err) return res.status(500).json({ err: 'database error', detail: err });
-		if (!item) return res.status(404).json({ err: 'not found', id: req.params.id });
+		if (err) return res.status(500).json({
+			err: req.t.__('msg_db_error_withoutReson'),
+			detail: err,
+		});
+		if (!item) return res.status(404).json({
+			err: req.t.__('msg_user_notfound'),
+			id: req.params.id,
+		});
 
 		var tasks = [];
 		var drilldown;
@@ -47,7 +53,12 @@ module.exports = function (req, res) {
 					var field = req.list.fields[path];
 
 					if (!field || field.type !== 'relationship') {
-						throw new Error('Drilldown for ' + req.list.key + ' is invalid: field at path ' + path + ' is not a relationship.');
+						throw new Error(
+							req.t.__('msg_drilldown_invalid', {
+								key: req.list.key,
+								path,
+							})
+						);
 					}
 
 					var refList = field.refList;
@@ -109,7 +120,7 @@ module.exports = function (req, res) {
 		async.parallel(tasks, function (err) {
 			if (err) {
 				return res.status(500).json({
-					err: 'database error',
+					err: req.t.__('msg_db_error_withoutReson'),
 					detail: err,
 				});
 			}

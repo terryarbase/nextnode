@@ -4,10 +4,10 @@ const grappling = require('grappling-hook');
 const path = require('path');
 const utils = require('keystone-utils');
 const i18n = require('i18n');
-
-const importer = require('./lib/core/importer');
 var locales = require('./locales');
 locales = locales.toJS();
+
+const importer = require('./lib/core/importer');
 /**
  * Don't use process.cwd() as it breaks module encapsulation
  * Instead, let's use module.parent if it's present, or the module itself if there is no parent (probably testing keystone directly if that's the case)
@@ -29,12 +29,16 @@ var Keystone = function () {
 	
 	const rootPath = path.resolve(__dirname);
 	const defaultLang = 'en';
+
 	/*
 	** Localization
 	*/
 	i18n.configure({
 	    locales: _.keys(locales),
-	    directory: `${rootPath}/locales`,
+	    directory: `${rootPath}/locales/langs/`,
+	    defaultLocale: defaultLang,
+	    autoReload: true,
+	    updateFiles: false,
 	});
 
 	this.lists = {};
@@ -56,6 +60,7 @@ var Keystone = function () {
 		*/
 		'locale': defaultLang,
 		'app root': rootPath,
+		'i18n': i18n,
 		'static lang path': 'static/locale.json',	// json file for generated language static file 
 		'module root': moduleRoot,
 		'frame guard': 'sameorigin',

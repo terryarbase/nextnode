@@ -17,10 +17,11 @@ module.exports = function createDynamicRouter (keystone) {
 	var IndexRoute = require('../routes/index');
 	var SigninRoute = require('../routes/signin');
 	var SignoutRoute = require('../routes/signout');
-
+	console.log(keystone.get('i18n'));
 	// Use bodyParser and multer to parse request bodies and file uploads
 	router.use(bodyParser.json({}));
 	router.use(bodyParser.urlencoded({ extended: true }));
+	router.use(keystone.get('i18n').init);
 	router.use(multer({ includeEmptyFields: true }));
 
 	// Bind the request to the keystone instance
