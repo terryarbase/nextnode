@@ -419,23 +419,21 @@ Field.prototype.getElasticData = function (data, options={}) {
 	const turnOnMultilingual = this.options.multilingual;
 	const isMultilingualStructure = this.list.isMultilingualFormat(data, supportingLanguage).length;
 	var newData = data;
+
 	// console.log(this.path, isMultilingualStructure, newData, turnOnMultilingual);
 	if (turnOnMultilingual) {
 		// string value or other object structure
 		if (!isMultilingualStructure) {
 			if (typeof data !== 'object') {
-				const keys = _.keys(supportingLanguage);
-				if (keys.length) {
-					newData = {};
-					_.forEach(keys, key => {
-						newData = {
-							...newData,
-							...{
-								[key]: data,
-							},
-						};
-					});
-				}
+				newData = {};
+				_.forEach(supportingLanguage, key => {
+					newData = {
+						...newData,
+						...{
+							[key]: data,
+						},
+					};
+				});
 			} else {
 				newData = {
 					[defaultLanguage]: data,

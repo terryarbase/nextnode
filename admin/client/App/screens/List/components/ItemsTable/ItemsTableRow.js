@@ -28,6 +28,8 @@ const ItemsRow = React.createClass({
 		realTimeCol: React.PropTypes.object,
 		realTimeInfo: React.PropTypes.object,
 		isRestricted: React.PropTypes.func,
+		isLocale: React.PropTypes.bool,
+		currentLang: React.PropTypes.string,
 		// Injected by React DnD:
 		isDragging: React.PropTypes.bool,         // eslint-disable-line react/sort-prop-types
 		connectDragSource: React.PropTypes.func,  // eslint-disable-line react/sort-prop-types
@@ -44,57 +46,77 @@ const ItemsRow = React.createClass({
 			'ItemList__row--success': this.props.rowAlert.success === itemId,
 			'ItemList__row--failure': this.props.rowAlert.fail === itemId,
 		});
-		const { noedit, realTimeCol, realTimeInfo, manageMode, isRestricted } = this.props;
+		const { noedit, realTimeCol, realTimeInfo, manageMode, isRestricted, currentLang } = this.props;
 		// item fields
 		var cells = this.props.columns.map((col, i) => {
 			var ColumnType = Columns[col.type] || Columns.__unrecognised__;
 			var linkTo = !i ? `${Keystone.adminPath}/${this.props.list.path}/${itemId}` : undefined;
 			// use original data value instead of realtime value
 			var value = item.fields[col.path];
-			
-			// console.log('col.fields: ', col);
+			var currentValue = value;
 			// if the record is restricted by the delegated field, then no realtime edit is allowed.
 			const restrictDelegated = isRestricted(col, item);
-			// if (col.field && col.field.restrictDelegated && item.delegated) {
-			// 	restrictDelegated = true;
-			// }
+			const isMultilingual = col.field.multilingual;
 			/*
 			** if realtime action is triggered
 			*/
-			// console.log('>>>>>>>>>', item);
 			if ((realTimeCol && _.keys(realTimeCol).length ||
 				realTimeInfo && _.keys(realTimeInfo).length) && !restrictDelegated) {
 				// if real time col content is not canceled by real time row content
 				// then refer to real time col content
 				if (_.has(realTimeCol, col.path) && realTimeCol[col.path] !== null) {
-					value = realTimeCol[col.path];
+					currentValue = realTimeCol[col.path];
 				// otherwise, if the real time row is triggered
 				} else if (realTimeInfo && realTimeInfo[itemId] && _.has(realTimeInfo[itemId], col.path)) {
-					
-					value = realTimeInfo[itemId][col.path];
+					currentValue = realTimeInfo[itemId][col.path];
 				} 
 			// otherwise, use the defaul value of result list
 			} 
-			// else {
-			// 	value = item.fields[col.path];
-			// }
+
+			// special for multilingual
+			if (isMultilingual) {
+				currentValue = currentValue[currentLang];
+				item = {
+					...item,
+					...{
+						fields: {
+							...item[fields],
+							...{
+								[col.path]: currentValue,
+							},
+						},
+					},
+				};
+			}
+
+			console.log(item);
 			return <ColumnType
 				key={col.path}
 				list={this.props.list}
 				col={col}
 				data={item}
 				noedit={manageMode || noedit || restrictDelegated}
-				currentValue={value}
+				currentValue={currentValue}
 				linkTo={linkTo}
-				onChange={value => {
+				onChange={v => {
 					// window.console.warn('col >>>>>>>>>>> ', value, col);
 					// if (!fields.delegated) {
-						this.props.onChange({
-							// stateName: 'realTimeInfo',
-							key: itemId,
-							path: col.path,
-							value,
-						});
+					var newValue = v;
+					if (isMultilingual) {
+						newValue = {
+							...value,
+							...{
+								[currentLang]: v,
+							}
+						}
+					}
+
+					this.props.onChange({
+						// stateName: 'realTimeInfo',
+						key: itemId,
+						path: col.path,
+						value: newValue,
+					});
 					// }
 				}}
 			/>;

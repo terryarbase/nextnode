@@ -68,8 +68,12 @@ module.exports = function (req, res) {
 		}
 		var results;
 		var editCount;
+		const options = {
+			lang: locales && locales.langd,
+			defaultLang: locales && locales.defaultLanguage,
+		};
 		if (includeResults) {
-			results = _.map(items, item => req.list.getData(item, fields, req.query.expandRelationshipFields));
+			results = _.map(items, item => req.list.getData(item, fields, req.query.expandRelationshipFields, options));
 			editCount = _.filter(items, item => !item.delegated).length;
 		} else {
 			count = null;

@@ -24,6 +24,8 @@ const ItemsTable = React.createClass({
 		noedit: PropTypes.bool.isRequired,
 		manageMode: PropTypes.bool.isRequired,
 		rowAlert: PropTypes.object.isRequired,
+		// isLocale={this.props.isLocale}
+		// currentLang={this.props.currentLanguage}
 	},
 	renderCols () {
 		let cols = this.props.columns.map(col => (
@@ -160,6 +162,8 @@ const ItemsTable = React.createClass({
 							realTimeCol={realTimeCol}
 							realTimeInfo={realTimeInfo}
 							id={item.id}
+							isLocale={this.props.isLocale}
+							currentLang={this.props.currentLang}
 							item={item}
 							isRestricted={isRestricted}
 							noedit={noedit}
