@@ -45,6 +45,7 @@ module.exports = function (req, res, next) {
 					expandRelationshipFields: req.query.expandRelationshipFields,
 					fields: req.query.select,
 					user: req.user,
+					langd: req.locales.langd,
 				});
 				// If nested values in the first item aren't present, babyparse
 				// won't add them even if they are present in others. So we

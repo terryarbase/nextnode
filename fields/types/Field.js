@@ -20,7 +20,7 @@ function isObject (arg) {
 //     }
 // }
 
-function validateSpec (spec) {
+function validateSpec (spec) { 
 	if (!spec) spec = {};
 	if (!isObject(spec.supports)) {
 		spec.supports = {};

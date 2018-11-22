@@ -144,6 +144,7 @@ List.prototype.getProperlyValue = function({ field, values, isLocale, currentLan
 List.prototype.getProperlyChangedValue = function({ currentValue, path, value, isLocale, currentLang }) {
 	const fields = this.fields;
 	var values = { ...currentValue };
+
 	if (isLocale && fields[path] && fields[path].multilingual) {
 		values = {
 			...values,
@@ -487,6 +488,9 @@ List.prototype.getDownloadURL = function (options) {
 	parts.push(options.columns ? 'select=' + options.columns.map(i => i.path).join(',') : '');
 	parts.push(options.sort ? 'sort=' + getSortString(options.sort) : '');
 	parts.push('expandRelationshipFields=true');
+	if (options.lang) {
+		parts.push(`langd=${options.lang}`);
+	}
 	return url + '/export.' + options.format + '?' + parts.filter(truthy).join('&');
 };
 

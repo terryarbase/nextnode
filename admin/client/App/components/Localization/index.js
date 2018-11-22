@@ -32,7 +32,7 @@ var LocalizationSelector = React.createClass({
 						alt={localization[key].label}
 					/> : null
 				}
-				<span>{localization[key].label}{defaultLang === localization[key].value ? ' (Default)' : ''}</span>
+				<span>{localization[key].label}{defaultLang === localization[key].value ? ' - Default' : ''}</span>
 			</MenuItem>
 		);
 	},

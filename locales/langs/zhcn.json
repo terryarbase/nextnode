@@ -1,3 +1,17 @@
 {
-	"test": "你好2"
-}
+	"msg_db_error": "数据库异常执行！原因：{{reason}}",
+	"msg_db_error_withoutReason": "数据库异常执行",
+	"msg_invalid_csrf": "无效的跨站请求（CSRF），请刷新再试一次。",
+	"msg_user_notfound": "找不到用户",
+	"msg_request_filed_invalid": "请求的字段必须是undefined, string, 或array.",
+
+	"msg_drilldown_invalid": "{{key}}无效：路径{{path}}上的字段没有数据关系。",
+	"msg_nodelete_permission": "无法删除列表",
+	"msg_delete_yourself": "你不应该删除自己的唯一数据",
+	"msg_permission_denied": "你没有被允许",
+	"msg_invalid_path_update": "在列表{{key}}中更新{{fields}}指定的路径无效",
+
+	"title_notallowed": "不允許",
+	"title_validation_error": "验证错误",
+	"title_field_error": "字段错误",
+	"title_invalid_configuration": "无效的配置"

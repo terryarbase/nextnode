@@ -197,15 +197,22 @@ var ItemView = React.createClass({
 	},
 });
 
-module.exports = connect((state) => ({
-	data: state.item.data,
-	loading: state.item.loading,
-	ready: state.item.ready,
-	error: state.item.error,
-	currentList: state.lists.currentList,
-	currentLanguage: state.lists.locale.current,
-	isLocale: state.lists.locale.active,
-	defaultLanguage: state.lists.locale.default,
-	relationshipData: state.item.relationshipData,
-	drag: state.item.drag,
-}))(ItemView);
+module.exports = connect(state => {
+	const { lists } = state;
+	var isLocale = false;
+	if (lists.currentList) {
+		isLocale = !!lists.currentList.multilingual;
+	}
+	return {
+		data: state.item.data,
+		loading: state.item.loading,
+		ready: state.item.ready,
+		error: state.item.error,
+		currentList: state.lists.currentList,
+		currentLanguage: state.lists.locale.current,
+		isLocale: state.lists.locale.active,
+		defaultLanguage: state.lists.locale.default,
+		relationshipData: state.item.relationshipData,
+		drag: state.item.drag,
+	};
+})(ItemView);

@@ -30,7 +30,7 @@ module.exports = async function (req, res, next, nextNode) {
 			// default language to pickup the data
 			defaultLanguage,
 			// adminUI current language
-			langd: req.headers.langd || defaultLanguage.value,
+			langd: req.headers.langd || req.query.langd || req.body.langd || defaultLanguage.value,
 		};
 	}
 	next();

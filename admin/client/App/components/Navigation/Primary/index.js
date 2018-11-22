@@ -90,7 +90,7 @@ var PrimaryNavigation = React.createClass({
 		return (
 			<div className="primary-navbar__currentUser">
 				<b>Welcome:</b> 
-				{user.name}
+				<a href="#" onClick={this.onPopoverSetting}>{user.name}</a>
 			</div>
 		);
 	},
@@ -100,11 +100,11 @@ var PrimaryNavigation = React.createClass({
 
 		return (
 			<PrimaryNavItem
-				label="octicon-globe"
+				label="octicon-device-desktop"
 				href={Keystone.backUrl}
 				title={'Front page - ' + this.props.brand}
 			>
-				<span className="octicon octicon-globe" />
+				<span className="octicon octicon-device-desktop" />
 			</PrimaryNavItem>
 		);
 	},
@@ -128,7 +128,6 @@ var PrimaryNavigation = React.createClass({
 			<ul className="app-nav app-nav--primary app-nav--right">
 				{/* {this.renderLanguageSwitcher()} */}
 				{this.renderBackButton()}
-				{this.renderAccountSettingButton()}
 				{this.renderSignout()}
 			</ul>
 		);

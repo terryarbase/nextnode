@@ -16,6 +16,7 @@ var ListDownloadForm = React.createClass({
 		activeColumns: PropTypes.array,
 		dispatch: PropTypes.func.isRequired,
 		list: PropTypes.object,
+		currentLang: PropTypes.string,
 	},
 	getInitialState () {
 		return {
@@ -97,7 +98,9 @@ var ListDownloadForm = React.createClass({
 		});
 	},
 	handleDownloadRequest () {
-		this.props.dispatch(downloadItems(this.state.format, Object.keys(this.state.selectedColumns)));
+		this.props.dispatch(
+			downloadItems(this.state.format, Object.keys(this.state.selectedColumns), this.props.currentLang)
+		);
 		this.togglePopout(false);
 	},
 	renderColumnSelect () {

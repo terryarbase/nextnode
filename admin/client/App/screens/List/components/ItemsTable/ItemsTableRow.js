@@ -54,6 +54,7 @@ const ItemsRow = React.createClass({
 			// use original data value instead of realtime value
 			var value = item.fields[col.path];
 			var currentValue = value;
+			var newItem = { ...item };
 			// if the record is restricted by the delegated field, then no realtime edit is allowed.
 			const restrictDelegated = isRestricted(col, item);
 			const isMultilingual = col.field.multilingual;
@@ -76,7 +77,7 @@ const ItemsRow = React.createClass({
 			// special for multilingual
 			if (isMultilingual) {
 				currentValue = currentValue[currentLang];
-				item = {
+				newItem = {
 					...item,
 					...{
 						fields: {
@@ -88,13 +89,11 @@ const ItemsRow = React.createClass({
 					},
 				};
 			}
-
-			console.log(item);
 			return <ColumnType
 				key={col.path}
 				list={this.props.list}
 				col={col}
-				data={item}
+				data={newItem}
 				noedit={manageMode || noedit || restrictDelegated}
 				currentValue={currentValue}
 				linkTo={linkTo}

@@ -45,7 +45,7 @@ url.prototype.format = function (item) {
  * Remove the protocol prefix from url
  */
 function removeProtocolPrefix (url) {
-	return url.replace(/^[a-zA-Z]+\:\/\//, '');
+	return url ? url.replace(/^[a-zA-Z]+\:\/\//, '') : '';
 }
 
 /* Export Field Type */

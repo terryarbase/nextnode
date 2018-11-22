@@ -12,7 +12,12 @@ var TextColumn = React.createClass({
 	getValue () {
 		// cropping text is important for textarea, which uses this column
 		const value = this.props.data.fields[this.props.col.path];
-		return value ? value.substr(0, 100) : null;
+		/*
+		** remove all of html tags for HTML types
+		** Terry Chan
+		** 22/11/2018
+		*/
+		return value ? value.replace(/<(.|\n)*?>/g, '').substr(0, 100) : null;
 	},
 	render () {
 		const value = this.getValue();

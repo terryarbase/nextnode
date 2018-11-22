@@ -91,6 +91,8 @@ var EditForm = React.createClass({
 				props.isValid = false;
 			}
 		}
+
+		
 		props.value = this.props.list.getProperlyValue({ field, isLocale, currentLang, values });
 		props.values = values;
 		props.onChange = this.handleChange;
@@ -99,7 +101,7 @@ var EditForm = React.createClass({
 	},
 	handleChange ({ path, value }) {
 		// const { path, value } = e;
-		// console.log(path, value);
+
 		const { isLocale, currentLang } = this.props;
 		const { values: currentValue } = this.state;
 		const values = this.props.list.getProperlyChangedValue({
@@ -149,8 +151,6 @@ var EditForm = React.createClass({
 		var formData = new FormData(editForm);
 		const { isLocale, currentLang } = this.props;
 		const { values } = this.state;
-
-		
 		// convert multilingual field to formdata
 		formData = this.props.list.getFormCreateData({
 			formData,

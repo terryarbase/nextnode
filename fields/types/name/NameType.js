@@ -2,6 +2,7 @@ var _ = require('lodash');
 var FieldType = require('../Type');
 var util = require('util');
 var utils = require('keystone-utils');
+var keystone = require('../../../');
 var displayName = require('display-name');
 
 /**
@@ -31,12 +32,19 @@ name.prototype.addToSchema = function (schema) {
 		last: this.path + '.last',
 		full: this.path + '.full',
 	};
+	const mongoose = keystone.mongoose;
+	const ops = this.schemaOptions;
 
-	schema.nested[this.path] = true;
-	schema.add({
-		first: String,
-		last: String,
-	}, this.path + '.');
+	if (ops.multilingual) {
+		ops.type = keystone.mongoose.Schema.Types.Mixed;
+		schema.path(this.path, ops);
+	} else {
+		schema.nested[this.path] = true;
+		schema.add({
+			first: String,
+			last: String,
+		}, this.path + '.');
+	}
 
 	schema.virtual(paths.full).get(function () {
 		return displayName(this.get(paths.first), this.get(paths.last));
@@ -193,6 +201,29 @@ name.prototype.isModified = function (item) {
 	return item.isModified(this.paths.first) || item.isModified(this.paths.last);
 };
 
+// name.prototype.updateField = function (paths, value, options) {
+// 	if (options.subPath) {
+// 		const subPath = options.subPath;
+// 		const currentPathValue = item.get(this.path) || {};
+// 		console.log('currentPathValue: ', currentPathValue);
+// 		currentPathValue = {
+// 			...currentPathValue,
+// 			...{
+// 				[subPath]: {
+// 					...currentPathValue[subPath],
+// 					...{
+// 						[paths]: value,
+// 					},
+// 				},
+// 			},
+// 		};
+// 		console.log('after currentPathValue: ', currentPathValue);
+// 		item.set(this.path, currentPathValue);
+// 	} else {
+// 		item.set(paths, value);
+// 	}
+// };
+
 /**
  * Updates the value for this field in the item from a data object
  *
@@ -201,14 +232,19 @@ name.prototype.isModified = function (item) {
 name.prototype.updateItem = function (item, data, callback) {
 	var paths = this.paths;
 	var value = this.getInputFromData(data);
-	if (typeof value === 'string' || value === null) {
-		item.set(paths.full, value);
-	} else if (typeof value === 'object') {
-		if (typeof value.first === 'string' || value.first === null) {
-			item.set(paths.first, value.first);
-		}
-		if (typeof value.last === 'string' || value.last === null) {
-			item.set(paths.last, value.last);
+	const isMultilingualFormat = this.list.isMultilingualFormat(value).length;
+	if (isMultilingualFormat) {
+		item.set(this.path, value);
+	} else {
+		if (typeof value === 'string' || value === null) {
+			item.set(paths.full, value);
+		} else if (typeof value === 'object') {
+			if (typeof value.first === 'string' || value.first === null) {
+				item.set(paths.first, value.first);
+			}
+			if (typeof value.last === 'string' || value.last === null) {
+				item.set(paths.last, value.last);
+			}
 		}
 	}
 	process.nextTick(callback);

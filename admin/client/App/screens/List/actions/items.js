@@ -68,7 +68,12 @@ export function loadItems (options = {}) {
 	};
 }
 
-export function downloadItems (format, columns) {
+/*
+** add data language support
+** Terry Chan
+** 22/11/2018
+*/
+export function downloadItems (format, columns, lang) {
 	return (dispatch, getState) => {
 		const state = getState();
 		const active = state.active;
@@ -76,6 +81,7 @@ export function downloadItems (format, columns) {
 		const url = currentList.getDownloadURL({
 			search: active.search,
 			filters: active.filters,
+			lang,
 			sort: active.sort,
 			columns: columns ? currentList.expandColumns(columns) : active.columns,
 			format: format,

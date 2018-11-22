@@ -352,9 +352,14 @@ const ListView = React.createClass({
 					dispatch={this.props.dispatch}
 					list={listsByPath[this.props.params.listId]}
 
+					isLocale={this.props.isLocale}
+					currentLang={this.props.currentLanguage}
+					defaultLang={this.props.defaultLanguage}
+					
 					// expand
 					expandIsActive={!this.state.constrainTableWidth}
 					expandOnClick={this.toggleTableWidth}
+
 
 					// create
 					createIsAvailable={!nocreate}
@@ -727,7 +732,7 @@ const ListView = React.createClass({
 		if (!this.props.ready) {
 			return this.renderSpinner();
 		}
-
+		// const { lists: { currentList } } = this.props;
 		return (
 			<div data-screen-id="list">
 				{
@@ -751,6 +756,9 @@ const ListView = React.createClass({
 							isOpen={this.state.showUpdateForm}
 							itemIds={Object.keys(this.state.checkedItems)}
 							list={this.props.currentList}
+							isLocale={this.props.isLocale}
+							currentLang={this.props.currentLanguage}
+							defaultLang={this.props.defaultLanguage}
 							onCancel={() => this.toggleUpdateModal(false)}
 						/>
 						{this.renderConfirmationDialog()}
@@ -761,7 +769,12 @@ const ListView = React.createClass({
 	},
 });
 
-module.exports = connect((state) => {
+module.exports = connect(state => {
+	const { lists } = state;
+	var isLocale = false;
+	if (lists.currentList) {
+		isLocale = !!lists.currentList.multilingual;
+	}
 	return {
 		lists: state.lists,
 		loading: state.lists.loading,
@@ -770,7 +783,7 @@ module.exports = connect((state) => {
 		items: state.lists.items,
 		page: state.lists.page,
 		currentLanguage: state.lists.locale.current,
-		isLocale: state.lists.locale.active,
+		isLocale,
 		defaultLanguage: state.lists.locale.default,
 		ready: state.lists.ready,
 		rowAlert: state.lists.rowAlert,

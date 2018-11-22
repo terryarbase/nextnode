@@ -10,6 +10,7 @@ import theme from '../../../../theme';
 import ListColumnsForm from './ListColumnsForm';
 import ListDownloadForm from './ListDownloadForm';
 import ListHeaderSearch from './ListHeaderSearch';
+import LocalizationSelector from '../../../components/Localization';
 
 import ListFiltersAdd from './Filtering/ListFiltersAdd';
 
@@ -76,6 +77,10 @@ function ListHeaderToolbar ({
 	nofilter,
 	noscale,
 
+	isLocale,
+	currentLang,
+	defaultLang,
+
 	...props
 }) {
 	return (
@@ -115,6 +120,7 @@ function ListHeaderToolbar ({
 						!nodownload ? 
 						<Section cssStyles={classes.download}>
 							<ListDownloadForm
+								currentLang={isLocale ? currentLang : null}
 								activeColumns={columnsActive}
 								dispatch={dispatch}
 								list={list}
@@ -132,6 +138,17 @@ function ListHeaderToolbar ({
 									title="Expand table width"
 								/>
 							</ButtonDivider>
+						</Section> : null
+					}
+					{
+						isLocale ?
+						<Section grow cssStyles={classes.filter}>
+							<div className="localization_List-section">
+								<LocalizationSelector
+									dispatch={dispatch}
+									language={currentLang}
+									defaultLang={defaultLang} />
+							</div>
 						</Section> : null
 					}
 					{createIsAvailable && <Section cssStyles={classes.create}>
@@ -160,6 +177,9 @@ ListHeaderToolbar.propTypes = {
 	filtersActive: PropTypes.array,
 	filtersAvailable: PropTypes.array,
 	list: PropTypes.object,
+	isLocale: PropTypes.bool,
+	currentLang: PropTypes.string,
+	defaultLang: PropTypes.string,
 	searchHandleChange: PropTypes.func.isRequired,
 	searchHandleClear: PropTypes.func.isRequired,
 	searchHandleKeyup: PropTypes.func.isRequired,

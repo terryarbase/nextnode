@@ -23,7 +23,10 @@ module.exports = Field.create({
 		onChange: PropTypes.func.isRequired,
 		path: PropTypes.string.isRequired,
 		paths: PropTypes.shape(NAME_SHAPE).isRequired,
-		value: PropTypes.shape(NAME_SHAPE).isRequired,
+		value: PropTypes.oneOfType(
+			PropTypes.shape(NAME_SHAPE),
+			PropTypes.string,
+		),
 	},
 
 	valueChanged: function (which, event) {
@@ -62,26 +65,27 @@ module.exports = Field.create({
 		);
 	},
 	renderField () {
-		const { value = {}, paths, autoFocus } = this.props;
+		// name={this.getInputName(paths.first)}
+		// name={this.getInputName(paths.last)}
+		const { value = {}, path, paths, autoFocus } = this.props;
 		return (
 			<Grid.Row small="one-half" gutter={10}>
 				<Grid.Col>
 					<FormInput
 						autoFocus={autoFocus}
 						autoComplete="off"
-						name={this.getInputName(paths.first)}
+						name={this.getInputName(path)}
 						onChange={this.changeFirst}
 						placeholder="First name"
-						value={value.first}
+						value={value.first || ''}
 					/>
 				</Grid.Col>
 				<Grid.Col>
 					<FormInput
 						autoComplete="off"
-						name={this.getInputName(paths.last)}
 						onChange={this.changeLast}
 						placeholder="Last name"
-						value={value.last}
+						value={value.last || ''}
 					/>
 				</Grid.Col>
 			</Grid.Row>
