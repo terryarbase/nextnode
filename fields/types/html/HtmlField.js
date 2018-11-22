@@ -32,10 +32,13 @@ module.exports = Field.create({
 	},
 
 	getInitialState () {
+		const { value } = this.props;
+		this._currentValue = value;
 		return {
 			id: getId(),
 			isFocused: false,
 			wysiwygActive: false,
+			value,
 		};
 	},
 
@@ -51,8 +54,9 @@ module.exports = Field.create({
 			editor.on('focus', self.focusChanged.bind(self, true));
 			editor.on('blur', self.focusChanged.bind(self, false));
 		};
-
+		// console.log('initWysiwyg: ', this.props.value);
 		this._currentValue = this.props.value;
+		// console.log('opts: ', opts);
 		tinymce.init(opts);
 		if (evalDependsOn(this.props.dependsOn, this.props.values)) {
 			this.setState({ wysiwygActive: true });
@@ -69,6 +73,9 @@ module.exports = Field.create({
 			this.initWysiwyg();
 		}
 
+		// if (this.editor && this._currentValue !== this.props.value) {
+		// 	this.editor.setContent(this.props.value);
+		// } else 
 		if (this.props.wysiwyg) {
 			if (evalDependsOn(this.props.dependsOn, this.props.values)) {
 				if (!this.state.wysiwygActive) {
@@ -78,6 +85,7 @@ module.exports = Field.create({
 				this.removeWysiwyg(prevState);
 			}
 		}
+		// console.log(prevProps.value, ">>>>>>>", this.props.value);
 	},
 
 	componentDidMount () {
@@ -96,7 +104,7 @@ module.exports = Field.create({
 		});
 	},
 
-	valueChanged  (event) {
+	valueChanged (event) {
 		var content;
 		if (this.editor) {
 			content = this.editor.getContent();
@@ -105,6 +113,7 @@ module.exports = Field.create({
 		}
 
 		this._currentValue = content;
+		// console.log('>>>>>>> ', content);
 		this.props.onChange({
 			path: this.props.path,
 			value: content,

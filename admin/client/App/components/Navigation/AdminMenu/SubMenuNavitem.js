@@ -11,7 +11,6 @@ const SubMenuNavItem = React.createClass({
 		children: React.PropTypes.node.isRequired,
 		className: React.PropTypes.string,
 		href: React.PropTypes.string.isRequired,
-		onClick: React.PropTypes.func,
 		path: React.PropTypes.string,
 		title: React.PropTypes.string,
     },
@@ -26,7 +25,7 @@ const SubMenuNavItem = React.createClass({
 				<Link
 					className="sub-menu-link"
 					to={this.props.href}
-					onClick={this.props.onClick}
+					onClick={this.props.onSelect}
 					title={this.props.title}
 					tabIndex="-1"
 				>

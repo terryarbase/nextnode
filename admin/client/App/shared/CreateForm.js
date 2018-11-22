@@ -193,7 +193,12 @@ const CreateForm = React.createClass({
 			}
 			if (field.stateless && field.multilingual) {
 				if (this.statelessUI[field.path]) {
-					element = this.statelessUI[field.path][currentLang] || element;
+					if (this.statelessUI[field.path][currentLang]) {
+						eleent = React.cloneElement(
+							this.statelessUI[field.path][currentLang],
+							fieldProps
+						);
+					}
 				}
 				// store the stateless element to state, no matter it is existing
 				this.statelessUI = {

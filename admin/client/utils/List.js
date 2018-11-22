@@ -181,7 +181,20 @@ List.prototype.getFormCreateData = function({ isLocale, formData, values }) {
 			if (values[key] && isLocale && fields[key].multilingual) {
 				// formData.set(key, );
 				if (typeof values[key] === 'object') {
-					formData.set(key, JSON.stringify(values[key]));
+					const keys = Object.keys(values[key]);
+					if (keys.length) {
+						formData.set(key, JSON.stringify(values[key]));
+					}
+				}
+			} else if (typeof values[key] === 'object') {
+				const keys = Object.keys(values[key]);
+				if (keys.length) {
+					// delete orginal formdata attr
+					formData.delete(key);
+					// use object declarion instead
+					keys.forEach(function(k) {
+						formData.set(key+'.'+k, values[key][k]);
+					});
 				}
 			}
 		}

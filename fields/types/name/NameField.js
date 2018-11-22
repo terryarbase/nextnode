@@ -14,19 +14,21 @@ module.exports = Field.create({
 	displayName: 'NameField',
 	statics: {
 		type: 'Name',
-		getDefaultValue: () => ({
-			first: '',
-			last: '',
-		}),
+		getDefaultValue: () => {
+			return {
+				// first: '',
+				// last: '',
+			};
+		},
 	},
 	propTypes: {
 		onChange: PropTypes.func.isRequired,
 		path: PropTypes.string.isRequired,
 		paths: PropTypes.shape(NAME_SHAPE).isRequired,
-		value: PropTypes.oneOfType(
+		value: PropTypes.oneOfType([
 			PropTypes.shape(NAME_SHAPE),
 			PropTypes.string,
-		),
+		]),
 	},
 
 	valueChanged: function (which, event) {

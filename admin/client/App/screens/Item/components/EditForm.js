@@ -111,6 +111,8 @@ var EditForm = React.createClass({
 			value,
 			currentValue,
 		});
+
+		// console.log("Changed: ", values);
 		this.setState({
 			values,
 		});
@@ -268,7 +270,9 @@ var EditForm = React.createClass({
 		var headings = 0;
 		const { currentLang } = this.props;
 		var elements = [];
+		console.log('this.props.list.uiElements: ', this.props.list.uiElements);
 		this.props.list.uiElements.forEach((el, index) => {
+
 			// Don't render the name field if it is the header since it'll be rendered in BIG above
 			// the list. (see renderNameField method, this is the reverse check of the one it does)
 			if (
@@ -308,10 +312,14 @@ var EditForm = React.createClass({
 						// once remove then recreate the element
 						// if (!(typeof this.statelessUI[field.path] === 'string' && 
 							// this.statelessUI[field.path] === '')) {
-						element = this.statelessUI[field.path][currentLang] || element;
+						if (this.statelessUI[field.path][currentLang]) {
+							element = React.cloneElement(
+								this.statelessUI[field.path][currentLang],
+								props
+							);
+						}
 						// }
 					}
-					// console.log(element);
 					// store the stateless element to state, no matter it is existing
 					this.statelessUI = {
 						...this.statelessUI,
@@ -338,6 +346,8 @@ var EditForm = React.createClass({
 				} else {
 					elements = [ ...elements, element ];
 				}
+
+				console.log(elements);
 			}
 		});
 

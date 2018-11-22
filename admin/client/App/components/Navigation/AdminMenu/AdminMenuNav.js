@@ -144,7 +144,9 @@ var AdminMenuNav = React.createClass({
 					style={this.props.style}
 					currentListKey={this.props.currentListKey}
 					lists={lists}
-					onClick={() => this.changeMenu(index)}
+					onClick={() => {
+						this.changeMenu(index)
+					}}
 				>
 					{section.label}
 				</AdminMenuNavItem>

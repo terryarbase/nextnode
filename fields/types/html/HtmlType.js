@@ -14,7 +14,14 @@ function html (list, path, options) {
 	this.wysiwyg = options.wysiwyg || false;
 	this.height = options.height || 180;
 	this._properties = ['wysiwyg', 'height'];
-	html.super_.call(this, list, path, options);
+
+	const newOptions = {
+		...options,
+		...{
+			stateless: true,	// for create ui element state
+		},
+	};
+	html.super_.call(this, list, path, newOptions);
 }
 html.properName = 'Html';
 util.inherits(html, FieldType);
@@ -25,6 +32,31 @@ html.prototype.validateRequiredInput = TextType.prototype.validateRequiredInput;
 
 /* Inherit from TextType prototype */
 html.prototype.addFilterToQuery = TextType.prototype.addFilterToQuery;
+
+/**
+ * Updates the value for this field in the item from a data object
+ * Overridden by some fieldType Classes
+ *
+ * @api public
+ */
+html.prototype.updateItem = function (item, data, file, callback) {
+	var value = this.getValueFromData(data);
+	const options = { 
+		subPath: data['__subPath'],
+	};
+	// This is a deliberate type coercion so that numbers from forms play nice
+	if (value !== undefined && value != item.get(this.path)) { // eslint-disable-line eqeqeq
+		if (options.subPath) {
+			const subPath = options.subPath;
+			const currentPathValue = item.get(this.path) || {};
+			currentPathValue[subPath] = value;
+			item.set(this.path, currentPathValue);
+		} else {
+			item.set(this.path, value);
+		}
+	}
+	callback();
+};
 
 /* Export Field Type */
 module.exports = html;
