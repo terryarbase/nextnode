@@ -216,7 +216,7 @@ const CreateForm = React.createClass({
 				if (keys && keys.length) {
 					keys.forEach(key => {
 						form.push(
-							<div key={key} style={{ display: key === currentLang ? 'block' : 'none' }}>
+							<div key={`${field.path}${key}`} style={{ display: key === currentLang ? 'block' : 'none' }}>
 								{this.statelessUI[field.path][key]}
 							</div>
 						);

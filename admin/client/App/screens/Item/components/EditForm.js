@@ -270,7 +270,7 @@ var EditForm = React.createClass({
 		var headings = 0;
 		const { currentLang } = this.props;
 		var elements = [];
-		console.log('this.props.list.uiElements: ', this.props.list.uiElements);
+		// console.log('this.props.list.uiElements: ', this.props.list.uiElements);
 		this.props.list.uiElements.forEach((el, index) => {
 
 			// Don't render the name field if it is the header since it'll be rendered in BIG above
@@ -291,6 +291,7 @@ var EditForm = React.createClass({
 			if (el.type === 'field') {
 				var field = this.props.list.fields[el.field];
 				var props = this.getFieldProps(field);
+				// console.log(field.path);
 				props = {
 					...props,
 					...{
@@ -315,7 +316,7 @@ var EditForm = React.createClass({
 						if (this.statelessUI[field.path][currentLang]) {
 							element = React.cloneElement(
 								this.statelessUI[field.path][currentLang],
-								props
+								props,
 							);
 						}
 						// }
@@ -333,11 +334,12 @@ var EditForm = React.createClass({
 						}
 					}
 					const keys = Object.keys(this.statelessUI[field.path]);
+					// console.log(this.statelessUI[field.path]);
 					if (keys && keys.length) {
 						keys.forEach(key => {
 							elements = [ 
 								...elements,
-								<div key={key} style={{ display: key === currentLang ? 'block' : 'none' }}>
+								<div key={`${field.path}${key}`} style={{ display: key === currentLang ? 'block' : 'none' }}>
 									{this.statelessUI[field.path][key]}
 								</div>
 							];
@@ -347,7 +349,7 @@ var EditForm = React.createClass({
 					elements = [ ...elements, element ];
 				}
 
-				console.log(elements);
+				// console.log(elements);
 			}
 		});
 
