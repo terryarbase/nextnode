@@ -305,7 +305,6 @@ var EditForm = React.createClass({
 				if (index === 0 && this.state.focusFirstField) {
 					props.autoFocus = true;
 				}
-				console.log(field.type, Fields);
 				var element = React.createElement(Fields[field.type], props);
 				// prevent stateless file element to be rendered again, get from state
 				if ((field.stateless || field.cloneable) && field.multilingual) {
