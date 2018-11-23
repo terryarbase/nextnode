@@ -32,8 +32,9 @@ textarea.prototype.crop = TextType.prototype.crop;
  * Formats the field value
  * @api public
  */
-textarea.prototype.format = function (item) {
-	return utils.textToHTML(item.get(this.path));
+textarea.prototype.format = function (item, options) {
+	return utils.textToHTML(this.getItemFromElasticData(item, this.path, options));
+	// return utils.textToHTML(item.get(this.path));
 };
 
 /* Export Field Type */

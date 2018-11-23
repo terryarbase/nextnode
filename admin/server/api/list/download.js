@@ -39,13 +39,18 @@ module.exports = function (req, res, next) {
 	.then(function (results) {
 		var data;
 		var fields = [];
+		var options = {
+			langd: req.locales.langd,
+		};
 		if (format === 'excel') {
 			data = results.map(function (item) {
 				var row = req.list.getCSVData(item, {
-					expandRelationshipFields: req.query.expandRelationshipFields,
-					fields: req.query.select,
-					user: req.user,
-					langd: req.locales.langd,
+					...options,
+					...{
+						expandRelationshipFields: req.query.expandRelationshipFields,
+						fields: req.query.select,
+						user: req.user,
+					}
 				});
 				// If nested values in the first item aren't present, babyparse
 				// won't add them even if they are present in others. So we
@@ -71,7 +76,12 @@ module.exports = function (req, res, next) {
             res.send(new Buffer(wbout));
 		} else {
 			data = results.map(function (item) {
-				return req.list.getData(item, req.query.select, req.query.expandRelationshipFields);
+				return req.list.getData(item, req.query.select, req.query.expandRelationshipFields, {
+					...options,
+					...{
+						singleLang: true,
+					},
+				});
 			});
 			res.json(data);
 		}

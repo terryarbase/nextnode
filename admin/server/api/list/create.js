@@ -33,7 +33,7 @@ module.exports = function (req, res) {
 		newData = { ...body };
 	}
 	const item = new req.list.model();
-	req.list.updateItem(item, newData, {
+	const options = {
 		files: req.files,
 		ignoreNoEdit: true,
 		user: req.user,
@@ -42,14 +42,15 @@ module.exports = function (req, res) {
 		isMultilingual: !!locales,
 		defaultLang: locales && locales.defaultLanguage,
 		supportLang: locales && locales.localization,
-	}, function (err) {
+	};
+	req.list.updateItem(item, newData, options, function (err) {
 		if (err) {
 			var status = err.error === 'validation errors' ? 400 : 500;
-			const error = this.req.t.__('msg_db_error', {
-                reason: err.error === 'database error' ?  err.detail : err
-            });
+			const error = err.error === 'database error' ? req.t.__('msg_db_error_without', {
+					reason: err.detail,
+				}) : err;
 			return res.apiError(status, error);
 		}
-		res.json(req.list.getData(item));
+		res.json(req.list.getData(item, undefined, null, options));
 	});
 };

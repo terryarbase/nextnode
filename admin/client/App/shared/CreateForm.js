@@ -191,13 +191,26 @@ const CreateForm = React.createClass({
 			if (!focusWasSet) {
 				fieldProps.autoFocus = focusWasSet = true;
 			}
-			if (field.stateless && field.multilingual) {
+			if ((field.stateless || field.cloneable) && field.multilingual) {
 				if (this.statelessUI[field.path]) {
 					if (this.statelessUI[field.path][currentLang]) {
-						eleent = React.cloneElement(
-							this.statelessUI[field.path][currentLang],
-							fieldProps
-						);
+						/*
+						** [IMPORTANT]
+						** Special for handle two kinds of element
+						** 1. stateless: the state should be only handled inside the component without any value inspection (FILE Stream types)
+						** 2. cloneable: the state should be only copied to everytime except the first time (HTML type)
+						** Terry Chan
+						** 23/11/2018
+						*/
+						if (field.cloneable) {
+							element = React.cloneElement(
+								this.statelessUI[field.path][currentLang],
+								fieldProps
+							);
+						} else {
+							element = this.statelessUI[field.path][currentLang];
+								
+						}
 					}
 				}
 				// store the stateless element to state, no matter it is existing

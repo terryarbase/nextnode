@@ -106,8 +106,8 @@ name.prototype.addFilterToQuery = function (filter) {
  * Formats the field value
  */
 
-name.prototype.format = function (item) {
-	return item.get(this.paths.full);
+name.prototype.format = function (item, options) {
+	return this.getItemFromElasticData(item, this.paths.full, options);
 };
 
 /**

@@ -4,6 +4,7 @@ var async = require('async');
 var FieldType = require('../Type');
 var keystone = require('../../../');
 var util = require('util');
+const cloudinary = require('cloudinary');
 
 function getEmptyValue () {
 	return {
@@ -92,12 +93,82 @@ cloudinaryimages.prototype.getFolder = function () {
 	return folder;
 };
 
+var src = function(img, options = {}) {
+    if (keystone.get('cloudinary secure')) {
+        options = options || {};
+        options.secure = true;
+    }
+    options.format = options.format || img.format;
+    return img.public_id ? cloudinary.url(img.public_id, options) : '';
+};
+
+var addSize = function(options = {}, width, height, other) {
+    if (width) options.width = width;
+    if (height) options.height = height;
+    if (typeof other === 'object') {
+        assign(options, other);
+    }
+    return options;
+};
+const schemaMethods = {
+    src: function(img, options) {
+        return src(img, options);
+    },
+    scale: function(img, width, height, options) {
+        return src(img, addSize({
+            crop: 'scale'
+        }, width, height, options));
+    },
+    fill: function(img, width, height, options) {
+        return src(img, addSize({
+            crop: 'fill',
+            gravity: 'faces'
+        }, width, height, options));
+    },
+    lfill: function(img, width, height, options) {
+        return src(img, addSize({
+            crop: 'lfill',
+            gravity: 'faces'
+        }, width, height, options));
+    },
+    fit: function(img, width, height, options) {
+        return src(img, addSize({
+            crop: 'fit'
+        }, width, height, options));
+    },
+    limit: function(img, width, height, options) {
+        return src(img, addSize({
+            crop: 'limit'
+        }, width, height, options));
+    },
+    pad: function(img, width, height, options) {
+        return src(img, addSize({
+            crop: 'pad'
+        }, width, height, options));
+    },
+    lpad: function(img, width, height, options) {
+        return src(img, addSize({
+            crop: 'lpad'
+        }, width, height, options));
+    },
+    crop: function(img, width, height, options) {
+        return src(img, addSize({
+            crop: 'crop',
+            gravity: 'faces'
+        }, width, height, options));
+    },
+    thumbnail: function(img, width, height, options) {
+        return src(img, addSize({
+            crop: 'thumb',
+            gravity: 'faces'
+        }, width, height, options));
+    }
+};
+
 /**
  * Registers the field on the List's Mongoose Schema.
  */
 cloudinaryimages.prototype.addToSchema = function (schema) {
-
-	var cloudinary = require('cloudinary');
 	var mongoose = keystone.mongoose;
 	var field = this;
 	const ops = this.schemaOptions;
@@ -145,52 +216,35 @@ cloudinaryimages.prototype.addToSchema = function (schema) {
 		return folder(this);
 	});
 
-	var src = function (img, options) {
-		if (keystone.get('cloudinary secure')) {
-			options = options || {};
-			options.secure = true;
-		}
-		options.format = options.format || img.format;
-		return img.public_id ? cloudinary.url(img.public_id, options) : '';
-	};
-
-	var addSize = function (options, width, height, other) {
-		if (width) options.width = width;
-		if (height) options.height = height;
-		if (typeof other === 'object') {
-			assign(options, other);
-		}
-		return options;
-	};
 	ImageSchema.method('src', function (options) {
-		return src(this, options);
+		return schemaMethods.src(this, options);
 	});
 	ImageSchema.method('scale', function (width, height, options) {
-		return src(this, addSize({ crop: 'scale' }, width, height, options));
+		return schemaMethods.scale(this, width, height, options);
 	});
 	ImageSchema.method('fill', function (width, height, options) {
-		return src(this, addSize({ crop: 'fill', gravity: 'faces' }, width, height, options));
+		return schemaMethods.fill(this, width, height, options);
 	});
 	ImageSchema.method('lfill', function (width, height, options) {
-		return src(this, addSize({ crop: 'lfill', gravity: 'faces' }, width, height, options));
+		return schemaMethods.lfill(this, width, height, options);
 	});
 	ImageSchema.method('fit', function (width, height, options) {
-		return src(this, addSize({ crop: 'fit' }, width, height, options));
+		return schemaMethods.fit(this, width, height, options);
 	});
 	ImageSchema.method('limit', function (width, height, options) {
-		return src(this, addSize({ crop: 'limit' }, width, height, options));
+		return schemaMethods.limit(this, width, height, options);
 	});
 	ImageSchema.method('pad', function (width, height, options) {
-		return src(this, addSize({ crop: 'pad' }, width, height, options));
+		return schemaMethods.pad(this, width, height, options);
 	});
 	ImageSchema.method('lpad', function (width, height, options) {
-		return src(this, addSize({ crop: 'lpad' }, width, height, options));
+		return schemaMethods.lpad(this, width, height, options);
 	});
 	ImageSchema.method('crop', function (width, height, options) {
-		return src(this, addSize({ crop: 'crop', gravity: 'faces' }, width, height, options));
+		return schemaMethods.crop(this, width, height, options);
 	});
 	ImageSchema.method('thumbnail', function (width, height, options) {
-		return src(this, addSize({ crop: 'thumb', gravity: 'faces' }, width, height, options));
+		return schemaMethods.thumbnail(this, width, height, options);
 	});
 	if (ops.multilingual) {
 		ops.type = keystone.mongoose.Schema.Types.Mixed;
@@ -231,9 +285,10 @@ cloudinaryimages.prototype.addToSchema = function (schema) {
 /**
  * Formats the field value
  */
-cloudinaryimages.prototype.format = function (item) {
-	return _.map(item.get(this.path), function (img) {
-		return img.src();
+cloudinaryimages.prototype.format = function (item, options) {
+	const values = this.getItemFromElasticData(item, this.path, options) || [];
+	return _.map(values, function (img) {
+		return img.src ? img.src() : schemaMethods.src(img);
 	}).join(', ');
 };
 

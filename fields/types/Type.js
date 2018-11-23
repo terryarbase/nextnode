@@ -324,8 +324,9 @@ Field.prototype.underscoreMethod = function (path, fn) {
  *
  * @api public
  */
-Field.prototype.format = function (item) {
-	var value = item.get(this.path);
+Field.prototype.format = function (item, options) {
+	// var value = item.get(this.path);
+	const value = this.getItemFromElasticData(item, this.path, options);
 	if (value === undefined) return '';
 	return value;
 };
@@ -409,17 +410,28 @@ Field.prototype.getValueFromData = function (data, subpath) {
 ** Terry Chan
 ** 18/11/2018
 */
+Field.prototype.getItemFromElasticData = function(item, path, options) {
+	var value = item.get(path) || item.get(this.path);
+	if (this.options.multilingual && options.langd) {
+		const isMultilingualFormat = this.list.isMultilingualFormat(value).length;
+		if (isMultilingualFormat) {
+			return value[options.langd] || '';
+		}
+	}
+	return value || '';
+}
 Field.prototype.getValueFromElasticData = function(data, subpath) {
 	var value = this.getValueFromData(data, subpath);
 	return this.getElasticData(value);
 }
 Field.prototype.getElasticData = function (data, options={}) {
 	const supportingLanguage = this.list.initialSupportLang;
-	const defaultLanguage = options.defaultLang || 'en';
+	// perfer data language option first
+	const defaultLanguage = options.langd || options.defaultLang || 'en';
 	const turnOnMultilingual = this.options.multilingual;
 	const isMultilingualStructure = this.list.isMultilingualFormat(data, supportingLanguage).length;
 	var newData = data;
-
+	// console.log(newData, turnOnMultilingual, options);
 	// console.log(this.path, isMultilingualStructure, newData, turnOnMultilingual);
 	if (turnOnMultilingual) {
 		// string value or other object structure
@@ -443,6 +455,11 @@ Field.prototype.getElasticData = function (data, options={}) {
 			newData = {
 				[defaultLanguage]: data,
 			};
+		
+		}
+		// the data is multilingual structure and the data should be picked by one language only
+		if (options.singleLang) {
+			newData = newData[defaultLanguage] || '';
 		}
 	// the field is turned off to single language and the current data structure is multilingual
 	} else if (isMultilingualStructure) {

@@ -31,9 +31,10 @@ util.inherits(datearray, FieldType);
  */
 datearray.prototype.format = function (item, format, separator) {
 	var value = item.get(this.path);
-	if (format || this.formatString) {
+	const datFormat = (format && typeof format === 'string') || this.formatString;
+	if (datFormat) {
 		value = value.map(function (d) {
-			return moment(d).format(format || this._formatString);
+			return moment(d).format(datFormat);
 		});
 	}
 	return value.join(separator || this.separator);

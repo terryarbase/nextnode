@@ -30,8 +30,10 @@ url.prototype.addFilterToQuery = TextType.prototype.addFilterToQuery;
  * Formats the field value using either a supplied format function or default
  * which strips the leading protocol from the value for simpler display
  */
-url.prototype.format = function (item) {
-	var url = item.get(this.path) || '';
+url.prototype.format = function (item, options) {
+	var url = this.getItemFromElasticData(item, this.path, options);
+	// item.get(this.path) || '';
+	console.log(url);
 	if (this.options.format === false) {
 		return url;
 	} else if (typeof this.options.format === 'function') {

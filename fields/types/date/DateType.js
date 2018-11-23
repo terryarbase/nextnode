@@ -82,8 +82,9 @@ date.prototype.addFilterToQuery = function (filter) {
  * Formats the field value
  */
 date.prototype.format = function (item, format) {
-	if (format || this.formatString) {
-		return item.get(this.path) ? this.moment(item).format(format || this.formatString) : '';
+	const datFormat = (format && typeof format === 'string') || this.formatString;
+	if (datFormat) {
+		return item.get(this.path) ? this.moment(item).format(datFormat) : '';
 	} else {
 		return item.get(this.path) || '';
 	}

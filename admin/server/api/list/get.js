@@ -70,7 +70,7 @@ module.exports = function (req, res) {
 		var results;
 		var editCount;
 		const options = {
-			lang: locales && locales.langd,
+			langd: locales && locales.langd,
 			defaultLang: locales && locales.defaultLanguage,
 		};
 		if (includeResults) {

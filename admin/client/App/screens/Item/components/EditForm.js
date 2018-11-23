@@ -308,16 +308,29 @@ var EditForm = React.createClass({
 
 				var element = React.createElement(Fields[field.type], props);
 				// prevent stateless file element to be rendered again, get from state
-				if (field.stateless && field.multilingual) {
+				if ((field.stateless || field.cloneable) && field.multilingual) {
 					if (this.statelessUI[field.path]) {
 						// once remove then recreate the element
 						// if (!(typeof this.statelessUI[field.path] === 'string' && 
 							// this.statelessUI[field.path] === '')) {
 						if (this.statelessUI[field.path][currentLang]) {
-							element = React.cloneElement(
-								this.statelessUI[field.path][currentLang],
-								props,
-							);
+								/*
+							** [IMPORTANT]
+							** Special for handle two kinds of element
+							** 1. stateless: the state should be only handled inside the component without any value inspection (FILE Stream types)
+							** 2. cloneable: the state should be only copied to everytime except the first time (HTML type)
+							** Terry Chan
+							** 23/11/2018
+							*/
+							if (field.cloneable) {
+								element = React.cloneElement(
+									this.statelessUI[field.path][currentLang],
+									fieldProps
+								);
+							} else {
+								element = this.statelessUI[field.path][currentLang];
+									
+							}
 						}
 						// }
 					}
