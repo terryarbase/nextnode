@@ -39,24 +39,24 @@ html.prototype.addFilterToQuery = TextType.prototype.addFilterToQuery;
  *
  * @api public
  */
-html.prototype.updateItem = function (item, data, file, callback) {
-	var value = this.getValueFromData(data);
-	const options = { 
-		subPath: data['__subPath'],
-	};
-	// This is a deliberate type coercion so that numbers from forms play nice
-	if (value !== undefined && value != item.get(this.path)) { // eslint-disable-line eqeqeq
-		if (options.subPath) {
-			const subPath = options.subPath;
-			const currentPathValue = item.get(this.path) || {};
-			currentPathValue[subPath] = value;
-			item.set(this.path, currentPathValue);
-		} else {
-			item.set(this.path, value);
-		}
-	}
-	callback();
-};
+// html.prototype.updateItem = function (item, data, file, callback) {
+// 	var value = this.getValueFromData(data);
+// 	const options = { 
+// 		subPath: data['__subPath'],
+// 	};
+// 	// This is a deliberate type coercion so that numbers from forms play nice
+// 	if (value !== undefined && value != item.get(this.path)) { // eslint-disable-line eqeqeq
+// 		if (options.subPath) {
+// 			const subPath = options.subPath;
+// 			const currentPathValue = item.get(this.path) || {};
+// 			currentPathValue[subPath] = value;
+// 			item.set(this.path, currentPathValue);
+// 		} else {
+// 			item.set(this.path, value);
+// 		}
+// 	}
+// 	callback();
+// };
 
 /* Export Field Type */
 module.exports = html;

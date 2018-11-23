@@ -26,10 +26,13 @@ module.exports = {
 		};
 	},
 
-	componentWillReceiveProps: function (nextProps) {
-		if (nextProps.value.join('|') !== reduceValues(this.state.values).join('|')) {
+	componentWillReceiveProps: function ({ value }) {
+		const { values } = this.state;
+		const fullValue = value && Array.isArray(value) && value.join('|');
+		const fullStateValue = values && Object.keys(values).length && reduceValues(values).join('|');
+		if (fullValue && fullStateValue && fullValue !== fullStateValue) {
 			this.setState({
-				values: nextProps.value.map(newItem),
+				values: value.map(newItem),
 			});
 		}
 	},

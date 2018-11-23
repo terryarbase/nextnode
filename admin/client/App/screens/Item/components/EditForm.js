@@ -301,13 +301,14 @@ var EditForm = React.createClass({
 				if (typeof Fields[field.type] !== 'function') {
 					elements.push(React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path }));
 				}
-				props.key = `${field.path}${index}`;
+				props.key = field.path;
 				if (index === 0 && this.state.focusFirstField) {
 					props.autoFocus = true;
 				}
 				var element = React.createElement(Fields[field.type], props);
 				// prevent stateless file element to be rendered again, get from state
 				if ((field.stateless || field.cloneable) && field.multilingual) {
+
 					if (this.statelessUI[field.path]) {
 						// once remove then recreate the element
 						// if (!(typeof this.statelessUI[field.path] === 'string' && 

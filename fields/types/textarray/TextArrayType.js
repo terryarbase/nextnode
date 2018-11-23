@@ -12,7 +12,13 @@ function textarray (list, path, options) {
 	this._nativeType = [String];
 	this._underscoreMethods = ['format'];
 	this.separator = options.separator || ' | ';
-	textarray.super_.call(this, list, path, options);
+	const newOptions = {
+		...options,
+		...{
+			cloneable: true,	// for clone ui element everytime
+		},
+	};
+	textarray.super_.call(this, list, path, newOptions);
 }
 textarray.properName = 'TextArray';
 util.inherits(textarray, FieldType);
@@ -21,7 +27,9 @@ util.inherits(textarray, FieldType);
  * Formats the field value
  */
 textarray.prototype.format = function (item, separator) {
-	return item.get(this.path).join(separator || this.separator);
+	const sep = (separator && typeof separator === 'string') || this.separator;
+	const value = this.getItemFromElasticData(item, this.path, separator);
+	return value.join(sep);
 };
 
 /**
@@ -160,25 +168,26 @@ textarray.prototype.inputIsValid = function (data, required, item) {
  * Updates the value for this field in the item from a data object.
  * If the data object does not contain the value, then the value is set to empty array.
  */
-textarray.prototype.updateItem = function (item, data, callback) {
-	var value = this.getValueFromData(data);
-	if (value === undefined || value === null || value === '') {
-		value = [];
-	}
-	if (!Array.isArray(value)) {
-		value = [value];
-	}
-	value = value.map(function (str) {
-		if (str && str.toString) {
-			str = str.toString();
-		}
-		return str;
-	}).filter(function (str) {
-		return (typeof str === 'string' && str);
-	});
-	item.set(this.path, value);
-	process.nextTick(callback);
-};
+// textarray.prototype.updateItem = function (item, data, callback) {
+// 	var value = this.getValueFromData(data);
+
+// 	if (value === undefined || value === null || value === '') {
+// 		value = [];
+// 	}
+// 	if (!Array.isArray(value)) {
+// 		value = [value];
+// 	}
+// 	value = value.map(function (str) {
+// 		if (str && str.toString) {
+// 			str = str.toString();
+// 		}
+// 		return str;
+// 	}).filter(function (str) {
+// 		return (typeof str === 'string' && str);
+// 	});
+// 	item.set(this.path, value);
+// 	process.nextTick(callback);
+// };
 
 /* Export Field Type */
 module.exports = textarray;

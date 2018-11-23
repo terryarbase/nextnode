@@ -35,6 +35,7 @@ var DEFAULT_OPTION_KEYS = [
 	'autoCleanup',
 	'multilingual',
 	'stateless',
+	'cloneable',
 ];
 
 /**
