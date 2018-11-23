@@ -285,7 +285,7 @@ var EditForm = React.createClass({
 				headings++;
 				el.options.values = this.state.values;
 				el.key = 'h-' + headings;
-				elements = [ ...elements, React.createElement(FormHeading, el) ];
+				elements.push(React.createElement(FormHeading, el));
 			}
 
 			if (el.type === 'field') {
@@ -299,13 +299,13 @@ var EditForm = React.createClass({
 					},
 				};
 				if (typeof Fields[field.type] !== 'function') {
-					elements = [ ...elements, React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path }) ];
+					elements.push(React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path }));
 				}
-				props.key = field.path;
+				props.key = `${field.path}${index}`;
 				if (index === 0 && this.state.focusFirstField) {
 					props.autoFocus = true;
 				}
-
+				console.log(field.type, Fields);
 				var element = React.createElement(Fields[field.type], props);
 				// prevent stateless file element to be rendered again, get from state
 				if ((field.stateless || field.cloneable) && field.multilingual) {
@@ -325,7 +325,7 @@ var EditForm = React.createClass({
 							if (field.cloneable) {
 								element = React.cloneElement(
 									this.statelessUI[field.path][currentLang],
-									fieldProps
+									props
 								);
 							} else {
 								element = this.statelessUI[field.path][currentLang];
@@ -350,16 +350,16 @@ var EditForm = React.createClass({
 					// console.log(this.statelessUI[field.path]);
 					if (keys && keys.length) {
 						keys.forEach(key => {
-							elements = [ 
-								...elements,
+							elements.push(
 								<div key={`${field.path}${key}`} style={{ display: key === currentLang ? 'block' : 'none' }}>
 									{this.statelessUI[field.path][key]}
 								</div>
-							];
+							);
 						});
 					}
 				} else {
-					elements = [ ...elements, element ];
+					elements.push(element);
+					// elements = [ ...elements, element ];
 				}
 
 				// console.log(elements);

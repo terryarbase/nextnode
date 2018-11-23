@@ -171,7 +171,7 @@ const CreateForm = React.createClass({
 				nameFieldProps.label = '';
 			}
 			form.push(React.createElement(Fields[nameField.type], nameFieldProps));
-		}
+		};
 		// console.log('list.initialFields: ', list.initialFields);
 		// Render inputs for all initial fields
 		Object.keys(list.initialFields).forEach(key => {

@@ -29,7 +29,13 @@ module.exports = function (req, res) {
 
 		var tasks = [];
 		var drilldown;
-
+		const options = {
+			lang: locales && locales.langd,
+			// list: false,	// flag to identify the value whether is specificed
+			isMultilingual: !!locales,
+			defaultLang: locales && locales.defaultLanguage,
+			supportLang: locales && locales.localization,
+		};
 		if (req.query.basic === '' || req.query.basic === 'true') {
 			return res.json(req.list.getBasicData(item));
 		}
@@ -78,7 +84,7 @@ module.exports = function (req, res) {
 									list: refList.getOptions(),
 									items: _.map(results, function (i) {
 										return {
-											label: refList.getDocumentName(i),
+											label: refList.getDocumentName(i, null, options),
 											href: '/' + keystone.get('admin path') + '/' + refList.path + '/' + i.id,
 										};
 									}),
@@ -97,7 +103,7 @@ module.exports = function (req, res) {
 								drilldown.items.push({
 									list: refList.getOptions(),
 									items: [{
-										label: refList.getDocumentName(result),
+										label: refList.getDocumentName(result, null, options),
 										href: '/' + keystone.get('admin path') + '/' + refList.path + '/' + result.id,
 									}],
 								});
@@ -124,13 +130,7 @@ module.exports = function (req, res) {
 					detail: err,
 				});
 			}
-			const data = req.list.getData(item, fields, null, {
-				lang: locales && locales.langd,
-				// list: false,	// flag to identify the value whether is specificed
-				isMultilingual: !!locales,
-				defaultLang: locales && locales.defaultLanguage,
-				supportLang: locales && locales.localization,
-			});
+			const data = req.list.getData(item, fields, null, options);
 
 			res.json(_.assign(data, {
 				drilldown: drilldown,
