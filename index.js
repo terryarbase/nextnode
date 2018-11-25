@@ -145,6 +145,16 @@ Keystone.prototype.prefixModel = function (key) {
 	return require('mongoose/lib/utils').toCollectionName(key);
 };
 
+Keystone.prototype.isReservedCollection = function (key, options) {
+	var reservedPaths = [
+		// reserved collection name
+		'role',
+		'account',
+		'localization'
+	];
+	return options.isCore && _.find(reservedPaths, [_.toLower(key)]);
+}
+
 /* Attach core functionality to Keystone.prototype */
 Keystone.prototype.createItems = require('./lib/core/createItems');
 Keystone.prototype.createRouter = require('./lib/core/createRouter');
@@ -163,10 +173,14 @@ Keystone.prototype.redirect = require('./lib/core/redirect');
 Keystone.prototype.start = require('./lib/core/start');
 Keystone.prototype.wrapHTMLError = require('./lib/core/wrapHTMLError');
 Keystone.prototype.createKeystoneHash = require('./lib/core/createKeystoneHash');
-Keystone.prototype.createRoleModel = require('./lib/core/createRoleModel');
-
-Keystone.prototype.createLocalization = require('./lib/core/createLocalization');
-
+/*
+** Prepare all of delegated schemas and all of the initial entries
+** Terry Chan
+** 25/11/2018
+*/
+Keystone.prototype.createRole = require('./lib/core/delegation/createRole');
+Keystone.prototype.createLocalization = require('./lib/core/delegation/createLocalization');
+Keystone.prototype.createAccount = require('./lib/core/delegation/createAccount');
 // Keystone.prototype.hooks = function() {};
 // hooks.prototype.localization = require('./lib/core/hook/localization');
 
