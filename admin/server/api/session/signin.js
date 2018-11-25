@@ -11,6 +11,7 @@ function signin (req, res) {
 		return res.status(401).json({ error: 'email and password required' });
 	}
 	var User = keystone.list(keystone.get('user model'));
+	const adminLockEnabled = keystone.get('admin lock');
 	var emailRegExp = new RegExp('^' + utils.escapeRegExp(req.body.email) + '$', 'i');
 	User.model.findOne({ email: emailRegExp }).populate(keystone.get('rbac') || '').exec(function (err, user) {
 		if (user) {
@@ -22,7 +23,7 @@ function signin (req, res) {
 				user._.password.compare(req.body.password, function (err, isMatch) {
 					// console.log('>>>>>>', user);
 					if (isMatch) {
-						if (!user.isAdmin) {
+						if (!user.isAdmin && adminLockEnabled) {
 							return res.status(500).json({ error: 'Your account has been locked' });
 							// onFail(err || new Error('Your account has been lacked'));
 						} else {
@@ -34,7 +35,7 @@ function signin (req, res) {
 							});
 						}
 					} else {
-						session.updateWonrgCount(user, 1,
+						session.updateWrongCount(user, 1,
 						function (result) {
 							const code = 401;
 							const message = { error: 'The email and password you entered are not valid.' };

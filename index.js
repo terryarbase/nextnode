@@ -124,7 +124,6 @@ var Keystone = function () {
 	// init mongoose
 	this.set('mongoose', require('mongoose'));
 	this.mongoose.Promise = require('es6-promise').Promise;
-
 	// Attach middleware packages, bound to this instance
 	this.middleware = {
 		api: require('./lib/middleware/api')(this),
@@ -146,16 +145,17 @@ Keystone.prototype.prefixModel = function (key) {
 };
 
 Keystone.prototype.isReservedCollection = function (key, options) {
-	var reservedPaths = [
+	const reservedPaths = [
 		// reserved collection name
 		'role',
 		'account',
 		'localization'
 	];
-	return options.isCore && _.find(reservedPaths, [_.toLower(key)]);
+	return !options.isCore && reservedPaths.indexOf(_.toLower(key)) !== -1;
 }
 
 /* Attach core functionality to Keystone.prototype */
+
 Keystone.prototype.createItems = require('./lib/core/createItems');
 Keystone.prototype.createRouter = require('./lib/core/createRouter');
 Keystone.prototype.getOrphanedLists = require('./lib/core/getOrphanedLists');
