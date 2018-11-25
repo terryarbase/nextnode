@@ -1,13 +1,19 @@
 # Next-nodecms Changelog
 
 ## 1.0.2
-### About Multilingual and Layout
-Terry Chan 11/11/2018 (Last Updated at 11/11/2018)
+### About Multilingual and Layout, Delegated Model Enhancements
+Terry Chan 11/11/2018 (Last Updated at 25/11/2018)
 
 Common Improvements:
 * Added Realtime edit field (Support Types.Boolean)
 * Added Realtime select all function (Support Types.Boolean)
 * Delegated Record Restrictions
+
+Delegated Model Enhancements:
+* Added AdminUI user account delegated model
+* Added AdminUI user role delegated model
+** Added Full Permission to the most power of role
+* Added AdminUI localization delegated model
 
 Multilingual Improvements:
 * Auto create multilingual schema for management language support for List schema
@@ -28,7 +34,8 @@ Multilingual Improvements:
 ** Types.Color
 
 Layout Improvements:
-* Added sidemenu for navigation menu
+* Added AdminUI Sidemenu for navigation menu for Desktop
+* Changed Reasonable Icon for the Header Navigation
 * Added AdminUI Data Language Selector
 * Added AdminUI Multilingual
 

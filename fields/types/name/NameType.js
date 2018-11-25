@@ -13,6 +13,11 @@ var displayName = require('display-name');
 function name (list, path, options) {
 	this._fixedSize = 'full';
 	options.default = { first: '', last: '' };
+	// representive the placeholder elements
+	this.placeholder = [
+		'firstname',
+		'lastname',
+	];
 	name.super_.call(this, list, path, options);
 }
 name.properName = 'Name';

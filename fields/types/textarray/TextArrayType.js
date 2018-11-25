@@ -12,6 +12,10 @@ function textarray (list, path, options) {
 	this._nativeType = [String];
 	this._underscoreMethods = ['format'];
 	this.separator = options.separator || ' | ';
+	// representive the placeholder elements
+	this.placeholder = [
+		'normal',
+	];
 	const newOptions = {
 		...options,
 		...{

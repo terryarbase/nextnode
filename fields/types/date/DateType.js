@@ -20,6 +20,12 @@ function date (list, path, options) {
 	this.yearRange = options.yearRange;
 	this.isUTC = options.utc || false;
 
+	// representive the placeholder elements
+	this.placeholder = [
+		'from',
+		'to',
+		'normal'
+	];
 	/*
 	 * This offset is used to determine whether or not a stored date is probably corrupted or not.
 	 * If the date/time stored plus this offset equals a time close to midnight for that day, that

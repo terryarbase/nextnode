@@ -18,7 +18,22 @@ function location (list, path, options) {
 	this._fixedSize = 'full';
 	this._properties = ['enableMapsAPI'];
 	this.enableMapsAPI = (options.enableImprove === true || (options.enableImprove !== false && keystone.get('google server api key'))) ? true : false;
-
+	// representive the placeholder elements
+	this.placeholder = [
+		'label',
+		'suburb',
+		'state',
+		'post code',
+		'country',
+		'latitude',
+		'longitude',
+		'address',
+		'city',
+		// 'street1',
+		// 'street2',
+		// 'geo',
+		// 'number',
+	];
 	// Throw on invalid options in 4.0 (remove for 5.0)
 	if ('geocodeGoogle' in options) {
 		throw new Error('The geocodeGoogle option for Location fields has been renamed to enableImprove');

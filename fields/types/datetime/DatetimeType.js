@@ -20,6 +20,12 @@ function datetime (list, path, options) {
 	this.parseFormatString = options.parseFormat || parseFormats;
 	this.formatString = (options.format === false) ? false : (options.format || 'YYYY-MM-DD h:mm:ss a');
 	this.isUTC = options.utc || false;
+
+	// representive the placeholder elements
+	this.placeholder = [
+		'normal',
+	];
+
 	if (this.formatString && typeof this.formatString !== 'string') {
 		throw new Error('FieldType.DateTime: options.format must be a string.');
 	}

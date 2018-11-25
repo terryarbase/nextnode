@@ -17,6 +17,12 @@ function number (list, path, options) {
 	if (this.formatString && typeof this.formatString !== 'string') {
 		throw new Error('FieldType.Number: options.format must be a string.');
 	}
+	// representive the placeholder elements
+	this.placeholder = [
+		'minimum',
+		'maximum',
+		'normal',
+	];
 	number.super_.call(this, list, path, options);
 }
 number.properName = 'Number';

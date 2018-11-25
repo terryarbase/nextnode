@@ -17,6 +17,12 @@ function numberarray (list, path, options) {
 	if (this._formatString && typeof this._formatString !== 'string') {
 		throw new Error('FieldType.NumberArray: options.format must be a string.');
 	}
+	// representive the placeholder elements
+	this.placeholder = [
+		'minimum',
+		'maximum',
+		'normal',
+	];
 	this.separator = options.separator || ' | ';
 	numberarray.super_.call(this, list, path, options);
 }

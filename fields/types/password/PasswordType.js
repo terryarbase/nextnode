@@ -34,7 +34,11 @@ function password (list, path, options) {
 	this._nativeType = String;
 	this._underscoreMethods = ['format', 'compare'];
 	this._fixedSize = 'full';
-
+	// representive the placeholder elements
+	this.placeholder = [
+		'new password',
+		'confirm password',
+	];
 	password.super_.call(this, list, path, options);
 
 	for (var key in this.options.complexity) {

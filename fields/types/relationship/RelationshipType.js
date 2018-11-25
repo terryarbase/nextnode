@@ -18,6 +18,11 @@ function relationship (list, path, options) {
 	this._nativeType = keystone.mongoose.Schema.Types.ObjectId;
 	this._underscoreMethods = ['format', 'getExpandedData'];
 	this._properties = ['isValid', 'many', 'filters', 'createInline'];
+	// representive the placeholder elements
+	this.placeholder = [
+		'loading',
+		'normal',
+	];
 	relationship.super_.call(this, list, path, options);
 }
 relationship.properName = 'Relationship';

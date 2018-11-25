@@ -12,6 +12,10 @@ function text (list, path, options) {
 	this._nativeType = String;
 	this._properties = ['monospace'];
 	this._underscoreMethods = ['crop'];
+	// representive the placeholder elements
+	this.placeholder = [
+		'normal',
+	];
 	text.super_.call(this, list, path, options);
 }
 text.properName = 'Text';

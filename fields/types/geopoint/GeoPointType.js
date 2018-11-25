@@ -13,6 +13,11 @@ var REGEXP_LNGLAT = /^\s*(\-?\d+(?:\.\d+)?)\s*\,\s*(\-?\d+(?:\.\d+)?)\s*$/;
  */
 function geopoint (list, path, options) {
 	this._fixedSize = 'medium';
+	// representive the placeholder elements
+	this.placeholder = [
+		'latitude',
+		'longitude',
+	];
 	geopoint.super_.call(this, list, path, options);
 }
 geopoint.properName = 'GeoPoint';
