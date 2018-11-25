@@ -34,7 +34,7 @@ module.exports = function (req, res) {
 		assign(where, req.list.addFiltersToQuery(filters, options));
 	}
 	if (req.query.search) {
-		assign(where, req.list.addSearchToQuery(req.query.search));
+		assign(where, req.list.addSearchToQuery(req.query.search, options));
 	}
 	var query = req.list.model.find(where);
 	if (req.query.populate) {
@@ -45,7 +45,9 @@ module.exports = function (req, res) {
 			query.populate(i.path);
 		});
 	}
-	console.log(where);
+	if (where.$or) {
+		console.log(where.$or[0].$or, where);
+	}
 	var sort = req.list.expandSort(req.query.sort);
 	async.waterfall([
 		function (next) {

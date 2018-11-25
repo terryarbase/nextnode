@@ -13,11 +13,24 @@ Multilingual Improvements:
 * Auto create multilingual schema for management language support for List schema
 * Added List multilingual setting
 * Added individual field multilingual setting 
-* Auto add multilingual to Types.Text, Types.Textarea, Types.TextArray, Types.Html, Types.Url, Types.Name
-* Added AdminUI Language Selector
+* Support multilingual tpys: 
+** Types.Text
+** Types.Textarea
+** Types.TextArray
+** Types.Html
+** Types.Url
+** Types.Email
+** Types.File
+** Types.CloudinaryImage
+** Types.CloudinaryImages
+** Types.Name
+** Types.Code
+** Types.Color
 
 Layout Improvements:
-* Add sidemenu for navigation menu
+* Added sidemenu for navigation menu
+* Added AdminUI Data Language Selector
+* Added AdminUI Multilingual
 
 ## 1.0.1 
 ### Common Enhancements

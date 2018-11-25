@@ -33,7 +33,7 @@ url.prototype.addFilterToQuery = TextType.prototype.addFilterToQuery;
 url.prototype.format = function (item, options) {
 	var url = this.getItemFromElasticData(item, this.path, options);
 	// item.get(this.path) || '';
-	console.log(url);
+	// console.log(url);
 	if (this.options.format === false) {
 		return url;
 	} else if (typeof this.options.format === 'function') {

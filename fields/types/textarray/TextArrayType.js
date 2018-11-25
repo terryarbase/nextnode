@@ -62,23 +62,23 @@ textarray.prototype.addFilterToQuery = function (filter, options) {
 				$size: 0,
 			},
 		};
-		return query;
-	}
-	var value = utils.escapeRegExp(filter.value);
-	if (filter.mode === 'beginsWith') {
-		value = '^' + value;
-	} else if (filter.mode === 'endsWith') {
-		value = value + '$';
-	} else if (filter.mode === 'exactly') {
-		value = '^' + value + '$';
-	}
-	value = new RegExp(value, filter.caseSensitive ? '' : 'i');
-	if (presence === 'none') {
-		query[this.path] = addPresenceToQuery(presence, value);
 	} else {
-		query[this.path] = addPresenceToQuery(presence, {
-			$regex: value,
-		});
+		var value = utils.escapeRegExp(filter.value);
+		if (filter.mode === 'beginsWith') {
+			value = '^' + value;
+		} else if (filter.mode === 'endsWith') {
+			value = value + '$';
+		} else if (filter.mode === 'exactly') {
+			value = '^' + value + '$';
+		}
+		value = new RegExp(value, filter.caseSensitive ? '' : 'i');
+		if (presence === 'none') {
+			query[this.path] = addPresenceToQuery(presence, value);
+		} else {
+			query[this.path] = addPresenceToQuery(presence, {
+				$regex: value,
+			});
+		}
 	}
 	if (isMultilingual && langd) {
 		query = {

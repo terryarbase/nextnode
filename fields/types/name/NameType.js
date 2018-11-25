@@ -31,6 +31,8 @@ name.prototype.addToSchema = function (schema) {
 		first: this.path + '.first',
 		last: this.path + '.last',
 		full: this.path + '.full',
+		firstname: '.first',
+		lastname: '.last',
 	};
 	const mongoose = keystone.mongoose;
 	const ops = this.schemaOptions;
@@ -77,27 +79,61 @@ name.prototype.getSortString = function (options) {
 /**
  * Add filters to a query
  */
-name.prototype.addFilterToQuery = function (filter) {
+name.prototype.addFilterToQuery = function (filter, options) {
+	const isMultilingual = this.options.multilingual;
+	const { langd } = options;
 	var query = {};
 	if (filter.mode === 'exactly' && !filter.value) {
 		query[this.paths.first] = query[this.paths.last] = filter.inverted ? { $nin: ['', null] } : { $in: ['', null] };
-		return query;
-	}
-	var value = utils.escapeRegExp(filter.value);
-	if (filter.mode === 'beginsWith') {
-		value = '^' + value;
-	} else if (filter.mode === 'endsWith') {
-		value = value + '$';
-	} else if (filter.mode === 'exactly') {
-		value = '^' + value + '$';
-	}
-	value = new RegExp(value, filter.caseSensitive ? '' : 'i');
-	if (filter.inverted) {
-		query[this.paths.first] = query[this.paths.last] = { $not: value };
+		// if (isMultilingual && langd) {
+		// 	query = {
+		// 		$or: [
+		// 			{
+		// 				[this.paths.first]: query[this.paths.first],
+		// 			},
+		// 			{
+		// 				[this.paths.last]: query[this.paths.last],
+		// 			},
+		// 			{
+		// 				[`${this.path.first}.${langd}`]: query[this.paths.first],
+		// 			},
+		// 			{
+		// 				[`${this.path.last}.${langd}`]: query[this.paths.last],
+		// 			}
+		// 		],
+		// 	};
+		// }
 	} else {
-		var first = {}; first[this.paths.first] = value;
-		var last = {}; last[this.paths.last] = value;
-		query.$or = [first, last];
+		var value = utils.escapeRegExp(filter.value);
+		if (filter.mode === 'beginsWith') {
+			value = '^' + value;
+		} else if (filter.mode === 'endsWith') {
+			value = value + '$';
+		} else if (filter.mode === 'exactly') {
+			value = '^' + value + '$';
+		}
+		value = new RegExp(value, filter.caseSensitive ? '' : 'i');
+		if (filter.inverted) {
+			query[this.paths.first] = query[this.paths.last] = { $not: value };
+		} else {
+			var first = {}; first[this.paths.first] = value;
+			var last = {}; last[this.paths.last] = value;
+			query.$or = [first, last];
+		}
+	}
+	// console.log(isMultilingual, langd);
+	if (isMultilingual && langd) {
+		query = {
+			$or: [
+				query,
+				{
+					[`${this.path.first}.${langd}`]: query[this.path.first],
+				},
+				{
+					[`${this.path.last}.${langd}`]: query[this.path.last],
+				}
+			],
+		};
 	}
 	return query;
 };

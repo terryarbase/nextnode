@@ -24,7 +24,7 @@ module.exports = function (req, res, next) {
 		assign(where, req.list.addFiltersToQuery(filters, options));
 	}
 	if (req.query.search) {
-		assign(where, req.list.addSearchToQuery(req.query.search));
+		assign(where, req.list.addSearchToQuery(req.query.search, options));
 	}
 	var query = req.list.model.find(where);
 	if (req.query.populate) {
