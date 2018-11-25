@@ -129,6 +129,17 @@ function ListHeaderToolbar ({
 						</Section> : null
 					}
 					{
+						isLocale ?
+						<Section grow cssStyles={classes.filter}>
+							<div className="localization_List-section">
+								<LocalizationSelector
+									dispatch={dispatch}
+									language={currentLang}
+									defaultLang={defaultLang} />
+							</div>
+						</Section> : null
+					}
+					{
 						!noscale ? 
 						<Section cssStyles={classes.expand}>
 							<ButtonDivider>
@@ -139,17 +150,6 @@ function ListHeaderToolbar ({
 									title="Expand table width"
 								/>
 							</ButtonDivider>
-						</Section> : null
-					}
-					{
-						isLocale ?
-						<Section grow cssStyles={classes.filter}>
-							<div className="localization_List-section">
-								<LocalizationSelector
-									dispatch={dispatch}
-									language={currentLang}
-									defaultLang={defaultLang} />
-							</div>
 						</Section> : null
 					}
 					{createIsAvailable && <Section cssStyles={classes.create}>

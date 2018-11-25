@@ -65,6 +65,12 @@ var Keystone = function () {
 		'module root': moduleRoot,
 		'frame guard': 'sameorigin',
 		'cache admin bundles': true,
+		/*
+		** @Terry Chan 25/11/2018
+		** for admin account locking options
+		*/
+		'admin lock': true,
+		'admin max lock': 5,
 		'nav style': {
 			fontColor: '#ffffff',
 			fontHover: '#ffe53d'
