@@ -23,14 +23,14 @@ module.exports = async function (req, res, next, nextNode) {
 	req.t = nextNode.get('i18n');
 	if (nextNode.get('localization')) {
 		const localization = await getStaticLanguageFile(nextNode);
-		const defaultLanguage = _.find(localization, lang => lang.delegated).value;
+		var defaultLanguage = _.find(localization, lang => lang.delegated).value;
 		req.locales = {
 			// localization language set
 			localization,
 			// default language to pickup the data
 			defaultLanguage,
 			// adminUI current language
-			langd: req.headers.langd || req.query.langd || req.body.langd || defaultLanguage.value,
+			langd: req.headers.langd || req.query.langd || req.body.langd || defaultLanguage,
 		};
 	}
 	next();

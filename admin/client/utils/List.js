@@ -71,6 +71,8 @@ function buildQueryString (options) {
 	if (options.page && options.page.size) query.limit = options.page.size;
 	if (options.page && options.page.index > 1) query.skip = (options.page.index - 1) * options.page.size;
 	if (options.sort) query.sort = getSortString(options.sort);
+	// multilingual for data language version
+	if (options.lang) query.langd = options.lang;
 	query.expandRelationshipFields = true;
 	query.timestamp = new Date().getTime();
 	return '?' + qs.stringify(query);

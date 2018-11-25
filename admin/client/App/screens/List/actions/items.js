@@ -8,16 +8,15 @@ import { NETWORK_ERROR_RETRY_DELAY } from '../../../../constants';
 export function loadItems (options = {}) {
 	return (dispatch, getState) => {
 		let currentLoadCounter = getState().lists.loadCounter + 1;
-
 		dispatch({
 			type: LOAD_ITEMS,
 			loadCounter: currentLoadCounter,
 		});
-
 		// Take a snapshot of the current redux state.
 		const state = getState();
 		// Hold a reference to the currentList in state.
 		const currentList = state.lists.currentList;
+		console.log(state.lists.locale.current);
 		// window.console.warn('List/actions/items.loadItems: ', currentList.postIt);
 		currentList.loadItems({
 			search: state.active.search,
@@ -25,6 +24,7 @@ export function loadItems (options = {}) {
 			sort: state.active.sort,
 			columns: state.active.columns,
 			page: state.lists.page,
+			lang: state.lists.locale.current,
 		}, (err, items) => {
 
 			// Create a new state snapshot and compare the current active list id
@@ -73,7 +73,7 @@ export function loadItems (options = {}) {
 ** Terry Chan
 ** 22/11/2018
 */
-export function downloadItems (format, columns, lang) {
+export function downloadItems (format, columns) {
 	return (dispatch, getState) => {
 		const state = getState();
 		const active = state.active;
@@ -81,7 +81,7 @@ export function downloadItems (format, columns, lang) {
 		const url = currentList.getDownloadURL({
 			search: active.search,
 			filters: active.filters,
-			lang,
+			lang: state.lists.locale.current,
 			sort: active.sort,
 			columns: columns ? currentList.expandColumns(columns) : active.columns,
 			format: format,

@@ -9,6 +9,11 @@ module.exports = function (req, res) {
 	var fields = req.query.fields;
 	var includeCount = req.query.count !== 'false';
 	var includeResults = req.query.results !== 'false';
+	const options = {
+		langd: locales && locales.langd,
+		defaultLang: locales && locales.defaultLanguage,
+	};
+	// console.log(locales);
 	if (includeResults && fields) {
 		if (fields === 'false') {
 			fields = false;
@@ -26,7 +31,7 @@ module.exports = function (req, res) {
 		catch (e) { } // eslint-disable-line no-empty
 	}
 	if (typeof filters === 'object') {
-		assign(where, req.list.addFiltersToQuery(filters));
+		assign(where, req.list.addFiltersToQuery(filters, options));
 	}
 	if (req.query.search) {
 		assign(where, req.list.addSearchToQuery(req.query.search));
@@ -40,6 +45,7 @@ module.exports = function (req, res) {
 			query.populate(i.path);
 		});
 	}
+	console.log(where);
 	var sort = req.list.expandSort(req.query.sort);
 	async.waterfall([
 		function (next) {
@@ -69,10 +75,6 @@ module.exports = function (req, res) {
 		}
 		var results;
 		var editCount;
-		const options = {
-			langd: locales && locales.langd,
-			defaultLang: locales && locales.defaultLanguage,
-		};
 		if (includeResults) {
 			results = _.map(items, item => req.list.getData(item, fields, req.query.expandRelationshipFields, options));
 			editCount = _.filter(items, item => !item.delegated).length;

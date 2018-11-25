@@ -55,22 +55,36 @@ text.prototype.validateRequiredInput = function (item, data, callback) {
 /**
  * Add filters to a query
  */
-text.prototype.addFilterToQuery = function (filter) {
+text.prototype.addFilterToQuery = function (filter, options) {
+	const isMultilingual = this.options.multilingual;
+	const { langd } = options;
+	// console.log(options, isMultilingual, this.options);
 	var query = {};
+	const path = this.path
 	if (filter.mode === 'exactly' && !filter.value) {
-		query[this.path] = filter.inverted ? { $nin: ['', null] } : { $in: ['', null] };
-		return query;
+		query[path] = filter.inverted ? { $nin: ['', null] } : { $in: ['', null] };
+	} else {
+		var value = utils.escapeRegExp(filter.value);
+		if (filter.mode === 'beginsWith') {
+			value = '^' + value;
+		} else if (filter.mode === 'endsWith') {
+			value = value + '$';
+		} else if (filter.mode === 'exactly') {
+			value = '^' + value + '$';
+		}
+		value = new RegExp(value, filter.caseSensitive ? '' : 'i');
+		query[path] = filter.inverted ? { $not: value } : value;
 	}
-	var value = utils.escapeRegExp(filter.value);
-	if (filter.mode === 'beginsWith') {
-		value = '^' + value;
-	} else if (filter.mode === 'endsWith') {
-		value = value + '$';
-	} else if (filter.mode === 'exactly') {
-		value = '^' + value + '$';
+	if (isMultilingual && langd) {
+		query = {
+			$or: [
+				query,
+				{
+					[`${this.path}.${langd}`]: query[this.path],
+				}
+			],
+		};
 	}
-	value = new RegExp(value, filter.caseSensitive ? '' : 'i');
-	query[this.path] = filter.inverted ? { $not: value } : value;
 	return query;
 };
 

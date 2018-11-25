@@ -104,6 +104,7 @@ function ListHeaderToolbar ({
 						<Section cssStyles={classes.filter}>
 							<ListFiltersAdd
 								dispatch={dispatch}
+								currentLang={isLocale ? currentLang : null}
 								activeFilters={filtersActive}
 								availableFilters={filtersAvailable}
 							/>

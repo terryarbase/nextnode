@@ -60,10 +60,10 @@ export function clearAllFilters () {
 	};
 }
 
-export function setFilter (path, value) {
+export function setFilter (path, value, langd) {
 	return {
 		type: SELECT_FILTER,
-		filter: { path, value },
+		filter: { path, value, langd },
 	};
 }
 

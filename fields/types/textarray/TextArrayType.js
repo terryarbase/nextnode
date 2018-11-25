@@ -43,7 +43,9 @@ textarray.prototype.format = function (item, separator) {
  *                                          "none" and "some". Default: 'some'
  * @param {String|Object} filter.value 		The value that is filtered for
  */
-textarray.prototype.addFilterToQuery = function (filter) {
+textarray.prototype.addFilterToQuery = function (filter, options) {
+	const isMultilingual = this.options.multilingual;
+	const { langd } = options;
 	var query = {};
 	var presence = filter.presence || 'some';
 	// Filter empty/non-empty arrays
@@ -77,6 +79,16 @@ textarray.prototype.addFilterToQuery = function (filter) {
 		query[this.path] = addPresenceToQuery(presence, {
 			$regex: value,
 		});
+	}
+	if (isMultilingual && langd) {
+		query = {
+			$or: [
+				query,
+				{
+					[`${this.path}.${langd}`]: query[this.path],
+				}
+			],
+		};
 	}
 	return query;
 };

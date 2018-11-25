@@ -351,7 +351,7 @@ const ListView = React.createClass({
 					// common
 					dispatch={this.props.dispatch}
 					list={listsByPath[this.props.params.listId]}
-
+					
 					isLocale={this.props.isLocale}
 					currentLang={this.props.currentLanguage}
 					defaultLang={this.props.defaultLanguage}
@@ -435,8 +435,13 @@ const ListView = React.createClass({
 		// Just in case this API call takes a long time, we'll update the select all button with
 		// a spinner.
 		this.setState({ selectAllItemsLoading: true });
+		// console.log('>>>>>>>>>', this.props.currentLanguage);
 		var self = this;
-		this.props.currentList.loadItems({ expandRelationshipFilters: false, filters: {} }, function (err, data) {
+		this.props.currentList.loadItems({
+			expandRelationshipFilters: false,
+			filters: {},
+			lang: this.props.currentLanguage,
+		}, function (err, data) {
 			data.results.forEach(item => {
 				if (!item.delegated) {
 					checkedItems[item.id] = true;

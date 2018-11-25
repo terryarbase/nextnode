@@ -10,7 +10,9 @@ const xlsx = require('xlsx');
 module.exports = function (req, res, next) {
 	var baby = require('babyparse');
 	var keystone = req.keystone;
-
+	var options = {
+		langd: req.locales.langd,
+	};
 	var format = req.params.format.split('.')[1]; // json or csv
 	var where = {};
 	var filters = req.query.filters;
@@ -19,7 +21,7 @@ module.exports = function (req, res, next) {
 		catch (e) { /* */ }
 	}
 	if (typeof filters === 'object') {
-		assign(where, req.list.addFiltersToQuery(filters));
+		assign(where, req.list.addFiltersToQuery(filters, options));
 	}
 	if (req.query.search) {
 		assign(where, req.list.addSearchToQuery(req.query.search));
@@ -39,9 +41,6 @@ module.exports = function (req, res, next) {
 	.then(function (results) {
 		var data;
 		var fields = [];
-		var options = {
-			langd: req.locales.langd,
-		};
 		if (format === 'excel') {
 			data = results.map(function (item) {
 				var row = req.list.getCSVData(item, {
