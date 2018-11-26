@@ -113,7 +113,7 @@ module.exports = Field.create({
 		});
 		async.map(values, (value, done) => {
 			xhr({
-				url: Keystone.adminPath + '/api/' + this.props.refList.path + '/' + value + `?ts=${Math.random()}&basic`,
+				url: Keystone.adminPath + '/api/' + this.props.refList.path + '/' + value + `?ts=${Math.random()}&basic&alangd=${this.props.currentLang}`,
 				responseType: 'json',
 			}, (err, resp, data) => {
 				if (err || !data) return done(err);

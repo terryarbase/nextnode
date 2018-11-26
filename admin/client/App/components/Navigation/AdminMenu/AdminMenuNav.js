@@ -45,7 +45,7 @@ var AdminMenuNav = React.createClass({
 		});
 	},
 	handleScroll () {
-		const menu = ReactDOM.findDOMNode(this);
+		const menu = this.menu;
 		const menuTop = menu.offsetTop;
 		const menuHeight = menu.offsetHeight;
 		const menuBottom = menuTop + menuHeight;
@@ -157,7 +157,7 @@ var AdminMenuNav = React.createClass({
 	render () {
 		if (!this.state.navIsVisible) return null;
 		return (
-			<div className="admin-menu" style={this.state.adminMenuStyle}>
+			<div ref={(r) => this.menu = r} className="admin-menu" style={this.state.adminMenuStyle}>
 				{this.renderBrand()}
 				<nav className="admin-menu-navbar">
 					<ul className="admin-menu-list">

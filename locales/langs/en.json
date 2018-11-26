@@ -14,5 +14,8 @@
 	"title_notallowed": "Not Allowed",
 	"title_validation_error": "Validation Errors",
 	"title_field_error": "Field Errors",
-	"title_invalid_configuration": "Invalid Configuration"
+	"title_invalid_configuration": "Invalid Configuration",
+
+	"select": {
+	}
 }

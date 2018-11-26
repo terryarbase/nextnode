@@ -73,21 +73,37 @@ location.prototype.addToSchema = function (schema) {
 	var field = this;
 	var options = this.schemaOptions;
 
+	this.purePaths = {
+		number: '.number',
+		name: '.name',
+		street1: '.street1',
+		street2: '.street2',
+		suburb: '.suburb',
+		state: '.state',
+		postcode: '.postcode',
+		country: '.country',
+		geo: '.geo',
+		geo_lat: '.geo_lat',
+		geo_lng: '.geo_lng',
+		serialised: '.serialised',
+		improve: '_improve',
+		overwrite: '_improve_overwrite',
+	};
 	var paths = this.paths = {
-		number: this.path + '.number',
-		name: this.path + '.name',
-		street1: this.path + '.street1',
-		street2: this.path + '.street2',
-		suburb: this.path + '.suburb',
-		state: this.path + '.state',
-		postcode: this.path + '.postcode',
-		country: this.path + '.country',
-		geo: this.path + '.geo',
-		geo_lat: this.path + '.geo_lat',
-		geo_lng: this.path + '.geo_lng',
-		serialised: this.path + '.serialised',
-		improve: this.path + '_improve',
-		overwrite: this.path + '_improve_overwrite',
+		number: this.path + this.purePaths.number,
+		name: this.path + this.purePaths.name,
+		street1: this.path + this.purePaths.street1,
+		street2: this.path + this.purePaths.street2,
+		suburb: this.path + this.purePaths.suburb,
+		state: this.path + this.purePaths.state,
+		postcode: this.path + this.purePaths.postcode,
+		country: this.path + this.purePaths.country,
+		geo: this.path + this.purePaths.geo,
+		geo_lat: this.path + this.purePaths.geo_lat,
+		geo_lng: this.path + this.purePaths.geo_lng,
+		serialised: this.path + this.purePaths.serialised,
+		improve: this.path + this.purePaths.improve,
+		overwrite: this.path + this.purePaths.overwrite,
 	};
 
 	var getFieldDef = function (type, key) {
@@ -98,41 +114,46 @@ location.prototype.addToSchema = function (schema) {
 		return def;
 	};
 
-	schema.nested[this.path] = true;
-	schema.add({
-		number: getFieldDef(String, 'number'),
-		name: getFieldDef(String, 'name'),
-		street1: getFieldDef(String, 'street1'),
-		street2: getFieldDef(String, 'street2'),
-		street3: getFieldDef(String, 'street3'),
-		suburb: getFieldDef(String, 'suburb'),
-		state: getFieldDef(String, 'state'),
-		postcode: getFieldDef(String, 'postcode'),
-		country: getFieldDef(String, 'country'),
-		geo: { type: [Number], index: '2dsphere' },
-	}, this.path + '.');
+	if (options.multilingual) {
+		options.type = keystone.mongoose.Schema.Types.Mixed;
+		schema.path(this.path, options);
+	} else {
+		schema.nested[this.path] = true;
+		schema.add({
+			number: getFieldDef(String, 'number'),
+			name: getFieldDef(String, 'name'),
+			street1: getFieldDef(String, 'street1'),
+			street2: getFieldDef(String, 'street2'),
+			street3: getFieldDef(String, 'street3'),
+			suburb: getFieldDef(String, 'suburb'),
+			state: getFieldDef(String, 'state'),
+			postcode: getFieldDef(String, 'postcode'),
+			country: getFieldDef(String, 'country'),
+			geo: { type: [Number], index: '2dsphere' },
+		}, this.path + '.');
 
-	schema.virtual(paths.serialised).get(function () {
-		return _.compact([
-			this.get(paths.number),
-			this.get(paths.name),
-			this.get(paths.street1),
-			this.get(paths.street2),
-			this.get(paths.suburb),
-			this.get(paths.state),
-			this.get(paths.postcode),
-			this.get(paths.country),
-		]).join(', ');
-	});
+		schema.virtual(paths.serialised).get(function () {
+			return _.compact([
+				this.get(paths.number),
+				this.get(paths.name),
+				this.get(paths.street1),
+				this.get(paths.street2),
+				this.get(paths.suburb),
+				this.get(paths.state),
+				this.get(paths.postcode),
+				this.get(paths.country),
+			]).join(', ');
+		});
 
-	// pre-save hook to fix blank geo fields
-	// see http://stackoverflow.com/questions/16388836/does-applying-a-2dsphere-index-on-a-mongoose-schema-force-the-location-field-to
-	schema.pre('save', function (next) {
-		var obj = field._path.get(this);
-		var geo = (obj.geo || []).map(Number).filter(_.isFinite);
-		obj.geo = (geo.length === 2) ? geo : undefined;
-		next();
-	});
+		// pre-save hook to fix blank geo fields
+		// see http://stackoverflow.com/questions/16388836/does-applying-a-2dsphere-index-on-a-mongoose-schema-force-the-location-field-to
+		schema.pre('save', function (next) {
+			var obj = field._path.get(this);
+			var geo = (obj.geo || []).map(Number).filter(_.isFinite);
+			obj.geo = (geo.length === 2) ? geo : undefined;
+			next();
+		});
+	}
 
 	this.bindUnderscoreMethods();
 };
@@ -147,15 +168,30 @@ var FILTER_PATH_MAP = {
 	code: 'postcode',
 	country: 'country',
 };
-location.prototype.addFilterToQuery = function (filter) {
+location.prototype.addFilterToQuery = function (filter, options) {
+	const isMultilingual = this.options.multilingual;
+	const { langd } = options;
 	var query = {};
+	var multilingalQuery = {};
 	var field = this;
 	['street', 'city', 'state', 'code', 'country'].forEach(function (i) {
 		if (!filter[i]) return;
 		var value = utils.escapeRegExp(filter[i]);
 		value = new RegExp(value, 'i');
 		query[field.paths[FILTER_PATH_MAP[i]]] = filter.inverted ? { $not: value } : value;
+		if (isMultilingual && langd) {
+			multilingalQuery[`${field.path}.${langd}${field.purePaths[FILTER_PATH_MAP[i]]}`] = 
+				query[field.paths[FILTER_PATH_MAP[i]]];
+		}
 	});
+	if (isMultilingual && langd) {
+		query = {
+			$or: [
+				query,
+				multilingalQuery,
+			],
+		};
+	}
 	return query;
 };
 
@@ -292,54 +328,58 @@ location.prototype.updateItem = function (item, data, callback) {
 	var valueKeys = fieldKeys.concat(geoKeys);
 	var valuePaths = valueKeys;
 	var values = this._path.get(data);
-
-	if (!values) {
-		// Handle flattened values
-		valuePaths = valueKeys.map(function (i) {
-			return paths[i];
-		});
-		values = _.pick(data, valuePaths);
-	}
-
-	// convert valuePaths to a map for easier usage
-	valuePaths = _.zipObject(valueKeys, valuePaths);
-
-	var setValue = function (key) {
-		if (valuePaths[key] in values && values[valuePaths[key]] !== item.get(paths[key])) {
-			item.set(paths[key], values[valuePaths[key]] || null);
+	const isMultilingualFormat = this.list.isMultilingualFormat(values).length;
+	if (isMultilingualFormat) {
+		item.set(this.path, values);
+	} else {
+		if (!values) {
+			// Handle flattened values
+			valuePaths = valueKeys.map(function (i) {
+				return paths[i];
+			});
+			values = _.pick(data, valuePaths);
 		}
-	};
 
-	_.forEach(fieldKeys, setValue);
+		// convert valuePaths to a map for easier usage
+		valuePaths = _.zipObject(valueKeys, valuePaths);
 
-	if (valuePaths.geo in values) {
-		var oldGeo = item.get(paths.geo) || [];
-		if (oldGeo.length > 1) {
-			oldGeo[0] = item.get(paths.geo)[1];
-			oldGeo[1] = item.get(paths.geo)[0];
-		}
-		var newGeo = values[valuePaths.geo];
-		if (!Array.isArray(newGeo) || newGeo.length !== 2) {
-			newGeo = [];
-		}
-		if (newGeo[0] !== oldGeo[0] || newGeo[1] !== oldGeo[1]) {
-			item.set(paths.geo, newGeo);
-		}
-	} else if (valuePaths.geo_lat in values && valuePaths.geo_lng in values) {
-		var lat = utils.number(values[valuePaths.geo_lat]);
-		var lng = utils.number(values[valuePaths.geo_lng]);
-		item.set(paths.geo, (lat && lng) ? [lng, lat] : undefined);
-	}
+		var setValue = function (key) {
+			if (valuePaths[key] in values && values[valuePaths[key]] !== item.get(paths[key])) {
+				item.set(paths[key], values[valuePaths[key]] || null);
+			}
+		};
 
-	var doGoogleLookup = this.getValueFromData(data, '_improve');
-	if (doGoogleLookup) {
-		var googleUpdateMode = this.getValueFromData(data, '_improve_overwrite') ? 'overwrite' : true;
-		this.googleLookup(item, false, googleUpdateMode, function (err, location, result) {
-			// TODO: we are currently discarding the error; it should probably be
-			// sent back in the response, needs consideration
-			callback();
-		});
-		return;
+		_.forEach(fieldKeys, setValue);
+
+		if (valuePaths.geo in values) {
+			var oldGeo = item.get(paths.geo) || [];
+			if (oldGeo.length > 1) {
+				oldGeo[0] = item.get(paths.geo)[1];
+				oldGeo[1] = item.get(paths.geo)[0];
+			}
+			var newGeo = values[valuePaths.geo];
+			if (!Array.isArray(newGeo) || newGeo.length !== 2) {
+				newGeo = [];
+			}
+			if (newGeo[0] !== oldGeo[0] || newGeo[1] !== oldGeo[1]) {
+				item.set(paths.geo, newGeo);
+			}
+		} else if (valuePaths.geo_lat in values && valuePaths.geo_lng in values) {
+			var lat = utils.number(values[valuePaths.geo_lat]);
+			var lng = utils.number(values[valuePaths.geo_lng]);
+			item.set(paths.geo, (lat && lng) ? [lng, lat] : undefined);
+		}
+
+		var doGoogleLookup = this.getValueFromData(data, '_improve');
+		if (doGoogleLookup) {
+			var googleUpdateMode = this.getValueFromData(data, '_improve_overwrite') ? 'overwrite' : true;
+			this.googleLookup(item, false, googleUpdateMode, function (err, location, result) {
+				// TODO: we are currently discarding the error; it should probably be
+				// sent back in the response, needs consideration
+				callback();
+			});
+			return;
+		}
 	}
 
 	process.nextTick(callback);

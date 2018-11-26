@@ -47,11 +47,11 @@ relationship.prototype.getProperties = function () {
  * Gets id and name for the related item(s) from populated values
  */
 
-function expandRelatedItemData (item) {
+function expandRelatedItemData (item, options) {
 	if (!item || !item.id) return undefined;
 	return {
 		id: item.id,
-		name: this.refList.getDocumentName(item),
+		name: this.refList.getDocumentName(item, null, options),
 	};
 }
 
@@ -59,13 +59,15 @@ function truthy (value) {
 	return value;
 }
 
-relationship.prototype.getExpandedData = function (item) {
+relationship.prototype.getExpandedData = function (item, options) {
 	var value = item.get(this.path);
 	if (this.many) {
 		if (!value || !Array.isArray(value)) return [];
-		return value.map(expandRelatedItemData.bind(this)).filter(truthy);
+		return value.map(function(v) {
+			return expandRelatedItemData.bind(this)(v, options);
+		}).filter(truthy);
 	} else {
-		return expandRelatedItemData.call(this, value);
+		return expandRelatedItemData.call(this, value, options);
 	}
 };
 

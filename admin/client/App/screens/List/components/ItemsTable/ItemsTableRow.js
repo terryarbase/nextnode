@@ -47,7 +47,7 @@ const ItemsRow = React.createClass({
 			'ItemList__row--failure': this.props.rowAlert.fail === itemId,
 		});
 		const { noedit, realTimeCol, realTimeInfo, manageMode, isRestricted, currentLang } = this.props;
-		console.log('this.props.columns: ', this.props.columns);
+		// console.log('this.props.columns: ', this.props.columns);
 		// item fields
 		var cells = this.props.columns.map((col, i) => {
 			var ColumnType = Columns[col.type] || Columns.__unrecognised__;

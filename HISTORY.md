@@ -16,10 +16,11 @@ Delegated Model Enhancements:
 * Added AdminUI localization delegated model
 
 Multilingual Improvements:
+* Added supporting en, zhtw and zhcn languages 
 * Auto create multilingual schema for management language support for List schema
 * Added List multilingual setting
 * Added individual field multilingual setting 
-* Support multilingual tpys: 
+* Support multilingual types: 
 ** Types.Text
 ** Types.Textarea
 ** Types.TextArray
@@ -32,6 +33,7 @@ Multilingual Improvements:
 ** Types.Name
 ** Types.Code
 ** Types.Color
+** Types.Location
 
 Layout Improvements:
 * Added AdminUI Sidemenu for navigation menu for Desktop

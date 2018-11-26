@@ -37,7 +37,7 @@ module.exports = function (req, res) {
 			supportLang: locales && locales.localization,
 		};
 		if (req.query.basic === '' || req.query.basic === 'true') {
-			return res.json(req.list.getBasicData(item));
+			return res.json(req.list.getBasicData(item, options));
 		}
 
 		/* Drilldown (optional, provided if ?drilldown=true in querystring) */
@@ -131,7 +131,6 @@ module.exports = function (req, res) {
 				});
 			}
 			const data = req.list.getData(item, fields, null, options);
-
 			res.json(_.assign(data, {
 				drilldown: drilldown,
 			}));

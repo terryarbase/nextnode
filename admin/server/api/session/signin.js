@@ -15,15 +15,14 @@ function signin (req, res) {
 	var emailRegExp = new RegExp('^' + utils.escapeRegExp(req.body.email) + '$', 'i');
 	User.model.findOne({ email: emailRegExp }).populate(keystone.get('rbac') || '').exec(function (err, user) {
 		if (user) {
-			// trigger middleware update account status
-			user.lastLoginAt = moment().toDate();
-			user.save();
 			keystone.callHook(user, 'pre:signin', req, function (err) {
 				if (err) return res.status(500).json({ error: 'pre:signin error', detail: err });
 				user._.password.compare(req.body.password, function (err, isMatch) {
 					// console.log('>>>>>>', user);
 					if (isMatch) {
 						if (!user.isAdmin && adminLockEnabled) {
+							user.updatedAt = moment().toDate();
+							user.save();
 							return res.status(500).json({ error: 'Your account has been locked' });
 							// onFail(err || new Error('Your account has been lacked'));
 						} else {
@@ -35,7 +34,7 @@ function signin (req, res) {
 							});
 						}
 					} else {
-						session.updateWrongCount(user, 1,
+						session.updateWrongCount(User, user, 1,
 						function (result) {
 							const code = 401;
 							const message = { error: 'The email and password you entered are not valid.' };

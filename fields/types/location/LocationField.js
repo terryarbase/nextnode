@@ -112,11 +112,11 @@ module.exports = Field.create({
 			return null;
 		}
 		const { value = {}, path } = this.props;
+		//name={this.getInputName(path + '.' + fieldPath)}
 		return (
 			<NestedFormField label={label} data-field-location-path={path + '.' + fieldPath}>
 				<FormInput
 					autoFocus={autoFocus}
-					name={this.getInputName(path + '.' + fieldPath)}
 					onChange={this.makeChanger(fieldPath)}
 					placeholder={label}
 					value={value[fieldPath] || ''}
@@ -127,12 +127,13 @@ module.exports = Field.create({
 
 	renderSuburbState () {
 		const { value = {}, path } = this.props;
+		// name={this.getInputName(path + '.suburb')}
+		// name={this.getInputName(path + '.state')}
 		return (
 			<NestedFormField label="Suburb / State" data-field-location-path={path + '.suburb_state'}>
 				<Grid.Row gutter={10}>
 					<Grid.Col small="two-thirds" data-field-location-path={path + '.suburb'}>
 						<FormInput
-							name={this.getInputName(path + '.suburb')}
 							onChange={this.makeChanger('suburb')}
 							placeholder="Suburb"
 							value={value.suburb || ''}
@@ -140,7 +141,6 @@ module.exports = Field.create({
 					</Grid.Col>
 					<Grid.Col small="one-third" data-field-location-path={path + '.state'}>
 						<FormInput
-							name={this.getInputName(path + '.state')}
 							onChange={this.makeChanger('state')}
 							placeholder="State"
 							value={value.state || ''}
@@ -153,12 +153,13 @@ module.exports = Field.create({
 
 	renderPostcodeCountry () {
 		const { value = {}, path } = this.props;
+		// name={this.getInputName(path + '.postcode')}
+		// name={this.getInputName(path + '.country')}
 		return (
 			<NestedFormField label="Postcode / Country" data-field-location-path={path + '.postcode_country'}>
 				<Grid.Row gutter={10}>
 					<Grid.Col small="one-third" data-field-location-path={path + '.postcode'}>
 						<FormInput
-							name={this.getInputName(path + '.postcode')}
 							onChange={this.makeChanger('postcode')}
 							placeholder="Post Code"
 							value={value.postcode || ''}
@@ -166,7 +167,6 @@ module.exports = Field.create({
 					</Grid.Col>
 					<Grid.Col small="two-thirds" data-field-location-path={path + '.country'}>
 						<FormInput
-							name={this.getInputName(path + '.country')}
 							onChange={this.makeChanger('country')}
 							placeholder="Country"
 							value={value.country || ''}
@@ -183,12 +183,13 @@ module.exports = Field.create({
 		}
 		const { value = {}, path, paths } = this.props;
 		const geo = value.geo || [];
+		// name={this.getInputName(paths.geo + '[1]')}
+		// name={this.getInputName(paths.geo + '[0]')}
 		return (
 			<NestedFormField label="Lat / Lng" data-field-location-path={path + '.geo'}>
 				<Grid.Row gutter={10}>
 					<Grid.Col small="one-half" data-field-location-path="latitude">
 						<FormInput
-							name={this.getInputName(paths.geo + '[1]')}
 							onChange={this.makeGeoChanger(1)}
 							placeholder="Latitude"
 							value={geo[1] || ''}
@@ -196,7 +197,6 @@ module.exports = Field.create({
 					</Grid.Col>
 					<Grid.Col small="one-half" data-field-location-path="longitude">
 						<FormInput
-							name={this.getInputName(paths.geo + '[0]')}
 							onChange={this.makeGeoChanger(0)}
 							placeholder="Longitude"
 							value={geo[0] || ''}
@@ -221,21 +221,21 @@ module.exports = Field.create({
 	renderGoogleOptions () {
 		const { paths, enableMapsAPI } = this.props;
 		if (!enableMapsAPI) return null;
+		// name={this.getInputName(paths.overwrite)}
 		var replace = this.state.improve ? (
 			<LabelledControl
 				checked={this.state.overwrite}
 				label="Replace existing data"
-				name={this.getInputName(paths.overwrite)}
 				onChange={this.makeGoogler('overwrite')}
 				type="checkbox"
 			/>
 		) : null;
+		// name={this.getInputName(paths.improve)}
 		return (
 			<FormField offsetAbsentLabel>
 				<LabelledControl
 					checked={this.state.improve}
 					label="Autodetect and improve location on save"
-					name={this.getInputName(paths.improve)}
 					onChange={this.makeGoogler('improve')}
 					title="When checked, this will attempt to fill missing fields. It will also get the lat/long"
 					type="checkbox"
@@ -275,6 +275,10 @@ module.exports = Field.create({
 			<div data-field-name={path} data-field-type="location">
 				<FormField label={label} htmlFor={path}>
 					{showMore}
+					<FormInput
+						type="hidden"
+						name={path}
+					/>
 				</FormField>
 				{this.renderField('number', 'PO Box / Shop', true, true)}
 				{this.renderField('name', 'Building Name', true)}
