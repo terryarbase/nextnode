@@ -14,4 +14,25 @@
 	"title_notallowed": "不允許",
 	"title_validation_error": "验证错误",
 	"title_field_error": "字段错误",
-	"title_invalid_configuration": "无效的配置"
+	"title_invalid_configuration": "无效的配置",
+
+	"select": {
+		"please": "请选择",
+		"female": "女士",
+		"male": "男士",
+		"mr": "先生",
+		"mrs": "小姐",
+		"miss": "小姐",
+		"active": "有效",
+		"inactive": "无效",
+		"enabled": "已启用",
+		"disabled": "已禁用",
+		"yes": "是",
+		"No": "否",
+		"full_permission": "完整权限 (查看，创建及管理)",
+		"create_permission": "部份权限 (查看及创建)",
+		"view_only": "仅可查看",
+		"no_permission": "没有权限"
+	}
+
+}

@@ -14,5 +14,20 @@
 	"title_notallowed": "不允許",
 	"title_validation_error": "驗證錯誤",
 	"title_field_error": "字段錯誤",
-	"title_invalid_configuration": "無效配置"
+	"title_invalid_configuration": "無效配置",
+
+	"select": {
+		"please": "請選擇",
+		"female": "女士",
+		"male": "男士",
+		"mr": "先生",
+		"mrs": "小姐",
+		"miss": "小姐",
+		"active": "有效",
+		"inactive": "無效",
+		"enabled": "已啟用",
+		"disabled": "已禁用",
+		"yes": "是",
+		"No": "否"
+	}
 }

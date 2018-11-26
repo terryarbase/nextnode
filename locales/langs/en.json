@@ -17,5 +17,21 @@
 	"title_invalid_configuration": "Invalid Configuration",
 
 	"select": {
+		"please": "Please Select",
+		"female": "Female",
+		"male": "Male",
+		"mr": "Mr",
+		"mrs": "Mrs",
+		"miss": "Miss",
+		"active": "Active",
+		"inactive": "Inactive",
+		"enabled": "Enabled",
+		"disabled": "Disabled",
+		"yes": "Yes",
+		"No": "No",
+		"full_permission": "Full Permission",
+		"create_permission": "Create",
+		"view_only": "View Only",
+		"no_permission": "No Permission"
 	}
 }
