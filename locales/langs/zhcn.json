@@ -16,23 +16,25 @@
 	"title_field_error": "字段错误",
 	"title_invalid_configuration": "无效的配置",
 
-	"select": {
-		"please": "请选择",
-		"female": "女士",
-		"male": "男士",
-		"mr": "先生",
-		"mrs": "小姐",
-		"miss": "小姐",
-		"active": "有效",
-		"inactive": "无效",
-		"enabled": "已启用",
-		"disabled": "已禁用",
-		"yes": "是",
-		"No": "否",
-		"full_permission": "完整权限 (查看，创建及管理)",
-		"create_permission": "部份权限 (查看及创建)",
-		"view_only": "仅可查看",
-		"no_permission": "没有权限"
-	}
+	"select_option_please": "请选择",
+	"select_option_female": "女士",
+	"select_option_male": "男士",
+	"select_option_mr": "先生",
+	"select_option_mrs": "小姐",
+	"select_option_miss": "小姐",
+	"select_option_active": "有效",
+	"select_option_inactive": "无效",
+	"select_option_enabled": "已启用",
+	"select_option_disabled": "已禁用",
+	"select_option_yes": "是",
+	"select_option_no": "否",
+	"select_option_full_permission": "完整权限 (查看，创建及管理)",
+	"select_option_create_permission": "一般权限 (查看及创建)",
+	"select_option_view_only": "仅可查看",
+	"select_option_no_permission": "没有权限",
+
+	"select_option_placeholder": "栏位提示",
+	"select_option_field": "栏目名称",
+	"select_option_label": "标签"
 
 }

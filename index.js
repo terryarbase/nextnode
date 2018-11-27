@@ -38,6 +38,7 @@ var Keystone = function () {
 	    directory: `${rootPath}/locales/langs/`,
 	    defaultLocale: defaultLang,
 	    autoReload: true,
+	    register: global,
 	    updateFiles: false,
 	});
 
@@ -59,6 +60,7 @@ var Keystone = function () {
 		** for generate localization
 		*/
 		'locale': defaultLang,
+		'support locales': _.keys(locales),
 		'app root': rootPath,
 		'i18n': i18n,
 		'static lang path': 'static/locale.json',	// json file for generated language static file 
@@ -181,6 +183,8 @@ Keystone.prototype.createKeystoneHash = require('./lib/core/createKeystoneHash')
 Keystone.prototype.createRole = require('./lib/core/delegation/createRole');
 Keystone.prototype.createLocalization = require('./lib/core/delegation/createLocalization');
 Keystone.prototype.createAccount = require('./lib/core/delegation/createAccount');
+
+
 // Keystone.prototype.hooks = function() {};
 // hooks.prototype.localization = require('./lib/core/hook/localization');
 
@@ -214,6 +218,8 @@ keystone.Keystone = Keystone;
 keystone.List = require('./lib/list')(keystone);
 keystone.Storage = require('./lib/storage');
 keystone.View = require('./lib/view');
+// Type.Select options
+keystone.Options = {};
 
 // Customized Plugins
 keystone.Plugins = {

@@ -36,6 +36,7 @@ var DEFAULT_OPTION_KEYS = [
 	'multilingual',
 	'stateless',
 	'cloneable',
+	'assign',
 ];
 
 /**

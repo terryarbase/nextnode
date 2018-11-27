@@ -23,8 +23,10 @@ function signin (req, res) {
 						if (!user.isAdmin && adminLockEnabled) {
 							user.updatedAt = moment().toDate();
 							user.save();
-							return res.status(500).json({ error: 'Your account has been locked' });
+							return res.status(500).json({ error: 'Your account has been locked.' });
 							// onFail(err || new Error('Your account has been lacked'));
+						} else if (!user.accountStatus) {
+							return res.status(500).json({ error: 'Your account has been disabled. Please contact the Administrator for the helps.' });
 						} else {
 							session.signinWithUser(user, req, res, function () {
 								keystone.callHook(user, 'post:signin', req, function (err) {

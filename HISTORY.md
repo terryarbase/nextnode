@@ -1,18 +1,29 @@
 # Next-nodecms Changelog
 
 ## 1.0.2
-### About Multilingual and Layout, Delegated Model Enhancements
-Terry Chan 11/11/2018 (Last Updated at 25/11/2018)
+### About Multilingual and Layout, Delegated Model Enhancements, Delegated Options List
+Terry Chan 11/11/2018 (Last Updated at 27/11/2018)
 
 Common Improvements:
 * Added Realtime edit field (Support Types.Boolean)
 * Added Realtime select all function (Support Types.Boolean)
+* Fixed AdminUI account lock checking
 * Delegated Record Restrictions
+* Added AdminUI account disable checking
+* Added Common Types.Select option list
+** section
+** permission
+** status
+** activate
+** gender
+** appellation
+** question
+** customized list (with mapping language or with multilingual value)
 
 Delegated Model Enhancements:
 * Added AdminUI user account delegated model
 * Added AdminUI user role delegated model
-** Added Full Permission to the most power of role
+* Added Full Permission to the most power of role
 * Added AdminUI localization delegated model
 
 Multilingual Improvements:

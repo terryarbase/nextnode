@@ -16,22 +16,25 @@
 	"title_field_error": "Field Errors",
 	"title_invalid_configuration": "Invalid Configuration",
 
-	"select": {
-		"please": "Please Select",
-		"female": "Female",
-		"male": "Male",
-		"mr": "Mr",
-		"mrs": "Mrs",
-		"miss": "Miss",
-		"active": "Active",
-		"inactive": "Inactive",
-		"enabled": "Enabled",
-		"disabled": "Disabled",
-		"yes": "Yes",
-		"No": "No",
-		"full_permission": "Full Permission",
-		"create_permission": "Create",
-		"view_only": "View Only",
-		"no_permission": "No Permission"
-	}
+	"select_option_please": "Please Select",
+	"select_option_female": "Female",
+	"select_option_male": "Male",
+	"select_option_mr": "Mr",
+	"select_option_mrs": "Mrs.",
+	"select_option_miss": "Miss",
+	"select_option_active": "Active",
+	"select_option_inactive": "Inactive",
+	"select_option_enabled": "Enabled",
+	"select_option_disabled": "Disabled",
+	"select_option_yes": "Yes",
+	"select_option_no": "No",
+	"select_option_full_permission": "Full Permission (View, Create and Edit)",
+	"select_option_create_permission": "General Permission (View and Create)",
+	"select_option_view_only": "View Only",
+	"select_option_no_permission": "No Permission",
+
+	"select_option_placeholder": "Placeholder",
+	"select_option_field": "Field Name",
+	"select_option_label": "Label"
+
 }

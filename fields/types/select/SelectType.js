@@ -11,14 +11,26 @@ var utils = require('keystone-utils');
 function select (list, path, options) {
 	this.ui = options.ui || 'select';
 	this.numeric = options.numeric ? true : false;
-	this._nativeType = (options.numeric) ? Number : String;
+	this.isBoolean = options.boolean ? true : false;
+	this._nativeType = String;
 	this._underscoreMethods = ['format', 'pluck'];
-	this._properties = ['ops', 'numeric'];
-	if (typeof options.options === 'string') {
+	this._properties = ['ops', 'numeric', 'boolean'];
+	/*
+	** Check for designated the delegated options list
+	** Terry Chan
+	** 27/11/2018
+	*/
+	const assign = options.assign;
+	const optionsList = options.options;
+	if (assign && typeof optionsList === 'string') {
+		const delegatedOption = list.keystone.Options[options.options];
+		options.options = delegatedOption.values;
+		options.boolean = this.isBoolean = delegatedOption.boolean;
+	} else if (typeof options.options === 'string') {
 		options.options = options.options.split(',');
 	}
-	if (!Array.isArray(options.options)) {
-		throw new Error('Select fields require an options array.');
+	if (!Array.isArray(options.options) || !options.options.length) {
+		throw new Error('Select fields require an options array or any delegated Options array.');
 	}
 	this.ops = options.options.map(function (i) {
 		var op = typeof i === 'string' ? { value: i.trim(), label: utils.keyToLabel(i) } : i;
@@ -28,11 +40,24 @@ function select (list, path, options) {
 		if (options.numeric && !_.isNumber(op.value)) {
 			op.value = Number(op.value);
 		}
+		if (this.isBoolean) {
+			op.value = op.value === 'true' ? true : false;
+		}
 		return op;
 	});
 	// undefined options.emptyOption defaults to true
 	if (options.emptyOption === undefined) {
 		options.emptyOption = true;
+	}
+	/*
+	** handle for boolean option value
+	** Terry Chan
+	** 27/11/2018
+	*/
+	if (options.numeric) {
+		this._nativeType = Number;
+	} else if (options.boolean) {
+		this._nativeType = Boolean;
 	}
 	// ensure this.emptyOption is a boolean
 	this.emptyOption = !!options.emptyOption;
@@ -64,7 +89,7 @@ select.prototype.addToSchema = function (schema) {
 		type: this._nativeType,
 		enum: this.values,
 		set: function (val) {
-			return (val === '' || val === null || val === false) ? undefined : val;
+			return (val === '' || val === null) ? undefined : val;
 		},
 	}, this.schemaOptions));
 	schema.virtual(this.paths.data).get(function () {
@@ -133,6 +158,8 @@ select.prototype.validateInput = function (data, callback) {
 	var value = this.getValueFromData(data);
 	if (typeof value === 'string' && this.numeric) {
 		value = utils.number(value);
+	} else if (typeof value === 'string' && this.isBoolean) {
+		value = value === 'true';
 	}
 	var result = value === undefined || value === null || value === '' || (value in this.map) ? true : false;
 	utils.defer(callback, result);
@@ -178,6 +205,20 @@ select.prototype.inputIsValid = function (data, required, item) {
  */
 select.prototype.format = function (item) {
 	return this.labels[item.get(this.path)] || '';
+};
+
+
+select.prototype.updateItem = function (item, data, callback) {
+	var value = this.getValueFromData(data);
+	// console.log(typeof value, value == 'true');
+	// if (this.isBoolean) {
+	// 	value = value === 'true';
+	// }
+	// This is a deliberate type coercion so that numbers from forms play nice
+	if (value !== undefined && value !== item.get(this.path)) { // eslint-disable-line eqeqeq
+		item.set(this.path, value);
+	}
+	process.nextTick(callback);
 };
 
 /* Export Field Type */

@@ -80,6 +80,7 @@ var EditForm = React.createClass({
 	getFieldProps (field) {
 		const { isLocale, currentLang } = this.props;
 		const { values } = this.state;
+		// console.log('this.props: ', field);
 		const props = assign({}, field);
 		const alerts = this.state.alerts;
 		// Display validation errors inline
@@ -92,7 +93,6 @@ var EditForm = React.createClass({
 			}
 		}
 
-		
 		props.value = this.props.list.getProperlyValue({ field, isLocale, currentLang, values });
 		props.values = values;
 		props.onChange = this.handleChange;

@@ -16,18 +16,24 @@
 	"title_field_error": "字段錯誤",
 	"title_invalid_configuration": "無效配置",
 
-	"select": {
-		"please": "請選擇",
-		"female": "女士",
-		"male": "男士",
-		"mr": "先生",
-		"mrs": "小姐",
-		"miss": "小姐",
-		"active": "有效",
-		"inactive": "無效",
-		"enabled": "已啟用",
-		"disabled": "已禁用",
-		"yes": "是",
-		"No": "否"
-	}
+	"select_option_please": "請選擇",
+	"select_option_female": "女士",
+	"select_option_male": "男士",
+	"select_option_mr": "先生",
+	"select_option_mrs": "小姐",
+	"select_option_miss": "小姐",
+	"select_option_active": "有效",
+	"select_option_inactive": "無效",
+	"select_option_enabled": "已啟用",
+	"select_option_disabled": "已禁用",
+	"select_option_yes": "是",
+	"select_option_no": "否",
+	"select_option_full_permission": "完整權限 (查看，創建及管理)",
+	"select_option_create_permission": "一般權限 (查看及創建)",
+	"select_option_view_only": "只可查看",
+	"select_option_no_permission": "没有權限",
+
+	"select_option_placeholder": "欄位提示",
+	"select_option_field": "欄位名稱",
+	"select_option_label": "標籤"
 }
