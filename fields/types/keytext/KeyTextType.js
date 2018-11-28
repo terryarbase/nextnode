@@ -1,24 +1,20 @@
 var FieldType = require('../Type');
-var _ = require('lodash');
 var util = require('util');
 var utils = require('keystone-utils');
 var addPresenceToQuery = require('../../utils/addPresenceToQuery');
 
 /**
- * KeyText FieldType Constructor
+ * TextArray FieldType Constructor
  * @extends Field
  * @api public
- * Terry Chan
- * 29/11/2018
  */
-function keytext (list, path, options) {
-	this._nativeType = [Object];
+function textarray (list, path, options) {
+	this._nativeType = [String];
 	this._underscoreMethods = ['format'];
 	this.separator = options.separator || ' | ';
 	// representive the placeholder elements
 	this.placeholder = [
-		'key',
-		'text'
+		'normal',
 	];
 	const newOptions = {
 		...options,
@@ -26,18 +22,18 @@ function keytext (list, path, options) {
 			cloneable: true,	// for clone ui element everytime
 		},
 	};
-	keytext.super_.call(this, list, path, newOptions);
+	textarray.super_.call(this, list, path, newOptions);
 }
-keytext.properName = 'KeyText';
-util.inherits(keytext, FieldType);
+textarray.properName = 'TextArray';
+util.inherits(textarray, FieldType);
 
 /**
  * Formats the field value
  */
-keytext.prototype.format = function (item, separator) {
+textarray.prototype.format = function (item, separator) {
 	const sep = (separator && typeof separator === 'string') || this.separator;
 	const value = this.getItemFromElasticData(item, this.path, separator);
-	return _.map(value, ({ text }) => text).join(sep);
+	return value.join(sep);
 };
 
 /**
@@ -51,7 +47,7 @@ keytext.prototype.format = function (item, separator) {
  *                                          "none" and "some". Default: 'some'
  * @param {String|Object} filter.value 		The value that is filtered for
  */
-keytext.prototype.addFilterToQuery = function (filter, options) {
+textarray.prototype.addFilterToQuery = function (filter, options) {
 	const isMultilingual = this.options.multilingual;
 	const { langd } = options;
 	var query = {};
@@ -104,7 +100,7 @@ keytext.prototype.addFilterToQuery = function (filter, options) {
 /**
  * Asynchronously confirms that the provided value is valid
  */
-keytext.prototype.validateInput = function (data, callback) {
+textarray.prototype.validateInput = function (data, callback) {
 	var value = this.getValueFromData(data);
 	var result = true;
 	// If the value is null, undefined or an empty string
@@ -131,7 +127,7 @@ keytext.prototype.validateInput = function (data, callback) {
 /**
  * Asynchronously confirms that the a value is present
  */
-keytext.prototype.validateRequiredInput = function (item, data, callback) {
+textarray.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getValueFromData(data);
 	var result = false;
 	// If the value is undefined and we have something stored already, validate
@@ -168,7 +164,7 @@ keytext.prototype.validateRequiredInput = function (item, data, callback) {
  *
  * Deprecated
  */
-keytext.prototype.inputIsValid = function (data, required, item) {
+textarray.prototype.inputIsValid = function (data, required, item) {
 	var value = this.getValueFromData(data);
 	if (required) {
 		if (value === undefined && item && item.get(this.path) && item.get(this.path).length) {
@@ -188,7 +184,7 @@ keytext.prototype.inputIsValid = function (data, required, item) {
  * Updates the value for this field in the item from a data object.
  * If the data object does not contain the value, then the value is set to empty array.
  */
-// keytext.prototype.updateItem = function (item, data, callback) {
+// textarray.prototype.updateItem = function (item, data, callback) {
 // 	var value = this.getValueFromData(data);
 
 // 	if (value === undefined || value === null || value === '') {
@@ -210,4 +206,4 @@ keytext.prototype.inputIsValid = function (data, required, item) {
 // };
 
 /* Export Field Type */
-module.exports = keytext;
+module.exports = textarray;
