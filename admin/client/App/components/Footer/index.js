@@ -7,6 +7,7 @@ import React from 'react';
 import { css } from 'glamor';
 import { Container } from '../../elemental';
 import theme from '../../../theme';
+import { translate } from "react-i18next";
 
 var Footer = React.createClass({
 	displayName: 'Footer',
@@ -38,8 +39,8 @@ var Footer = React.createClass({
 		);
 	},
 	render () {
-		const { backUrl, brand, appversion, version } = this.props;
-
+		const { backUrl, brand, appversion, version, t } = this.props;
+		
 		return (
 			<footer className={css(classes.footer)} data-keystone-footer>
 				<Container>
@@ -57,7 +58,7 @@ var Footer = React.createClass({
 						className={css(classes.link)}
 						tabIndex="-1"
 					>
-						Four Directions
+						{/*Four Directions*/t('company')}
 					</a>
 					<span> version {version}.</span>
 					{/* {this.renderUser()} */}
@@ -89,4 +90,5 @@ const classes = {
 	},
 };
 
-module.exports = Footer;
+export default translate("footer")(Footer)
+// module.exports = Footer;

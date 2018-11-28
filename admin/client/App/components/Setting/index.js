@@ -10,6 +10,7 @@ import { Fields } from 'FieldTypes';
 import xhr from 'xhr';
 import AlertMessages from '../../shared/AlertMessages';
 import { Button, Form, Modal } from '../../elemental';
+import { translate } from "react-i18next";
 
 const schema = 'User';
 
@@ -102,7 +103,7 @@ var Setting = React.createClass({
 		return props;
 	},
 	renderForm () {
-		const { user, onCancel, list } = this.props;
+		const { user, onCancel, list, t } = this.props;
 		const { loading } = this.state;
 		// window.console.warn('Fields: ', Fields['password']);
 		const fieldToBe = ['password'];
@@ -117,7 +118,7 @@ var Setting = React.createClass({
 		return (
 			<Form layout="horizontal" onSubmit={this.submitForm}>
 				<Modal.Header
-					text="Change My Account Setting"
+					text={t('accountSetting')}
 					showCloseButton
 				/>
 				<Modal.Body>
@@ -131,7 +132,7 @@ var Setting = React.createClass({
 						data-button-type="submit"
 						disabled={loading}
 					>
-						{!loading ? 'Update My Account' : 'Updating...'}
+						{!loading ? t('updateMyAccount') : t('updating')}
 					</Button>
 					<Button
 						variant="link"
@@ -139,7 +140,7 @@ var Setting = React.createClass({
 						data-button-type="cancel"
 						onClick={this.closeModal}
 					>
-						Cancel
+						{t('cancel')}
 					</Button>
 				</Modal.Footer>
 			</Form>
@@ -158,4 +159,5 @@ var Setting = React.createClass({
 	},
 });
 
-module.exports = Setting;
+export default translate('setting')(Setting);
+// module.exports = Setting;

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { translate } from "react-i18next";
 import _ from 'lodash';
 import {
 	Button,
@@ -23,6 +24,7 @@ function ListManagement ({
 	realTimeInfo={},
 	realTimeCol={},
 	selectAllItemsLoading,
+	t,
 	...props
 }) {
 	// do not render if there's no results
@@ -41,7 +43,7 @@ function ListManagement ({
 				onClick={handleDelete}
 				position="left"
 				variant="link">
-				Delete
+				{t('delete')}
 			</GlyphButton>
 		</Section>
 	);
@@ -59,7 +61,7 @@ function ListManagement ({
 						onClick={handleRealTimeSave}
 						position="left"
 						variant="link">
-						Save All
+						{t('saveAll')}
 					</GlyphButton>
 				</Section>
 			);
@@ -88,12 +90,12 @@ function ListManagement ({
 				{selectAllButton}
 				<Section>
 					<Button active={pageVisibleButtonIsActive} onClick={() => handleSelect('visible')} title="Select all rows">
-						{itemCount > itemsPerPage ? 'Page ' : 'All '}
+						{itemCount > itemsPerPage ? t('page') : t('all')}
 						<small style={buttonNoteStyles}>({itemCount > itemsPerPage ? itemsPerPage : itemCount})</small>
 					</Button>
 				</Section>
 				<Section>
-					<Button active={noneButtonIsActive} onClick={() => handleSelect('none')} title="Deselect all rows">None</Button>
+					<Button active={noneButtonIsActive} onClick={() => handleSelect('none')} title="Deselect all rows">{t('none')}</Button>
 				</Section>
 			</Group>
 		</Section>
@@ -103,7 +105,7 @@ function ListManagement ({
 	const selectedCountText = isOpen ? (
 		<Section>
 			<span style={{ color: '#666', display: 'inline-block', lineHeight: '2.4em', margin: 1 }}>
-				{checkedItemCount} selected
+				{t('selected', { count: checkedItemCount })}
 			</span>
 		</Section>
 	) : null;
@@ -114,7 +116,7 @@ function ListManagement ({
 			<Group style={{ float: 'left', marginRight: '.75em', marginBottom: 0 }}>
 				<Section>
 					<Button active={isOpen} onClick={() => handleToggle(!isOpen)}>
-						Manage
+						{t('label')}
 					</Button>
 				</Section>
 				{realEditActionButtons()}
@@ -139,4 +141,5 @@ ListManagement.propTypes = {
 	selectAllItemsLoading: PropTypes.bool,
 };
 
-module.exports = ListManagement;
+export default translate('manage')(ListManagement);
+// module.exports = ListManagement;

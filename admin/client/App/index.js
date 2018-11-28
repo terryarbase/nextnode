@@ -10,11 +10,13 @@ import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
 import { Provider } from 'react-redux';
 import { syncHistoryWithStore } from 'react-router-redux';
+import { I18nextProvider } from "react-i18next";
 
 import App from './App';
 import Home from './screens/Home';
 import Item from './screens/Item';
 import List from './screens/List';
+import i18n from './locale/i18n';
 
 import store from './store';
 
@@ -27,13 +29,15 @@ Keystone.User = listsByKey[Keystone.userList];
 
 ReactDOM.render(
 	<Provider store={store}>
-		<Router history={history}>
-			<Route path={Keystone.adminPath} component={App}>
-				<IndexRoute component={Home} />
-				<Route path=":listId" component={List} />
-				<Route path=":listId/:itemId" component={Item} />
-			</Route>
-		</Router>
+		<I18nextProvider i18n={i18n}>
+			<Router history={history}>
+				<Route path={Keystone.adminPath} component={App}>
+					<IndexRoute component={Home} />
+					<Route path=":listId" component={List} />
+					<Route path=":listId/:itemId" component={Item} />
+				</Route>
+			</Router>
+		</I18nextProvider>
 	</Provider>,
 	document.getElementById('react-root')
 );

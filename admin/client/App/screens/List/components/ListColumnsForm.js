@@ -1,5 +1,6 @@
 import React from 'react';
 import assign from 'object-assign';
+import { translate } from "react-i18next";
 
 import Popout from '../../../shared/Popout';
 import PopoutList from '../../../shared/Popout/PopoutList';
@@ -81,6 +82,7 @@ var ListColumnsForm = React.createClass({
 		});
 	},
 	render () {
+		const { t } = this.props;
 		const formFieldStyles = {
 			borderBottom: '1px dashed rgba(0,0,0,0.1)',
 			marginBottom: '1em',
@@ -92,11 +94,11 @@ var ListColumnsForm = React.createClass({
 					active={this.state.isOpen}
 					id="listHeaderColumnButton"
 					glyph="list-unordered"
-					label="Columns"
+					label={t('label')}
 					onClick={() => this.togglePopout(!this.state.isOpen)}
 				/>
 				<Popout isOpen={this.state.isOpen} onCancel={() => this.togglePopout(false)} relativeToID="listHeaderColumnButton">
-					<Popout.Header title="Columns" />
+					<Popout.Header title={t('label')} />
 					<Popout.Body scrollable>
 						<div style={formFieldStyles}>
 							<FormInput
@@ -112,13 +114,14 @@ var ListColumnsForm = React.createClass({
 					</Popout.Body>
 					<Popout.Footer
 						primaryButtonAction={this.applyColumns}
-						primaryButtonLabel="Apply"
+						primaryButtonLabel={t('apply')}
 						secondaryButtonAction={() => this.togglePopout(false)}
-						secondaryButtonLabel="Cancel" />
+						secondaryButtonLabel={t('cancel')} />
 				</Popout>
 			</div>
 		);
 	},
 });
 
-module.exports = ListColumnsForm;
+export default translate('column')(ListColumnsForm);
+// module.exports = ListColumnsForm;

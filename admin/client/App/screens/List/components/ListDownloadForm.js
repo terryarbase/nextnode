@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import assign from 'object-assign';
+import { translate } from "react-i18next";
 import Popout from '../../../shared/Popout';
 import PopoutList from '../../../shared/Popout/PopoutList';
 import ListHeaderButton from './ListHeaderButton';
@@ -104,6 +105,7 @@ var ListDownloadForm = React.createClass({
 		this.togglePopout(false);
 	},
 	renderColumnSelect () {
+		const { t } = this.props;
 		if (this.state.useCurrentColumns) return null;
 
 		const possibleColumns = this.getListUIElements().map((el, i) => {
@@ -126,7 +128,7 @@ var ListDownloadForm = React.createClass({
 		});
 
 		const allColumnsSelected = this.allColumnsSelected();
-		const checkboxLabel = allColumnsSelected ? 'Select None' : 'Select All';
+		const checkboxLabel = allColumnsSelected ? t('selectNone') : t('selectAll');
 
 		return (
 			<div>
@@ -147,21 +149,21 @@ var ListDownloadForm = React.createClass({
 	},
 	render () {
 		const { useCurrentColumns } = this.state;
-
+		const { t } = this.props;
 		return (
 			<div>
 				<ListHeaderButton
 					active={this.state.isOpen}
 					id="listHeaderDownloadButton"
 					glyph="cloud-download"
-					label="Download"
+					label={t('label')}
 					onClick={() => this.togglePopout(!this.state.isOpen)}
 				/>
 				<Popout isOpen={this.state.isOpen} onCancel={() => this.togglePopout(false)} relativeToID="listHeaderDownloadButton">
-					<Popout.Header title="Download" />
+					<Popout.Header title={t('label')} />
 					<Popout.Body scrollable>
 						<Form layout="horizontal" labelWidth={100} component="div">
-							<FormField label="File format:">
+							<FormField label={t('fileFormat')}>
 								<SegmentedControl
 									equalWidthSegments
 									onChange={this.changeFormat}
@@ -169,11 +171,11 @@ var ListDownloadForm = React.createClass({
 									value={this.state.format}
 								/>
 							</FormField>
-							<FormField label="Columns:" style={{ marginBottom: 0 }}>
+							<FormField label={t('column')} style={{ marginBottom: 0 }}>
 								<LabelledControl
 									autoFocus
 									checked={useCurrentColumns}
-									label="Use currently selected"
+									label={t('useCrrentSelect')}
 									onChange={this.toggleCurrentlySelectedColumns}
 									type="checkbox"
 									value
@@ -184,13 +186,14 @@ var ListDownloadForm = React.createClass({
 					</Popout.Body>
 					<Popout.Footer
 						primaryButtonAction={this.handleDownloadRequest}
-						primaryButtonLabel="Download"
+						primaryButtonLabel={t('label')}
 						secondaryButtonAction={() => this.togglePopout(false)}
-						secondaryButtonLabel="Cancel" />
+						secondaryButtonLabel={t('cancel')} />
 				</Popout>
 			</div>
 		);
 	},
 });
 
-module.exports = ListDownloadForm;
+export default translate('download')(ListDownloadForm);
+// module.exports = ListDownloadForm;

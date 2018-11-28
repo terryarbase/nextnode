@@ -8,6 +8,7 @@ import Popout from '../../../../shared/Popout';
 import PopoutList from '../../../../shared/Popout/PopoutList';
 import { FormInput } from '../../../../elemental';
 import ListHeaderButton from '../ListHeaderButton';
+import { translate } from "react-i18next";
 
 import { setFilter } from '../../actions';
 
@@ -123,6 +124,7 @@ var ListFiltersAdd = React.createClass({
 		);
 	},
 	renderForm () {
+		const { t } = this.props;
 		return (
 			<Popout.Pane onLayout={this.setPopoutHeight} key="form">
 				<ListFiltersAddForm
@@ -134,11 +136,14 @@ var ListFiltersAdd = React.createClass({
 					maxHeight={this.props.maxHeight}
 					onHeightChange={this.setPopoutHeight}
 					dispatch={this.props.dispatch}
+					apply={t('apply')}
+					cancel={t('cancel')}
 				/>
 			</Popout.Pane>
 		);
 	},
 	render () {
+		const { t } = this.props;
 		const { isOpen, selectedField } = this.state;
 		const popoutBodyStyle = this.state.innerHeight
 			? { height: this.state.innerHeight }
@@ -153,14 +158,14 @@ var ListFiltersAdd = React.createClass({
 					active={isOpen}
 					glyph="eye"
 					id="listHeaderFilterButton"
-					label="Filter"
+					label={t('label')}
 					onClick={isOpen ? this.closePopout : this.openPopout}
 				/>
 				<Popout isOpen={isOpen} onCancel={this.closePopout} relativeToID="listHeaderFilterButton">
 					<Popout.Header
 						leftAction={selectedField ? this.navigateBack : null}
 						leftIcon={selectedField ? 'chevron-left' : null}
-						title={selectedField ? selectedField.label : 'Filter'}
+						title={selectedField ? selectedField.label : t('label')}
 						transitionDirection={selectedField ? 'next' : 'prev'} />
 					<Transition
 						className={popoutPanesClassname}
@@ -178,4 +183,5 @@ var ListFiltersAdd = React.createClass({
 	},
 });
 
-module.exports = ListFiltersAdd;
+export default translate('filter')(ListFiltersAdd);
+// module.exports = ListFiltersAdd;

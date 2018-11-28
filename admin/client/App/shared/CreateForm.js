@@ -12,6 +12,7 @@ import InvalidFieldType from './InvalidFieldType';
 import ToolbarSection from '../screens/Item/components/Toolbar/ToolbarSection';
 import LocalizationSelector from '../components/Localization';
 import { Button, Form, Modal } from '../elemental';
+import { translate } from "react-i18next";
 
 const CreateForm = React.createClass({
 	displayName: 'CreateForm',
@@ -89,10 +90,11 @@ const CreateForm = React.createClass({
 		};
 	},
 	renderLanguageSelector() {
+		const { t } = this.props;
 		if (this.props.isLocale && this.props.list.multilingual) {
 			return (
 				<ToolbarSection left className="Toolbar__section-inline create">
-					<div>Edit Language</div>
+					<div>{t('language')}</div>
 					<LocalizationSelector
 						{ ...this.props }
 						language={this.props.currentLang}
@@ -157,7 +159,7 @@ const CreateForm = React.createClass({
 		var form = [];
 		var list = this.props.list;
 		var nameField = this.props.list.nameField;
-		const { currentLang } = this.props;
+		const { currentLang, t } = this.props;
 		var focusWasSet;
 
 		// If the name field is an initial one, we need to render a proper
@@ -244,7 +246,7 @@ const CreateForm = React.createClass({
 		return (
 			<Form layout="horizontal" onSubmit={this.submitForm}>
 				<Modal.Header
-					text={'Create a new ' + list.singular}
+					text={t('createANew') + list.singular}
 					showCloseButton
 				/>
 				<Modal.Body>
@@ -254,7 +256,7 @@ const CreateForm = React.createClass({
 				</Modal.Body>
 				<Modal.Footer>
 					<Button color="success" type="submit" data-button-type="submit">
-						Create
+						{t('create')}
 					</Button>
 					<Button
 						variant="link"
@@ -262,7 +264,7 @@ const CreateForm = React.createClass({
 						data-button-type="cancel"
 						onClick={this.props.onCancel}
 					>
-						Cancel
+						{t('cancel')}
 					</Button>
 				</Modal.Footer>
 			</Form>
@@ -281,4 +283,5 @@ const CreateForm = React.createClass({
 	},
 });
 
-module.exports = CreateForm;
+export default translate('createForm')(CreateForm);
+// module.exports = CreateForm;

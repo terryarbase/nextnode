@@ -11,6 +11,7 @@ function ListHeaderSearch ({
 	handleClear,
 	handleKeyup,
 	value,
+	t,
 	...props
 }) {
 	return (
@@ -19,7 +20,7 @@ function ListHeaderSearch ({
 				data-search-input-field
 				onChange={handleChange}
 				onKeyUp={handleKeyup}
-				placeholder="Search"
+				placeholder={t('placeholder')}
 				value={value}
 			/>
 			<button

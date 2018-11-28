@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { translate } from "react-i18next";
 import {
 	GlyphButton,
 	InlineGroup as Group,
@@ -24,7 +25,7 @@ function ButtonDivider ({ style, ...props }) {
 	return <div {...props} />;
 };
 
-function CreateButton ({ listName, onClick, ...props }) {
+function CreateButton ({ listName, onClick, t, ...props }) {
 	return (
 		<GlyphButton
 			block
@@ -33,13 +34,13 @@ function CreateButton ({ listName, onClick, ...props }) {
 			glyph="plus"
 			onClick={onClick}
 			position="left"
-			title={`Create ${listName}`}
+			title={t('createButton', { listName: listName })}
 			{...props}
 		>
 			<ResponsiveText
-				visibleSM="Create"
-				visibleMD="Create"
-				visibleLG={`Create ${listName}`}
+				visibleSM={t('createButton')}
+				visibleMD={t('createButton')}
+				visibleLG={t('createButton', { listName: listName })}
 			/>
 		</GlyphButton>
 	);
@@ -76,6 +77,8 @@ function ListHeaderToolbar ({
 	nodownload,
 	nofilter,
 	noscale,
+	
+	t,
 
 	isLocale,
 	currentLang,
@@ -93,6 +96,7 @@ function ListHeaderToolbar ({
 						handleClear={searchHandleClear}
 						handleKeyup={searchHandleKeyup}
 						value={searchValue}
+						t={t}
 					/>
 				</Section> : null
 
@@ -157,6 +161,7 @@ function ListHeaderToolbar ({
 							<CreateButton
 								listName={createListName}
 								onClick={createOnClick}
+								t={t}
 							/>
 						</ButtonDivider>
 					</Section>}
@@ -231,4 +236,5 @@ const classes = {
 	},
 };
 
-module.exports = ListHeaderToolbar;
+export default translate('headerToolBar')(ListHeaderToolbar);
+// module.exports = ListHeaderToolbar;

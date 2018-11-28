@@ -52,6 +52,7 @@ var ListFiltersAddForm = React.createClass({
 		);
 	},
 	render () {
+		const { apply, cancel } = this.props;
 		var FilterComponent = this.state.filterComponent;
 		return (
 			<form onSubmit={this.handleFormSubmit}>
@@ -61,9 +62,9 @@ var ListFiltersAddForm = React.createClass({
 				<Popout.Footer
 					ref="footer"
 					primaryButtonIsSubmit
-					primaryButtonLabel="Apply"
+					primaryButtonLabel={apply}
 					secondaryButtonAction={this.props.onCancel}
-					secondaryButtonLabel="Cancel" />
+					secondaryButtonLabel={cancel} />
 			</form>
 		);
 	},

@@ -34,7 +34,7 @@ module.exports = Field.create({
 	convertObject (label) {
 		const { currentLang } = this.props;
 		if (currentLang && typeof label === 'object') {
-			return label[currentLang];
+			return label[currentLang] || label['en'];
 		} else if (typeof label !== 'object') {
 			return label;
 		}
@@ -52,7 +52,7 @@ module.exports = Field.create({
 	},
 
 	renderField () {
-		const { numeric, boolean, ops, path, value: val, currentLang } = this.props;
+		const { numeric, ops, path, value: val, currentLang } = this.props;
 		// TODO: This should be natively handled by the Select component
 		var options = ops;
 		if (ops.length) {

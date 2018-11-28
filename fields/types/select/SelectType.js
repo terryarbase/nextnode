@@ -40,11 +40,14 @@ function select (list, path, options) {
 		if (options.numeric && !_.isNumber(op.value)) {
 			op.value = Number(op.value);
 		}
+/*
 		if (this.isBoolean) {
 			op.value = op.value === 'true' ? true : false;
 		}
+*/
 		return op;
 	});
+	
 	// undefined options.emptyOption defaults to true
 	if (options.emptyOption === undefined) {
 		options.emptyOption = true;

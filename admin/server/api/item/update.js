@@ -20,6 +20,7 @@ module.exports = function (req, res) {
 			isMultilingual: !!locales,
 			defaultLang: locales && locales.defaultLanguage,
 			supportLang: locales && locales.localization,
+			frontLang: locales && locales.frontLang,
 		};
 		req.list.updateItem(item, newData, options, function (err) {
 			if (err) {

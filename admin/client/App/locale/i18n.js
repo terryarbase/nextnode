@@ -9,6 +9,7 @@ i18n.use(LanguageDetector).init({
 				welcome: 'Welcome:',
 				frontPage: 'Front page - ',
 				signOut: 'Sign Out',
+				language: 'Language',
 			},
 		    footer: {
 				company: 'Four Directions',
@@ -51,12 +52,23 @@ i18n.use(LanguageDetector).init({
 			    selectAll: 'Select All',
 			    selectNone: 'Select None',
 		    },
+		    manage: {
+			    label: 'Manage',
+			    page: 'Page ',
+			    all: 'All ',
+			    none: 'None',
+			    delete: 'Delete',
+			    selected: '{{count}} selected',
+			    saveAll: 'Save All',
+			    show: 'Showing {{count}} {{collection}}',
+		    },
 		},
 		zhtw: {
 			nav: {
 				welcome: '你好:',
 				frontPage: '首頁 - ',
 				signOut: '登出',
+				language: '語言',
 			},
 		    footer: {
 				company: '四方創意',
@@ -98,13 +110,24 @@ i18n.use(LanguageDetector).init({
 			    cancel: '取消',
 			    selectAll: '全部選取',
 			    selectNone: '取消選取',
-		    }
+		    },
+		    manage: {
+			    label: '管理',
+			    page: '頁面 ',
+			    all: '全部 ',
+			    none: '取消',
+			    delete: '刪除',
+			    selected: '{{count}} 已選取',
+			    saveAll: '全部儲存',
+			    show: '顯示 {{count}} {{collection}}',
+		    },
 		},
 		zhcn: {
 			nav: {
 				welcome: '你好:',
 				frontPage: '首页 - ',
 				signOut: '登出',
+				language: '语言',
 			},
 		    footer: {
 				company: '四方创意',
@@ -146,6 +169,16 @@ i18n.use(LanguageDetector).init({
 			    cancel: '取消',
 			    selectAll: '全部选取',
 			    selectNone: '取消选取',
+		    },
+		    manage: {
+			    label: '管理',
+			    page: '页面 ',
+			    all: '全部 ',
+			    none: '取消',
+			    delete: '删除',
+			    selected: '{{count}} 已选取',
+			    saveAll: '全部储存',
+			    show: '显示 {{count}} {{collection}}',
 		    },
 		},
 	},

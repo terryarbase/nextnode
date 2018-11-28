@@ -1,6 +1,7 @@
 import { FormNote, FormField, FormInput } from '../../../elemental';
 import React, { PropTypes } from 'react';
 import vkey from 'vkey';
+import { translate } from "react-i18next";
 
 import Kbd from '../../../shared/Kbd';
 import Popout from '../../../shared/Popout';
@@ -94,6 +95,7 @@ var ListSort = React.createClass({
 	},
 	render () {
 		// TODO: Handle multiple sort paths
+		const { t } = this.props;
 		const activeSortPath = this.props.activeSort.paths[0];
 		const formFieldStyles = { borderBottom: '1px dashed rgba(0,0,0,0.1)', paddingBottom: '1em' };
 		return (
@@ -109,7 +111,7 @@ var ListSort = React.createClass({
 					</span>
 				)}
 				<Popout isOpen={this.state.popoutIsOpen} onCancel={this.closePopout} relativeToID="listHeaderSortButton">
-					<Popout.Header title="Sort" />
+					<Popout.Header title={t('label')} />
 
 					<Popout.Body scrollable>
 						<FormField style={formFieldStyles}>
@@ -134,4 +136,5 @@ var ListSort = React.createClass({
 	},
 });
 
-module.exports = ListSort;
+export default translate('sort')(ListSort);
+// module.exports = ListSort;
