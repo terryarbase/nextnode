@@ -18,6 +18,11 @@ Common Improvements:
 ** gender
 ** appellation
 ** question
+** device
+** environment
+** device
+** region/hongkong
+** notification/status
 ** customized list (with mapping language or with multilingual value)
 
 Delegated Model Enhancements:

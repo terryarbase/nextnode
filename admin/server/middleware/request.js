@@ -18,8 +18,8 @@ const getStaticLanguageFile = async (nextNode) => {
 };
 
 const getCurrentLanguage = (nextNode, req, res) => {
-	const dataCookieName = nextNode.get('cookie frontend locale');
-	const frontendCookieName = nextNode.get('cookie data locale');
+	const dataCookieName = nextNode.get('cookie data locale');
+	const frontendCookieName = nextNode.get('cookie frontend locale');
 	const currentLang = nextNode.get('locale');
 	const cookieOpts = nextNode.get('cookie language options');;
 	// is it valid lang in supporting language pack

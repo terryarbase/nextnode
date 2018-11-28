@@ -35,6 +35,19 @@
 
 	"select_option_placeholder": "栏位提示",
 	"select_option_field": "栏目名称",
-	"select_option_label": "标签"
+	"select_option_label": "标签",
+
+	"select_option_pending": "等待处理",
+	"select_option_processing": "处理中",
+	"select_option_completed": "已完成",
+	"select_option_incompleted": "未完成",
+
+	"select_option_newterritories": "新界",
+	"select_option_kowloon": "九龙",
+	"select_option_hkisland": "香港岛",
+
+	"select_option_ios": "iOS系统",
+	"select_option_android": "安卓系统",
+	"select_option_windowos": "微软系统"
 
 }

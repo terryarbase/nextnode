@@ -35,5 +35,18 @@
 
 	"select_option_placeholder": "欄位提示",
 	"select_option_field": "欄位名稱",
-	"select_option_label": "標籤"
+	"select_option_label": "標籤",
+
+	"select_option_pending": "等待處理",
+	"select_option_processing": "處理中",
+	"select_option_completed": "已完成",
+	"select_option_incompleted": "未完成",
+
+	"select_option_newterritories": "新界",
+	"select_option_kowloon": "九龍",
+	"select_option_hkisland": "香港島",
+
+	"select_option_ios": "iOS系統",
+	"select_option_android": "安卓系統",
+	"select_option_windowos": "微軟系統"
 }

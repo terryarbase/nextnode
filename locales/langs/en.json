@@ -35,6 +35,19 @@
 
 	"select_option_placeholder": "Placeholder",
 	"select_option_field": "Field Name",
-	"select_option_label": "Label"
+	"select_option_label": "Label",
+
+	"select_option_pending": "Pending",
+	"select_option_processing": "Processing",
+	"select_option_completed": "Completed",
+	"select_option_incompleted": "Incompleted",
+
+	"select_option_newterritories": "New Territories",
+	"select_option_kowloon": "Kowloon",
+	"select_option_hkisland": "Hong Kong Island",
+
+	"select_option_ios": "iOS",
+	"select_option_android": "Android",
+	"select_option_windowos": "Window"
 
 }
