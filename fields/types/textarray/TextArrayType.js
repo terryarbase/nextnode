@@ -81,11 +81,31 @@ keytext.prototype.addFilterToQuery = function (filter, options) {
 		}
 		value = new RegExp(value, filter.caseSensitive ? '' : 'i');
 		if (presence === 'none') {
-			query[this.path] = addPresenceToQuery(presence, value);
+			query[this.path] = {
+				$or: {
+					{
+						key: addPresenceToQuery(presence, value),
+					},
+					{
+						text: addPresenceToQuery(presence, value),
+					}
+				}
+			};
 		} else {
-			query[this.path] = addPresenceToQuery(presence, {
-				$regex: value,
-			});
+			query[this.path] = {
+				$or: {
+					{
+						key: addPresenceToQuery(presence, {
+							$regex: value,
+						}),
+					},
+					{
+						text: addPresenceToQuery(presence, {
+							$regex: value,
+						}),
+					}
+				}
+			};
 		}
 	}
 	if (isMultilingual && langd) {
