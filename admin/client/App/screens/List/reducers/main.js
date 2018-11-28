@@ -66,7 +66,8 @@ if (Keystone.localization) {
 		...initialState,
 		...{
 			locale: {
-				current: Keystone.defaultLanguage,
+				current: Keystone.currentLanguage,
+				currentUILang: Keystone.currentUILanguage,
 				default: Keystone.defaultLanguage,
 				active: true,
 			},

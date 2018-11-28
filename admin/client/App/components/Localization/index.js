@@ -1,5 +1,9 @@
 import React from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
+// Cookies Section
+import {
+	setDataLanguage,
+} from '../../../utils/cookie';
 import {
 	setCurrentLanguage,
 } from '../../screens/List/actions';
@@ -17,6 +21,7 @@ var LocalizationSelector = React.createClass({
 		};
 	},
 	onChangeLanguage (lang) {
+		setDataLanguage(lang);
 		this.props.dispatch(setCurrentLanguage(lang));
 	},
 	renderLanguageSelection(defaultLang, language, localization) {

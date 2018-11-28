@@ -26,6 +26,7 @@ module.exports = [
 	'axios',
 	// 'js-file-download',
 	'qs',
+	'universal-cookie', 
 	'react-addons-css-transition-group',
 	'react-alt-text',
 	'react-bootstrap',

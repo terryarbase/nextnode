@@ -62,6 +62,13 @@ var Keystone = function () {
 		'locale': defaultLang,
 		'support locales': _.keys(locales),
 		'app root': rootPath,
+		// for store the cookie localization lang
+		'cookie frontend locale': 'flang',
+		'cookie data locale': 'dlang',
+		'cookie language options': {
+			// httpOnly: true,
+			path: '/',
+		},
 		'i18n': i18n,
 		'static lang path': 'static/locale.json',	// json file for generated language static file 
 		'module root': moduleRoot,

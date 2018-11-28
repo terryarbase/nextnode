@@ -182,7 +182,9 @@ i18n.use(LanguageDetector).init({
 		    },
 		},
 	},
-	fallbackLng: "en",
+	// direct use server cookie 
+	lng: Keystone.currentUILanguage,
+	fallbackLng: Keystone.currentUILanguage,
 	debug: true,
 	
 	// have a common namespace used around the full app
