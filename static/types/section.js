@@ -8,24 +8,24 @@ const ImmutableType = require('./');
 */
 class Section extends ImmutableType {
 	constructor(node) {
+		super(node);
 		const type = Map({
 			field: {
 				value: 'field',
-				label: 'Form Field Label',
+				label: 'Field Label',
 				key: 'select_option_field',
 			},
-			label: {
-				value: 'field',
-				label: 'Form Field Label',
-				key: 'select_option_label',
+			note: {
+				value: 'note',
+				label: 'Field Remark Note',
+				key: 'select_option_note',
 			},
 			placeholder: {
 				value: 'placeholder',
-				label: 'Form Placeholder',
+				label: 'Input Placeholder',
 				key: 'select_option_placeholder',
 			},
 		});
-		super(node);
 		super.initialize({ type, isTransfer: true });
 	}
 } 

@@ -34,8 +34,9 @@
 	"select_option_no_permission": "没有權限",
 
 	"select_option_placeholder": "欄位提示",
-	"select_option_field": "欄位名稱",
-	"select_option_label": "標籤",
+	"select_option_field": "欄目名稱",
+	"select_option_label": "欄目標籤",
+	"select_option_note": "欄目備註",
 
 	"select_option_pending": "等待處理",
 	"select_option_processing": "處理中",

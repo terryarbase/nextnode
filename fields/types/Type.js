@@ -43,6 +43,7 @@ var DEFAULT_OPTION_KEYS = [
 	'max',
 	'min',
 	'noeditkey',
+	'noeditadd', // the add item should be hided in edit mode, usually use the pre defined list and record
 ];
 
 /**

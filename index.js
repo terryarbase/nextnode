@@ -190,6 +190,7 @@ Keystone.prototype.createKeystoneHash = require('./lib/core/createKeystoneHash')
 Keystone.prototype.createRole = require('./lib/core/delegation/createRole');
 Keystone.prototype.createLocalization = require('./lib/core/delegation/createLocalization');
 Keystone.prototype.createAccount = require('./lib/core/delegation/createAccount');
+Keystone.prototype.createLanguageSection = require('./lib/core/delegation/createLanguageSection');
 
 
 // Keystone.prototype.hooks = function() {};
