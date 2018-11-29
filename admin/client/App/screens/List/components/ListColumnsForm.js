@@ -104,7 +104,7 @@ var ListColumnsForm = React.createClass({
 							<FormInput
 								autoFocus
 								onChange={this.updateSearch}
-								placeholder="Find a column..."
+								placeholder={t('placeholder')}
 								value={this.state.searchString}
 							/>
 						</div>

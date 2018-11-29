@@ -15,9 +15,10 @@ import {
 	Container,
 	Glyph,
 	GlyphButton,
-	Pagination,
 	Spinner,
 } from '../../elemental';
+
+import Pagination from '../../elemental/Pagination';
 
 import ListFilters from './components/Filtering/ListFilters';
 import ListHeaderTitle from './components/ListHeaderTitle';
@@ -305,7 +306,7 @@ const ListView = React.createClass({
 		const list = this.props.currentList;
 		const currentPage = this.props.lists.page.index;
 		const pageSize = this.props.lists.page.size;
-
+		
 		return (
 			<Pagination
 				currentPage={currentPage}

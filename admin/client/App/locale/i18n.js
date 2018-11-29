@@ -10,6 +10,7 @@ i18n.use(LanguageDetector).init({
 				frontPage: 'Front page - ',
 				signOut: 'Sign Out',
 				language: 'Language',
+				cancel: 'Cancel',
 			},
 		    footer: {
 				company: 'Four Directions',
@@ -32,16 +33,20 @@ i18n.use(LanguageDetector).init({
 		    },
 		    sort: {
 			    label: 'Sort',
+			    sortBy: 'sorted by',
+			    placeholder: 'Find a filter...',
 		    },
 		    filter: {
 			    label: 'Filter',
 			    apply: 'Apply',
 			    cancel: 'Cancel',
+			    placeholder: 'Find a filter...',
 		    },
 		    column: {
 			    label: 'Columns',
 			    apply: 'Apply',
 			    cancel: 'Cancel',
+			    placeholder: 'Find a column...',
 		    },
 		    download: {
 			    label: 'Download',
@@ -61,6 +66,10 @@ i18n.use(LanguageDetector).init({
 			    selected: '{{count}} selected',
 			    saveAll: 'Save All',
 			    show: 'Showing {{count}} {{collection}}',
+			    pageShow: 'Showing {{start}} to {{end}} of {{total}}',
+		    },
+		    form: {
+			    
 		    },
 		},
 		zhtw: {
@@ -69,6 +78,7 @@ i18n.use(LanguageDetector).init({
 				frontPage: '首頁 - ',
 				signOut: '登出',
 				language: '語言',
+				cancel: '取消',
 			},
 		    footer: {
 				company: '四方創意',
@@ -91,16 +101,20 @@ i18n.use(LanguageDetector).init({
 		    },
 		    sort: {
 			    label: '排序',
+			    sortBy: '排序',
+			    placeholder: '關鍵字',
 		    },
 		    filter: {
 			    label: '篩選器',
 			    apply: '提交',
 			    cancel: '取消',
+			    placeholder: '關鍵字',
 		    },
 		    column: {
 			    label: '欄位',
 			    apply: '提交',
 			    cancel: '取消',
+			    placeholder: '關鍵字',
 		    },
 		    download: {
 			    label: '下載',
@@ -120,6 +134,10 @@ i18n.use(LanguageDetector).init({
 			    selected: '{{count}} 已選取',
 			    saveAll: '全部儲存',
 			    show: '顯示 {{count}} {{collection}}',
+			    pageShow: '顯示 {{total}} 的 {{start}} 至 {{end}}',
+		    },
+		    form: {
+			    
 		    },
 		},
 		zhcn: {
@@ -128,6 +146,7 @@ i18n.use(LanguageDetector).init({
 				frontPage: '首页 - ',
 				signOut: '登出',
 				language: '语言',
+				cancel: '取消',
 			},
 		    footer: {
 				company: '四方创意',
@@ -150,16 +169,20 @@ i18n.use(LanguageDetector).init({
 		    },
 		    sort: {
 			    label: '排序',
+			    sortBy: '排序',
+			    placeholder: '关键字',
 		    },
 		    filter: {
 			    label: '筛选器',
 			    apply: '提交',
 			    cancel: '取消',
+			    placeholder: '关键字',
 		    },
 		    column: {
 			    label: '栏位',
 			    apply: '提交',
 			    cancel: '取消',
+			    placeholder: '关键字',
 		    },
 		    download: {
 			    label: '下载',
@@ -179,6 +202,10 @@ i18n.use(LanguageDetector).init({
 			    selected: '{{count}} 已选取',
 			    saveAll: '全部储存',
 			    show: '显示 {{count}} {{collection}}',
+			    pageShow: '显示 {{total}} 的 {{start}} 至 {{end}}',
+		    },
+		    form: {
+			    
 		    },
 		},
 	},

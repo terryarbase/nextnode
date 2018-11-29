@@ -13,6 +13,7 @@ import { Container } from '../../../elemental';
 import PrimaryNavItem from './NavItem';
 import AccountSetting from '../../Setting';
 import LocalizationSetting from '../../Localization/Setting';
+import { getUILanguage } from '../../../../utils/cookie.js';
 
 var PrimaryNavigation = React.createClass({
 	displayName: 'PrimaryNavigation',
@@ -129,32 +130,26 @@ var PrimaryNavigation = React.createClass({
 	},
 	renderLanguageSwitcher() {
 		const { t } = this.props;
-		
-/*
+		const currentUILanguage = getUILanguage();
+		const currentLangImg = Keystone.localization[currentUILanguage].icon;
 		return (
-			<DropdownButton
-				bsStyle={"default"}
-				title={t('language')}
-				key={1}
-				id={"language-switcher"}
-				onSelect={this.onLanguageSelect}
-			>
-				<MenuItem eventKey="zhtw">繁</MenuItem>
-				<MenuItem eventKey="zhcn">簡</MenuItem>
-				<MenuItem eventKey="en">ENG</MenuItem>
-			</DropdownButton>
-		)
-*/
-		return (
-			<PrimaryNavItem
-				label="octicon octicon-globe"
+			<a
 				title={t('language')}
 			>
 				<span 
-					className="octicon octicon-globe" 
 					onClick={this.onPopoverLocalizationSetting}
-				/>
-			</PrimaryNavItem>
+				>
+					<img 
+						src={`data:image/png;base64, ${currentLangImg}`}
+						style={{
+							width: `25px`,
+							marginRight: `10px`,
+							maxHeight: `30px`
+						}}
+					/>
+					{Keystone.localization[currentUILanguage].label}
+				</span>
+			</a>
 		);
 	},
 	// Render the link to the webpage

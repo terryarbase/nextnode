@@ -275,8 +275,9 @@ module.exports = Field.create({
 
 	// Output [cancel/remove/undo] button
 	renderClearButton () {
+// 		const { t } = this.props;
 		const clearText = this.hasLocal() ? 'Cancel' : 'Remove Image';
-
+		
 		return this.state.removeExisting ? (
 			<Button variant="link" onClick={this.undoRemove}>
 				Undo Remove

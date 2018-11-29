@@ -70,6 +70,7 @@ var ListFiltersAdd = React.createClass({
 		const activeFilterFields = this.props.activeFilters.map(obj => obj.field);
 		const activeFilterPaths = activeFilterFields.map(obj => obj.path);
 		const { searchString } = this.state;
+		const { t } = this.props;
 		let filteredFilters = this.props.availableFilters;
 
 		if (searchString) {
@@ -113,7 +114,7 @@ var ListFiltersAdd = React.createClass({
 					<div style={formFieldStyles}>
 						<FormInput
 							onChange={this.updateSearch}
-							placeholder="Find a filter..."
+							placeholder={t('placeholder')}
 							ref="search"
 							value={this.state.searchString}
 						/>

@@ -2,21 +2,25 @@ import { css } from 'glamor';
 import React, { Component, PropTypes } from 'react';
 import Page from './page';
 import theme from '../../../theme';
+import { translate } from "react-i18next";
 
 class Pagination extends Component {
+	
 	renderCount () {
 		let count = '';
-		const { currentPage, pageSize, plural, singular, total } = this.props;
+		const { currentPage, pageSize, plural, singular, total, t } = this.props;
 		if (!total) {
 			count = 'No ' + (plural || 'records');
 		} else if (total > pageSize) {
 			let start = (pageSize * (currentPage - 1)) + 1;
 			let end = Math.min(start + pageSize - 1, total);
-			count = `Showing ${start} to ${end} of ${total}`;
+// 			count = `Showing ${start} to ${end} of ${total}`;
+			count = t('pageShow', { start: start, end: end, total: total });
 		} else {
 			// count = 'Showing ' + total;
 			// console.log(plural, singular);
-			count = 'Showing ' + total + ' ' + plural;
+// 			count = 'Showing ' + total + ' ' + plural;
+			count = t('show', { count: total, collection: plural });
 			// if (total > 1 && plural) {
 			//	count += ' ' + plural;
 			// } else if (total === 1 && singular) {
@@ -110,4 +114,5 @@ Pagination.propTypes = {
 	total: PropTypes.number.isRequired,
 };
 
-module.exports = Pagination;
+export default translate('manage')(Pagination);
+// module.exports = Pagination;

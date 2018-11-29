@@ -26,6 +26,7 @@ import InvalidFieldType from '../../../shared/InvalidFieldType';
 import { deleteItem } from '../actions';
 
 import { upcase } from '../../../../utils/string';
+import { translate } from "react-i18next";
 
 // const WrapperComponent = ({ display, children }) => (<div style={{ display: display ? 'block' : 'none' }}>{children}</div>);
 
@@ -78,7 +79,7 @@ var EditForm = React.createClass({
 		this.__isMounted = false;
 	},
 	getFieldProps (field) {
-		const { isLocale, currentLang } = this.props;
+		const { isLocale, currentLang, t, i18n } = this.props;
 		const { values } = this.state;
 		const props = assign({}, field);
 		const alerts = this.state.alerts;
@@ -96,6 +97,8 @@ var EditForm = React.createClass({
 		props.currentLang = currentLang;
 		props.onChange = this.handleChange;
 		props.mode = 'edit';
+		props.t = t;
+		props.i18n = i18n;
 		return props;
 	},
 	handleChange ({ path, value }) {
@@ -530,4 +533,5 @@ const styles = {
 	},
 };
 
-module.exports = EditForm;
+export default translate('form')(EditForm);
+// module.exports = EditForm;
