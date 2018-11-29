@@ -34,9 +34,15 @@ var DEFAULT_OPTION_KEYS = [
 	'dependsOn',
 	'autoCleanup',
 	'multilingual',
+	// file upload use
 	'stateless',
 	'cloneable',
+	// customized select option use
 	'assign',
+	// KeyText use
+	'max',
+	'min',
+	'noeditkey',
 ];
 
 /**
@@ -134,6 +140,7 @@ Field.prototype.setOptions = function (options) {
  * Gets the options for the Field, as used by the React components
  */
 Field.prototype.getOptions = function () {
+	// console.log(this.path, this.__options);
 	if (!this.__options) {
 		this.__options = {};
 		var optionKeys = DEFAULT_OPTION_KEYS;

@@ -23,14 +23,20 @@ function select (list, path, options) {
 	const assign = options.assign;
 	const optionsList = options.options;
 	if (assign && typeof optionsList === 'string') {
-		const delegatedOption = list.keystone.Options[options.options];
-		options.options = delegatedOption.values;
-		options.boolean = this.isBoolean = delegatedOption.boolean;
-	} else if (typeof options.options === 'string') {
+		// eval the subpath of string e.g. region.hk
+		const delegatedOption = _.get(list.keystone.Options, options.options);
+		// if the specify path is the Delegated nextnode.Option the assign to
+		if (delegatedOption) {
+			options.options = delegatedOption.values;
+			options.boolean = this.isBoolean = delegatedOption.boolean;
+		}
+	}
+	// check again prevent missunderstand as the Delegated Option
+	if (typeof options.options === 'string') {
 		options.options = options.options.split(',');
 	}
 	if (!Array.isArray(options.options) || !options.options.length) {
-		throw new Error('Select fields require an options array or any delegated Options array.');
+		throw new Error('Select fields require an options array or any Nextnode Delegated Options array.');
 	}
 	this.ops = options.options.map(function (i) {
 		var op = typeof i === 'string' ? { value: i.trim(), label: utils.keyToLabel(i) } : i;

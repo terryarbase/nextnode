@@ -1,20 +1,31 @@
 var FieldType = require('../Type');
+var _ = require('lodash');
 var util = require('util');
+var keystone = require('../../../');
 var utils = require('keystone-utils');
 var addPresenceToQuery = require('../../utils/addPresenceToQuery');
 
 /**
- * TextArray FieldType Constructor
+ * KeyText FieldType Constructor
  * @extends Field
  * @api public
+ * Terry Chan
+ * 29/11/2018
  */
-function textarray (list, path, options) {
-	this._nativeType = [String];
+function KeyText (list, path, options) {
+	this._nativeType = [
+		{
+			key: String,
+			text: String,
+			id: String,
+		}
+	];
 	this._underscoreMethods = ['format'];
 	this.separator = options.separator || ' | ';
 	// representive the placeholder elements
 	this.placeholder = [
-		'normal',
+		'key',
+		'text'
 	];
 	const newOptions = {
 		...options,
@@ -22,18 +33,21 @@ function textarray (list, path, options) {
 			cloneable: true,	// for clone ui element everytime
 		},
 	};
-	textarray.super_.call(this, list, path, newOptions);
+	if (newOptions.multilingual) {
+		this._nativeType = keystone.mongoose.Schema.Types.Mixed;
+	} 
+	KeyText.super_.call(this, list, path, newOptions);
 }
-textarray.properName = 'TextArray';
-util.inherits(textarray, FieldType);
+KeyText.properName = 'KeyText';
+util.inherits(KeyText, FieldType);
 
 /**
  * Formats the field value
  */
-textarray.prototype.format = function (item, separator) {
+KeyText.prototype.format = function (item, separator) {
 	const sep = (separator && typeof separator === 'string') || this.separator;
 	const value = this.getItemFromElasticData(item, this.path, separator);
-	return value.join(sep);
+	return _.values(value).pick('text').join(sep);
 };
 
 /**
@@ -47,7 +61,7 @@ textarray.prototype.format = function (item, separator) {
  *                                          "none" and "some". Default: 'some'
  * @param {String|Object} filter.value 		The value that is filtered for
  */
-textarray.prototype.addFilterToQuery = function (filter, options) {
+KeyText.prototype.addFilterToQuery = function (filter, options) {
 	const isMultilingual = this.options.multilingual;
 	const { langd } = options;
 	var query = {};
@@ -77,11 +91,32 @@ textarray.prototype.addFilterToQuery = function (filter, options) {
 		}
 		value = new RegExp(value, filter.caseSensitive ? '' : 'i');
 		if (presence === 'none') {
-			query[this.path] = addPresenceToQuery(presence, value);
+			query[this.path] = {
+				$or: [
+					{
+						key: addPresenceToQuery(presence, value),
+					},
+					{
+						text: addPresenceToQuery(presence, value),
+					}
+				
+				]
+			};
 		} else {
-			query[this.path] = addPresenceToQuery(presence, {
-				$regex: value,
-			});
+			query[this.path] = {
+				$or: [
+					{
+						key: addPresenceToQuery(presence, {
+							$regex: value,
+						}),
+					},
+					{
+						text: addPresenceToQuery(presence, {
+							$regex: value,
+						}),
+					}
+				]
+			};
 		}
 	}
 	if (isMultilingual && langd) {
@@ -99,26 +134,31 @@ textarray.prototype.addFilterToQuery = function (filter, options) {
 
 /**
  * Asynchronously confirms that the provided value is valid
+ * the key value is mandatary no matter required: true
  */
-textarray.prototype.validateInput = function (data, callback) {
+KeyText.prototype.validateInput = function (data, callback) {
 	var value = this.getValueFromData(data);
 	var result = true;
 	// If the value is null, undefined or an empty string
 	// bail early since updateItem sanitizes that just fine
-	if (value !== undefined && value !== null && value !== '') {
+	if (value) {
 		// If the value is not an array, convert it to one
 		// e.g. if textarr = 'somestring' (which is valid)
-		if (!Array.isArray(value)) {
+		if (!_.isArray(value)) {
 			value = [value];
 		}
-		for (var i = 0; i < value.length; i++) {
-			var thisValue = value[i];
-			// If the current value is not a string and is neither false nor
-			// undefined, fail the validation
-			if (typeof thisValue !== 'string') {
-				result = false;
-				break;
-			}
+		const { max = -1, min = -1 } = this.options;
+		// check for duplicated key
+		const newValue = _.uniqBy(value, 'key');
+		if (newValue.length !== value.length) {
+			result = false;
+		} else if (max !== -1 && value.length > max) {
+			result = false;
+		} else if (min !== -1 && value.length < min) {
+			result = false;
+		} else {
+			// check for any missing key
+			result = !_.some(value, v => !v.key);
 		}
 	}
 	utils.defer(callback, result);
@@ -126,35 +166,15 @@ textarray.prototype.validateInput = function (data, callback) {
 
 /**
  * Asynchronously confirms that the a value is present
+ * the text value must be inputed
  */
-textarray.prototype.validateRequiredInput = function (item, data, callback) {
+KeyText.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getValueFromData(data);
-	var result = false;
+	var result = true;
 	// If the value is undefined and we have something stored already, validate
-	if (value === undefined) {
-		if (item.get(this.path) && item.get(this.path).length) {
-			result = true;
-		}
-	}
-	// If it's a string that's not empty, validate
-	if (typeof value === 'string') {
-		if (value !== '') {
-			result = true;
-		}
-	// If it's an array of only strings and/or strinigfy-able data, validate
-	} else if (Array.isArray(value)) {
-		var invalidContent = false;
-		for (var i = 0; i < value.length; i++) {
-			var thisValue = value[i];
-			// If even a single item is not a string or an empty string, invalidate
-			if (typeof thisValue !== 'string' || thisValue === '') {
-				invalidContent = true;
-				break;
-			}
-		}
-		if (invalidContent === false) {
-			result = true;
-		}
+	if (value) {
+		// check for any missing text
+		result = !_.some(value, v => !v.text);
 	}
 	utils.defer(callback, result);
 };
@@ -164,46 +184,16 @@ textarray.prototype.validateRequiredInput = function (item, data, callback) {
  *
  * Deprecated
  */
-textarray.prototype.inputIsValid = function (data, required, item) {
+KeyText.prototype.inputIsValid = function (data, required, item) {
 	var value = this.getValueFromData(data);
 	if (required) {
-		if (value === undefined && item && item.get(this.path) && item.get(this.path).length) {
-			return true;
-		}
-		if (value === undefined || !Array.isArray(value) || (typeof value !== 'string') || (typeof value !== 'number')) {
+		if (!(_.isArray(value) && value.length)) {
 			return false;
 		}
-		if (Array.isArray(value) && !value.length) {
-			return false;
-		}
+		return value && value.length && !_.values(value).some(v => v.key || v.text);
 	}
-	return (value === undefined || Array.isArray(value) || (typeof value === 'string') || (typeof value === 'number'));
+	return true;
 };
 
-/**
- * Updates the value for this field in the item from a data object.
- * If the data object does not contain the value, then the value is set to empty array.
- */
-// textarray.prototype.updateItem = function (item, data, callback) {
-// 	var value = this.getValueFromData(data);
-
-// 	if (value === undefined || value === null || value === '') {
-// 		value = [];
-// 	}
-// 	if (!Array.isArray(value)) {
-// 		value = [value];
-// 	}
-// 	value = value.map(function (str) {
-// 		if (str && str.toString) {
-// 			str = str.toString();
-// 		}
-// 		return str;
-// 	}).filter(function (str) {
-// 		return (typeof str === 'string' && str);
-// 	});
-// 	item.set(this.path, value);
-// 	process.nextTick(callback);
-// };
-
 /* Export Field Type */
-module.exports = textarray;
+module.exports = KeyText;

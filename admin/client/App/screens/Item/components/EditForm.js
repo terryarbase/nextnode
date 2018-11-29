@@ -150,14 +150,16 @@ var EditForm = React.createClass({
 		var formData = new FormData(editForm);
 		const { isLocale, currentLang } = this.props;
 		const { values } = this.state;
-
-		
-		// convert multilingual field to formdata
 		formData = this.props.list.getFormCreateData({
 			formData,
 			values,
 			isLocale,
 		});
+		// convert multilingual field to formdata
+		
+		// for (var pair of formData.entries()) {
+		//     console.log(pair[0]+ ', ' + pair[1]); 
+		// }
 		// Fix for Safari where XHR form submission fails when input[type=file] is empty
 		// https://stackoverflow.com/questions/49614091/safari-11-1-ajax-xhr-form-submission-fails-when-inputtype-file-is-empty
 		$(editForm).find("input[type='file']").each(function () {

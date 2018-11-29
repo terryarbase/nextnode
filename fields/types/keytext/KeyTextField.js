@@ -1,7 +1,13 @@
 import Field from '../Field';
 import React from 'react';
 import _ from 'lodash';
-import { FormInput } from '../../../admin/client/App/elemental';
+import { findDOMNode } from 'react-dom';
+import {
+	FormInput,
+	FormNote,
+	Button,
+	FormField,
+} from '../../../admin/client/App/elemental';
 
 var lastId = 0;
 var ENTER_KEYCODE = 13;
@@ -15,17 +21,20 @@ const newItem = ({ key, text }) => {
 	};
 }
 
-const initialKeyItem = () => {
+const initialKeyItem = () => ({
 	key: '',
 	text: '',
-};
+});
 // convert key and text as a string
 const getStringKeyText = value => _.map(value, ({ key, text }) => `${key}${text}`).join('|');
 
 module.exports = Field.create({
 	propTypes: {
-		path: PropTypes.string.isRequired,
-		value: PropTypes.object,
+		path: React.PropTypes.string.isRequired,
+		value: React.PropTypes.oneOfType([
+			React.PropTypes.array,
+			React.PropTypes.string,
+		]),
 	},
 	displayName: 'KeyTextField',
 	statics: {
@@ -39,13 +48,15 @@ module.exports = Field.create({
 			string: getStringKeyText(value),
 		};
 	},
-	componentWillReceiveProps: function ({ value }) {
+	componentWillReceiveProps ({ value, currentLang }) {
 		const { string } = this.state;
 		// checks for the full string object in the nextporps, which is being to change
+		// switch the language
 		const nextString = getStringKeyText(value);
+		// const languageChanged = currentLang && currentLang !== this.props.currentLang;
 		if (nextString !== string) {
 			this.setState({
-				values: value,
+				values: value || [],
 				string: nextString,
 			});
 		}
@@ -57,7 +68,7 @@ module.exports = Field.create({
 		});
 	},
 	addItem () {
-		const { values } = this.state;
+		const { values = [] } = this.state;
 		var newValues = values.concat(newItem(initialKeyItem()));
 		this.setState({
 			values: newValues,
@@ -78,7 +89,7 @@ module.exports = Field.create({
 		});
 		this.valueChanged(values);
 	},
-	updateItem (index, key, { value, target: { targetValue } }) {
+	updateItem (index, key, { value, target: { value: targetValue } }) {
 		const { values } = this.state;
 		values[index][key] = value || targetValue;
 		this.setState({
@@ -86,11 +97,41 @@ module.exports = Field.create({
 		});
 		this.valueChanged(values);
 	},
+	renderInputNote() {
+		const { max = -1, min = -1 } = this.props;
+		var note = null;
+		if (max !== -1 || min !== -1) {
+			note = (
+				<FormNote style={{ marginTop: '10px' }}>
+					{
+						min !== -1 && <div>* At Least {min} {min > 1 ? 'items' : 'item' }</div>
+					}
+					{
+						max !== -1 && <div>* At Most {max} {max > 1 ? 'items' : 'item' }</div>
+					}
+				</FormNote>
+			);
+		}
+		return note;
+	},
 	renderField () {
+		const { max = -1 } = this.props;
+		const { values = [] } = this.state;
 		return (
 			<div>
-				{this.state.values.map(this.renderItem)}
-				<Button ref="button" onClick={this.addItem}>Add Item</Button>
+				{_.map(values, this.renderItem)}
+				{
+					<FormInput
+						type="hidden"
+						name={this.getInputName(this.props.path)} />
+				}
+				{
+					max !== -1 && values.length < max 
+					&& <Button ref="button" onClick={this.addItem}>Add Item</Button>
+				}
+				{
+					this.renderInputNote()
+				}
 			</div>
 		);
 	},
@@ -107,18 +148,25 @@ module.exports = Field.create({
 		}
 	},
 	renderItem ({ id, key, text }, index) {
+		const { noeditkey, mode } = this.props;
 		const Input = this.getInputComponent ? this.getInputComponent() : FormInput;
-		return (
-			<FormField key={id}>
+ 		return (
+			<FormField key={id} style={{ marginBottom: '1.5em' }}>
 				<Input
 					ref={'item_' + (index + 1)}
 					value={key}
+					placeholder="Key"
+					// the key should be disabled if it is edit mode and the noeditkey is true
+					// the key cannot be changed if the list is core list
+					disabled={mode === 'edit' && !!key && noeditkey}
 					onChange={e => this.updateItem(index, 'key', e)}
 					autoComplete="off" />
 				<Input
 					value={text}
+					style={{ marginTop: '5px' }}
 					onChange={e => this.updateItem(index, 'text', e)}
 					onKeyDown={this.addItemOnEnter}
+					placeholder="Text"
 					autoComplete="off" />
 				<Button
 					type="link-cancel"

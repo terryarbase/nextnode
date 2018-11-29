@@ -180,6 +180,7 @@ List.prototype.getFormCreateData = function({ isLocale, formData, values }) {
 	try {
 		for (const pair of formData.entries()) {
 			const key = pair[0];
+			// console.log(key, typeof values[key]);
 			if (values[key] && isLocale && fields[key].multilingual) {
 				// formData.set(key, );
 				if (typeof values[key] === 'object') {
@@ -188,6 +189,10 @@ List.prototype.getFormCreateData = function({ isLocale, formData, values }) {
 						formData.set(key, JSON.stringify(values[key]));
 					}
 				}
+
+			} else if (Array.isArray(values[key])) {
+				formData.delete(key);
+				formData.set(key, JSON.stringify(values[key]));
 			} else if (typeof values[key] === 'object') {
 				const keys = Object.keys(values[key]);
 				if (keys.length) {

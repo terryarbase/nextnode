@@ -2,7 +2,7 @@
 
 ## 1.0.2
 ### About Multilingual and Layout, Delegated Model Enhancements, Delegated Options List
-Terry Chan 11/11/2018 (Last Updated at 27/11/2018)
+Terry Chan 11/11/2018 (Last Updated at 29/11/2018)
 
 Common Improvements:
 * Added Realtime edit field (Support Types.Boolean)
@@ -24,6 +24,9 @@ Common Improvements:
 ** region/hongkong
 ** notification/status
 ** customized list (with mapping language or with multilingual value)
+
+List Enhancements:
+* Added KeyText type for key-text pair value
 
 Delegated Model Enhancements:
 * Added AdminUI user account delegated model
@@ -50,6 +53,7 @@ Multilingual Improvements:
 ** Types.Code
 ** Types.Color
 ** Types.Location
+** Types.KeyText
 
 Layout Improvements:
 * Added AdminUI Sidemenu for navigation menu for Desktop
@@ -74,6 +78,7 @@ List Improvements:
   3. noscale
 * Replaced CSV file download to Excel file, fix unicode Chinese Characters
 * Fixed display Manage button if nodelete is true 
+* Added List type for any other Types child object
 
 Item Improvements:
 * Textarea field supports newline break for display in readonly
