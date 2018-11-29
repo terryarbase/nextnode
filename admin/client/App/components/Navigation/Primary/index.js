@@ -12,6 +12,7 @@ import { Container } from '../../../elemental';
 // Components
 import PrimaryNavItem from './NavItem';
 import AccountSetting from '../../Setting';
+import LocalizationSetting from '../../Localization/Setting';
 
 var PrimaryNavigation = React.createClass({
 	displayName: 'PrimaryNavigation',
@@ -24,6 +25,7 @@ var PrimaryNavigation = React.createClass({
 	getInitialState () {
 		return {
 			accountSettingIsVisible: false,
+			localizationIsVisible: false,
 		};
 	},
 	// Handle resizing, hide this navigation on mobile (i.e. < 768px) screens
@@ -49,12 +51,22 @@ var PrimaryNavigation = React.createClass({
 		});
 	},
 	/*
+	** on show the popup localization setting modal
+	**
+	*/
+	onPopoverLocalizationSetting () {
+		this.setState({
+			localizationIsVisible: true,
+		});
+	},
+	/*
 	** on hide the popup account setting modal
 	** Terry Chan @ 11/10/2018
 	*/
 	onPopoutSetting () {
 		this.setState({
 			accountSettingIsVisible: false,
+			localizationIsVisible: false,
 		});
 	},
 	onLanguageSelect(lang) {
@@ -118,6 +130,7 @@ var PrimaryNavigation = React.createClass({
 	renderLanguageSwitcher() {
 		const { t } = this.props;
 		
+/*
 		return (
 			<DropdownButton
 				bsStyle={"default"}
@@ -131,6 +144,18 @@ var PrimaryNavigation = React.createClass({
 				<MenuItem eventKey="en">ENG</MenuItem>
 			</DropdownButton>
 		)
+*/
+		return (
+			<PrimaryNavItem
+				label="octicon octicon-globe"
+				title={t('language')}
+			>
+				<span 
+					className="octicon octicon-globe" 
+					onClick={this.onPopoverLocalizationSetting}
+				/>
+			</PrimaryNavItem>
+		);
 	},
 	// Render the link to the webpage
 	renderFrontLink () {
@@ -213,6 +238,11 @@ var PrimaryNavigation = React.createClass({
 				} */}
 				<AccountSetting
 					isOpen={this.state.accountSettingIsVisible}
+					onCancel={this.onPopoutSetting}
+					{ ...this.props }
+				/>
+				<LocalizationSetting
+					isOpen={this.state.localizationIsVisible}
 					onCancel={this.onPopoutSetting}
 					{ ...this.props }
 				/>

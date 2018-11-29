@@ -20,7 +20,7 @@ class Environment extends ImmutableType {
 			beta: {
 				value: 'beta',
 				label: 'Beta',
-			},,
+			},
 			uat: {
 				value: 'uat',
 				label: 'UAT',

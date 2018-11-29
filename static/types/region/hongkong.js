@@ -1,5 +1,5 @@
 const { Map } = require('immutable');
-const ImmutableType = require('./');
+const ImmutableType = require('../');
 /*
 ** The common options list for Types.Select
 ** Hong Kong Region Use

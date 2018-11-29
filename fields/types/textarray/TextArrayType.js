@@ -82,18 +82,19 @@ keytext.prototype.addFilterToQuery = function (filter, options) {
 		value = new RegExp(value, filter.caseSensitive ? '' : 'i');
 		if (presence === 'none') {
 			query[this.path] = {
-				$or: {
+				$or: [
 					{
 						key: addPresenceToQuery(presence, value),
 					},
 					{
 						text: addPresenceToQuery(presence, value),
 					}
-				}
+				
+				]
 			};
 		} else {
 			query[this.path] = {
-				$or: {
+				$or: [
 					{
 						key: addPresenceToQuery(presence, {
 							$regex: value,
@@ -104,7 +105,7 @@ keytext.prototype.addFilterToQuery = function (filter, options) {
 							$regex: value,
 						}),
 					}
-				}
+				]
 			};
 		}
 	}
