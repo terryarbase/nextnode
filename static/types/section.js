@@ -10,10 +10,10 @@ class Section extends ImmutableType {
 	constructor(node) {
 		super(node);
 		const type = Map({
-			field: {
-				value: 'field',
-				label: 'Field Label',
-				key: 'select_option_field',
+			list: {
+				value: 'list',
+				label: 'List Field / Label',
+				key: 'select_option_list',
 			},
 			note: {
 				value: 'note',

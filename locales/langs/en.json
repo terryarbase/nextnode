@@ -37,6 +37,7 @@
 	"select_option_field": "Field Name",
 	"select_option_label": "Field Label",
 	"select_option_note": "Field Remark",
+	"select_option_list": "List Field / Label",
 
 	"select_option_pending": "Pending",
 	"select_option_processing": "Processing",
