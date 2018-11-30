@@ -2,7 +2,7 @@
 
 ## 1.0.2
 ### About Multilingual and Layout, Delegated Model Enhancements, Delegated Options List
-Terry Chan 11/11/2018 (Last Updated at 29/11/2018)
+Terry Chan 11/11/2018 (Last Updated at 30/11/2018)
 
 Common Improvements:
 * Added Realtime edit field (Support Types.Boolean)
@@ -39,6 +39,8 @@ Multilingual Improvements:
 * Auto create multilingual schema for management language support for List schema
 * Added List multilingual setting
 * Added individual field multilingual setting 
+* Added App-Language section for dynamic list (e.g. fields, labels, notes)
+* Added export static file for App-Language section config
 * Support multilingual types: 
 ** Types.Text
 ** Types.Textarea

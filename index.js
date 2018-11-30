@@ -71,6 +71,7 @@ var Keystone = function () {
 		},
 		'i18n': i18n,
 		'static lang path': 'static/locale.json',	// json file for generated language static file 
+		'static section path': 'static/section.json',	// json file for AdminUI section language static file
 		'module root': moduleRoot,
 		'frame guard': 'sameorigin',
 		'cache admin bundles': true,
@@ -157,8 +158,9 @@ Keystone.prototype.isReservedCollection = function (key, options) {
 	const reservedPaths = [
 		// reserved collection name
 		'role',
-		'account',
-		'localization'
+		'user',
+		'localization',
+		'app-languagesection',
 	];
 	return !options.isCore && reservedPaths.indexOf(_.toLower(key)) !== -1;
 }

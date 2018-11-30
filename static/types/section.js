@@ -10,8 +10,8 @@ class Section extends ImmutableType {
 	constructor(node) {
 		super(node);
 		const type = Map({
-			list: {
-				value: 'list',
+			field: {
+				value: 'field',
 				label: 'List Field / Label',
 				key: 'select_option_list',
 			},
@@ -20,11 +20,12 @@ class Section extends ImmutableType {
 				label: 'Field Remark Note',
 				key: 'select_option_note',
 			},
-			placeholder: {
-				value: 'placeholder',
-				label: 'Input Placeholder',
-				key: 'select_option_placeholder',
-			},
+			// TODO
+			// placeholder: {
+			// 	value: 'placeholder',
+			// 	label: 'Input Placeholder',
+			// 	key: 'select_option_placeholder',
+			// },
 		});
 		super.initialize({ type, isTransfer: true });
 	}
