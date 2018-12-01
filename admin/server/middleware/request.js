@@ -1,6 +1,8 @@
 const fs 	= require('fs');
 const _ 	= require('lodash');
 const localization = require('../../../lib/handler/staticGenerator/localization');
+const appLanguage = require('../../../lib/handler/staticGenerator/appLanguage');
+const navigationLanguage = require('../../../lib/handler/staticGenerator/navigationLanguage');
 
 const getStaticLanguageFile = async (nextNode) => {
 	const path = `${nextNode.get('app root')}/${nextNode.get('static lang path')}`;
@@ -17,6 +19,22 @@ const getStaticLanguageFile = async (nextNode) => {
 	return data;
 };
 
+const getStaticNavLanguageSectionFile = async (nextNode) => {
+	const path = `${nextNode.get('app root')}/${nextNode.get('static navigation path')}`;
+	var data;
+	try {
+		data = JSON.parse(fs.readFileSync(path, 'utf8'));
+	} catch (err) { // if the language cannnot be read, then query db
+		console.log('> Cannot red the Static Navigation Language Section File, query navigation language sections from Database.');
+		const navLangHandler = new navigationLanguage(nextNode, nextNode.list('Navigation_Language').model);
+		// export file, and get db languages, if error then ignore localization in the app
+		const { data: dbLang} = await navLangHandler.exportNavSectionStatic();
+		data = dbLang;
+	}
+	// console.log(data);
+	return data;
+};
+
 const getStaticAppLanguageSectionFile = async (nextNode) => {
 	const path = `${nextNode.get('app root')}/${nextNode.get('static section path')}`;
 	var data;
@@ -24,7 +42,7 @@ const getStaticAppLanguageSectionFile = async (nextNode) => {
 		data = JSON.parse(fs.readFileSync(path, 'utf8'));
 	} catch (err) { // if the language cannnot be read, then query db
 		console.log('> Cannot red the Static App Language Section File, query app language sections from Database.');
-		const appLangHandler = new localization(nextNode, nextNode.list('App_Language').model);
+		const appLangHandler = new appLanguage(nextNode, nextNode.list('App_Language').model);
 		// export file, and get db languages, if error then ignore localization in the app
 		const { data: dbLang} = await appLangHandler.exportSectionStatic();
 		data = dbLang;
@@ -88,5 +106,8 @@ module.exports = async function (req, res, next, nextNode) {
 		};
 	}
 	req.appLanguage = await getStaticAppLanguageSectionFile(nextNode);
+	req.menu = await getStaticNavLanguageSectionFile(nextNode);
+
+	console.log(req.menu, req.appLanguage);
 	next();
 };

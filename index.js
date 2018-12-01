@@ -72,6 +72,8 @@ var Keystone = function () {
 		'i18n': i18n,
 		'static lang path': 'static/locale.json',	// json file for generated language static file 
 		'static section path': 'static/section.json',	// json file for AdminUI section language static file
+		'static navigation path': 'static/navigation.json',
+
 		'module root': moduleRoot,
 		'frame guard': 'sameorigin',
 		'cache admin bundles': true,
@@ -193,7 +195,7 @@ Keystone.prototype.createRole = require('./lib/core/delegation/createRole');
 Keystone.prototype.createLocalization = require('./lib/core/delegation/createLocalization');
 Keystone.prototype.createAccount = require('./lib/core/delegation/createAccount');
 Keystone.prototype.createLanguageSection = require('./lib/core/delegation/createLanguageSection');
-
+Keystone.prototype.createNavLanguageSection = require('./lib/core/delegation/createNavLanguageSection');
 
 // Keystone.prototype.hooks = function() {};
 // hooks.prototype.localization = require('./lib/core/hook/localization');
