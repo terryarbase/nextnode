@@ -161,11 +161,31 @@ Keystone.prototype.isReservedCollection = function (key, options) {
 		// reserved collection name
 		'role',
 		'user',
-		'localization',
-		'app-languagesection',
+		'locale',
+		'applicationLanguage',
+		'navigationLanguage'
 	];
 	return !options.isCore && reservedPaths.indexOf(_.toLower(key)) !== -1;
-}
+};
+
+/*
+** Get reserved collection structure, usually for the navigation options
+** Terry Chan
+** 03/12/2018
+*/
+Keystone.prototype.reservedCollections = function () {
+	return {
+		system: [
+			'Role',
+			'User',
+		],
+		configuation: [
+			...(this.get('localization') ? ['Locale'] : null),
+			'ApplicationLanguage',
+			'NavigationLanguage',
+		],
+	};
+};
 
 /* Attach core functionality to Keystone.prototype */
 

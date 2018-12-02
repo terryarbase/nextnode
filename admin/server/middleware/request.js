@@ -11,7 +11,7 @@ const getStaticLanguageFile = async (nextNode) => {
 		data = JSON.parse(fs.readFileSync(path, 'utf8'));
 	} catch (err) { // if the language cannnot be read, then query db
 		console.log('> Cannot red the Static Language File, query languages from Database.');
-		const langHandler = new localization(nextNode, nextNode.list('Localization').model);
+		const langHandler = new localization(nextNode, nextNode.list('Locale').model);
 		// export file, and get db languages, if error then ignore localization in the app
 		const { data: dbLang} = await langHandler.exportLanguageStatic();
 		data = dbLang;
@@ -108,6 +108,6 @@ module.exports = async function (req, res, next, nextNode) {
 	req.appLanguage = await getStaticAppLanguageSectionFile(nextNode);
 	req.menu = await getStaticNavLanguageSectionFile(nextNode);
 
-	console.log(req.menu, req.appLanguage);
+	// console.log(req.menu, req.appLanguage);
 	next();
 };
