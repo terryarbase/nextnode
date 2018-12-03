@@ -111,7 +111,7 @@ module.exports = Field.create({
 					);
 				})}
 				<GlyphButton color="success" glyph="plus" position="left" onClick={onAdd}>
-					Add
+					{t('add')}
 				</GlyphButton>
 			</div>
 		);

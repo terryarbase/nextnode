@@ -126,7 +126,7 @@ module.exports = Field.create({
 	},
 
 	renderSuburbState () {
-		const { value = {}, path } = this.props;
+		const { value = {}, path, t } = this.props;
 		// name={this.getInputName(path + '.suburb')}
 		// name={this.getInputName(path + '.state')}
 		return (
@@ -135,14 +135,14 @@ module.exports = Field.create({
 					<Grid.Col small="two-thirds" data-field-location-path={path + '.suburb'}>
 						<FormInput
 							onChange={this.makeChanger('suburb')}
-							placeholder="Suburb"
+							placeholder={t('suburb')}
 							value={value.suburb || ''}
 						/>
 					</Grid.Col>
 					<Grid.Col small="one-third" data-field-location-path={path + '.state'}>
 						<FormInput
 							onChange={this.makeChanger('state')}
-							placeholder="State"
+							placeholder={t('state')}
 							value={value.state || ''}
 						/>
 					</Grid.Col>
@@ -152,7 +152,7 @@ module.exports = Field.create({
 	},
 
 	renderPostcodeCountry () {
-		const { value = {}, path } = this.props;
+		const { value = {}, path, t } = this.props;
 		// name={this.getInputName(path + '.postcode')}
 		// name={this.getInputName(path + '.country')}
 		return (
@@ -161,7 +161,7 @@ module.exports = Field.create({
 					<Grid.Col small="one-third" data-field-location-path={path + '.postcode'}>
 						<FormInput
 							onChange={this.makeChanger('postcode')}
-							placeholder="Post Code"
+							placeholder={t('postCode')}
 							value={value.postcode || ''}
 						/>
 					</Grid.Col>
@@ -181,7 +181,7 @@ module.exports = Field.create({
 		if (this.state.collapsedFields.geo) {
 			return null;
 		}
-		const { value = {}, path, paths } = this.props;
+		const { value = {}, path, paths, t } = this.props;
 		const geo = value.geo || [];
 		// name={this.getInputName(paths.geo + '[1]')}
 		// name={this.getInputName(paths.geo + '[0]')}
@@ -191,14 +191,14 @@ module.exports = Field.create({
 					<Grid.Col small="one-half" data-field-location-path="latitude">
 						<FormInput
 							onChange={this.makeGeoChanger(1)}
-							placeholder="Latitude"
+							placeholder={t('latitude')}
 							value={geo[1] || ''}
 						/>
 					</Grid.Col>
 					<Grid.Col small="one-half" data-field-location-path="longitude">
 						<FormInput
 							onChange={this.makeGeoChanger(0)}
-							placeholder="Longitude"
+							placeholder={t('longitude')}
 							value={geo[0] || ''}
 						/>
 					</Grid.Col>
@@ -219,13 +219,13 @@ module.exports = Field.create({
 
 
 	renderGoogleOptions () {
-		const { paths, enableMapsAPI } = this.props;
+		const { paths, enableMapsAPI, t } = this.props;
 		if (!enableMapsAPI) return null;
 		// name={this.getInputName(paths.overwrite)}
 		var replace = this.state.improve ? (
 			<LabelledControl
 				checked={this.state.overwrite}
-				label="Replace existing data"
+				label={t('replaceExistingData')}
 				onChange={this.makeGoogler('overwrite')}
 				type="checkbox"
 			/>
@@ -235,9 +235,9 @@ module.exports = Field.create({
 			<FormField offsetAbsentLabel>
 				<LabelledControl
 					checked={this.state.improve}
-					label="Autodetect and improve location on save"
+					label={t('autoAndImprove')}
 					onChange={this.makeGoogler('improve')}
-					title="When checked, this will attempt to fill missing fields. It will also get the lat/long"
+					title={t('locationCheck')}
 					type="checkbox"
 				/>
 				{replace}
@@ -270,7 +270,7 @@ module.exports = Field.create({
 			: null;
 		/* eslint-enable */
 
-		const { label, path } = this.props;
+		const { label, path, t} = this.props;
 		return (
 			<div data-field-name={path} data-field-type="location">
 				<FormField label={label} htmlFor={path}>
@@ -280,10 +280,10 @@ module.exports = Field.create({
 						name={path}
 					/>
 				</FormField>
-				{this.renderField('number', 'PO Box / Shop', true, true)}
-				{this.renderField('name', 'Building Name', true)}
-				{this.renderField('street1', 'Street Address')}
-				{this.renderField('street2', 'Street Address 2', true)}
+				{this.renderField(t('number'), t('poBoxShop'), true, true)}
+				{this.renderField(t('name'), t('buildingName'), true)}
+				{this.renderField(t('street1'), t('streetAddress1'))}
+				{this.renderField(t('street2'), t('streetAddress2'), true)}
 				{this.renderSuburbState()}
 				{this.renderPostcodeCountry()}
 				{this.renderGeo()}

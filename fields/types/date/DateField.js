@@ -69,6 +69,7 @@ module.exports = Field.create({
 		);
 	},
 	renderField () {
+		const { t } = this.props;
 		var dateAsMoment = this.toMoment(this.props.value);
 		var value = this.props.value && dateAsMoment.isValid()
 			? dateAsMoment.format(this.props.inputFormat)
@@ -86,7 +87,7 @@ module.exports = Field.create({
 					/>
 				</Section>
 				<Section>
-					<Button onClick={this.setToday}>Today</Button>
+					<Button onClick={this.setToday}>{t('today')}</Button>
 				</Section>
 			</Group>
 		);

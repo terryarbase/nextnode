@@ -142,8 +142,9 @@ module.exports = Field.create({
 
 	// Handle image selection in file browser
 	handleImageChange (e) {
+		const { t } = this.props;
 		if (!window.FileReader) {
-			return alert('File reader not supported by browser.');
+			return alert(t('fileReaderNotSupport'));
 		}
 
 		var reader = new FileReader();
@@ -151,7 +152,7 @@ module.exports = Field.create({
 		if (!file) return;
 
 		if (!file.type.match(SUPPORTED_REGEX)) {
-			return alert('Unsupported file type. Supported formats are: GIF, PNG, JPG, BMP, ICO, PDF, TIFF, EPS, PSD, SVG');
+			return alert(t('fileFormatNotSupport'));
 		}
 
 		reader.readAsDataURL(file);
@@ -275,8 +276,8 @@ module.exports = Field.create({
 
 	// Output [cancel/remove/undo] button
 	renderClearButton () {
-// 		const { t } = this.props;
-		const clearText = this.hasLocal() ? 'Cancel' : 'Remove Image';
+		const { t } = this.props;
+		const clearText = this.hasLocal() ? t('cancel') : t('removeImage');
 		
 		return this.state.removeExisting ? (
 			<Button variant="link" onClick={this.undoRemove}>

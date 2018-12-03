@@ -176,8 +176,9 @@ module.exports = Field.create({
 		});
 	},
 	uploadFile (event) {
+		const { t } = this.props;
 		if (!window.FileReader) {
-			return alert('File reader not supported by browser.');
+			return alert(t('fileReaderNotSupport'));
 		}
 
 		// FileList not a real Array; process it into one and check the types
@@ -185,7 +186,7 @@ module.exports = Field.create({
 		for (let i = 0; i < event.target.files.length; i++) {
 			const f = event.target.files[i];
 			if (!f.type.match(SUPPORTED_REGEX)) {
-				return alert('Unsupported file type. Supported formats are: GIF, PNG, JPG, BMP, ICO, PDF, TIFF, EPS, PSD, SVG');
+				return alert(t('fileFormatNotSupport'));
 			}
 			files.push(f);
 		}

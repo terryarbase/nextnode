@@ -42,7 +42,8 @@ module.exports = Field.create({
 	},
 
 	renderValue () {
-		return <FormInput noedit>{this.props.value ? 'Password Set' : ''}</FormInput>;
+		const { t } = this.props;
+		return <FormInput noedit>{this.props.value ? t('passwordSet') : ''}</FormInput>;
 	},
 
 	renderField () {
@@ -50,6 +51,7 @@ module.exports = Field.create({
 	},
 
 	renderFields () {
+		const { t } = this.props;
 		return (
 			<Group block>
 				<Section grow>
@@ -57,7 +59,7 @@ module.exports = Field.create({
 						autoComplete="off"
 						name={this.getInputName(this.props.path)}
 						onChange={this.valueChanged.bind(this, 'password')}
-						placeholder="New password"
+						placeholder={t('newPassword')}
 						ref="focusTarget"
 						type="password"
 						id={0}
@@ -69,7 +71,7 @@ module.exports = Field.create({
 						autoComplete="off"
 						name={this.getInputName(this.props.paths.confirm)}
 						onChange={this.valueChanged.bind(this, 'confirm')}
-						placeholder="Confirm new password" value={this.state.confirm}
+						placeholder={t('confirmPwd')} value={this.state.confirm}
 						type="password"
 						id={1}
 					/>
@@ -84,9 +86,10 @@ module.exports = Field.create({
 	},
 
 	renderChangeButton () {
+		const { t } = this.props;
 		var label = this.state.passwordIsSet
-			? 'Change Password'
-			: 'Set Password';
+			? t('changePwd')
+			: t('setPassword');
 
 		return (
 			<Button ref="focusTarget" onClick={this.showChangeUI}>{label}</Button>

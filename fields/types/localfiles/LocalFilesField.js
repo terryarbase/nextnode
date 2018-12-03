@@ -28,14 +28,14 @@ var LocalFilesFieldItem = React.createClass({
 	renderActionButton () {
 		if (!this.props.shouldRenderActionButton || this.props.isQueued) return null;
 
-		var buttonLabel = this.props.deleted ? 'Undo' : 'Remove';
+		var buttonLabel = this.props.deleted ? t('undo') : t('remove');
 		var buttonType = this.props.deleted ? 'link' : 'link-cancel';
 
 		return <Button key="action-button" type={buttonType} onClick={this.props.toggleDelete}>{buttonLabel}</Button>;
 	},
 
 	render () {
-		const { filename, upload } = this.props;
+		const { filename, upload, t } = this.props;
 		const ext = filename.split('.').pop();
 
 		let iconName = '_blank';
@@ -43,9 +43,9 @@ var LocalFilesFieldItem = React.createClass({
 
 		let note;
 		if (this.props.deleted) {
-			note = <FormInput key="delete-note" noedit className="field-type-localfiles__note field-type-localfiles__note--delete">save to delete</FormInput>;
+			note = <FormInput key="delete-note" noedit className="field-type-localfiles__note field-type-localfiles__note--delete">{t('saveToDelete')}</FormInput>;
 		} else if (this.props.isQueued) {
-			note = <FormInput key="upload-note" noedit className="field-type-localfiles__note field-type-localfiles__note--upload">save to upload</FormInput>;
+			note = <FormInput key="upload-note" noedit className="field-type-localfiles__note field-type-localfiles__note--upload">{t('saveToUpload')}</FormInput>;
 		}
 
 		//add preview image
@@ -182,22 +182,24 @@ module.exports = Field.create({
 	},
 
 	renderToolbar () {
+		const { t } = this.props;
 		if (!this.shouldRenderField()) return null;
 
 		var clearFilesButton;
 		if (this.hasFiles()) {
-			clearFilesButton = <Button type="link-cancel" className="ml-5" onClick={this.clearFiles}>Clear Uploads</Button>;
+			clearFilesButton = <Button type="link-cancel" className="ml-5" onClick={this.clearFiles}>{t('clearUpload')}</Button>;
 		}
 
 		return (
 			<div className="files-toolbar">
-				<Button onClick={this.changeFiles}>Upload</Button>
+				<Button onClick={this.changeFiles}>{t('upload')}</Button>
 				{clearFilesButton}
 			</div>
 		);
 	},
 
 	renderPlaceholder () {
+		const { t } = this.props;
 		return (
 			<div className="file-field file-upload" onClick={this.changeFiles}>
 				<div className="file-preview">
@@ -208,7 +210,7 @@ module.exports = Field.create({
 				</div>
 
 				<div className="file-details">
-					<span className="file-message">Click to upload</span>
+					<span className="file-message">{t('clickToUpload')}</span>
 				</div>
 			</div>
 		);

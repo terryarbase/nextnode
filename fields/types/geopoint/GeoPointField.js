@@ -41,7 +41,7 @@ module.exports = Field.create({
 	},
 
 	renderField () {
-		const { value = [], path } = this.props;
+		const { value = [], path, t } = this.props;
 		return (
 			<Grid.Row xsmall="one-half" gutter={10}>
 				<Grid.Col>
@@ -49,7 +49,7 @@ module.exports = Field.create({
 						autoComplete="off"
 						name={this.getInputName(path + '[1]')}
 						onChange={this.handleLat}
-						placeholder="Latitude"
+						placeholder=t('latitude')
 						ref="lat"
 						value={value[1]}
 					/>
@@ -59,7 +59,7 @@ module.exports = Field.create({
 						autoComplete="off"
 						name={this.getInputName(path + '[0]')}
 						onChange={this.handleLong}
-						placeholder="Longitude"
+						placeholder=t('longitude')
 						ref="lng"
 						value={value[0]}
 					/>

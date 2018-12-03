@@ -42,10 +42,10 @@ module.exports = Field.create({
 		});
 	},
 	changeFirst: function (event) {
-		return this.valueChanged('first', event);
+		return this.valueChanged(t('first'), event);
 	},
 	changeLast: function (event) {
-		return this.valueChanged('last', event);
+		return this.valueChanged(t('last'), event);
 	},
 	renderValue () {
 		const inputStyle = { width: '100%' };
@@ -78,7 +78,7 @@ module.exports = Field.create({
 						autoComplete="off"
 						name={this.getInputName(path)}
 						onChange={this.changeFirst}
-						placeholder="First name"
+						placeholder={t('firstName')}
 						value={value.first || ''}
 					/>
 				</Grid.Col>
@@ -86,7 +86,7 @@ module.exports = Field.create({
 					<FormInput
 						autoComplete="off"
 						onChange={this.changeLast}
-						placeholder="Last name"
+						placeholder={t("lastName")}
 						value={value.last || ''}
 					/>
 				</Grid.Col>

@@ -167,10 +167,11 @@ module.exports = Field.create({
 		);
 	},
 	renderChangeMessage () {
+		const { t } = this.props;
 		if (this.state.userSelectedFile) {
 			return (
 				<FileChangeMessage color="success">
-					Save to Upload
+					{t('saveToUpload')}
 				</FileChangeMessage>
 			);
 		} else if (this.state.removeExisting) {
@@ -184,18 +185,19 @@ module.exports = Field.create({
 		}
 	},
 	renderClearButton () {
+		const { t } = this.props;
 		if (this.state.removeExisting) {
 			return (
 				<Button variant="link" onClick={this.undoRemove}>
-					Undo Remove
+					{t('undoRemove')}
 				</Button>
 			);
 		} else {
 			var clearText;
 			if (this.state.userSelectedFile) {
-				clearText = 'Cancel Upload';
+				clearText = t('cancelUpload');
 			} else {
-				clearText = (this.props.autoCleanup ? 'Delete File' : 'Remove File');
+				clearText = (this.props.autoCleanup ? t('deleteFile') : t('removeFile'));
 			}
 			return (
 				<Button variant="link" color="cancel" onClick={this.handleRemove}>

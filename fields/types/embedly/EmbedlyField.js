@@ -61,6 +61,7 @@ module.exports = Field.create({
 	},
 
 	renderUI () {
+		const { t } = this.props;
 		if (!this.props.value.exists) {
 			return (
 				<FormField label={this.props.label}>
@@ -73,9 +74,9 @@ module.exports = Field.create({
 				<FormField key="provider" label={this.props.label}>
 					<FormInput noedit>{this.props.value.providerName} {this.props.value.type}</FormInput>
 				</FormField>
-				{this.renderValue('title', 'Title')}
+				{this.renderValue('title', t('title'))}
 				{this.renderAuthor()}
-				{this.renderValue('description', 'Description', true)}
+				{this.renderValue('description', t('description'), true)}
 				{this.renderPreview()}
 				{this.renderDimensions()}
 			</div>

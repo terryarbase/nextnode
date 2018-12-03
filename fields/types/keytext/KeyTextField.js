@@ -98,16 +98,16 @@ module.exports = Field.create({
 		this.valueChanged(values);
 	},
 	renderInputNote() {
-		const { max = -1, min = -1 } = this.props;
+		const { max = -1, min = -1, t } = this.props;
 		var note = null;
 		if (max !== -1 || min !== -1) {
 			note = (
 				<FormNote style={{ marginTop: '10px' }}>
 					{
-						min !== -1 && <div>* At Least {min} {min > 1 ? 'items' : 'item' }</div>
+						min !== -1 && <div>* {t('atLeast')} {min} {min > 1 ? 'items' : 'item' }</div>
 					}
 					{
-						max !== -1 && <div>* At Most {max} {max > 1 ? 'items' : 'item' }</div>
+						max !== -1 && <div>* {t('atMost')} {max} {max > 1 ? 'items' : 'item' }</div>
 					}
 				</FormNote>
 			);
@@ -115,7 +115,7 @@ module.exports = Field.create({
 		return note;
 	},
 	renderField () {
-		const { max = -1, noeditadd } = this.props;
+		const { max = -1, t } = this.props;
 		const { values = [] } = this.state;
 		return (
 			<div>
@@ -126,8 +126,8 @@ module.exports = Field.create({
 						name={this.getInputName(this.props.path)} />
 				}
 				{
-					max !== -1 && values.length < max  && !noeditadd
-					&& <Button ref="button" onClick={this.addItem}>Add Item</Button>
+					max !== -1 && values.length < max 
+					&& <Button ref="button" onClick={this.addItem}>{t('addItem')}</Button>
 				}
 				{
 					this.renderInputNote()
@@ -148,10 +148,10 @@ module.exports = Field.create({
 		}
 	},
 	renderItem ({ id, key, text }, index) {
-		const { noeditkey, mode, noeditadd } = this.props;
+		const { noeditkey, mode } = this.props;
 		const Input = this.getInputComponent ? this.getInputComponent() : FormInput;
  		return (
-			<FormField key={id || index} style={{ marginBottom: '1.5em' }}>
+			<FormField key={id} style={{ marginBottom: '1.5em' }}>
 				<Input
 					ref={'item_' + (index + 1)}
 					value={key}
@@ -170,7 +170,6 @@ module.exports = Field.create({
 					autoComplete="off" />
 				<Button
 					type="link-cancel"
-					disabled={mode === 'edit' && noeditadd}
 					onClick={() => this.removeItem(index)}
 					className="keystone-relational-button"
 				>
