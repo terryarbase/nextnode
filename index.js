@@ -171,6 +171,26 @@ Keystone.prototype.isReservedCollection = function (key, options) {
 };
 
 /*
+** Check for the reserved language section fields
+** e.g. meta, createdAt, updatedAt, createdBy, createdAt
+** Terry Chan
+** 03/12/2018
+*/
+Keystone.prototype.isReservedLanguageSectionFields = function (field) {
+	const reservedFields = [
+		'meta',
+		'createdat',
+		'createdby',
+		'updatedat',
+		'updatedby',
+	];
+	// console.log(field, reservedFields.indexOf(_.toLower(_.camelCase(field))));
+	return reservedFields.indexOf(
+		_.toLower(_.camelCase(field))
+	) !== -1;
+};
+
+/*
 ** Get reserved collection structure, usually for the navigation options
 ** Terry Chan
 ** 03/12/2018

@@ -24,6 +24,7 @@ const classes = {
 		lineHeight: 'inherit',
 		padding: '1px 4px',
 		whiteSpace: 'nowrap',
+		color: 'black',
 
 		// little hack to tweak "visual-middle" alignment
 		position: 'relative',

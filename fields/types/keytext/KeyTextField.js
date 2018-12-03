@@ -12,21 +12,21 @@ import {
 var lastId = 0;
 var ENTER_KEYCODE = 13;
 
-const newItem = ({ key, text }) => {
+const newItem = ({ key, value }) => {
 	lastId = lastId + 1;
 	return {
 		id: 'i' + lastId,
 		key,
-		text,
+		value,
 	};
 }
 
 const initialKeyItem = () => ({
 	key: '',
-	text: '',
+	value: '',
 });
 // convert key and text as a string
-const getStringKeyText = value => _.map(value, ({ key, text }) => `${key}${text}`).join('|');
+const getStringKeyText = value => _.map(value, ({ key, value }) => `${key}${value}`).join('|');
 
 module.exports = Field.create({
 	propTypes: {
@@ -42,6 +42,7 @@ module.exports = Field.create({
 	},
 	getInitialState () {
 		var { value } = this.props;
+		// console.log('>>>>>>>>> ', value);
 		value = _.isArray(value) ? _.map(value, newItem) : [];
 		return {
 			values: value,
@@ -52,6 +53,7 @@ module.exports = Field.create({
 		const { string } = this.state;
 		// checks for the full string object in the nextporps, which is being to change
 		// switch the language
+		// console.log('>>>>>>> ', value);
 		const nextString = getStringKeyText(value);
 		// const languageChanged = currentLang && currentLang !== this.props.currentLang;
 		if (nextString !== string) {
@@ -147,7 +149,7 @@ module.exports = Field.create({
 			event.preventDefault();
 		}
 	},
-	renderItem ({ id, key, text }, index) {
+	renderItem ({ id, key, value }, index) {
 		const { noeditkey, mode } = this.props;
 		const Input = this.getInputComponent ? this.getInputComponent() : FormInput;
  		return (
@@ -162,14 +164,15 @@ module.exports = Field.create({
 					onChange={e => this.updateItem(index, 'key', e)}
 					autoComplete="off" />
 				<Input
-					value={text}
+					value={value}
 					style={{ marginTop: '5px' }}
-					onChange={e => this.updateItem(index, 'text', e)}
+					onChange={e => this.updateItem(index, 'value', e)}
 					onKeyDown={this.addItemOnEnter}
 					placeholder="Text"
 					autoComplete="off" />
 				<Button
 					type="link-cancel"
+					disabled={mode === 'edit' && !!key && noeditkey}
 					onClick={() => this.removeItem(index)}
 					className="keystone-relational-button"
 				>
@@ -183,11 +186,11 @@ module.exports = Field.create({
 		const Input = this.getInputComponent ? this.getInputComponent() : FormInput;
 		return (
 			<div>
-				{this.state.values.map(({ id, key, text }, i) => {
+				{this.state.values.map(({ id, key, value }, i) => {
 					return (
 						<div key={id} style={i ? { marginTop: '1em' } : null}>
 							<Input noedit value={key} />
-							<Input noedit value={text} />
+							<Input noedit value={value} />
 						</div>
 					);
 				})}

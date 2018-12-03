@@ -16,7 +16,7 @@ function KeyText (list, path, options) {
 	this._nativeType = [
 		{
 			key: String,
-			text: String,
+			value: String,
 			id: String,
 		}
 	];
@@ -25,7 +25,7 @@ function KeyText (list, path, options) {
 	// representive the placeholder elements
 	this.placeholder = [
 		'key',
-		'text'
+		'value'
 	];
 	const newOptions = {
 		...options,

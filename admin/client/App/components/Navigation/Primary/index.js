@@ -141,13 +141,13 @@ var PrimaryNavigation = React.createClass({
 				>
 					<img 
 						src={`data:image/png;base64, ${currentLangImg}`}
+						alt={Keystone.localization[currentUILanguage].label}
 						style={{
 							width: `25px`,
 							marginRight: `10px`,
 							maxHeight: `30px`
 						}}
 					/>
-					{Keystone.localization[currentUILanguage].label}
 				</span>
 			</a>
 		);

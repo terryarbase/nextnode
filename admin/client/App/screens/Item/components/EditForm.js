@@ -151,7 +151,7 @@ var EditForm = React.createClass({
 		const { data, list } = this.props;
 		const editForm = this.refs.editForm;
 		var formData = new FormData(editForm);
-		const { isLocale, currentLang } = this.props;
+		const { isLocale, currentLang, t } = this.props;
 		const { values } = this.state;
 		formData = this.props.list.getFormCreateData({
 			formData,
@@ -194,7 +194,7 @@ var EditForm = React.createClass({
 				this.setState({
 					alerts: {
 						success: {
-							success: 'Your changes have been saved successfully',
+							success: t('editMsg'),
 						},
 					},
 					lastValues: this.state.values,
@@ -207,19 +207,19 @@ var EditForm = React.createClass({
 	renderKeyOrId () {
 		var className = 'EditForm__key-or-id';
 		var list = this.props.list;
-
+		const { t } = this.props;
 		if (list.nameField && list.autokey && this.props.data[list.autokey.path]) {
 			return (
 				<div className={className}>
 					<AltText
 						modified="ID:"
 						normal={`${upcase(list.autokey.path)}: `}
-						title="Press <alt> to reveal the ID"
+						title={t('altRevealTitle')}
 						className="EditForm__key-or-id__label" />
 					<AltText
 						modified={<input ref="keyOrIdInput" onFocus={this.handleKeyFocus} value={this.props.data.id} className="EditForm__key-or-id__input" readOnly />}
 						normal={<input ref="keyOrIdInput" onFocus={this.handleKeyFocus} value={this.props.data[list.autokey.path]} className="EditForm__key-or-id__input" readOnly />}
-						title="Press <alt> to reveal the ID"
+						title={t('altRevealTitle')}
 						className="EditForm__key-or-id__field" />
 				</div>
 			);
@@ -244,6 +244,7 @@ var EditForm = React.createClass({
 		}
 	},
 	renderNameField () {
+		const { t } = this.props;
 		var nameField = this.props.list.nameField;
 		var nameFieldIsFormHeader = this.props.list.nameFieldIsFormHeader;
 		var wrapNameField = field => (
@@ -266,7 +267,7 @@ var EditForm = React.createClass({
 			);
 		} else {
 			return wrapNameField(
-				<h2>{this.props.data.name || '(no name)'}</h2>
+				<h2>{this.props.data.name || `(${t('noNameLabel')})`}</h2>
 			);
 		}
 	},
@@ -308,7 +309,7 @@ var EditForm = React.createClass({
 				}
 
 				var element = React.createElement(Fields[field.type], props);
-				
+				// console.log(field.type, field.path, props);
 				// prevent stateless file element to be rendered again, get from state
 				if (field.stateless && field.multilingual) {
 					if (this.statelessUI[field.path]) {
@@ -354,10 +355,9 @@ var EditForm = React.createClass({
 		if (this.props.list.noedit && this.props.list.nodelete) {
 			return null;
 		}
-
+		const { t } = this.props;
 		const { loading, values: { delegated } } = this.state;
-		const loadingButtonText = loading ? 'Saving' : 'Save';
-
+		const loadingButtonText = loading ? t('saving') : t('save');
 		// Padding must be applied inline so the FooterBar can determine its
 		// innerHeight at runtime. Aphrodite's styling comes later...
 
@@ -378,16 +378,16 @@ var EditForm = React.createClass({
 					{!this.props.list.noedit && (
 						<Button disabled={loading} onClick={this.toggleResetDialog} variant="link" color="cancel" data-button="reset">
 							<ResponsiveText
-								hiddenXS="reset changes"
-								visibleXS="reset"
+								hiddenXS={t('resetChanges')}
+								visibleXS={t('reset')}
 							/>
 						</Button>
 					)}
 					{!this.props.list.nodelete && !delegated && (
 						<Button disabled={loading} onClick={this.toggleDeleteDialog} variant="link" color="delete" style={styles.deleteButton} data-button="delete">
 							<ResponsiveText
-								hiddenXS={`delete ${this.props.list.singular.toLowerCase()}`}
-								visibleXS="delete"
+								hiddenXS={`${t('delete')} ${this.props.list.singular.toLowerCase()}`}
+								visibleXS={t('delete')}
 							/>
 						</Button>
 					)}
@@ -405,12 +405,12 @@ var EditForm = React.createClass({
 
 		var elements = [];
 		var data = {};
-
+		const { t } = this.props;
 		if (this.props.list.tracking.createdAt) {
 			data.createdAt = this.props.data.fields[this.props.list.tracking.createdAt];
 			if (data.createdAt) {
 				elements.push(
-					<FormField key="createdAt" label="Created on">
+					<FormField key="createdAt" label={t('createdOn')}>
 						<FormInput noedit title={moment(data.createdAt).format('DD/MM/YYYY h:mm:ssa')}>{moment(data.createdAt).format('Do MMM YYYY')}</FormInput>
 					</FormField>
 				);
@@ -423,7 +423,7 @@ var EditForm = React.createClass({
 				let createdByName = getNameFromData(data.createdBy.name);
 				if (createdByName) {
 					elements.push(
-						<FormField key="createdBy" label="Created by">
+						<FormField key="createdBy" label={t('createdBy')}>
 							<FormInput noedit>{data.createdBy.name.first} {data.createdBy.name.last}</FormInput>
 						</FormField>
 					);
@@ -435,7 +435,7 @@ var EditForm = React.createClass({
 			data.updatedAt = this.props.data.fields[this.props.list.tracking.updatedAt];
 			if (data.updatedAt && (!data.createdAt || data.createdAt !== data.updatedAt)) {
 				elements.push(
-					<FormField key="updatedAt" label="Updated on">
+					<FormField key="updatedAt" label={t('updatedOn')}>
 						<FormInput noedit title={moment(data.updatedAt).format('DD/MM/YYYY h:mm:ssa')}>{moment(data.updatedAt).format('Do MMM YYYY')}</FormInput>
 					</FormField>
 				);
@@ -448,7 +448,7 @@ var EditForm = React.createClass({
 				let updatedByName = getNameFromData(data.updatedBy.name);
 				if (updatedByName) {
 					elements.push(
-						<FormField key="updatedBy" label="Updated by">
+						<FormField key="updatedBy" label={t('updatedOn')}>
 							<FormInput noedit>{data.updatedBy.name.first} {data.updatedBy.name.last}</FormInput>
 						</FormField>
 					);
@@ -458,7 +458,7 @@ var EditForm = React.createClass({
 
 		return Object.keys(elements).length ? (
 			<div className="EditForm__meta">
-				<h3 className="form-heading">Meta</h3>
+				<h3 className="form-heading">{t('metaTitle')}</h3>
 				{elements}
 			</div>
 		) : null;
@@ -466,17 +466,16 @@ var EditForm = React.createClass({
 	renderWarning () {
 		const { values: { delegated } } = this.state;
 		if (delegated) {
-			const { list: { key } } = this.props;
+			const { list: { key }, t } = this.props;
 			return (
 				<Alert color="warning">
-					{
-						`This is a Delegated ${key}. You are not allowed to update full content.`
-					}
+					{t('delegatedMsg', { key })}
 				</Alert>
 			);
 		}
 	},
 	render () {
+		const { t } = this.props;
 		return (
 			<form ref="editForm" className="EditForm-container">
 				{(this.state.alerts) ? <AlertMessages alerts={this.state.alerts} /> : null}
@@ -494,23 +493,23 @@ var EditForm = React.createClass({
 				</Grid.Row>
 				{this.renderFooterBar()}
 				<ConfirmationDialog
-					confirmationLabel="Reset"
+					confirmationLabel={t('reset')}
 					isOpen={this.state.resetDialogIsOpen}
 					onCancel={this.toggleResetDialog}
 					onConfirmation={this.handleReset}
 				>
-					<p>Reset your changes to <strong>{this.props.data.name}</strong>?</p>
+					<p>{t('resetTo')} <strong>{this.props.data.name}</strong>?</p>
 				</ConfirmationDialog>
 				<ConfirmationDialog
-					confirmationLabel="Delete"
+					confirmationLabel={t('delete')}
 					isOpen={this.state.deleteDialogIsOpen}
 					onCancel={this.toggleDeleteDialog}
 					onConfirmation={this.handleDelete}
 				>
-					Are you sure you want to delete <strong>{this.props.data.name}?</strong>
+					{t('deleteAskMsg')} <strong>{this.props.data.name}?</strong>?
 					<br />
 					<br />
-					This cannot be undone.
+					{t('cannotUndo')}
 				</ConfirmationDialog>
 			</form>
 		);

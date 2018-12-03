@@ -56,7 +56,7 @@ var Setting = React.createClass({
 		const createForm = event.target;
 		const formData = new FormData(createForm);
 		this.setState({ loading: true });
-		const { list } = this.props;
+		const { list, t } = this.props;
 
 		xhr({
 			url: `${Keystone.adminPath}/api/${list.path}/updateMyProfile?ts=${Math.random()}`,
@@ -74,7 +74,7 @@ var Setting = React.createClass({
 			} else if (resp.statusCode === 200) {
 				this.displayMsg({
 					success: {
-						success: 'Your profile have been changed successfully. You are able to get the latest profile in the next login.',
+						success: t('profileSuccessMsg'),
 					},
 				});
 				const self = this;
@@ -98,6 +98,8 @@ var Setting = React.createClass({
 		props.value = this.state.values[field.path] || '';
 		props.values = this.state.values;
 		props.onChange = this.handleChange;
+		props.t = this.props.t;
+		props.i18n = this.props.i18n;
 		props.mode = 'create';
 		props.key = field.path;
 		return props;

@@ -105,7 +105,7 @@ var ListSort = React.createClass({
 						<span style={{ color: '#999' }}> {t('sortBy')} </span>
 						<a id="listHeaderSortButton" href="javascript:;" onClick={this.openPopout}>
 							{activeSortPath.label.toLowerCase()}
-							{activeSortPath.invert ? ' (descending)' : ''}
+							{activeSortPath.invert ? ` ${t('decendingOrder')}` : ''}
 							<span className="disclosure-arrow" />
 						</a>
 					</span>
@@ -128,7 +128,7 @@ var ListSort = React.createClass({
 					</Popout.Body>
 
 					<Popout.Footer>
-						<FormNote>Hold <Kbd>alt</Kbd> to toggle ascending/descending</FormNote>
+						<FormNote>{t('hold')} <Kbd>{t('alt')}</Kbd> {t('msg')}</FormNote>
 					</Popout.Footer>
 				</Popout>
 			</span>

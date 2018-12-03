@@ -10,6 +10,7 @@ import { Link } from 'react-router';
 import Drilldown from './Drilldown';
 import LocalizationSelector from '../../../components/Localization';
 import { GlyphButton, ResponsiveText } from '../../../elemental';
+import { translate } from "react-i18next";
 
 export const EditFormHeader = React.createClass({
 	displayName: 'EditFormHeader',
@@ -137,7 +138,7 @@ export const EditFormHeader = React.createClass({
 		const { nocreate, autocreate, singular } = this.props.list;
 
 		if (nocreate) return null;
-
+		const { t } = this.props;
 		let props = {};
 		if (autocreate) {
 			props.href = '?new' + Keystone.csrf.query;
@@ -146,7 +147,7 @@ export const EditFormHeader = React.createClass({
 		}
 		return (
 			<GlyphButton data-e2e-item-create-button="true" color="success" glyph="plus" position="left" {...props}>
-				<ResponsiveText hiddenXS={`New ${singular}`} visibleXS="Create" />
+				<ResponsiveText hiddenXS={`${t('add')} ${singular}`} visibleXS="Create" />
 			</GlyphButton>
 		);
 	},
@@ -154,7 +155,7 @@ export const EditFormHeader = React.createClass({
 		if (this.props.isLocale && this.props.list.multilingual) {
 			return (
 				<ToolbarSection right className="Toolbar__section-inline">
-					<div>Content Version</div>
+					<div>{this.props.t('contentVersion')}</div>
 					<LocalizationSelector
 						{ ...this.props }
 						language={this.props.currentLang}
@@ -175,6 +176,6 @@ export const EditFormHeader = React.createClass({
 	},
 });
 
-export default connect((state) => ({
+export default translate('form')(connect((state) => ({
 	listActivePage: state.lists.page.index,
-}))(EditFormHeader);
+}))(EditFormHeader));
