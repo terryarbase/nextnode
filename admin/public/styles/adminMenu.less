@@ -29,7 +29,7 @@
         width: 100%;
         background-color: @admin-menu-logo-bg;
         padding: 0 @admin-menu-logo-padding-horizontal;
-        border-bottom: 1px solid #ccc;
+        // border-bottom: 1px solid #ccc;
         .admin-menu-logo {
             display: table-cell;
             height: 50px;
@@ -55,10 +55,13 @@
                 padding: 15px;        
             }
         }
+        .sub-menu-list{
+            border-bottom: 1px solid @admin-menu-sub-menu-bottom-border;
+        }
         &.hover {
             &::before {
                 content: "";
-                width: 5px;
+                // width: 5px;
                 height: 100%;
                 position: absolute;
                 top: 0;
@@ -121,7 +124,8 @@
                 &:not(.active) .sub-menu-link:hover {
                     background-color: @admin-menu-sub-menu-hover-bg;
                     color: @admin-menu-sub-menu-hover-text-color;
-                    border-right: 5px solid;
+                    // border-right: 5px solid;
+                    border-right: 0;
                 }
             }
         }

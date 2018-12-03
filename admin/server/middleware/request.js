@@ -10,7 +10,7 @@ const getStaticLanguageFile = async (nextNode) => {
 	try {
 		data = JSON.parse(fs.readFileSync(path, 'utf8'));
 	} catch (err) { // if the language cannnot be read, then query db
-		console.log('> Cannot red the Static Language File, query languages from Database.');
+		console.log('> Cannot read the Static Language File, query languages from Database.');
 		const langHandler = new localization(nextNode, nextNode.list('Locale').model);
 		// export file, and get db languages, if error then ignore localization in the app
 		const { data: dbLang} = await langHandler.exportLanguageStatic();
@@ -25,8 +25,8 @@ const getStaticNavLanguageSectionFile = async (nextNode) => {
 	try {
 		data = JSON.parse(fs.readFileSync(path, 'utf8'));
 	} catch (err) { // if the language cannnot be read, then query db
-		console.log('> Cannot red the Static Navigation Language Section File, query navigation language sections from Database.');
-		const navLangHandler = new navigationLanguage(nextNode, nextNode.list('Navigation_Language').model);
+		console.log('> Cannot read the Static Navigation Language Section File, query navigation language sections from Database.');
+		const navLangHandler = new navigationLanguage(nextNode, nextNode.list('NavigationLanguage').model);
 		// export file, and get db languages, if error then ignore localization in the app
 		const { data: dbLang} = await navLangHandler.exportNavSectionStatic();
 		data = dbLang;
@@ -41,8 +41,8 @@ const getStaticAppLanguageSectionFile = async (nextNode) => {
 	try {
 		data = JSON.parse(fs.readFileSync(path, 'utf8'));
 	} catch (err) { // if the language cannnot be read, then query db
-		console.log('> Cannot red the Static App Language Section File, query app language sections from Database.');
-		const appLangHandler = new appLanguage(nextNode, nextNode.list('App_Language').model);
+		console.log('> Cannot read the Static App Language Section File, query app language sections from Database.');
+		const appLangHandler = new appLanguage(nextNode, nextNode.list('ApplicationLanguage').model);
 		// export file, and get db languages, if error then ignore localization in the app
 		const { data: dbLang} = await appLangHandler.exportSectionStatic();
 		data = dbLang;

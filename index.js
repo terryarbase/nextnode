@@ -51,6 +51,8 @@ var Keystone = function () {
 		'admin path': 'keystone',
 		'compress': true,
 		'headless': false,
+		'signin logo': 'images/logo.png',
+		'favicon': `${rootPath}/static/images/favicon.ico`,
 		'localization': false,
 		'logger': ':method :url :status :response-time ms',
 		'auto update': false,
@@ -179,7 +181,7 @@ Keystone.prototype.reservedCollections = function () {
 			'Role',
 			'User',
 		],
-		configuation: [
+		localization: [
 			...(this.get('localization') ? ['Locale'] : null),
 			'ApplicationLanguage',
 			'NavigationLanguage',
@@ -187,6 +189,43 @@ Keystone.prototype.reservedCollections = function () {
 	};
 };
 
+Keystone.prototype.mergeNavOptionWithReservedCollections = function () {
+	const nav = this.get('nav');
+	const reserved = this.reservedCollections();
+	var newNav = { ...reserved };
+	_.keys(nav).forEach(n => {
+		// if the client delcare the same nav key, then merge it into one options after the reserved options
+		if (newNav[n]) {
+			newNav[n] = [
+				...newNav[n],
+				...nav[n],
+			];
+		} else {
+			newNav = {
+				...newNav,
+				...{
+					[n]: nav[n],
+				},
+			};
+		}
+	});
+	return newNav;
+};
+
+// sepcial for keystone.get('role list') use
+Keystone.prototype.reservedRoleListCollections = function () {
+	return {
+		...{
+			'Role': true,
+			'User': true,
+		},
+		...(this.get('localization') ? { 'Locale': true } : {}),
+		...{
+			'ApplicationLanguage': true,
+			'NavigationLanguage': true,
+		},
+	};
+};
 /* Attach core functionality to Keystone.prototype */
 
 Keystone.prototype.createItems = require('./lib/core/createItems');
@@ -214,8 +253,8 @@ Keystone.prototype.createKeystoneHash = require('./lib/core/createKeystoneHash')
 Keystone.prototype.createRole = require('./lib/core/delegation/createRole');
 Keystone.prototype.createLocalization = require('./lib/core/delegation/createLocalization');
 Keystone.prototype.createAccount = require('./lib/core/delegation/createAccount');
-Keystone.prototype.createLanguageSection = require('./lib/core/delegation/createLanguageSection');
-Keystone.prototype.createNavLanguageSection = require('./lib/core/delegation/createNavLanguageSection');
+Keystone.prototype.delegatedLanguageSection = require('./lib/core/delegation/createLanguageSection');
+Keystone.prototype.delegatedNavLanguageSection = require('./lib/core/delegation/createNavLanguageSection');
 
 // Keystone.prototype.hooks = function() {};
 // hooks.prototype.localization = require('./lib/core/hook/localization');
