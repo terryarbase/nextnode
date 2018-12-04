@@ -79,13 +79,14 @@ const CreateForm = React.createClass({
 	},
 	// Set the props of a field
 	getFieldProps (field) {
-		const { isLocale, currentLang } = this.props;
+		const { isLocale, currentLang, t } = this.props;
 		const { values } = this.state;
 		// console.log(currentLang, values);
 		return {
 			...field,
 			value: this.props.list.getProperlyValue({ field, isLocale, currentLang, values }),
 			values,
+			t,
 			currentLang,
 			onChange: this.handleChange,
 			mode: 'create',
