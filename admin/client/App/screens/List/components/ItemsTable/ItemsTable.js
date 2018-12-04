@@ -8,6 +8,7 @@ import TableRow from './ItemsTableRow';
 import DragDrop from './ItemsTableDragDrop';
 
 import { TABLE_CONTROL_COLUMN_WIDTH } from '../../../../../constants';
+import { getTranslatedLabel } from '../../../../../utils/locale';
 
 // generate by this for realtime edit control column
 const RealTimeCol = ['BooleanColumn'];
@@ -93,6 +94,12 @@ const ItemsTable = React.createClass({
 			if (isRealTimeCol) {
 				classNames = [ ...classNames, 'ItemList__realtime--Col' ];
 			}
+			const title = getTranslatedLabel(this.props.t, {
+				listKey: this.props.list.key,
+				prefix: 'field',
+				content: col.path,
+			});
+			// console.log(col);
 			return (
 				<th key={col.path} colSpan="1" className={classNames.join(' ')}>
 					{
@@ -122,8 +129,8 @@ const ItemsTable = React.createClass({
 									isSelected && !isInverted
 								);
 							}}
-							title={buttonTitle}>
-							{this.props.t(`${this.props.list.key}-field-${col.path}`)}
+							title={title}>
+								{title}
 							<span className="th-sort__icon" />
 						</button>
 				</th>

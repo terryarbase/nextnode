@@ -46,7 +46,7 @@ var SubMenuNav = React.createClass({
 			const href = list.external ? list.path : `${Keystone.adminPath}/${list.path}`;
 			const isActive = this.props.currentListKey && this.props.currentListKey === list.path;
 			const className = isActive ? 'active' : null;
-			console.log(this.props.t(`table_${list.key}`));
+			// console.log(this.props.t(`table_${list.key}`));
 			return (
 				<SubMenuNavItem
 					active={isActive}

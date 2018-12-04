@@ -189,7 +189,6 @@ var PrimaryNavigation = React.createClass({
 			const href = section.lists[0].external && section.lists[0].path;
 			const isActive = this.props.currentSectionKey && this.props.currentSectionKey === section.key;
 			const className = isActive ? 'primary-navbar__item--active' : null;
-
 			return (
 				<PrimaryNavItem
 					active={isActive}

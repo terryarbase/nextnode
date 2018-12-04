@@ -23,13 +23,12 @@ const locales = {
       msg:'您的个人资料已成功更改。 您可以在下次登录时获取最新的个人资料。',
 
    },
-   createForm:{  
-      createANew:'新增一个新的',
-      create:'新增',
-      cancel:'取消',
-      language:'语言',
-
-   },
+   // createForm:{  
+   //    createANew:'新增一个新的{{listName}}',
+   //    create:'新增',
+   //    cancel:'取消',
+   //    language:'內容语言版本',
+   // },
    headerToolBar:{  
       createButton:'新增{{listName}}',
       placeholder:'搜寻',
@@ -84,7 +83,9 @@ const locales = {
       disselectAllRows: '取消选择所有行',
    },
    form:{ 
-      ...{ 
+      ...{
+         createANew:'新增一个新的{{listName}}',
+         create:'新增',
          fileReaderNotSupport:'浏览器不支援文件读取器',
          fileFormatNotSupport:'不支援的文件类型支援的格式有:GIF, PNG, JPG, BMP, ICO, PDF, TIFF, EPS, PSD, SVG',
          cancel:'取消',
@@ -95,7 +96,7 @@ const locales = {
          nowLabel: '现在',
          searchPlaceholder:'关键字',
          search:'搜查',
-         contentVersion:'内容版本',
+         contentVersion:'内容语言版本',
          description:'描述',
          saveToUpload:'保存并上传',
          undoRemove:'撤消删除',
@@ -157,6 +158,8 @@ const locales = {
          cannotUndo:'这不能被撤消更改',
          saving:'正在储存更改',
          save:'更改',
+         'field-id': '编号',
+         'field-_id': '编号',
          'field-createdAt':'首次创建於',
          'field-updatedBy':'最后更新者',
          'field-createdBy':'首次创建者',

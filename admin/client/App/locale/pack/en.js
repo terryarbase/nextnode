@@ -22,13 +22,12 @@ const locales = {
       cancel:'Cancel',
 
    },
-   createForm:{  
-      createANew:'Create a new',
-      create:'Create',
-      cancel:'Cancel',
-      language:'Language',
-
-   },
+   // createForm:{  
+   //    createANew:'Create a new {{listName}}',
+   //    create:'Create',
+   //    cancel:'Cancel',
+   //    language:'Content Language Version',
+   // },
    headerToolBar:{  
       createButton:'Create {{listName}}',
       placeholder:'Search',
@@ -84,6 +83,8 @@ const locales = {
    },
    form: {  
       ...{
+         createANew:'Create a new {{listName}}',
+         create:'Create',
          fileReaderNotSupport:'File reader not supported by browser.',
          fileFormatNotSupport:'Unsupported file type. Supported formats are: GIF, PNG, JPG, BMP, ICO, PDF, TIFF, EPS, PSD, SVG',
          cancel:'Cancel',
@@ -93,7 +94,7 @@ const locales = {
          profileSuccessMsg:'Your profile have been changed successfully. You are able to get the latest profile in the next login.',
          search:'Search',
          searchPlaceholder:'Search Keyword',
-         contentVersion:'Content Version',
+         contentVersion:'Content Language Version',
          description:'Description',
          saveToUpload:'Save to Upload',
          undoRemove:'Undo Remove',
@@ -156,6 +157,8 @@ const locales = {
          cannotUndo:'The cannot be undo.',
          saving:'Saving the changes',
          save:'Update',
+         'field-id': 'ID',
+         'field-_id': 'ID',
          'field-createdAt':'First Created On',
          'field-updatedBy':'Last Updated By',
          'field-createdBy':'First Created By',

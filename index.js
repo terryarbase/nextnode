@@ -29,6 +29,7 @@ var Keystone = function () {
 	
 	const rootPath = path.resolve(__dirname);
 	const defaultLang = 'en';
+	const defaultAdminPath = 'webadmin';
 
 	/*
 	** Localization
@@ -48,10 +49,9 @@ var Keystone = function () {
 	this._options = {
 		'name': 'Keystone',
 		'brand': 'Keystone',
-		'admin path': 'keystone',
+		'admin path': defaultAdminPath,
 		'compress': true,
 		'headless': false,
-		'signin logo': 'images/logo.png',
 		'favicon': `${rootPath}/static/images/favicon.ico`,
 		'localization': false,
 		'logger': ':method :url :status :response-time ms',

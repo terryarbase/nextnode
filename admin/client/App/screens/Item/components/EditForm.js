@@ -29,6 +29,7 @@ import InvalidFieldType from '../../../shared/InvalidFieldType';
 import { deleteItem } from '../actions';
 
 import { upcase } from '../../../../utils/string';
+import { getTranslatedLabel } from '../../../../utils/locale';
 // const WrapperComponent = ({ display, children }) => (<div style={{ display: display ? 'block' : 'none' }}>{children}</div>);
 
 function getNameFromData (data) {
@@ -272,23 +273,23 @@ var EditForm = React.createClass({
 			);
 		}
 	},
-	getLocaleLabel (listKey, prefix, content, altContent) {
-		const { t } = this.props;
-		const tableLocaleLabelKey = `${listKey}-${prefix}-${content}`;
-		const tableLocaleLabel = t(tableLocaleLabelKey);
-		// console.log(exists);
-		// console.log('tableLocaleLabel ', tableLocaleLabelKey, t(tableLocaleLabelKey));
-		if (tableLocaleLabel !== tableLocaleLabelKey) {
-			return tableLocaleLabel;
-		} else {
-			const globalLocaleLabelKey = `${prefix}-${content}`;
-			const globalLocaleLabel = t(globalLocaleLabelKey);
-			if (globalLocaleLabelKey !== globalLocaleLabel) {
-				return globalLocaleLabel;
-			}
-		}
-		return altContent || content;
-	},
+	// getLocaleLabel (listKey, prefix, content, altContent) {
+	// 	const { t } = this.props;
+	// 	const tableLocaleLabelKey = `${listKey}-${prefix}-${content}`;
+	// 	const tableLocaleLabel = t(tableLocaleLabelKey);
+	// 	// console.log(exists);
+	// 	// console.log('tableLocaleLabel ', tableLocaleLabelKey, t(tableLocaleLabelKey));
+	// 	if (tableLocaleLabel !== tableLocaleLabelKey) {
+	// 		return tableLocaleLabel;
+	// 	} else {
+	// 		const globalLocaleLabelKey = `${prefix}-${content}`;
+	// 		const globalLocaleLabel = t(globalLocaleLabelKey);
+	// 		if (globalLocaleLabelKey !== globalLocaleLabel) {
+	// 			return globalLocaleLabel;
+	// 		}
+	// 	}
+	// 	return altContent || content;
+	// },
 	renderFormElements () {
 		var headings = 0;
 		const { currentLang, t, list: { key: listKey }, i18next } = this.props;
@@ -307,7 +308,11 @@ var EditForm = React.createClass({
 				el.t = t;
 				el.options.values = this.state.values;
 				el.key = 'h-' + headings;
-				el.content = this.getLocaleLabel(listKey, 'heading', _.toLower(el.content));
+				el.content = getTranslatedLabel(t, {
+					listKey, 
+					prefix: 'heading', 
+					content: _.toLower(el.content),
+				});
 				elements = [ ...elements, React.createElement(FormHeading, el) ];
 			}
 
@@ -318,9 +323,28 @@ var EditForm = React.createClass({
 					...props,
 					...{
 						restrictDelegated: field.restrictDelegated,
-						label: this.getLocaleLabel(listKey, 'field', props.path, props.label),
+						label: getTranslatedLabel(t, {
+							listKey, 
+							prefix: 'field', 
+							content: props.path,
+							altContent: props.label,
+						}),
 					},
 				};
+
+				if (props.note) {
+					props = {
+						...props,
+						...{
+							note: getTranslatedLabel(t, {
+								listKey, 
+								prefix: 'note', 
+								content: props.path,
+								altContent: props.note,
+							})
+						},
+					};
+				}
 				// console.log(props.label);
 				if (typeof Fields[field.type] !== 'function') {
 					elements = [ ...elements, React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path }) ];

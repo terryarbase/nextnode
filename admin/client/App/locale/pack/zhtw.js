@@ -21,13 +21,13 @@ const locales = {
       confirmPwd:'確認新密碼',
       cancel:'取消',
    },
-   createForm:{  
-      createANew:'新增一個新的',
-      create:'新增',
-      cancel:'取消',
-      language:'語言',
+   // createForm:{  
+   //    createANew:'新增一個新的{{listName}}',
+   //    create:'新增',
+   //    cancel:'取消',
+   //    language:'內容語言版本',
 
-   },
+   // },
    headerToolBar:{  
       createButton:'新增{{listName}}',
       placeholder:'搜尋',
@@ -83,6 +83,8 @@ const locales = {
    },
    form:{  
       ...{
+         createANew:'新增一個新的{{listName}}',
+         create:'新增',
          fileReaderNotSupport:'瀏覽器不支援文件讀取器',
          fileFormatNotSupport:'不支援的文件類型。支援的格式有:GIF, PNG, JPG, BMP, ICO, PDF, TIFF, EPS, PSD, SVG',
          cancel:'取消',
@@ -93,7 +95,7 @@ const locales = {
          description:'描述',
          search:'搜尋',
          saveToUpload:'保存並上傳',
-         contentVersion:'內容版本',
+         contentVersion:'內容語言版本',
          undoRemove:'撤消刪除',
          cancelUpload:'取消上傳',
          deleteFile:'刪除文件',
@@ -156,6 +158,8 @@ const locales = {
          cannotUndo:'這不能被撤消更改',
          saving:'正在儲存更改',
          save:'更改',
+         'field-id': '編號',
+         'field-_id': '編號',
          'field-createdAt':'首次創建於',
          'field-updatedBy':'最後更新者',
          'field-createdBy':'首次創建者',

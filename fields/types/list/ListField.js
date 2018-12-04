@@ -15,7 +15,7 @@ function generateId () {
 	return i++;
 };
 
-const ItemDom = ({ name, id, onRemove, children }) => (
+const ItemDom = ({ name, id, onRemove, children, t }) => (
 	<div style={{
 		borderTop: '2px solid #eee',
 		paddingTop: 15,
@@ -24,7 +24,7 @@ const ItemDom = ({ name, id, onRemove, children }) => (
 		{children}
 		<div style={{ textAlign: 'right', paddingBottom: 10 }}>
 			<Button size="xsmall" color="danger" onClick={onRemove}>
-				Remove
+				{t('remove')}
 			</Button>
 		</div>
 	</div>
@@ -95,7 +95,7 @@ module.exports = Field.create({
 		}, this);
 	},
 	renderItems () {
-		const { value = [], path } = this.props;
+		const { value = [], path, t } = this.props;
 		const onAdd = this.addItem;
 		return (
 			<div>
@@ -105,7 +105,7 @@ module.exports = Field.create({
 					const onRemove = e => this.removeItem(index);
 
 					return (
-						<ItemDom key={id} {...{ id, name, onRemove }}>
+						<ItemDom key={id} {...{ id, name, onRemove, t }}>
 							{this.renderFieldsForItem(index, value)}
 						</ItemDom>
 					);

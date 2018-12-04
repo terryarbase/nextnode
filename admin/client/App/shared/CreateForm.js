@@ -14,6 +14,8 @@ import LocalizationSelector from '../components/Localization';
 import { Button, Form, Modal } from '../elemental';
 import { translate } from "react-i18next";
 
+import { getTranslatedLabel } from '../../utils/locale';
+
 const CreateForm = React.createClass({
 	displayName: 'CreateForm',
 	propTypes: {
@@ -95,7 +97,7 @@ const CreateForm = React.createClass({
 		if (this.props.isLocale && this.props.list.multilingual) {
 			return (
 				<ToolbarSection left className="Toolbar__section-inline create">
-					<div>{t('language')}</div>
+					<div>{t('contentVersion')}</div>
 					<LocalizationSelector
 						{ ...this.props }
 						language={this.props.currentLang}
@@ -187,6 +189,30 @@ const CreateForm = React.createClass({
 			}
 			// Get the props for the input field
 			var fieldProps = this.getFieldProps(field);
+			fieldProps = {
+				...fieldProps,
+				...{
+					label: getTranslatedLabel(t, {
+						listKey: list.key, 
+						prefix: 'field', 
+						content: fieldProps.path,
+					}),	
+				},
+			};
+			if (fieldProps.note) {
+				fieldProps = {
+					...fieldProps,
+					...{
+						note: getTranslatedLabel(t, {
+							listKey: list.key, 
+							prefix: 'note', 
+							content: fieldProps.path,
+							altContent: fieldProps.note,
+						}),
+					},
+				};
+			}
+			console.log(fieldProps);
 			var element = React.createElement(Fields[field.type], fieldProps);
 			// If there was no focusRef set previously, set the current field to
 			// be the one to be focussed. Generally the first input field, if
@@ -247,7 +273,7 @@ const CreateForm = React.createClass({
 		return (
 			<Form layout="horizontal" onSubmit={this.submitForm}>
 				<Modal.Header
-					text={t('createANew') + list.singular}
+					text={t('createANew', { listName: t(`table_${list.key}`) })}
 					showCloseButton
 				/>
 				<Modal.Body>
@@ -284,5 +310,5 @@ const CreateForm = React.createClass({
 	},
 });
 
-export default translate('createForm')(CreateForm);
+export default translate('form')(CreateForm);
 // module.exports = CreateForm;

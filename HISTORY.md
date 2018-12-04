@@ -4,6 +4,9 @@
 ### About Multilingual and Layout, Delegated Model Enhancements, Delegated Options List
 Terry Chan 11/11/2018 (Last Updated at 30/11/2018)
 
+Deprecated Features:
+* Removed label for list field, use Application Language List instead
+
 Common Improvements:
 * Added Realtime edit field (Support Types.Boolean)
 * Added Realtime select all function (Support Types.Boolean)
