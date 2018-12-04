@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 import _ from 'lodash';
 import { Columns } from 'FieldTypes';
+import { translate } from "react-i18next";
 
 import TableRow from './ItemsTableRow';
 import DragDrop from './ItemsTableDragDrop';
@@ -122,7 +123,7 @@ const ItemsTable = React.createClass({
 								);
 							}}
 							title={buttonTitle}>
-							{col.label}
+							{this.props.t(`${this.props.list.key}-field-${col.path}`)}
 							<span className="th-sort__icon" />
 						</button>
 				</th>
@@ -187,4 +188,4 @@ const ItemsTable = React.createClass({
 	},
 });
 
-module.exports = exports = ItemsTable;
+module.exports = exports = translate('form')(ItemsTable);

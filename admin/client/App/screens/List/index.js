@@ -310,6 +310,7 @@ const ListView = React.createClass({
 		return (
 			<Pagination
 				currentPage={currentPage}
+				list={list}
 				onPageSelect={this.handlePageSelect}
 				pageSize={pageSize}
 				plural={list.plural}
@@ -333,13 +334,14 @@ const ListView = React.createClass({
 		} = this.props.currentList;
 
 		// console.log(singular, plural);
-
+		const list = listsByPath[this.props.params.listId];
 		return (
 			<Container style={{ paddingTop: '2em' }}>
 				<ListHeaderTitle
 					activeSort={this.props.active.sort}
 					availableColumns={this.props.currentList.columns}
 					handleSortSelect={this.handleSortSelect}
+					list={list}
 					title={`
 						${numeral(items.count).format()}
 						${
@@ -351,7 +353,7 @@ const ListView = React.createClass({
 				<ListHeaderToolbar
 					// common
 					dispatch={this.props.dispatch}
-					list={listsByPath[this.props.params.listId]}
+					list={list}
 					
 					isLocale={this.props.isLocale}
 					currentLang={this.props.currentLanguage}

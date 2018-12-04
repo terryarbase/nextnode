@@ -246,7 +246,6 @@ module.exports = Field.create({
 			href: value ? value.href : null,
 			noedit: true,
 		};
-
 		return many ? this.renderSelect(true) : <FormInput {...props} />;
 	},
 

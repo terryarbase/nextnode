@@ -78,7 +78,7 @@ module.exports = Field.create({
 				</Section>
 				{this.state.passwordIsSet ? (
 					<Section>
-						<Button onClick={this.onCancel}>Cancel</Button>
+						<Button onClick={this.onCancel}>{t('cancel')}</Button>
 					</Section>
 				) : null}
 			</Group>

@@ -79,7 +79,7 @@ function ListManagement ({
 				active={allVisibleButtonIsActive}
 				onClick={() => handleSelect('all')}
 				title="Select all rows (including those not visible)">
-				{selectAllItemsLoading ? <Spinner/> : 'All'} <small style={buttonNoteStyles}>({itemCount})</small>
+				{selectAllItemsLoading ? <Spinner/> : t('all')} <small style={buttonNoteStyles}>({itemCount})</small>
 			</Button>
 		</Section>
 	);
@@ -89,13 +89,13 @@ function ListManagement ({
 			<Group contiguous>
 				{selectAllButton}
 				<Section>
-					<Button active={pageVisibleButtonIsActive} onClick={() => handleSelect('visible')} title="Select all rows">
+					<Button active={pageVisibleButtonIsActive} onClick={() => handleSelect('visible')} title={t('selectAllRows')}>
 						{itemCount > itemsPerPage ? t('page') : t('all')}
 						<small style={buttonNoteStyles}>({itemCount > itemsPerPage ? itemsPerPage : itemCount})</small>
 					</Button>
 				</Section>
 				<Section>
-					<Button active={noneButtonIsActive} onClick={() => handleSelect('none')} title="Deselect all rows">{t('none')}</Button>
+					<Button active={noneButtonIsActive} onClick={() => handleSelect('none')} title={t('disselectAllRows')}>{t('none')}</Button>
 				</Section>
 			</Group>
 		</Section>

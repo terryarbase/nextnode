@@ -179,6 +179,7 @@ Keystone.prototype.isReservedCollection = function (key, options) {
 Keystone.prototype.isReservedLanguageSectionFields = function (field) {
 	const reservedFields = [
 		'meta',
+		'delegated',
 		'createdat',
 		'createdby',
 		'updatedat',

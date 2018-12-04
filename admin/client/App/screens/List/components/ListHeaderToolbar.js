@@ -25,7 +25,8 @@ function ButtonDivider ({ style, ...props }) {
 	return <div {...props} />;
 };
 
-function CreateButton ({ listName, onClick, t, ...props }) {
+function CreateButton ({ listName, onClick, t, list, ...props }) {
+	const newListName = t(`form:table_${list.key}`);
 	return (
 		<GlyphButton
 			block
@@ -34,13 +35,13 @@ function CreateButton ({ listName, onClick, t, ...props }) {
 			glyph="plus"
 			onClick={onClick}
 			position="left"
-			title={t('createButton', { listName: listName })}
+			title={t('createButton', { listName: newListName })}
 			{...props}
 		>
 			<ResponsiveText
-				visibleSM={t('createButton')}
-				visibleMD={t('createButton')}
-				visibleLG={t('createButton', { listName: listName })}
+				visibleSM={t('createButton', { listName: newListName })}
+				visibleMD={t('createButton', { listName: newListName })}
+				visibleLG={t('createButton', { listName: newListName })}
 			/>
 		</GlyphButton>
 	);
@@ -162,6 +163,7 @@ function ListHeaderToolbar ({
 								listName={createListName}
 								onClick={createOnClick}
 								t={t}
+								list={list}
 							/>
 						</ButtonDivider>
 					</Section>}
@@ -236,5 +238,5 @@ const classes = {
 	},
 };
 
-export default translate('headerToolBar')(ListHeaderToolbar);
+export default translate(['headerToolBar', 'form'])(ListHeaderToolbar);
 // module.exports = ListHeaderToolbar;

@@ -50,7 +50,7 @@ export const EditFormHeader = React.createClass({
 		);
 	},
 	renderDrilldownItems () {
-		const { data, list } = this.props;
+		const { data, list, t } = this.props;
 		const items = data.drilldown ? data.drilldown.items : [];
 
 		let backPath = `${Keystone.adminPath}/${list.path}`;
@@ -71,8 +71,8 @@ export const EditFormHeader = React.createClass({
 					style={backStyles}
 					to={backPath}
 					variant="link"
-					>
-					{list.plural}
+				>
+					{t(`table_${list.key}`)}
 				</GlyphButton>
 			);
 		}
@@ -111,6 +111,7 @@ export const EditFormHeader = React.createClass({
 					value={this.state.searchString}
 					onChange={this.searchStringChanged}
 					onKeyUp={this.handleEscapeKey}
+					list={this.props.list}
 				/>
 				{/* <GlyphField glyphColor="#999" glyph="search">
 					<FormInput
@@ -147,7 +148,7 @@ export const EditFormHeader = React.createClass({
 		}
 		return (
 			<GlyphButton data-e2e-item-create-button="true" color="success" glyph="plus" position="left" {...props}>
-				<ResponsiveText hiddenXS={`${t('add')} ${singular}`} visibleXS="Create" />
+				<ResponsiveText hiddenXS={`${t('addWithList', { listName: t(`table_${this.props.list.key}`) })}`} visibleXS="Create" />
 			</GlyphButton>
 		);
 	},

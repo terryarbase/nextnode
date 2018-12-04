@@ -82,6 +82,12 @@ const getCurrentLanguage = (nextNode, req, res) => {
 	}
 };
 
+// const constructAllLanguages = async(nextNode) => {
+// 	const appLanguage = await getStaticAppLanguageSectionFile(nextNode);
+// 	const manuLanguage = await getStaticNavLanguageSectionFile(nextNode);
+	
+// }
+
 module.exports = async function (req, res, next, nextNode) {
 	req.keystone = nextNode;
 
@@ -106,7 +112,7 @@ module.exports = async function (req, res, next, nextNode) {
 		};
 	}
 	req.appLanguage = await getStaticAppLanguageSectionFile(nextNode);
-	req.menu = await getStaticNavLanguageSectionFile(nextNode);
+	req.menuLanguage = await getStaticNavLanguageSectionFile(nextNode);
 
 	// console.log(req.menu, req.appLanguage);
 	next();

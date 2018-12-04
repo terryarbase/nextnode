@@ -1,1 +1,1 @@
-{"system":{"zhcn":"System","zhtw":"System","en":"System"},"localization":{"zhcn":"Localization","zhtw":"Localization","en":"Localization"},"common":{"zhcn":"Common","zhtw":"Common","en":"Common"}}
+{"zhcn":{"section_system":"系统","section_language":"语言","section_localization":"本地化"},"zhtw":{"section_system":"系統","section_language":"語言","section_localization":"本地化"},"en":{"section_system":"System","section_language":"Language","section_localization":"Localization"}}

@@ -8,7 +8,7 @@ class Pagination extends Component {
 	
 	renderCount () {
 		let count = '';
-		const { currentPage, pageSize, plural, singular, total, t } = this.props;
+		const { currentPage, pageSize, plural, singular, total, t, list } = this.props;
 		if (!total) {
 			count = 'No ' + (plural || 'records');
 		} else if (total > pageSize) {
@@ -20,7 +20,7 @@ class Pagination extends Component {
 			// count = 'Showing ' + total;
 			// console.log(plural, singular);
 // 			count = 'Showing ' + total + ' ' + plural;
-			count = t('show', { count: total, collection: plural });
+			count = t('show', { count: total, collection: t(`form:table_${list.key}`) });
 			// if (total > 1 && plural) {
 			//	count += ' ' + plural;
 			// } else if (total === 1 && singular) {
@@ -114,5 +114,5 @@ Pagination.propTypes = {
 	total: PropTypes.number.isRequired,
 };
 
-export default translate('manage')(Pagination);
+export default translate(['manage', 'form'])(Pagination);
 // module.exports = Pagination;

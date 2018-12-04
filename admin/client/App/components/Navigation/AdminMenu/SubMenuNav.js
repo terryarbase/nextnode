@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { connect } from 'react-redux';
+import { translate } from "react-i18next";
 import { Container } from '../../../elemental';
 
 import {
@@ -45,7 +46,7 @@ var SubMenuNav = React.createClass({
 			const href = list.external ? list.path : `${Keystone.adminPath}/${list.path}`;
 			const isActive = this.props.currentListKey && this.props.currentListKey === list.path;
 			const className = isActive ? 'active' : null;
-
+			console.log(this.props.t(`table_${list.key}`));
 			return (
 				<SubMenuNavItem
 					active={isActive}
@@ -57,7 +58,7 @@ var SubMenuNav = React.createClass({
 						this.whenClick(e, isActive)
 					}}
 				>
-					{list.label}
+					{this.props.t(`table_${list.key}`) || list.label}
 				</SubMenuNavItem>
 			);
 		});
@@ -90,8 +91,8 @@ var SubMenuNav = React.createClass({
 	},
 });
 
-module.exports = connect((state) => {
+module.exports = translate('form')(connect((state) => {
 	return {
 		currentList: state.lists.currentList,
 	};
-})(SubMenuNav);
+})(SubMenuNav));

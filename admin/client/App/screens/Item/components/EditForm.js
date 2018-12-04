@@ -1,6 +1,9 @@
 import React from 'react';
 import moment from 'moment';
+import _ from 'lodash';
 import assign from 'object-assign';
+import { translate } from "react-i18next";
+
 import {
 	Form,
 	FormField,
@@ -26,8 +29,6 @@ import InvalidFieldType from '../../../shared/InvalidFieldType';
 import { deleteItem } from '../actions';
 
 import { upcase } from '../../../../utils/string';
-import { translate } from "react-i18next";
-
 // const WrapperComponent = ({ display, children }) => (<div style={{ display: display ? 'block' : 'none' }}>{children}</div>);
 
 function getNameFromData (data) {
@@ -271,9 +272,26 @@ var EditForm = React.createClass({
 			);
 		}
 	},
+	getLocaleLabel (listKey, prefix, content, altContent) {
+		const { t } = this.props;
+		const tableLocaleLabelKey = `${listKey}-${prefix}-${content}`;
+		const tableLocaleLabel = t(tableLocaleLabelKey);
+		// console.log(exists);
+		// console.log('tableLocaleLabel ', tableLocaleLabelKey, t(tableLocaleLabelKey));
+		if (tableLocaleLabel !== tableLocaleLabelKey) {
+			return tableLocaleLabel;
+		} else {
+			const globalLocaleLabelKey = `${prefix}-${content}`;
+			const globalLocaleLabel = t(globalLocaleLabelKey);
+			if (globalLocaleLabelKey !== globalLocaleLabel) {
+				return globalLocaleLabel;
+			}
+		}
+		return altContent || content;
+	},
 	renderFormElements () {
 		var headings = 0;
-		const { currentLang } = this.props;
+		const { currentLang, t, list: { key: listKey }, i18next } = this.props;
 		var elements = [];
 		this.props.list.uiElements.forEach((el, index) => {
 			// Don't render the name field if it is the header since it'll be rendered in BIG above
@@ -286,8 +304,10 @@ var EditForm = React.createClass({
 
 			if (el.type === 'heading') {
 				headings++;
+				el.t = t;
 				el.options.values = this.state.values;
 				el.key = 'h-' + headings;
+				el.content = this.getLocaleLabel(listKey, 'heading', _.toLower(el.content));
 				elements = [ ...elements, React.createElement(FormHeading, el) ];
 			}
 
@@ -298,8 +318,10 @@ var EditForm = React.createClass({
 					...props,
 					...{
 						restrictDelegated: field.restrictDelegated,
+						label: this.getLocaleLabel(listKey, 'field', props.path, props.label),
 					},
 				};
+				// console.log(props.label);
 				if (typeof Fields[field.type] !== 'function') {
 					elements = [ ...elements, React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path }) ];
 				}
@@ -379,15 +401,15 @@ var EditForm = React.createClass({
 						<Button disabled={loading} onClick={this.toggleResetDialog} variant="link" color="cancel" data-button="reset">
 							<ResponsiveText
 								hiddenXS={t('resetChanges')}
-								visibleXS={t('reset')}
+								visibleXS={t('resetChanges')}
 							/>
 						</Button>
 					)}
 					{!this.props.list.nodelete && !delegated && (
 						<Button disabled={loading} onClick={this.toggleDeleteDialog} variant="link" color="delete" style={styles.deleteButton} data-button="delete">
 							<ResponsiveText
-								hiddenXS={`${t('delete')} ${this.props.list.singular.toLowerCase()}`}
-								visibleXS={t('delete')}
+								hiddenXS={`${t('deleteWithList', { listName: t(`table_${this.props.list.key}`) })}`}
+								visibleXS={t('deleteWithList', { listName: t(`table_${this.props.list.key}`) })}
 							/>
 						</Button>
 					)}

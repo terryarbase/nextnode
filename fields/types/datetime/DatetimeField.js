@@ -131,7 +131,7 @@ module.exports = Field.create({
 							/>
 						</Section>
 						<Section>
-							<Button onClick={this.setNow}>Now</Button>
+							<Button onClick={this.setNow}>{this.props.t('nowLabel')}</Button>
 						</Section>
 					</Group>
 					<input
@@ -149,7 +149,11 @@ module.exports = Field.create({
 			);
 		}
 		return (
-			<FormField label={this.props.label} className="field-type-datetime" htmlFor={this.getInputName(this.props.path)}>
+			<FormField
+				label={this.props.label}
+				className="field-type-datetime"
+				htmlFor={this.getInputName(this.props.path)}
+			>
 				{input}
 				{this.renderNote()}
 			</FormField>

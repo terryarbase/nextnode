@@ -6,6 +6,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { css } from 'glamor';
+import { translate } from "react-i18next";
 import { Link } from 'react-router';
 import { Container } from '../../../elemental';
 // Components
@@ -109,7 +110,6 @@ var AdminMenuNav = React.createClass({
 		// TODO: support navbarLogo from keystone config
 		const { brand, currentSectionKey } = this.props;
 		const className = currentSectionKey === 'dashboard' ? 'admin-menu-navbar__brand admin-menu-navbar__item--active' : 'admin-menu-navbar__brand';
-
 		return (
 			//<div className="admin-menu-navbar__logoContainer" onClick={this.changeMenu}>
 			<div className="admin-menu-logo-container">
@@ -118,7 +118,7 @@ var AdminMenuNav = React.createClass({
 					title={'Dashboard - ' + brand}
 					to={Keystone.adminPath}
 				>
-					<img src={Keystone.logo} alt={`Dashboard - ${brand}`} />
+					<img src={Keystone.logo || logo} alt={`Dashboard - ${brand}`} />
 				</Link>
 			</div>
 		);
@@ -133,7 +133,7 @@ var AdminMenuNav = React.createClass({
 			const href = section.lists[0].external && section.lists[0].path;
 			const lists = section.lists;
 			const isActive = this.props.currentSectionKey && this.props.currentSectionKey === section.key;
-
+			// console.log(section, this.props);
 			return (
 				<AdminMenuNavItem
 					active={isActive}
@@ -148,7 +148,7 @@ var AdminMenuNav = React.createClass({
 						this.changeMenu(index)
 					}}
 				>
-					{section.label}
+					{this.props.t(`section_${section.key}`) || section.label}
 				</AdminMenuNavItem>
 			);
 		});
@@ -169,4 +169,4 @@ var AdminMenuNav = React.createClass({
 	},
 });
 
-module.exports = AdminMenuNav;
+module.exports = translate('nav')(AdminMenuNav);

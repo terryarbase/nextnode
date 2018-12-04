@@ -167,7 +167,6 @@ var PrimaryNavigation = React.createClass({
 
 		const { brand, currentSectionKey } = this.props;
 		const className = currentSectionKey === 'dashboard' ? 'primary-navbar__brand primary-navbar__item--active' : 'primary-navbar__brand';
-
 		return (
 			<div className="primary-navbar__logoContainer">
 				<Link
@@ -175,7 +174,7 @@ var PrimaryNavigation = React.createClass({
 					title={'Dashboard - ' + brand}
 					to={Keystone.adminPath}
 				>
-					<img src={Keystone.logo} alt={`Dashboard - ${brand}`} />
+					<img src={Keystone.logo || logo} alt={`Dashboard - ${brand}`} />
 				</Link>
 			</div>
 		);
@@ -252,5 +251,5 @@ var PrimaryNavigation = React.createClass({
 	},
 });
 
-export default translate('nav')(PrimaryNavigation);
+export default translate(['nav', 'list'])(PrimaryNavigation);
 // module.exports = PrimaryNavigation;

@@ -12,7 +12,6 @@ const truthy = (i) => i;
 
 // delegated flag field name
 const delegatedField = 'delegated';
-
 /**
  * Get the columns of a list, structured by fields and headings
  *

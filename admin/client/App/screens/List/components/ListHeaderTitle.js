@@ -1,7 +1,8 @@
 import { css } from 'glamor';
 import React, { PropTypes } from 'react';
-import theme from '../../../../theme';
+import { translate } from "react-i18next";
 
+import theme from '../../../../theme';
 import ListSort from './ListSort';
 
 function ListHeaderTitle ({
@@ -9,11 +10,13 @@ function ListHeaderTitle ({
 	availableColumns,
 	handleSortSelect,
 	title,
+	t,
+	list,
 	...props
 }) {
 	return (
 		<h2 className={css(classes.heading)} {...props}>
-			{title}
+			{t(`table_${list.key}`)}
 			<ListSort
 				activeSort={activeSort}
 				availableColumns={availableColumns}
@@ -39,4 +42,4 @@ const classes = {
 	},
 };
 
-module.exports = ListHeaderTitle;
+module.exports = translate('form')(ListHeaderTitle);

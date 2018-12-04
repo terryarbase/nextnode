@@ -3,6 +3,7 @@ import { css } from 'glamor';
 
 import theme from '../../../theme';
 import { fade } from '../../../utils/color';
+import { translate } from "react-i18next";
 
 /* eslint quote-props: ["error", "as-needed"] */
 
@@ -81,7 +82,7 @@ const classes = {
 		// prevent empty inputs from collapsing by adding content
 		':empty:before': {
 			color: theme.color.gray40,
-			content: '"(no value)"',
+			content: '"---"',
 		},
 	},
 
@@ -107,4 +108,4 @@ const classes = {
 	},
 };
 
-module.exports = FormInputNoedit;
+module.exports = translate('form')(FormInputNoedit);
