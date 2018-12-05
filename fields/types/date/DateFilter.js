@@ -3,8 +3,7 @@ import { findDOMNode } from 'react-dom';
 import _ from 'lodash';
 import moment from 'moment';
 import DayPicker from 'react-day-picker';
-
-import MomentLocaleUtils from 'react-day-picker/moment';
+// import MomentLocaleUtils from 'react-day-picker/moment';
 import {
 	FormInput,
 	FormSelect,
@@ -12,9 +11,6 @@ import {
 	SegmentedControl,
 } from '../../../admin/client/App/elemental';
 
-import 'moment/locale/en-au';
-import 'moment/locale/zh-cn';
-import 'moment/locale/zh-tw';
 
 const INVERTED_OPTIONS = [
 	{ label: 'Matches', value: false },
@@ -188,8 +184,33 @@ var DateFilter = React.createClass({
 			selected: (day) => moment(filter.value).isSame(day),
 		};
 
-		const localizationPickerConfig = localePacks && localePacks.altIdentify;
-		// console.log(localizationPickerConfig);
+		const currentPcikerLanguage = localePacks && localePacks.altIdentify;
+		const WEEKDAYS_SHORT = t('form:day-picker-weekshort', { returnObjects: true });
+		const MONTHS = t('form:day-picker-month', { returnObjects: true });
+		const WEEKDAYS_LONG = t('form:day-picker-weeklong', { returnObjects: true });
+		const LABELS = t('form:day-picker-labels', { returnObjects: true });
+
+		const formatDay = d => {
+		  return `${WEEKDAYS_LONG[d.getDay()]}, ${d.getDate()} ${
+		    MONTHS[d.getMonth()]
+		  } ${d.getFullYear()}`;
+		}
+
+		const formatMonthTitle = d => {
+		  return `${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+		}
+
+		const formatWeekdayShort = i => {
+		  return WEEKDAYS_SHORT[i];
+		}
+
+		const formatWeekdayLong = i => {
+		  return WEEKDAYS_SHORT[i];
+		}
+
+		const getFirstDayOfWeek = () => {
+		  return 0;
+		}
 		if (mode.value === 'between') {
 			controls = (
 				<div>
@@ -220,8 +241,14 @@ var DateFilter = React.createClass({
 						<DayPicker
 							modifiers={modifiers}
 							className="DayPicker--chrome"
-							localeUtils={MomentLocaleUtils}
-							locale={localizationPickerConfig}
+							locale={currentPcikerLanguage}
+							localeUtils={{
+								formatDay,
+							  	formatMonthTitle,
+							  	formatWeekdayShort,
+							  	formatWeekdayLong,
+							  	getFirstDayOfWeek,
+							}}
 							onDayClick={this.switchBetweenActiveInputFields}
 						/>
 						<DayPickerIndicator activeInputField={activeInputField} />
@@ -245,6 +272,14 @@ var DateFilter = React.createClass({
 						<DayPicker
 							ref="daypicker"
 							modifiers={modifiers}
+							locale={currentPcikerLanguage}
+							localeUtils={{
+								formatDay,
+							  	formatMonthTitle,
+							  	formatWeekdayShort,
+							  	formatWeekdayLong,
+							  	getFirstDayOfWeek,
+							}}
 							className="DayPicker--chrome"
 							onDayClick={this.selectDay}
 						/>

@@ -147,6 +147,13 @@ const locales = {
    },
    form:{  
       ...{
+         'day-picker-weekshort': ['日', '一', '二', '三', '四', '五', '六'],
+         'day-picker-weeklong': ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+         'day-picker-labels': {
+            nextMonth: '下個月',
+            previousMonth: '上個月',
+         },
+         'day-picker-month': ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
          createANew:'新增一個新的{{listName}}',
          create:'新增',
          select: '請選擇...',

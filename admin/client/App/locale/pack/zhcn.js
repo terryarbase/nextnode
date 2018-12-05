@@ -141,13 +141,20 @@ const locales = {
       delete:'删除',
       selected:'{{count}} 已选取',
       saveAll:'全部储存',
-      show:'显示{{count}}的{{collection}}',
+      show:'显示{{count}}個{{collection}}',
       pageShow:'显示总数: {{total}} ({{start}}至{{end}})',
       selectAllRows: '选择所有行',
       disselectAllRows: '取消选择所有行',
    },
    form:{ 
       ...{
+         'day-picker-weekshort': ['日', '一', '二', '三', '四', '五', '六'],
+         'day-picker-weeklong': ['星期天', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+         'day-picker-labels': {
+            nextMonth: '下個月',
+            previousMonth: '上個月',
+         },
+         'day-picker-month': ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
          createANew:'新增一个新的{{listName}}',
          create:'新增',
          select: '请选择...',

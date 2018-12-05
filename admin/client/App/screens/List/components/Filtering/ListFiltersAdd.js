@@ -149,6 +149,7 @@ var ListFiltersAdd = React.createClass({
 	renderForm () {
 		const { t, list, currentUILang } = this.props;
 		const localePacks = currentUILang && Keystone.localization && Keystone.localization[currentUILang];
+		
 		return (
 			<Popout.Pane onLayout={this.setPopoutHeight} key="form">
 				<ListFiltersAddForm

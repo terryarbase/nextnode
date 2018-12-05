@@ -1,4 +1,4 @@
-const locales = {  
+const locales = {
    nav: {
       ...{  
          welcome:'Welcome:',
@@ -11,7 +11,6 @@ const locales = {
    },
    footer:{  
       company:'Four Directions',
-
    },
    setting:{  
       accountSetting:'Change My Account Setting',
@@ -147,6 +146,13 @@ const locales = {
    },
    form: {  
       ...{
+         'day-picker-weekshort': ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+         'day-picker-weeklong': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+         'day-picker-labels': {
+            nextMonth: 'Next',
+            previousMonth: 'Previous',
+         },
+         'day-picker-month': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
          createANew:'Create a new {{listName}}',
          create:'Create',
          select: 'Please select...',
