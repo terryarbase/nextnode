@@ -1,5 +1,5 @@
 import React from 'react';
-
+import _ from 'lodash';
 import {
 	FormField,
 	FormInput,
@@ -68,18 +68,25 @@ var TextFilter = React.createClass({
 		});
 	},
 	render () {
-		const { filter } = this.props;
-		const distanceModeVerb = filter.distance.mode === 'max' ? 'Maximum' : 'Minimum';
-
+		const { filter, t } = this.props;
+		const distanceModeVerb = filter.distance.mode === 'max' ? t('maximum') : t('minimum');
+		const distanceOptions = _.map(DISTANCE_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.value)),
+				},
+			}
+		));
 		return (
 			<div>
 				<Grid.Row xsmall="one-half" gutter={10}>
 					<Grid.Col>
-						<FormField label="Latitude" >
+						<FormField label={t('latitude')} >
 							<FormInput
 								autoFocus
 								onChange={this.changeLat}
-								placeholder={'Latitude'}
+								placeholder={t('latitude')}
 								ref="latitude"
 								required="true"
 								step={0.01}
@@ -89,10 +96,10 @@ var TextFilter = React.createClass({
 						</FormField>
 					</Grid.Col>
 					<Grid.Col>
-						<FormField label="Longitude">
+						<FormField label={t('longitude')}>
 							<FormInput
 								onChange={this.changeLon}
-								placeholder={'Longitude'}
+								placeholder={t('longitude')}
 								ref="longitude"
 								required="true"
 								step={0.01}
@@ -106,13 +113,13 @@ var TextFilter = React.createClass({
 					<SegmentedControl
 						equalWidthSegments
 						onChange={this.changeDistanceMode}
-						options={DISTANCE_OPTIONS}
+						options={distanceOptions}
 						value={this.props.filter.distance.mode}
 					/>
 				</FormField>
 				<FormInput
 					onChange={this.changeDistanceValue}
-					placeholder={distanceModeVerb + ' distance from point'}
+					placeholder={distanceModeVerb}
 					ref="distance"
 					type="number"
 					value={filter.distance.value}

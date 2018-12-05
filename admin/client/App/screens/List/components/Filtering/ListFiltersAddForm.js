@@ -57,7 +57,17 @@ var ListFiltersAddForm = React.createClass({
 		return (
 			<form onSubmit={this.handleFormSubmit}>
 				<Popout.Body ref="body" scrollable style={{ height: this.state.bodyHeight }}>
-					{FilterComponent ? <FilterComponent field={this.props.field} filter={this.state.filterValue} onChange={this.updateValue} onHeightChange={this.updateHeight} /> : this.renderInvalidFilter()}
+					{FilterComponent ? 
+						<FilterComponent
+							field={this.props.field}
+							filter={this.state.filterValue}
+							t={this.props.t}
+							currentUILang={this.props.currentUILang}
+							localePacks={this.props.localePacks}
+							list={this.props.list}
+							onChange={this.updateValue}
+							onHeightChange={this.updateHeight}
+						/> : this.renderInvalidFilter()}
 				</Popout.Body>
 				<Popout.Footer
 					ref="footer"

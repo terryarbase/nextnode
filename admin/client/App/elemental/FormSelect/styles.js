@@ -56,8 +56,9 @@ module.exports = {
 		justifyContent: 'center',
 		pointerEvents: 'none',
 		position: 'absolute',
-		right: 0,
+		right: '10px',
 		top: 0,
+		bottom: 0,
 		width: theme.input.height,
 	},
 	arrow: {

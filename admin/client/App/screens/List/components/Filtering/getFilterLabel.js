@@ -1,42 +1,51 @@
 import moment from 'moment';
+import _ from 'lodash';
+
+import { getTranslatedLabel } from '../../../../../utils/locale';
 
 const DATE_FORMAT = 'MMM D YYYY';
 const DATETIME_FORMAT = 'MMM D YYYY h:mm:ss';
 
-function getFilterLabel (field, value) {
-	const label = field.label;
+function getFilterLabel (list, t, currentUILang, { field, value }) {
+	const label = getTranslatedLabel(t, {
+		prefix: 'field',
+		listKey: list.key,
+		content: field.path,
+		namespace: 'form',
+		altContent: field.name,
+	});
 
 	switch (field.type) {
 		// BOOLEAN
 		case 'boolean': {
 			return value.value
 				? label
-				: `NOT ${label}`;
+				: `${t('not')} ${label}`;
 		}
 
 		// DATE
 		case 'date': {
-			return `${label} ${resolveDateFormat(value, DATE_FORMAT)}`;
+			return `${label} ${resolveDateFormat(t, value, DATE_FORMAT)}`;
 		}
 
 		// DATE ARRAY
 		case 'datearray': {
-			const presence = value.presence === 'some' ? 'Some' : 'No';
+			const presence = value.presence === 'some' ? t('some') : t('no');
 
-			return `${presence} ${label} ${resolveDateFormat(value, DATETIME_FORMAT, 'are')}`;
+			return `${presence} ${label} ${resolveDateFormat(t, value, DATETIME_FORMAT, t('are'))}`;
 		}
 
 		// DATETIME
 		case 'datetime': {
-			return `${label} ${resolveDateFormat(value, DATETIME_FORMAT)}`;
+			return `${label} ${resolveDateFormat(t, value, DATETIME_FORMAT)}`;
 		}
 
 		// GEOPOINT
 		// TODO distance needs a qualifier, currently defaults to "km"?
 		case 'geopoint': {
-			const mode = value.distance.mode === 'max' ? 'is within' : 'is at least';
+			const mode = value.distance.mode === 'max' ? t('isWithIn') : t('isAtLeast');
 			const distance = `${value.distance.value}km`;
-			const conjunction = value.distance.mode === 'max' ? 'of' : 'from';
+			const conjunction = value.distance.mode === 'max' ? t('of') : _.toLower(t('from'));
 			const latlong = `${value.lat}, ${value.lon}`;
 
 			return `${label} ${mode} ${distance} ${conjunction} ${latlong}`;
@@ -44,7 +53,7 @@ function getFilterLabel (field, value) {
 
 		// LOCATION
 		case 'location': {
-			const joiner = value.inverted ? 'does NOT match' : 'matches';
+			const joiner = value.inverted ? _.lowerFirst(t('doesNotMatch')) : t('matches');
 
 			// Remove undefined values before rendering the template literal
 			const formattedValue = [
@@ -61,29 +70,29 @@ function getFilterLabel (field, value) {
 		// NUMBER & MONEY
 		case 'number':
 		case 'money': {
-			return `${label} ${resolveNumberFormat(value)}`;
+			return `${label} ${resolveNumberFormat(t, value)}`;
 		}
 
 		// NUMBER ARRAY
 		case 'numberarray': {
-			const presence = value.presence === 'some' ? 'Some' : 'No';
+			const presence = value.presence === 'some' ? t('some') : t('no');
 
-			return `${presence} ${label} ${resolveNumberFormat(value, 'are')}`;
+			return `${presence} ${label} ${resolveNumberFormat(t, value, t('are'))}`;
 		}
 
 		// PASSWORD
 		case 'password': {
 			return value.exists
-				? `${label} is set`
-				: `${label} is NOT set`;
+				? `${label} ${_.toLower(t('isSet'))}`
+				: `${label} ${_.toLower(t('isNotSet'))}`;
 		}
 
 		// RELATIONSHIP
 		// TODO populate relationship, currently rendering an ID
 		case 'relationship': {
-			let joiner = value.inverted ? 'is NOT' : 'is';
+			let joiner = value.inverted ? t('isNot') : t('is');
 			let formattedValue = (value.value.length > 1)
-				? value.value.join(', or ')
+				? value.value.join(`, ${t('or')} `)
 				: value.value[0];
 
 			return `${label} ${joiner} ${formattedValue}`;
@@ -91,10 +100,12 @@ function getFilterLabel (field, value) {
 
 		// SELECT
 		case 'select': {
-			let joiner = value.inverted ? 'is NOT' : 'is';
-			let formattedValue = (value.value.length > 1)
-				? value.value.join(', or ')
-				: value.value[0];
+			const newValue = getValueFromObjectValue(field, value, currentUILang);
+			// console.log(newValue);
+			let joiner = newValue.inverted ? t('isNot') : t('is');
+			let formattedValue = (newValue.value.length > 1)
+				? newValue.value.join(`, ${t('or')} `)
+				: newValue.value[0];
 
 			return `${label} ${joiner} ${formattedValue}`;
 		}
@@ -112,13 +123,13 @@ function getFilterLabel (field, value) {
 		case 'url': {
 			let mode = '';
 			if (value.mode === 'beginsWith') {
-				mode = value.inverted ? 'does NOT begin with' : 'begins with';
+				mode = value.inverted ? t('doesNotBeginWith') : t('beginsWith');
 			} else if (value.mode === 'endsWith') {
-				mode = value.inverted ? 'does NOT end with' : 'ends with';
+				mode = value.inverted ? t('doesNotEndWith') : t('endsWith');
 			} else if (value.mode === 'exactly') {
-				mode = value.inverted ? 'is NOT exactly' : 'is exactly';
+				mode = value.inverted ? t('isNotExactly') : t('is');
 			} else if (value.mode === 'contains') {
-				mode = value.inverted ? 'does NOT contain' : 'contains';
+				mode = value.inverted ? t('doesNotContains') : t('contains');
 			}
 
 			return `${label} ${mode} "${value.value}"`;
@@ -126,16 +137,16 @@ function getFilterLabel (field, value) {
 
 		// TEXTARRAY
 		case 'textarray': {
-			const presence = value.presence === 'some' ? 'Some' : 'No';
+			const presence = value.presence === 'some' ? t('some') : t('no');
 			let mode = '';
 			if (value.mode === 'beginsWith') {
-				mode = value.inverted ? 'do NOT begin with' : 'begin with';
+				mode = value.inverted ? t('doNotBeginWith')  : t('beginsWith');
 			} else if (value.mode === 'endsWith') {
-				mode = value.inverted ? 'do NOT end with' : 'end with';
+				mode = value.inverted ? t('doNotEndWith') : t('endsWith');
 			} else if (value.mode === 'exactly') {
-				mode = value.inverted ? 'are NOT exactly' : 'are exactly';
+				mode = value.inverted ? t('areNotExactly') : t('are');
 			} else if (value.mode === 'contains') {
-				mode = value.inverted ? 'do NOT contain' : 'contain';
+				mode = value.inverted ? t('doNotContains') : t('contains');
 			}
 
 			return `${presence} ${label} ${mode} "${value.value}"`;
@@ -148,24 +159,46 @@ function getFilterLabel (field, value) {
 	}
 };
 
-function resolveNumberFormat (value, conjunction = 'is') {
+const getValueFromObjectValue = (field, value, currentUILang) => {
+	const { ops, assign } = field;
+	// special for assigned delegated value and multilingual structure
+	if (assign && currentUILang) {
+		// label = label[currentUILang];
+		if (value.value.length > 1) {
+			value = {
+				value: _.chain(value.value).map().reduce((a, v) => {
+					return [ ...a, _.find(ops, o => o.value === v).label[currentUILang] ];
+				}, []).value()
+			};
+		} else if (value.value.length) {
+			value = {
+				value: [ _.find(ops, o => o.value === value.value[0]).label[currentUILang] ],
+			};
+		}
+	}
+	return value;	
+};
+
+function resolveNumberFormat (t, value, conjunction) {
+	conjunction = !conjunction ? t('is') : conjunction;
 	let mode = '';
 	if (value.mode === 'equals') mode = conjunction;
-	else if (value.mode === 'gt') mode = `${conjunction} greater than`;
-	else if (value.mode === 'lt') mode = `${conjunction} less than`;
+	else if (value.mode === 'gt') mode = `${conjunction} ${t('gt')}`;
+	else if (value.mode === 'lt') mode = `${conjunction} ${t('lt')}`;
 
 	const formattedValue = value.mode === 'between'
-		? `is between ${value.value.min} and ${value.value.max}`
+		? `${t('is')} ${t('between')} ${value.value.min} ${t('and')} ${value.value.max}`
 		: value.value;
 
 	return `${mode} ${formattedValue}`;
 }
 
-function resolveDateFormat (value, format, conjunction = 'is') {
-	const joiner = value.inverted ? `${conjunction} NOT` : conjunction;
+function resolveDateFormat (t, value, format, conjunction) {
+	conjunction = !conjunction ? t('is') : conjunction;
+	const joiner = value.inverted ? `${t('isNot')}` : conjunction;
 	const mode = value.mode === 'on' ? '' : value.mode;
 	const formattedValue = value.mode === 'between'
-		? `${moment(value.after).format(format)} and ${moment(value.before).format(format)}`
+		? `${moment(value.after).format(format)} ${t('and')} ${moment(value.before).format(format)}`
 		: moment(value.value).format(format);
 
 	return `${joiner} ${mode} ${formattedValue}`;

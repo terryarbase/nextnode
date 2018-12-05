@@ -87,6 +87,7 @@ const CreateForm = React.createClass({
 			value: this.props.list.getProperlyValue({ field, isLocale, currentLang, values }),
 			values,
 			t,
+			listKey: this.props.list.key,
 			currentLang,
 			onChange: this.handleChange,
 			mode: 'create',

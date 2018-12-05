@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { findDOMNode } from 'react-dom';
 
 import {
@@ -60,23 +61,40 @@ var TextFilter = React.createClass({
 		this.updateFilter({ value: e.target.value });
 	},
 	render () {
-		const { field, filter } = this.props;
-		const mode = MODE_OPTIONS.filter(i => i.value === filter.mode)[0];
-		const placeholder = field.label + ' ' + mode.label.toLowerCase() + '...';
+		const { field, filter, t, list } = this.props;
+		const invertedOptions = _.map(INVERTED_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.label))
+				},
+			}
+		));
+		const moreOptions = _.map(MODE_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.value)),
+				},
+			}
+		));
+		const mode = moreOptions.filter(i => i.value === filter.mode)[0];
+		// console.log(filter.mode, mode);
+		const placeholder = t(`form:table_${list.key}`) + ' ' + mode.label + '...';
 		return (
 			<div>
 				<FormField>
 					<SegmentedControl
 						equalWidthSegments
 						onChange={this.toggleInverted}
-						options={INVERTED_OPTIONS}
+						options={invertedOptions}
 						value={filter.inverted}
 					/>
 				</FormField>
 				<FormField>
 					<FormSelect
 						onChange={this.selectMode}
-						options={MODE_OPTIONS}
+						options={moreOptions}
 						value={mode.value}
 					/>
 				</FormField>

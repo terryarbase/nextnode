@@ -358,7 +358,7 @@ const ListView = React.createClass({
 					isLocale={this.props.isLocale}
 					currentLang={this.props.currentLanguage}
 					defaultLang={this.props.defaultLanguage}
-					
+					currentUILang={this.props.currentUILanguage}
 					// expand
 					expandIsActive={!this.state.constrainTableWidth}
 					expandOnClick={this.toggleTableWidth}
@@ -397,6 +397,8 @@ const ListView = React.createClass({
 					<ListFilters
 						dispatch={this.props.dispatch}
 						filters={this.props.active.filters}
+						currentUILang={this.props.currentUILanguage}
+						list={list}
 					/> : null
 				}
 			</Container>
@@ -791,6 +793,7 @@ module.exports = connect(state => {
 		items: state.lists.items,
 		page: state.lists.page,
 		currentLanguage: state.lists.locale.current,
+		currentUILanguage: state.lists.locale.currentUILang,
 		isLocale,
 		defaultLanguage: state.lists.locale.default,
 		ready: state.lists.ready,

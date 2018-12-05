@@ -100,16 +100,24 @@ module.exports = Field.create({
 		this.valueChanged(values);
 	},
 	renderInputNote() {
-		const { max = -1, min = -1, t } = this.props;
+		const { max = -1, min = -1, t, listKey } = this.props;
 		var note = null;
 		if (max !== -1 || min !== -1) {
 			note = (
 				<FormNote style={{ marginTop: '10px' }}>
 					{
-						min !== -1 && <div>* {t('atLeast')} {min} {min > 1 ? 'items' : 'item' }</div>
+						min !== -1 && <div>* {t('atLeast', {
+							qty: min,
+							listName: t(`table_${listKey}`),
+							postfix: min > 1 ? 's' : ''
+						})}</div>
 					}
 					{
-						max !== -1 && <div>* {t('atMost')} {max} {max > 1 ? 'items' : 'item' }</div>
+						max !== -1 && <div>* {t('atMost', {
+							qty: max,
+							listName: t(`table_${listKey}`),
+							postfix: max > 1 ? 's' : ''
+						})}</div>
 					}
 				</FormNote>
 			);
@@ -150,14 +158,14 @@ module.exports = Field.create({
 		}
 	},
 	renderItem ({ id, key, value }, index) {
-		const { noeditkey, mode } = this.props;
+		const { noeditkey, mode, t } = this.props;
 		const Input = this.getInputComponent ? this.getInputComponent() : FormInput;
  		return (
 			<FormField key={id} style={{ marginBottom: '1.5em' }}>
 				<Input
 					ref={'item_' + (index + 1)}
 					value={key}
-					placeholder="Key"
+					placeholder={t('keyPlaceholder')}
 					// the key should be disabled if it is edit mode and the noeditkey is true
 					// the key cannot be changed if the list is core list
 					disabled={mode === 'edit' && !!key && noeditkey}
@@ -168,7 +176,7 @@ module.exports = Field.create({
 					style={{ marginTop: '5px' }}
 					onChange={e => this.updateItem(index, 'value', e)}
 					onKeyDown={this.addItemOnEnter}
-					placeholder="Text"
+					placeholder={t('text')}
 					autoComplete="off" />
 				<Button
 					type="link-cancel"

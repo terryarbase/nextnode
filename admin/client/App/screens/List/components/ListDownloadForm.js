@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import assign from 'object-assign';
+import _ from 'lodash';
 import { translate } from "react-i18next";
 import Popout from '../../../shared/Popout';
 import PopoutList from '../../../shared/Popout/PopoutList';
@@ -7,6 +8,8 @@ import ListHeaderButton from './ListHeaderButton';
 import { LabelledControl, Form, FormField, SegmentedControl } from '../../../elemental';
 
 import { downloadItems } from '../actions';
+import { getTranslatedLabel } from '../../../../utils/locale';
+
 const FORMAT_OPTIONS = [
 	{ label: 'EXCEL', value: 'excel' },
 	{ label: 'JSON', value: 'json' },
@@ -105,24 +108,38 @@ var ListDownloadForm = React.createClass({
 		this.togglePopout(false);
 	},
 	renderColumnSelect () {
-		const { t } = this.props;
+		const { t, list } = this.props;
 		if (this.state.useCurrentColumns) return null;
 
 		const possibleColumns = this.getListUIElements().map((el, i) => {
+			var label = '';
 			if (el.type === 'heading') {
-				return <PopoutList.Heading key={'heading_' + i}>{el.content}</PopoutList.Heading>;
+				label = getTranslatedLabel(t, {
+					listKey: list.key,
+					prefix: 'heading',
+					namespace: 'form',
+					content: _.camelCase(el.content),
+					altContent: el.content,
+				});
+				return <PopoutList.Heading key={'heading_' + i}>{label}</PopoutList.Heading>;
 			}
 
 			const columnKey = el.field.path;
 			const columnValue = this.state.selectedColumns[columnKey];
-
+			label = getTranslatedLabel(t, {
+				listKey: list.key,
+				prefix: 'field',
+				content: columnKey,
+				namespace: 'form',
+				altContent: el.field.label,
+			});
 			return (
 				<PopoutList.Item
-					key={'item_' + el.field.path}
+					key={'item_' + columnKey}
 					icon={columnValue ? 'check' : 'dash'}
 					iconHover={columnValue ? 'dash' : 'check'}
 					isSelected={columnValue}
-					label={el.field.label}
+					label={label}
 					onClick={() => this.toggleColumn(columnKey, !columnValue)} />
 			);
 		});

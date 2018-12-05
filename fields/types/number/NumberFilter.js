@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { findDOMNode } from 'react-dom';
 import {
 	Form,
@@ -85,8 +86,9 @@ var NumberFilter = React.createClass({
 
 	renderControls (mode) {
 		let controls;
-		const { field } = this.props;
-		const placeholder = field.label + ' is ' + mode.label.toLowerCase() + '...';
+		const { field, t, list } = this.props;
+		// const placeholder = field.label + ' is ' + mode.label.toLowerCase() + '...';
+		const placeholder = t(`form:table_${list.key}`) + ' ' + mode.label + '...';
 
 		if (mode.value === 'between') {
 			controls = (
@@ -123,15 +125,23 @@ var NumberFilter = React.createClass({
 	},
 
 	render () {
-		const { filter } = this.props;
-		const mode = MODE_OPTIONS.filter(i => i.value === filter.mode)[0];
+		const { filter, t } = this.props;
+		const moreOptions = _.map(MODE_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.value)),
+				},
+			}
+		));
+		const mode = moreOptions.filter(i => i.value === filter.mode)[0];
 
 		return (
 			<Form component="div">
 				<FormField>
 					<FormSelect
 						onChange={this.selectMode}
-						options={MODE_OPTIONS}
+						options={moreOptions}
 						value={mode.value}
 					/>
 				</FormField>

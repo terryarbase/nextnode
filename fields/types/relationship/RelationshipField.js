@@ -194,6 +194,8 @@ module.exports = Field.create({
 	},
 
 	renderSelect (noedit) {
+		const { t, refList } = this.props;
+		console.log(refList.key, t(`table_${refList.key}`));
 		return (
 			<div>
 				{/* This input element fools Safari's autocorrect in certain situations that completely break react-select */}
@@ -203,6 +205,7 @@ module.exports = Field.create({
 					disabled={noedit}
 					loadOptions={this.loadOptions}
 					labelKey="name"
+					placeholder={t('selectWithListname', { listName: t(`table_${refList.key}`) })}
 					name={this.getInputName(this.props.path)}
 					onChange={this.valueChanged}
 					simpleValue

@@ -1,12 +1,18 @@
 import React from 'react';
+import _ from 'lodash';
 import { findDOMNode } from 'react-dom';
 import moment from 'moment';
 import DayPicker from 'react-day-picker';
+import MomentLocaleUtils from 'react-day-picker/moment';
 import {
 	FormInput,
 	FormSelect,
 	Grid,
 } from '../../../admin/client/App/elemental';
+
+import 'moment/locale/en-au';
+import 'moment/locale/zh-cn';
+import 'moment/locale/zh-tw';
 
 const PRESENCE_OPTIONS = [
 	{ label: 'At least one element', value: 'some' },
@@ -127,16 +133,19 @@ var DateFilter = React.createClass({
 	showCurrentDate () {
 		this.refs.daypicker.showMonth(this.state.month);
 	},
-	renderControls () {
+	renderControls (moreOptions) {
 		let controls;
-		const { field, filter } = this.props;
-		const mode = MODE_OPTIONS.filter(i => i.value === filter.mode)[0];
-		const placeholder = field.label + ' is ' + mode.label.toLowerCase() + '...';
+		const { field, filter, t, list, localePacks } = this.props;
+		const mode = moreOptions.filter(i => i.value === filter.mode)[0];
+		// const placeholder = field.label + ' is ' + mode.label.toLowerCase() + '...';
+		const placeholder = t(`form:table_${list.key}`) + ' ' + mode.label + '...';
 
 		// DayPicker stuff
 		const modifiers = {
 			selected: (day) => moment(filter.value).isSame(day),
 		};
+
+		const localizationPickerConfig = localePacks && localePacks.altIdentify;
 
 		if (mode.value === 'between') {
 			controls = (
@@ -144,10 +153,20 @@ var DateFilter = React.createClass({
 					<div style={{ marginBottom: '1em' }}>
 						<Grid.Row xsmall="one-half" gutter={10}>
 							<Grid.Col>
-								<FormInput ref="after" placeholder="From" onFocus={(e) => { this.setActiveField('after'); }} value={moment(filter.after).format(this.props.format)} />
+								<FormInput
+									ref="after"
+									placeholder={t('from')}
+									onFocus={(e) => { this.setActiveField('after'); }}
+									value={moment(filter.after).format(this.props.format)}
+								/>
 							</Grid.Col>
 							<Grid.Col>
-								<FormInput ref="before" placeholder="To" onFocus={(e) => { this.setActiveField('before'); }} value={moment(filter.before).format(this.props.format)} />
+								<FormInput
+									ref="before"
+									placeholder={t('to')}
+									onFocus={(e) => { this.setActiveField('before'); }}
+									value={moment(filter.before).format(this.props.format)}
+								/>
 							</Grid.Col>
 						</Grid.Row>
 					</div>
@@ -155,6 +174,8 @@ var DateFilter = React.createClass({
 						<DayPicker
 							className="DayPicker--chrome"
 							modifiers={modifiers}
+							localeUtils={MomentLocaleUtils}
+							locale={localizationPickerConfig}
 							onDayClick={this.switchBetweenActiveInputFields}
 						/>
 						<DayPickerIndicator />
@@ -189,27 +210,43 @@ var DateFilter = React.createClass({
 		return controls;
 	},
 	render () {
-		const { filter } = this.props;
-		const mode = MODE_OPTIONS.filter(i => i.value === filter.mode)[0];
-		const presence = PRESENCE_OPTIONS.filter(i => i.value === filter.presence)[0];
+		const { filter, t } = this.props;
+		const presenceOptions = _.map(PRESENCE_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.value)),
+				},
+			}
+		));
+		const moreOptions = _.map(MODE_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.value)),
+				},
+			}
+		));
+		const mode = moreOptions.filter(i => i.value === filter.mode)[0];
+		const presence = presenceOptions.filter(i => i.value === filter.presence)[0];
 
 		return (
 			<div>
 				<div style={{ marginBottom: '1em' }}>
 					<FormSelect
 						onChange={this.selectPresence}
-						options={PRESENCE_OPTIONS}
+						options={presenceOptions}
 						value={presence.value}
 					/>
 				</div>
 				<div style={{ marginBottom: '1em' }}>
 					<FormSelect
 						onChange={this.selectMode}
-						options={MODE_OPTIONS}
+						options={moreOptions}
 						value={mode.value}
 					/>
 				</div>
-				{this.renderControls()}
+				{this.renderControls(moreOptions)}
 			</div>
 		);
 	},

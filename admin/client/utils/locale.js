@@ -12,17 +12,21 @@
 */
 const getTranslatedLabel = (translator, options = {}) => {
 	const { listKey, prefix, content, altContent } = options;
-	const tableLocaleLabelKey = `${listKey}-${prefix}-${content}`;
-	const tableLocaleLabel = translator(tableLocaleLabelKey);
+	var { namespace } = options;
+	namespace = namespace ? `${namespace}:` : '';
+	var localeLabelKey = `${listKey}-${prefix}-${content}`;
+	var fullLocaleLabelKey = `${namespace}${localeLabelKey}`;
+	
+	var localeLabel = translator(fullLocaleLabelKey);
 	// console.log(exists);
-	// console.log('tableLocaleLabel ', tableLocaleLabelKey, t(tableLocaleLabelKey));
-	if (tableLocaleLabel !== tableLocaleLabelKey) {
-		return tableLocaleLabel;
+	if (localeLabel !== localeLabelKey) {
+		return localeLabel;
 	} else {
-		const globalLocaleLabelKey = `${prefix}-${content}`;
-		const globalLocaleLabel = translator(globalLocaleLabelKey);
-		if (globalLocaleLabelKey !== globalLocaleLabel) {
-			return globalLocaleLabel;
+		localeLabelKey = `${prefix}-${content}`;
+		fullLocaleLabelKey = `${namespace}${localeLabelKey}`;
+		localeLabel = translator(fullLocaleLabelKey);
+		if (localeLabel !== localeLabelKey) {
+			return localeLabel;
 		}
 	}
 	return altContent || content;

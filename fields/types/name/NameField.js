@@ -69,7 +69,7 @@ module.exports = Field.create({
 	renderField () {
 		// name={this.getInputName(paths.first)}
 		// name={this.getInputName(paths.last)}
-		const { value = {}, path, paths, autoFocus } = this.props;
+		const { value = {}, path, paths, autoFocus, t } = this.props;
 		return (
 			<Grid.Row small="one-half" gutter={10}>
 				<Grid.Col>

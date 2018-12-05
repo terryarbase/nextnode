@@ -5,6 +5,7 @@ TODO: Not sure what this should look like yet,
 */
 
 import React from 'react';
+import _ from 'lodash';
 import { SegmentedControl } from 'elemental';
 
 const VALUE_OPTIONS = [
@@ -36,7 +37,16 @@ var ListFilter = React.createClass({
 		this.props.onChange({ value });
 	},
 	render () {
-		return <SegmentedControl equalWidthSegments options={VALUE_OPTIONS} value={this.props.filter.value} onChange={this.updateValue} />;
+		const { t } = this.props;
+		const valueOptions = _.map(VALUE_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.label)),
+				},
+			}
+		));
+		return <SegmentedControl equalWidthSegments options={valueOptions} value={this.props.filter.value} onChange={this.updateValue} />;
 	},
 });
 

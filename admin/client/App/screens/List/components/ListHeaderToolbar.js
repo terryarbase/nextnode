@@ -84,6 +84,7 @@ function ListHeaderToolbar ({
 	isLocale,
 	currentLang,
 	defaultLang,
+	currentUILang,
 
 	...props
 }) {
@@ -98,6 +99,7 @@ function ListHeaderToolbar ({
 						handleKeyup={searchHandleKeyup}
 						value={searchValue}
 						t={t}
+						list={list}
 					/>
 				</Section> : null
 
@@ -109,9 +111,11 @@ function ListHeaderToolbar ({
 						<Section cssStyles={classes.filter}>
 							<ListFiltersAdd
 								dispatch={dispatch}
-								currentLang={isLocale ? currentLang : null}
+								currentUILang={currentUILang}
 								activeFilters={filtersActive}
 								availableFilters={filtersAvailable}
+								t={t}
+								list={list}
 							/>
 						</Section> : null
 					}
@@ -120,6 +124,8 @@ function ListHeaderToolbar ({
 							availableColumns={columnsAvailable}
 							activeColumns={columnsActive}
 							dispatch={dispatch}
+							t={t}
+							list={list}
 						/>
 					</Section>
 					{
@@ -130,6 +136,7 @@ function ListHeaderToolbar ({
 								activeColumns={columnsActive}
 								dispatch={dispatch}
 								list={list}
+								t={t}
 							/>
 						</Section> : null
 					}
@@ -187,6 +194,7 @@ ListHeaderToolbar.propTypes = {
 	list: PropTypes.object,
 	isLocale: PropTypes.bool,
 	currentLang: PropTypes.string,
+	currentUILang: PropTypes.string,
 	defaultLang: PropTypes.string,
 	searchHandleChange: PropTypes.func.isRequired,
 	searchHandleClear: PropTypes.func.isRequired,

@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { findDOMNode } from 'react-dom';
 
 import {
@@ -100,7 +101,9 @@ var NumberArrayFilter = React.createClass({
 	// Render the controls, showing two inputs when the mode is "between"
 	renderControls (presence, mode) {
 		let controls;
-		const placeholder = presence.label + ' is ' + mode.label.toLowerCase() + '...';
+		const { t, list } = this.props;
+		// const placeholder = presence.label + ' is ' + mode.label.toLowerCase() + '...';
+		const placeholder = t(`form:table_${list.key}`) + ' ' + mode.label + '...';
 
 		if (mode.value === 'between') {
 			// Render "min" and "max" input
@@ -141,24 +144,41 @@ var NumberArrayFilter = React.createClass({
 		return controls;
 	},
 	render () {
-		const { filter } = this.props;
+		const { filter, t, list } = this.props;
+		const presenceOptions = _.map(PRESENCE_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.value)),
+				},
+			}
+		));
+		const moreOptions = _.map(MODE_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.value)),
+				},
+			}
+		));
+
 		// Get mode and presence based on their values with .filter
-		const mode = MODE_OPTIONS.filter(i => i.value === filter.mode)[0];
-		const presence = PRESENCE_OPTIONS.filter(i => i.value === filter.presence)[0];
+		const mode = moreOptions.filter(i => i.value === filter.mode)[0];
+		const presence = presenceOptions.filter(i => i.value === filter.presence)[0];
 
 		return (
 			<div>
 				<FormField>
 					<FormSelect
 						onChange={this.selectPresence}
-						options={PRESENCE_OPTIONS}
+						options={presenceOptions}
 						value={presence.value}
 					/>
 				</FormField>
 				<FormField>
 					<FormSelect
 						onChange={this.selectMode}
-						options={MODE_OPTIONS}
+						options={moreOptions}
 						value={mode.value}
 					/>
 				</FormField>

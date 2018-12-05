@@ -1,22 +1,27 @@
 import React, { PropTypes } from 'react';
+import { translate } from "react-i18next";
 import { Chip } from '../../../../elemental';
 import Filter from './Filter';
 
 import { clearAllFilters } from '../../actions';
 
-const ListFilters = ({ dispatch, filters }) => {
+const ListFilters = ({ currentUILang, dispatch, filters, t, list }) => {
 
 	if (!filters.length) return <div />;
 
 	const dispatchClearAllFilters = function () {
 		dispatch(clearAllFilters());
 	};
-
+	// console.log(filters);
 	// Generate the list of filter pills
 	const currentFilters = filters.map((filter, i) => (
 		<Filter
 			key={'f' + i}
 			filter={filter}
+			t={t}
+			currentUILang={currentUILang}
+			list={list}
+			// pack={localePacks}
 			dispatch={dispatch}
 		/>
 	));
@@ -26,7 +31,7 @@ const ListFilters = ({ dispatch, filters }) => {
 		currentFilters.push(
 			<Chip
 				key="listFilters__clear"
-				label="Clear All"
+				label={t('clearAll')}
 				onClick={dispatchClearAllFilters}
 			/>
 		);
@@ -46,7 +51,8 @@ const ListFilters = ({ dispatch, filters }) => {
 
 ListFilters.propTypes = {
 	dispatch: PropTypes.func.isRequired,
+	currentUILang: PropTypes.string,
 	filters: PropTypes.array.isRequired,
 };
 
-module.exports = ListFilters;
+module.exports = translate(['filter', 'form'])(ListFilters);

@@ -1,11 +1,13 @@
 import { FormNote, FormField, FormInput } from '../../../elemental';
 import React, { PropTypes } from 'react';
 import vkey from 'vkey';
+import _ from 'lodash';
 import { translate } from "react-i18next";
 
 import Kbd from '../../../shared/Kbd';
 import Popout from '../../../shared/Popout';
 import PopoutList from '../../../shared/Popout/PopoutList';
+import { getTranslatedLabel } from '../../../../utils/locale';
 
 var ListSort = React.createClass({
 	displayName: 'ListSort',
@@ -63,39 +65,61 @@ var ListSort = React.createClass({
 		const activeSortPath = this.props.activeSort.paths[0];
 		const availibleColumns = this.props.availableColumns;
 		const { searchString } = this.state;
-		let filteredColumns = availibleColumns;
+		const filteredColumns = availibleColumns;
 
-		if (searchString) {
-			filteredColumns = filteredColumns
-				.filter(column => column.type !== 'heading')
-				.filter(column => new RegExp(searchString).test(column.field.label.toLowerCase()));
-		}
+		// if (searchString) {
+		// 	filteredColumns = filteredColumns
+		// 		.filter(column => column.type !== 'heading')
+		// 		.filter(column => new RegExp(searchString).test(column.field.label.toLowerCase()));
+		// }
+		const { t, list } = this.props;
 
 		return filteredColumns.map((el, i) => {
-			if (el.type === 'heading') {
-				return <PopoutList.Heading key={'heading_' + i}>{el.content}</PopoutList.Heading>;
+			var label = '';
+			if (el.type === 'heading' && !searchString) {
+				label = getTranslatedLabel(t, {
+					listKey: list.key,
+					prefix: 'heading',
+					namespace: 'form',
+					content: _.camelCase(el.content),
+					altContent: el.content,
+				});
+				return <PopoutList.Heading key={'heading_' + i}>{label}</PopoutList.Heading>;
+			} else if (el.type === 'field') {
+
+				const path = el.field.path;
+				const isSelected = activeSortPath && activeSortPath.path === path;
+				const isInverted = isSelected && activeSortPath.invert;
+				const icon = this.state.altDown || (isSelected && !isInverted) ? 'chevron-up' : 'chevron-down';
+				label = getTranslatedLabel(t, {
+					listKey: list.key,
+					prefix: 'field',
+					content: path,
+					namespace: 'form',
+					altContent: el.field.label,
+				});
+				const isFiltered = searchString && new RegExp(_.toLower(searchString)).test(_.toLower(label));
+				// the filter keyword has not been inputted 
+				if (isFiltered || !searchString) {
+					return (
+						<PopoutList.Item
+							key={'column_' + path}
+							icon={icon}
+							isSelected={isSelected}
+							label={label}
+							onClick={() => {
+								this.handleSortSelect(path, isSelected && !isInverted);
+							}}
+						/>
+					);
+				}
 			}
-
-			const path = el.field.path;
-			const isSelected = activeSortPath && activeSortPath.path === path;
-			const isInverted = isSelected && activeSortPath.invert;
-			const icon = this.state.altDown || (isSelected && !isInverted) ? 'chevron-up' : 'chevron-down';
-
-			return (
-				<PopoutList.Item
-					key={'column_' + el.field.path}
-					icon={icon}
-					isSelected={isSelected}
-					label={el.field.label}
-					onClick={() => {
-						this.handleSortSelect(path, isSelected && !isInverted);
-					}} />
-			);
+			return null;
 		});
 	},
 	render () {
 		// TODO: Handle multiple sort paths
-		const { t } = this.props;
+		const { t, list } = this.props;
 		const activeSortPath = this.props.activeSort.paths[0];
 		const formFieldStyles = { borderBottom: '1px dashed rgba(0,0,0,0.1)', paddingBottom: '1em' };
 		return (
@@ -104,7 +128,15 @@ var ListSort = React.createClass({
 					<span>
 						<span style={{ color: '#999' }}> {t('sortBy')} </span>
 						<a id="listHeaderSortButton" href="javascript:;" onClick={this.openPopout}>
-							{activeSortPath.label.toLowerCase()}
+							{
+								getTranslatedLabel(t, {
+									listKey: list.key,
+									prefix: 'field',
+									namespace: 'form',
+									content: activeSortPath.path,
+									altContent: activeSortPath.label.toLowerCase(),
+								})
+							}
 							{activeSortPath.invert ? ` ${t('decendingOrder')}` : ''}
 							<span className="disclosure-arrow" />
 						</a>
@@ -136,5 +168,5 @@ var ListSort = React.createClass({
 	},
 });
 
-export default translate('sort')(ListSort);
+export default translate(['sort', 'form'])(ListSort);
 // module.exports = ListSort;

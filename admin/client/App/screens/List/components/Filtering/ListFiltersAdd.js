@@ -1,5 +1,6 @@
 import React from 'react';
 import { findDOMNode } from 'react-dom';
+import _ from 'lodash';
 import Transition
 	from 'react-addons-css-transition-group';
 import classnames from 'classnames';
@@ -11,6 +12,7 @@ import ListHeaderButton from '../ListHeaderButton';
 import { translate } from "react-i18next";
 
 import { setFilter } from '../../actions';
+import { getTranslatedLabel } from '../../../../../utils/locale';
 
 var ListFiltersAdd = React.createClass({
 	displayName: 'ListFiltersAdd',
@@ -70,36 +72,56 @@ var ListFiltersAdd = React.createClass({
 		const activeFilterFields = this.props.activeFilters.map(obj => obj.field);
 		const activeFilterPaths = activeFilterFields.map(obj => obj.path);
 		const { searchString } = this.state;
-		const { t } = this.props;
-		let filteredFilters = this.props.availableFilters;
+		const { t, list } = this.props;
+		const filteredFilters = this.props.availableFilters;
 
-		if (searchString) {
-			filteredFilters = filteredFilters
-				.filter(filter => filter.type !== 'heading')
-				.filter(filter => new RegExp(searchString)
-				.test(filter.field.label.toLowerCase()));
-		}
+		// if (searchString) {
+		// 	filteredFilters = filteredFilters
+		// 		.filter(filter => filter.type !== 'heading')
+		// 		.filter(filter => new RegExp(searchString)
+		// 		.test(filter.field.label.toLowerCase()));
+		// }
 
 		const popoutList = filteredFilters.map((el, i) => {
-			if (el.type === 'heading') {
+			var label = '';
+			// once input filtering keyword then skip this logic
+			if (el.type === 'heading' && !searchString) {
+				label = getTranslatedLabel(t, {
+					listKey: list.key,
+					prefix: 'heading',
+					namespace: 'form',
+					content: _.camelCase(el.content),
+					altContent: el.content,
+				});
 				return (
 					<PopoutList.Heading key={'heading_' + i}>
-						{el.content}
+						{label}
 					</PopoutList.Heading>
 				);
+			} else if (el.type === 'field') {
+				const path = el.field.path;
+				const filterIsActive = activeFilterPaths.length && (activeFilterPaths.indexOf(path) > -1);
+				label = getTranslatedLabel(t, {
+					listKey: list.key,
+					prefix: 'field',
+					content: path,
+					namespace: 'form',
+					altContent: el.field.label,
+				});
+				const isFiltered = searchString && new RegExp(_.toLower(searchString)).test(_.toLower(label));
+				if (isFiltered || !searchString) {
+					return (
+						<PopoutList.Item
+							key={'item_' + path}
+							icon={filterIsActive ? 'check' : 'chevron-right'}
+							iconHover={filterIsActive ? 'check' : 'chevron-right'}
+							isSelected={!!filterIsActive}
+							label={label}
+							onClick={() => { this.selectField(el.field); }} />
+					);
+				}
 			}
-
-			const filterIsActive = activeFilterPaths.length && (activeFilterPaths.indexOf(el.field.path) > -1);
-
-			return (
-				<PopoutList.Item
-					key={'item_' + el.field.path}
-					icon={filterIsActive ? 'check' : 'chevron-right'}
-					iconHover={filterIsActive ? 'check' : 'chevron-right'}
-					isSelected={!!filterIsActive}
-					label={el.field.label}
-					onClick={() => { this.selectField(el.field); }} />
-			);
+			return null;
 		});
 
 		const formFieldStyles = {
@@ -125,7 +147,8 @@ var ListFiltersAdd = React.createClass({
 		);
 	},
 	renderForm () {
-		const { t } = this.props;
+		const { t, list, currentUILang } = this.props;
+		const localePacks = currentUILang && Keystone.localization && Keystone.localization[currentUILang];
 		return (
 			<Popout.Pane onLayout={this.setPopoutHeight} key="form">
 				<ListFiltersAddForm
@@ -134,17 +157,22 @@ var ListFiltersAdd = React.createClass({
 					onApply={this.applyFilter}
 					onCancel={this.closePopout}
 					onBack={this.navigateBack}
+					currentUILang={this.props.currentUILang}
 					maxHeight={this.props.maxHeight}
 					onHeightChange={this.setPopoutHeight}
 					dispatch={this.props.dispatch}
 					apply={t('apply')}
+					localePacks={localePacks}
 					cancel={t('cancel')}
+					t={t}
+					getTranslatedLabel={getTranslatedLabel}
+					list={list}
 				/>
 			</Popout.Pane>
 		);
 	},
 	render () {
-		const { t } = this.props;
+		const { t, list } = this.props;
 		const { isOpen, selectedField } = this.state;
 		const popoutBodyStyle = this.state.innerHeight
 			? { height: this.state.innerHeight }
@@ -166,7 +194,16 @@ var ListFiltersAdd = React.createClass({
 					<Popout.Header
 						leftAction={selectedField ? this.navigateBack : null}
 						leftIcon={selectedField ? 'chevron-left' : null}
-						title={selectedField ? selectedField.label : t('label')}
+						title={
+							selectedField ? 
+							getTranslatedLabel(t, {
+								listKey: list.key,
+								prefix: 'field',
+								namespace: 'form',
+								content: selectedField.path
+							}):
+							t('label')
+						}
 						transitionDirection={selectedField ? 'next' : 'prev'} />
 					<Transition
 						className={popoutPanesClassname}
@@ -184,5 +221,5 @@ var ListFiltersAdd = React.createClass({
 	},
 });
 
-export default translate('filter')(ListFiltersAdd);
+export default translate(['filter', 'form', 'sort'])(ListFiltersAdd);
 // module.exports = ListFiltersAdd;

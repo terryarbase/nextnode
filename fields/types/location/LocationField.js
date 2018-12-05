@@ -266,7 +266,7 @@ module.exports = Field.create({
 
 		/* eslint-disable no-script-url */
 		var showMore = !_.isEmpty(this.state.collapsedFields)
-			? <CollapsedFieldLabel onClick={this.uncollapseFields}>(show more fields)</CollapsedFieldLabel>
+			? <CollapsedFieldLabel onClick={this.uncollapseFields}>{this.props.t('showMoreFields')}</CollapsedFieldLabel>
 			: null;
 		/* eslint-enable */
 

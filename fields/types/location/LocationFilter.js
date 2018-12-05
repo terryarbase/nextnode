@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { findDOMNode } from 'react-dom';
 
 import {
@@ -56,15 +57,22 @@ var TextFilter = React.createClass({
 		this.updateFilter(e.target.name, e.target.value);
 	},
 	render () {
-		const { filter } = this.props;
-
+		const { filter, t, list } = this.props;
+		const invertedOptions = _.map(INVERTED_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.label))
+				},
+			}
+		));
 		return (
 			<div>
 				<FormField>
 					<SegmentedControl
 						equalWidthSegments
 						onChange={this.toggleInverted}
-						options={INVERTED_OPTIONS}
+						options={invertedOptions}
 						value={filter.inverted}
 					/>
 				</FormField>
@@ -73,7 +81,7 @@ var TextFilter = React.createClass({
 						autoFocus
 						name="street"
 						onChange={this.updateValue}
-						placeholder="Address"
+						placeholder={t('address')}
 						ref="focusTarget"
 						value={filter.street}
 					/>
@@ -83,7 +91,7 @@ var TextFilter = React.createClass({
 						<FormInput
 							name="city"
 							onChange={this.updateValue}
-							placeholder="City"
+							placeholder={t('city')}
 							style={{ marginBottom: '1em' }}
 							value={filter.city}
 						/>
@@ -92,7 +100,7 @@ var TextFilter = React.createClass({
 						<FormInput
 							name="state"
 							onChange={this.updateValue}
-							placeholder="State"
+							placeholder={t('state')}
 							style={{ marginBottom: '1em' }}
 							value={filter.state}
 						/>
@@ -101,7 +109,7 @@ var TextFilter = React.createClass({
 						<FormInput
 							name="code"
 							onChange={this.updateValue}
-							placeholder="Postcode"
+							placeholder={t('postCode')}
 							value={filter.code}
 						/>
 					</Grid.Col>
@@ -109,7 +117,7 @@ var TextFilter = React.createClass({
 						<FormInput
 							name="country"
 							onChange={this.updateValue}
-							placeholder="Country"
+							placeholder={t('country')}
 							value={filter.country}
 						/>
 					</Grid.Col>

@@ -18,6 +18,8 @@ function ListHeaderTitle ({
 		<h2 className={css(classes.heading)} {...props}>
 			{t(`table_${list.key}`)}
 			<ListSort
+				t={t}
+				list={list}
 				activeSort={activeSort}
 				availableColumns={availableColumns}
 				handleSortSelect={handleSortSelect}

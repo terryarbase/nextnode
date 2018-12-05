@@ -1,14 +1,20 @@
 import React, { PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
+import _ from 'lodash';
 import moment from 'moment';
 import DayPicker from 'react-day-picker';
 
+import MomentLocaleUtils from 'react-day-picker/moment';
 import {
 	FormInput,
 	FormSelect,
 	Grid,
 	SegmentedControl,
 } from '../../../admin/client/App/elemental';
+
+import 'moment/locale/en-au';
+import 'moment/locale/zh-cn';
+import 'moment/locale/zh-tw';
 
 const INVERTED_OPTIONS = [
 	{ label: 'Matches', value: false },
@@ -154,25 +160,26 @@ var DateFilter = React.createClass({
 	// RENDERERS
 	// ==============================
 
-	renderToggle () {
+	renderToggle (invertedOptions) {
 		const { filter } = this.props;
 		return (
 			<div style={{ marginBottom: '1em' }}>
 				<SegmentedControl
 					equalWidthSegments
 					onChange={this.toggleInverted}
-					options={INVERTED_OPTIONS}
+					options={invertedOptions}
 					value={filter.inverted}
 				/>
 			</div>
 		);
 	},
-	renderControls () {
+	renderControls (moreOptions) {
 		let controls;
 		const { activeInputField } = this.state;
-		const { field, filter } = this.props;
-		const mode = MODE_OPTIONS.filter(i => i.value === filter.mode)[0];
-		const placeholder = field.label + ' is ' + mode.label.toLowerCase() + '...';
+		const { field, filter, t, list, localePacks } = this.props;
+		const mode = moreOptions.filter(i => i.value === filter.mode)[0];
+		// const placeholder = field.label + ' is ' + mode.label.toLowerCase() + '...';
+		const placeholder = t(`form:table_${list.key}`) + ' ' + mode.label + '...';
 
 		// DayPicker Modifiers - Selected Day
 		let modifiers = filter.mode === 'between' ? {
@@ -181,6 +188,8 @@ var DateFilter = React.createClass({
 			selected: (day) => moment(filter.value).isSame(day),
 		};
 
+		const localizationPickerConfig = localePacks && localePacks.altIdentify;
+		// console.log(localizationPickerConfig);
 		if (mode.value === 'between') {
 			controls = (
 				<div>
@@ -190,7 +199,7 @@ var DateFilter = React.createClass({
 								<FormInput
 									autoFocus
 									ref="after"
-									placeholder="From"
+									placeholder={t('from')}
 									onChange={this.handleInputChange}
 									onFocus={() => this.setActiveField('after')}
 									value={moment(filter.after).format(this.props.format)}
@@ -199,7 +208,7 @@ var DateFilter = React.createClass({
 							<Grid.Col>
 								<FormInput
 									ref="before"
-									placeholder="To"
+									placeholder={t('to')}
 									onChange={this.handleInputChange}
 									onFocus={() => this.setActiveField('before')}
 									value={moment(filter.before).format(this.props.format)}
@@ -211,6 +220,8 @@ var DateFilter = React.createClass({
 						<DayPicker
 							modifiers={modifiers}
 							className="DayPicker--chrome"
+							localeUtils={MomentLocaleUtils}
+							locale={localizationPickerConfig}
 							onDayClick={this.switchBetweenActiveInputFields}
 						/>
 						<DayPickerIndicator activeInputField={activeInputField} />
@@ -246,19 +257,35 @@ var DateFilter = React.createClass({
 		return controls;
 	},
 	render () {
-		const { filter } = this.props;
-		const mode = MODE_OPTIONS.filter(i => i.value === filter.mode)[0];
+		const { filter, t } = this.props;
+		const moreOptions = _.map(MODE_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.value)),
+				},
+			}
+		));
+		const invertedOptions = _.map(INVERTED_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.label))
+				},
+			}
+		));
+		const mode = moreOptions.filter(i => i.value === filter.mode)[0];
 		return (
 			<div>
-				{this.renderToggle()}
+				{this.renderToggle(invertedOptions)}
 				<div style={{ marginBottom: '1em' }}>
 					<FormSelect
-						options={MODE_OPTIONS}
+						options={moreOptions}
 						onChange={this.selectMode}
 						value={mode.value}
 					/>
 				</div>
-				{this.renderControls()}
+				{this.renderControls(moreOptions)}
 			</div>
 		);
 	},

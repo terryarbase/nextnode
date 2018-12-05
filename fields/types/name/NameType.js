@@ -132,10 +132,10 @@ name.prototype.addFilterToQuery = function (filter, options) {
 			$or: [
 				query,
 				{
-					[`${this.path.first}.${langd}`]: query[this.path.first],
+					[`${this.paths.first}.${langd}`]: query[this.path.first],
 				},
 				{
-					[`${this.path.last}.${langd}`]: query[this.path.last],
+					[`${this.paths.last}.${langd}`]: query[this.path.last],
 				}
 			],
 		};

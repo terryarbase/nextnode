@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { findDOMNode } from 'react-dom';
 
 import {
@@ -60,25 +61,42 @@ var TextArrayFilter = React.createClass({
 		this.updateFilter({ value: e.target.value });
 	},
 	render () {
-		const { filter } = this.props;
-		const mode = MODE_OPTIONS.filter(i => i.value === filter.mode)[0];
-		const presence = PRESENCE_OPTIONS.filter(i => i.value === filter.presence)[0];
-		const beingVerb = mode.value === 'exactly' ? ' is ' : ' ';
-		const placeholder = presence.label + beingVerb + mode.label.toLowerCase() + '...';
+		const { filter, t, list } = this.props;
+		const moreOptions = _.map(MODE_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.value)),
+				},
+			}
+		));
+		const presenceOptions = _.map(PRESENCE_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.value)),
+				},
+			}
+		));
+		const mode = moreOptions.filter(i => i.value === filter.mode)[0];
+		const presence = presenceOptions.filter(i => i.value === filter.presence)[0];
+		// const beingVerb = mode.value === 'exactly' ? ' is ' : ' ';
+		const placeholder = t(`form:table_${list.key}`) + ' ' + mode.label + '...';
+		// const placeholder = presence.label + beingVerb + mode.label.toLowerCase() + '...';
 
 		return (
 			<div>
 				<FormField>
 					<FormSelect
 						onChange={this.selectPresence}
-						options={PRESENCE_OPTIONS}
+						options={presenceOptions}
 						value={presence.value}
 					/>
 				</FormField>
 				<FormField>
 					<FormSelect
 						onChange={this.selectMode}
-						options={MODE_OPTIONS}
+						options={moreOptions}
 						value={mode.value}
 					/>
 				</FormField>

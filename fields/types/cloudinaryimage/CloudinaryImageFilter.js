@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 
 import { SegmentedControl } from '../../../admin/client/App/elemental';
 
@@ -31,13 +32,20 @@ var CloudinaryImageFilter = React.createClass({
 		this.props.onChange({ exists: value });
 	},
 	render () {
-		const { filter } = this.props;
-
+		const { filter, t } = this.props;
+		const options = _.map(OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.label)),
+				},
+			}
+		));
 		return (
 			<SegmentedControl
 				equalWidthSegments
 				onChange={this.toggleExists}
-				options={OPTIONS}
+				options={options}
 				value={filter.exists}
 			/>
 		);

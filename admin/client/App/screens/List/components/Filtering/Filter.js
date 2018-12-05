@@ -46,14 +46,14 @@ class Filter extends Component {
 		this.props.dispatch(clearFilter(this.props.filter.field.path));
 	}
 	render () {
-		const { filter } = this.props;
+		const { filter, t, list, currentUILang } = this.props;
 		const filterId = `activeFilter__${filter.field.path}`;
 		const FilterComponent = Filters[filter.field.type];
 
 		return (
 			<span>
 				<Chip
-					label={getFilterLabel(filter.field, filter.value)}
+					label={getFilterLabel(list, t, currentUILang, filter)}
 					onClick={this.open}
 					onClear={this.removeFilter}
 					color="primary"
@@ -61,7 +61,7 @@ class Filter extends Component {
 				/>
 				<Popout isOpen={this.state.isOpen} onCancel={this.close} relativeToID={filterId}>
 					<form onSubmit={this.updateFilter}>
-						<Popout.Header title="Edit Filter" />
+						<Popout.Header title={t('editFilter')} />
 						<Popout.Body>
 							<FilterComponent
 								field={filter.field}
@@ -72,9 +72,9 @@ class Filter extends Component {
 						<Popout.Footer
 							ref="footer"
 							primaryButtonIsSubmit
-							primaryButtonLabel="Apply"
+							primaryButtonLabel={t('apply')}
 							secondaryButtonAction={this.close}
-							secondaryButtonLabel="Cancel" />
+							secondaryButtonLabel={t('cancel')} />
 					</form>
 				</Popout>
 			</span>

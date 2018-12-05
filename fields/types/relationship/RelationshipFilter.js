@@ -163,7 +163,8 @@ var RelationshipFilter = React.createClass({
 		this.props.onChange({ ...this.props.filter, ...value });
 	},
 	renderItems (items, selected) {
-		const itemIconHover = selected ? 'x' : 'check';
+		const { t } = this.props;
+		const itemIconHover = selected ? t('cross') : t('check');
 
 		return items.map((item, i) => {
 			return (
@@ -181,28 +182,39 @@ var RelationshipFilter = React.createClass({
 		});
 	},
 	render () {
-		const selectedItems = this.state.selectedItems;
+		const{ t, list } = this.props;
+		const  selectedItems = this.state.selectedItems;
 		const searchResults = this.state.searchResults.filter(i => {
 			return this.props.filter.value.indexOf(i.id) === -1;
 		});
-		const placeholder = this.isLoading() ? 'Loading...' : 'Find a ' + this.props.field.label + '...';
+		const invertedOptions = _.map(INVERTED_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.label))
+				},
+			}
+		));
+		const placeholder = this.isLoading() ? `${t('loading')}...` : `${t('finding', { listName: t(`form:table_${list.key}`) })}...`;
 		return (
 			<div ref="container">
 				<FormField>
-					<SegmentedControl equalWidthSegments options={INVERTED_OPTIONS} value={this.props.filter.inverted} onChange={this.toggleInverted} />
+					<SegmentedControl equalWidthSegments options={invertedOptions} value={this.props.filter.inverted} onChange={this.toggleInverted} />
 				</FormField>
 				<FormField style={{ borderBottom: '1px dashed rgba(0,0,0,0.1)', paddingBottom: '1em' }}>
 					<FormInput autoFocus ref="focusTarget" value={this.state.searchString} onChange={this.updateSearch} placeholder={placeholder} />
 				</FormField>
 				{selectedItems.length ? (
 					<PopoutList>
-						<PopoutList.Heading>Selected</PopoutList.Heading>
+						<PopoutList.Heading>{t('selected')}</PopoutList.Heading>
 						{this.renderItems(selectedItems, true)}
 					</PopoutList>
 				) : null}
 				{searchResults.length ? (
 					<PopoutList>
-						<PopoutList.Heading style={selectedItems.length ? { marginTop: '2em' } : null}>Items</PopoutList.Heading>
+						<PopoutList.Heading style={selectedItems.length ? { marginTop: '2em' } : null}>
+							{t('items')}
+						</PopoutList.Heading>
 						{this.renderItems(searchResults)}
 					</PopoutList>
 				) : null}

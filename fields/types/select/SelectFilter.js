@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import vkey from 'vkey';
+import _ from 'lodash';
 import {
 	Button,
 	FormField,
@@ -140,12 +141,24 @@ class SelectFilter extends Component {
 	// ==============================
 
 	renderOptions () {
+		const { currentUILang, field: { assign } } = this.props;
 		return this.props.field.ops.map((option, i) => {
+			var { label } = option;
+			// special for assigned delegated value and multilingual structure
+			if (assign && typeof label === 'object', currentUILang) {
+				label = label[currentUILang];
+			}
+
 			const selected = this.props.filter.value.indexOf(option.value) > -1;
 			return (
 				<FilterOption
 					key={`item-${i}-${option.value}`}
-					option={option}
+					option={{
+						...option,
+						...{
+							label,
+						},
+					}}
 					selected={selected}
 					onClick={this.handleClick}
 				/>
@@ -153,7 +166,7 @@ class SelectFilter extends Component {
 		});
 	}
 	render () {
-		const { field, filter } = this.props;
+		const { field, filter, t, list } = this.props;
 		const indeterminate = filter.value.length < field.ops.length;
 
 		const metaKeyLabel = this.state.osName === 'MacOS'
@@ -168,23 +181,30 @@ class SelectFilter extends Component {
 			marginBottom: '1em',
 			paddingBottom: '1em',
 		};
-
+		const invertedOptions = _.map(INVERTED_OPTIONS, option => (
+			{
+				...option,
+				...{
+					label: t(_.camelCase(option.label))
+				},
+			}
+		));
 		return (
 			<div>
 				<FormField>
 					<SegmentedControl
 						equalWidthSegments
 						onChange={this.toggleInverted}
-						options={INVERTED_OPTIONS}
+						options={invertedOptions}
 						value={filter.inverted}
 					/>
 				</FormField>
 				<div style={fieldStyles}>
 					<Button size="xsmall" onClick={this.toggleAllOptions} style={{ padding: 0, width: 50 }}>
-						{indeterminate ? 'All' : 'None'}
+						{indeterminate ? t('all') : t('nothing')}
 					</Button>
 					<FormNote style={{ margin: 0 }}>
-						Hold <Kbd>{metaKeyLabel}</Kbd> to select multiple options
+						{t('sort:hold')} <Kbd>{metaKeyLabel}</Kbd> {t('sort:multiMsg')}
 					</FormNote>
 				</div>
 				{this.renderOptions()}
