@@ -23,6 +23,11 @@ const locales = {
       msg:'您的个人资料已成功更改。 您可以在下次登录时获取最新的个人资料。',
 
    },
+   error: {
+      validationTitle: '储存这个资讯时发生{{errorCount}}个错误',
+      required: '{{field}}是必须填写',
+      invalid: '请检查一下{{field}}的内容並不正确',
+   },
    // createForm:{  
    //    createANew:'新增一个新的{{listName}}',
    //    create:'新增',

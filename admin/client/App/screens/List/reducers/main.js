@@ -1,5 +1,5 @@
 import assign from 'object-assign';
-import List from '../../../../utils/List';
+import List from './../../../../utils/List';
 import {
 	SELECT_LIST,
 	ITEMS_LOADED,
@@ -18,11 +18,11 @@ import {
 	REALTIME_SAVED,
 	REALTIME_SAVE_ERROR,
 	SET_LOCALIZATION,
-} from '../constants';
+} from './../constants';
 
-import {
-	DELETE_ITEM,
-} from '../../Item/constants';
+// import {
+// 	DELETE_ITEM,
+// } from './../../Item/constants';
 
 var initialState = {
 	loadingRef: null,
@@ -154,20 +154,20 @@ function lists (state = initialState, action) {
 				error: action.err,
 				loadCounter: 0,
 			});
-		case DELETE_ITEM:
-			const newItems = {
-				results: state.items.results.filter((el) => (el.id !== action.id)),
-				count: state.items.count - 1,
-			};
-			const newCachedList = state.data[state.currentList.id];
-			newCachedList.items = newItems;
-			return assign({}, state, {
-				items: newItems,
-				data: {
-					...state.data,
-					[state.currentList.id]: newCachedList,
-				},
-			});
+		// case DELETE_ITEM:
+		// 	const newItems = {
+		// 		results: state.items.results.filter((el) => (el.id !== action.id)),
+		// 		count: state.items.count - 1,
+		// 	};
+		// 	const newCachedList = state.data[state.currentList.id];
+		// 	newCachedList.items = newItems;
+		// 	return assign({}, state, {
+		// 		items: newItems,
+		// 		data: {
+		// 			...state.data,
+		// 			[state.currentList.id]: newCachedList,
+		// 		},
+		// 	});
 		case SET_CURRENT_PAGE:
 			console.log(action.index);
 			return assign({}, state, {

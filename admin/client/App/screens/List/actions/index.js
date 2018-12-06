@@ -2,7 +2,7 @@ import {
 	SELECT_LIST,
 	SET_CURRENT_PAGE,
 	INITIAL_LIST_LOAD,
-} from '../constants';
+} from './../constants';
 
 import { setActiveList } from './active';
 
@@ -47,7 +47,7 @@ import {
 	setFilter,
 	clearFilter,
 	clearAllFilters,
-	setActiveFilters,
+	// setActiveFilters,
 	setActiveSearch,
 	setActiveColumns,
 	clearCachedQuery,

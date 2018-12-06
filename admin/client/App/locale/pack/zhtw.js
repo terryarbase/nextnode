@@ -17,9 +17,16 @@ const locales = {
       accountSetting:'修改我的個人資料',
       updateMyAccount:'更新我的個人資料',
       updating:'更新中...',
+      cancel:'取消',
       newPassword:'新密碼',
       confirmPwd:'確認新密碼',
       cancel:'取消',
+      msg: '您的個人資料已成功更改。您可以在下次登錄時獲取最新的個人資料。',
+   },
+   error: {
+      validationTitle: '儲存這個資訊時發生{{errorCount}}個錯誤',
+      required: '{{field}}是必須填寫',
+      invalid: '請檢查一下{{field}}的内容並不正確',
    },
    // createForm:{  
    //    createANew:'新增一個新的{{listName}}',

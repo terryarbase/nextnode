@@ -86,7 +86,8 @@ var EditForm = React.createClass({
 		const props = assign({}, field);
 		const alerts = this.state.alerts;
 		// Display validation errors inline
-		if (alerts && alerts.error && alerts.error.error === 'validation errors') {
+		if (alerts && alerts.error) {
+			// && alerts.error.error === 'validation errors') {
 			if (alerts.error.detail[field.path]) {
 				// NOTE: This won't work yet, as ElementalUI doesn't allow
 				// passed in isValid, only invalidates via internal state.
@@ -525,7 +526,9 @@ var EditForm = React.createClass({
 		const { t } = this.props;
 		return (
 			<form ref="editForm" className="EditForm-container">
-				{(this.state.alerts) ? <AlertMessages alerts={this.state.alerts} /> : null}
+				{(this.state.alerts) ? <AlertMessages
+					alerts={this.state.alerts}
+					list={this.props.list} /> : null}
 				<Grid.Row>
 					<Grid.Col large="three-quarters">
 						<Form layout="horizontal" component="div">

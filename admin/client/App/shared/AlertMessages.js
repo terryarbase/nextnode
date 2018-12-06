@@ -1,8 +1,10 @@
 import React from 'react';
+import _ from 'lodash';
+import { translate } from "react-i18next";
+
 import { Alert } from '../elemental';
-
 import { upcase } from '../../utils/string';
-
+import { getTranslatedLabel } from '../../utils/locale';
 /**
  * This renders alerts for API success and error responses.
  *   Error format: {
@@ -27,27 +29,53 @@ var AlertMessages = React.createClass({
 	},
 	getDefaultProps () {
 		return {
+			localization: Keystone.localization,
 			alerts: {},
 		};
 	},
 	renderValidationErrors () {
 		let errors = this.props.alerts.error.detail;
+		const { t, list, localization } = this.props;
 		if (errors.name === 'ValidationError') {
 			errors = errors.errors;
 		}
 		let errorCount = Object.keys(errors).length;
 		let alertContent;
 		let messages = Object.keys(errors).map((path) => {
+			const { [path]: { type, fieldType, error, lang } } = errors;
+			const field = _.startCase(
+				getTranslatedLabel(t, {
+					listKey: list.key,
+					content: path,
+					prefix: 'field',
+					namespace: 'form',
+					altContent: 'error',
+				})
+			);
+			const languageVerionPrefix =  localization && localization[lang] ? `${localization[lang].label} ` : '';
 			if (errorCount > 1) {
 				return (
 					<li key={path}>
-						{upcase(errors[path].error || errors[path].message)}
+						{
+							// upcase(errors[path].error || errors[path].message)
+							`${languageVerionPrefix}${t(type, {
+								field,
+							})}`
+						}
 					</li>
 				);
 			} else {
 				return (
 					<div key={path}>
-						{upcase(errors[path].error || errors[path].message)}
+						{
+							// upcase(errors[path].error || errors[path].message)
+						}
+						{
+							// upcase(errors[path].error || errors[path].message)
+							`${languageVerionPrefix}${t(type, {
+								field: field,
+							})}`
+						}
 					</div>
 				);
 			}
@@ -56,7 +84,7 @@ var AlertMessages = React.createClass({
 		if (errorCount > 1) {
 			alertContent = (
 				<div>
-					<h4>There were {errorCount} errors creating the new item:</h4>
+					<h4>{t('validationTitle', { errorCount })}</h4>
 					<ul>{messages}</ul>
 				</div>
 			);
@@ -71,7 +99,7 @@ var AlertMessages = React.createClass({
 
 		if (error) {
 			// Render error alerts
-			switch (error.error) {
+			switch (_.toLower(error.error)) {
 				case 'validation errors':
 					return this.renderValidationErrors();
 				case 'error':
@@ -94,4 +122,4 @@ var AlertMessages = React.createClass({
 	},
 });
 
-module.exports = AlertMessages;
+module.exports = translate('error', 'form')(AlertMessages);

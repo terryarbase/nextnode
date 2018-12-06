@@ -130,7 +130,7 @@ module.exports = Field.create({
 		// name={this.getInputName(path + '.suburb')}
 		// name={this.getInputName(path + '.state')}
 		return (
-			<NestedFormField label="Suburb / State" data-field-location-path={path + '.suburb_state'}>
+			<NestedFormField label={`${t('suburb')}/${t('state')}`} data-field-location-path={path + '.suburb_state'}>
 				<Grid.Row gutter={10}>
 					<Grid.Col small="two-thirds" data-field-location-path={path + '.suburb'}>
 						<FormInput
@@ -156,7 +156,7 @@ module.exports = Field.create({
 		// name={this.getInputName(path + '.postcode')}
 		// name={this.getInputName(path + '.country')}
 		return (
-			<NestedFormField label="Postcode / Country" data-field-location-path={path + '.postcode_country'}>
+			<NestedFormField label={`${t('postCode')}/${t('country')}`} data-field-location-path={path + '.postcode_country'}>
 				<Grid.Row gutter={10}>
 					<Grid.Col small="one-third" data-field-location-path={path + '.postcode'}>
 						<FormInput
@@ -168,7 +168,7 @@ module.exports = Field.create({
 					<Grid.Col small="two-thirds" data-field-location-path={path + '.country'}>
 						<FormInput
 							onChange={this.makeChanger('country')}
-							placeholder="Country"
+							placeholder={t('country')}
 							value={value.country || ''}
 						/>
 					</Grid.Col>
@@ -280,10 +280,10 @@ module.exports = Field.create({
 						name={path}
 					/>
 				</FormField>
-				{this.renderField(t('number'), t('poBoxShop'), true, true)}
-				{this.renderField(t('name'), t('buildingName'), true)}
-				{this.renderField(t('street1'), t('streetAddress1'))}
-				{this.renderField(t('street2'), t('streetAddress2'), true)}
+				{this.renderField('number', t('poBoxShop'), true, true)}
+				{this.renderField('name', t('buildingName'), true)}
+				{this.renderField('street1', t('streetAddress1'))}
+				{this.renderField('street2', t('streetAddress2'), true)}
 				{this.renderSuburbState()}
 				{this.renderPostcodeCountry()}
 				{this.renderGeo()}

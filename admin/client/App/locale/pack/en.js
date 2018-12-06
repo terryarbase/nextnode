@@ -21,6 +21,11 @@ const locales = {
       cancel:'Cancel',
 
    },
+   error: {
+      validationTitle: 'There were {{errorCount}} errors saving the information',
+      required: '{{field}} is required field',
+      invalid: '{{field}} content is incorrect. Please check it.',
+   },
    // createForm:{  
    //    createANew:'Create a new {{listName}}',
    //    create:'Create',

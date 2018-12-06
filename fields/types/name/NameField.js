@@ -42,10 +42,10 @@ module.exports = Field.create({
 		});
 	},
 	changeFirst: function (event) {
-		return this.valueChanged(t('first'), event);
+		return this.valueChanged('first', event);
 	},
 	changeLast: function (event) {
-		return this.valueChanged(t('last'), event);
+		return this.valueChanged('last', event);
 	},
 	renderValue () {
 		const inputStyle = { width: '100%' };
