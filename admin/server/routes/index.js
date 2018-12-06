@@ -4,7 +4,21 @@ var path = require('path');
 
 var templatePath = path.resolve(__dirname, '../templates/index.html');
 
-module.exports = function IndexRoute (req, res) {
+function renderFile (req, res, keystone, locals) {
+	ejs.renderFile(templatePath, locals, { delimiter: '%' }, function (err, str) {
+		res.setHeader("x-ua-compatible", "ie=edge");
+		res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+		res.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+		res.setHeader("Expires", "0"); // Proxies.
+		if (err) {
+			console.error('Could not render Admin UI Index Template:', err);
+			return res.status(500).send(keystone.wrapHTMLError('Error Rendering Admin UI', err.message));
+		}
+		res.send(str);
+	});
+}
+
+module.exports = function IndexRoute (req, res, isRender) {
 	var keystone = req.keystone;
 	var lists = {};
 	_.forEach(keystone.lists, function (list, key) {
@@ -18,7 +32,7 @@ module.exports = function IndexRoute (req, res) {
 		// but if it's undefined, default it to "/"
 		backUrl = keystone.get('front url') || '/';
 	}
-	if (keystone.get('rbac')) {
+	if (keystone.get('rbac') && req.user) {
 		// console.log(keystone.get('nav'));
 		const newNav = keystone.mergeNavOptionWithReservedCollections();
 		keystone.nav = keystone.initNav(newNav, req.user.role);
@@ -50,9 +64,12 @@ module.exports = function IndexRoute (req, res) {
 	/**
 	 * orphanedLists depends on keystone.nav. call it after rbac config
 	 */
-	var orphanedLists = keystone.getOrphanedLists(req.user.role).map(function (list) {
-		return _.pick(list, ['key', 'label', 'path']);
-	});
+	var orphanedLists = [];
+	if (req.user) {
+		keystone.getOrphanedLists(req.user.role).map(function (list) {
+			return _.pick(list, ['key', 'label', 'path']);
+		});
+	}
 	var keystoneData = {
 		adminPath: '/' + keystone.get('admin path'),
 		appversion: keystone.get('appversion'),
@@ -65,10 +82,6 @@ module.exports = function IndexRoute (req, res) {
 		nav: keystone.nav,
 		orphanedLists: orphanedLists,
 		signoutUrl: keystone.get('signout url'),
-		user: {
-			id: req.user.id,
-			name: UserList.getDocumentName(req.user) || '(no name)',
-		},
 		style: {
 			nav: keystone.get('nav style'),
 		},
@@ -109,6 +122,12 @@ module.exports = function IndexRoute (req, res) {
 		title: keystone.get('name') || 'NextNode',
 	};
 
+	if (req.user) {
+		keystoneData.user = {
+			id: req.user.id,
+			name: UserList.getDocumentName(req.user) || '(no name)',
+		};
+	};
 	/*
 	** Localization
 	*/
@@ -140,15 +159,8 @@ module.exports = function IndexRoute (req, res) {
 		locals.cloudinaryScript = cloudinary.cloudinary_js_config();
 	};
 
-	ejs.renderFile(templatePath, locals, { delimiter: '%' }, function (err, str) {
-		res.setHeader("x-ua-compatible", "ie=edge");
-		res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
-		res.setHeader("Pragma", "no-cache"); // HTTP 1.0.
-		res.setHeader("Expires", "0"); // Proxies.
-		if (err) {
-			console.error('Could not render Admin UI Index Template:', err);
-			return res.status(500).send(keystone.wrapHTMLError('Error Rendering Admin UI', err.message));
-		}
-		res.send(str);
-	});
+	if (isRender) {
+		return renderFile(req, res, keystone, locals);
+	}
+	return locals;
 };

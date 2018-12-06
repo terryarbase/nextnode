@@ -79,7 +79,7 @@ export {
 	setFilter,
 	clearFilter,
 	clearAllFilters,
-	setActiveFilters,
+	// setActiveFilters,
 	setActiveSearch,
 	setActiveColumns,
 	setActiveSort,
