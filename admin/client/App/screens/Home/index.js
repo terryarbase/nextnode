@@ -6,6 +6,7 @@
 import React from 'react';
 import { Container, Spinner } from '../../elemental';
 import { connect } from 'react-redux';
+import { translate } from "react-i18next";
 
 import Lists from './components/Lists';
 import Section from './components/Section';
@@ -37,6 +38,7 @@ var HomeView = React.createClass({
 	},
 	render () {
 		const spinner = this.getSpinner();
+		const { t } = this.props;
 		return (
 			<Container data-screen-id="home">
 				{
@@ -47,9 +49,14 @@ var HomeView = React.createClass({
 				<div className="dashboard-groups">
 					{(this.props.error) && (
 						<AlertMessages
-							alerts={{ error: { error:
-								"There is a problem with the network, we're trying to reconnect...",
-							} }}
+							alerts={
+								{ 
+									error: { 
+										error: t('networkError'),
+									},
+								}
+							}
+							t={t}
 						/>
 					)}
 					{/* Render flat nav */}
@@ -58,28 +65,34 @@ var HomeView = React.createClass({
 							counts={this.props.counts}
 							lists={Keystone.lists}
 							spinner={spinner}
+							t={t}
 						/>
 					) : (
 						<div>
 							{/* Render nav with sections */}
 							{Keystone.nav.sections.map((navSection) => {
 								return (
-									<Section key={navSection.key} id={navSection.key} label={navSection.label}>
+									<Section t={t}
+										key={navSection.key}
+										id={navSection.key} 
+										label={t(`nav:section_${navSection.key}`)}>
 										<Lists
 											counts={this.props.counts}
 											lists={navSection.lists}
 											spinner={spinner}
+											t={t}
 										/>
 									</Section>
 								);
 							})}
 							{/* Render orphaned lists */}
 							{Keystone.orphanedLists.length ? (
-								<Section label="Other" icon="octicon-database">
+								<Section t={t} label={t('landing:other')} icon="octicon-database">
 									<Lists
 										counts={this.props.counts}
 										lists={Keystone.orphanedLists}
 										spinner={spinner}
+										t={t}
 									/>
 								</Section>
 							) : null}
@@ -95,8 +108,8 @@ export {
 	HomeView,
 };
 
-export default connect((state) => ({
+export default translate(['message', 'landing', 'form', 'nav'])(connect((state) => ({
 	counts: state.home.counts,
 	loading: state.home.loading,
 	error: state.home.error,
-}))(HomeView);
+}))(HomeView));

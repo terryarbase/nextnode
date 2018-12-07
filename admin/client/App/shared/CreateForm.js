@@ -175,6 +175,8 @@ const CreateForm = React.createClass({
 			if (nameField.type === 'text') {
 				nameFieldProps.className = 'item-name-field';
 				nameFieldProps.placeholder = nameField.label;
+				nameFieldProps.t = this.props.t;
+				nameFieldProps.i18n = this.props.i18n
 				nameFieldProps.label = '';
 			}
 			form.push(React.createElement(Fields[nameField.type], nameFieldProps));
@@ -183,6 +185,7 @@ const CreateForm = React.createClass({
 		// Render inputs for all initial fields
 		Object.keys(list.initialFields).forEach(key => {
 			var field = list.fields[list.initialFields[key]];
+
 			// If there's something weird passed in as field type, render the
 			// invalid field type component
 			if (typeof Fields[field.type] !== 'function') {
@@ -214,7 +217,6 @@ const CreateForm = React.createClass({
 					},
 				};
 			}
-			console.log(fieldProps);
 			var element = React.createElement(Fields[field.type], fieldProps);
 			// If there was no focusRef set previously, set the current field to
 			// be the one to be focussed. Generally the first input field, if
@@ -271,7 +273,6 @@ const CreateForm = React.createClass({
 			}
 			// form.push(React.createElement(Fields[field.type], fieldProps));
 		});
-
 		return (
 			<Form layout="horizontal" onSubmit={this.submitForm}>
 				<Modal.Header
@@ -279,7 +280,7 @@ const CreateForm = React.createClass({
 					showCloseButton
 				/>
 				<Modal.Body>
-					<AlertMessages alerts={this.state.alerts} />
+					<AlertMessages alerts={this.state.alerts} list={list} t={t} />
 					{this.renderLanguageSelector()}
 					{form}
 				</Modal.Body>
@@ -312,5 +313,5 @@ const CreateForm = React.createClass({
 	},
 });
 
-export default translate('form')(CreateForm);
+export default translate(['form', 'message'])(CreateForm);
 // module.exports = CreateForm;

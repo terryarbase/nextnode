@@ -159,8 +159,8 @@ module.exports = function IndexRoute (req, res, isRender) {
 		locals.cloudinaryScript = cloudinary.cloudinary_js_config();
 	};
 
-	if (isRender) {
-		return renderFile(req, res, keystone, locals);
+	if (!isRender) {
+		return locals;
 	}
-	return locals;
+	renderFile(req, res, keystone, locals);
 };

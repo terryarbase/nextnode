@@ -11,7 +11,11 @@ const locales = {
    },
    footer:{  
       company:'四方创意',
-
+      // copyright: '版權所有2018-2022'
+   },
+   landing: {
+      item: '项资讯',
+      other: '其他',
    },
    setting:{  
       accountSetting:'修改我的个人资料',
@@ -23,10 +27,13 @@ const locales = {
       msg:'您的个人资料已成功更改。 您可以在下次登录时获取最新的个人资料。',
 
    },
-   error: {
+   message: {
+      operationError: '操作錯誤！ 請聯繫服務管理員。',
+      successSave: '內容已成功保存',
       validationTitle: '储存这个资讯时发生{{errorCount}}个错误',
       required: '{{field}}是必须填写',
       invalid: '请检查一下{{field}}的内容並不正确',
+      networkError: '网络存在问题，请检查网络并尝试刷新页面以重新连接！',
    },
    // createForm:{  
    //    createANew:'新增一个新的{{listName}}',

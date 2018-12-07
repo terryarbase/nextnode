@@ -11,6 +11,11 @@ const locales = {
    },
    footer:{  
       company:'Four Directions',
+      // copyright: 'Copyright IBM Corporation 1994, 2012'
+   },
+   landing: {
+      item: ' item{{postfix}}',
+      other: 'Other',
    },
    setting:{  
       accountSetting:'Change My Account Setting',
@@ -21,10 +26,13 @@ const locales = {
       cancel:'Cancel',
 
    },
-   error: {
+   message: {
+      operationError: 'Operation Error! Please contact the Service Administrator.',
+      successSave: 'The content has been saved.',
       validationTitle: 'There were {{errorCount}} errors saving the information',
       required: '{{field}} is required field',
       invalid: '{{field}} content is incorrect. Please check it.',
+      networkError: 'There is a problem with the network. Please make sure your network is worked and refresh the page to try again.',
    },
    // createForm:{  
    //    createANew:'Create a new {{listName}}',

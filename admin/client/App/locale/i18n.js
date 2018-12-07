@@ -3,19 +3,18 @@ import LanguageDetector from "i18next-browser-languagedetector";
 // language packs
 import locales from "./";
 
-console.log(locales);
 i18n.use(LanguageDetector).init({
 // we init with resources
 	resources: locales,
 
 	// direct use server cookie 
-	lng: Keystone.currentUILanguage,
-	fallbackLng: Keystone.currentUILanguage,
+	lng: Keystone.currentUILanguage || 'en',
+	fallbackLng: Keystone.currentUILanguage || 'en',
 	debug: false,
 	
 	// have a common namespace used around the full app
-	ns: ["translations"],
-	defaultNS: "translations",
+	ns: ["form"],
+	defaultNS: "form",
 	
 	keySeparator: false, // we use content as keys
 	
@@ -25,7 +24,8 @@ i18n.use(LanguageDetector).init({
 	},
 	
 	react: {
-		wait: true
+		wait: true,
+		nsMode: 'fallback',
 	}
 });
 

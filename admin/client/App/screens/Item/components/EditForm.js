@@ -528,6 +528,7 @@ var EditForm = React.createClass({
 			<form ref="editForm" className="EditForm-container">
 				{(this.state.alerts) ? <AlertMessages
 					alerts={this.state.alerts}
+					t={t}
 					list={this.props.list} /> : null}
 				<Grid.Row>
 					<Grid.Col large="three-quarters">
@@ -582,5 +583,5 @@ const styles = {
 	},
 };
 
-export default translate('form')(EditForm);
+export default translate(['form', 'message'])(EditForm);
 // module.exports = EditForm;

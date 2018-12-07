@@ -90,27 +90,42 @@ const getCurrentLanguage = (nextNode, req, res) => {
 
 module.exports = async function (req, res, next, nextNode) {
 	req.keystone = nextNode;
+	// use default initial project language
+	let defaultLanguage = nextNode.get('locale');
+	// get all current supported language from locale.json config
+	const supportLanguages = await getStaticLanguageFile(nextNode);
+	// get cookie language setting, no matter it is supporting localization
+	let { dataCookie, frontendCookie } = getCurrentLanguage(nextNode, req, res);
 
+	let localization = _.pick(supportLanguages, defaultLanguage);
+
+	req.t = nextNode.get('i18n');
+	req.t.setLocale(defaultLanguage);
+
+	// if localization is set, setup each of language pack and setLocale of i18n
 	if (nextNode.get('localization')) {
-		const localization = await getStaticLanguageFile(nextNode);
-		var defaultLanguage = _.find(localization, lang => lang.delegated).value;
-		// get cookies language for data and frontend
-		const { dataCookie, frontendCookie } = getCurrentLanguage(nextNode, req, res);
-		// special for translation of server-side language
-		req.t = nextNode.get('i18n');
+		defaultLanguage = _.find(supportLanguages, lang => lang.delegated).value || localization.value;
+		localization = { ...supportLanguages };
 		req.t.setLocale(frontendCookie);
-		req.locales = {
-			// localization language set
-			localization,
-			// default language to pickup the data
-			defaultLanguage,
-			// adminUI current data language, serve the any requested lang first before cookie lang
-			langd: dataCookie,
-			// req.headers.langd || req.query.langd || req.body.langd || dataCookie || defaultLanguage,
-			// adminUI current layout language
-			langf: frontendCookie,
-		};
 	}
+	// check if the cookie value is valid for supporting language pick
+	dataCookie = (localization[dataCookie] && localization[dataCookie].value) 
+		|| localization[defaultLanguage].value;
+	frontendCookie = (localization[frontendCookie] && localization[frontendCookie].value) 
+		|| localization[defaultLanguage].value;
+
+	req.locales = {
+		// localization language set
+		localization,
+		// default language to pickup the data
+		defaultLanguage,
+		// adminUI current data language, serve the any requested lang first before cookie lang
+		langd: req.headers.langd || req.query.langd || req.body.langd || dataCookie,
+		// adminUI current layout language
+		langf: frontendCookie,
+	};
+	// }
+
 	req.appLanguage = await getStaticAppLanguageSectionFile(nextNode);
 	req.menuLanguage = await getStaticNavLanguageSectionFile(nextNode);
 

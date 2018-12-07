@@ -3,10 +3,12 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import { plural } from '../../../../utils/string';
+import { getTranslatedLabel } from '../../../../utils/locale';
 import ListTile from './ListTile';
 
 export class Lists extends React.Component {
 	render () {
+		const { t, counts } = this.props;
 		return (
 			<div className="dashboard-group__lists">
 				{_.map(this.props.lists, (list, key) => {
@@ -20,10 +22,14 @@ export class Lists extends React.Component {
 						<ListTile
 							key={list.path}
 							path={list.path}
-							label={list.label}
+							label={t(`form:table_${list.key}`)}
 							hideCreateButton={isNoCreate}
 							href={href}
-							count={plural(this.props.counts[listKey], '* Item', '* Items')}
+							count={
+								`${counts[listKey]}${t('landing:item', {
+									postfix: counts[listKey] > 1 ? 's' : '',
+								})}`
+							}
 							spinner={this.props.spinner}
 						/>
 					);

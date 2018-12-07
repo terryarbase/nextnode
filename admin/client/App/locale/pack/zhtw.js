@@ -11,7 +11,11 @@ const locales = {
    },
    footer:{  
       company:'四方創意',
-
+      // copyright: '版权所有2018-2022'
+   },
+   landing: {
+      item: '項資訊',
+      other: '其他',
    },
    setting:{  
       accountSetting:'修改我的個人資料',
@@ -23,10 +27,13 @@ const locales = {
       cancel:'取消',
       msg: '您的個人資料已成功更改。您可以在下次登錄時獲取最新的個人資料。',
    },
-   error: {
+   message: {
+      operationError: '操作错误！ 请联系服务管理员。',
+      successSave: '内容已成功保存',
       validationTitle: '儲存這個資訊時發生{{errorCount}}個錯誤',
       required: '{{field}}是必須填寫',
       invalid: '請檢查一下{{field}}的内容並不正確',
+      networkError: '網絡存在問題，請檢查網絡並嘗試刷新頁面以重新連接！',
    },
    // createForm:{  
    //    createANew:'新增一個新的{{listName}}',

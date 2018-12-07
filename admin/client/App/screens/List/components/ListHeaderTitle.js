@@ -15,7 +15,7 @@ function ListHeaderTitle ({
 	...props
 }) {
 	return (
-		<h2 className={css(classes.heading)} {...props}>
+		<h2 className={css(classes.heading)}>
 			{t(`table_${list.key}`)}
 			<ListSort
 				t={t}

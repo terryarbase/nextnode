@@ -35,7 +35,7 @@ var AlertMessages = React.createClass({
 	},
 	renderValidationErrors () {
 		let errors = this.props.alerts.error.detail;
-		const { t, list, localization } = this.props;
+		const { t, list={}, localization } = this.props;
 		if (errors.name === 'ValidationError') {
 			errors = errors.errors;
 		}
@@ -45,7 +45,7 @@ var AlertMessages = React.createClass({
 			const { [path]: { type, fieldType, error, lang } } = errors;
 			const field = _.startCase(
 				getTranslatedLabel(t, {
-					listKey: list.key,
+					listKey: list.key || '',
 					content: path,
 					prefix: 'field',
 					namespace: 'form',
@@ -84,7 +84,7 @@ var AlertMessages = React.createClass({
 		if (errorCount > 1) {
 			alertContent = (
 				<div>
-					<h4>{t('validationTitle', { errorCount })}</h4>
+					<h4>{t('message:validationTitle', { errorCount })}</h4>
 					<ul>{messages}</ul>
 				</div>
 			);
@@ -95,8 +95,8 @@ var AlertMessages = React.createClass({
 		return <Alert color="danger">{alertContent}</Alert>;
 	},
 	render () {
+		const { t } = this.props;
 		let { error, success } = this.props.alerts;
-
 		if (error) {
 			// Render error alerts
 			switch (_.toLower(error.error)) {
@@ -109,17 +109,16 @@ var AlertMessages = React.createClass({
 						return <Alert color="danger">{upcase(error.error)}</Alert>;
 					}
 				default:
-					return <Alert color="danger">{upcase(error.error)}</Alert>;
+					return <Alert color="danger">{t('message:operationError')}</Alert>;
 			}
 		}
 
 		if (success) {
 			// Render success alerts
-			return <Alert color="success">{upcase(success.success)}</Alert>;
+			return <Alert color="success">{t('message:successSave')}</Alert>;
 		}
-
 		return null; // No alerts, render nothing
 	},
 });
 
-module.exports = translate('error', 'form')(AlertMessages);
+module.exports = AlertMessages;

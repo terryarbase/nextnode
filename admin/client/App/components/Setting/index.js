@@ -124,7 +124,7 @@ var Setting = React.createClass({
 					showCloseButton
 				/>
 				<Modal.Body>
-					{(this.state.alerts) ? <AlertMessages alerts={this.state.alerts} /> : null}
+					{(this.state.alerts) ? <AlertMessages alerts={this.state.alerts} list={list} t={t} /> : null}
 					{ form }
 				</Modal.Body>
 				<Modal.Footer>
@@ -161,5 +161,5 @@ var Setting = React.createClass({
 	},
 });
 
-export default translate('setting')(Setting);
+export default translate(['setting', 'form', 'message'])(Setting);
 // module.exports = Setting;

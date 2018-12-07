@@ -15,6 +15,7 @@ module.exports = [
 	'elemental',
 	'expression-match',
 	'i',
+	'i18n',
 	'i18next',
 	'i18next-browser-languagedetector',
 	'list-to-array',
