@@ -11,6 +11,7 @@ import xhr from 'xhr';
 import AlertMessages from '../../shared/AlertMessages';
 import { Button, Form, Modal } from '../../elemental';
 import { translate } from "react-i18next";
+import { getTranslatedLabel } from '../../../utils/locale';
 
 const schema = 'User';
 
@@ -112,6 +113,12 @@ var Setting = React.createClass({
 		const form = fieldToBe.reduce((f, current) => {
 			const field = list.fields[current];
 			const fieldPorps = this.getFieldProps(field);
+			fieldPorps.label = getTranslatedLabel(t, {
+				listKey: list.key, 
+				prefix: 'field', 
+				content: fieldPorps.path,
+				altContent: fieldPorps.label,
+			}),
 			f = _.concat([], f, [
 				React.createElement(Fields[field.type], fieldPorps),
 			]);
