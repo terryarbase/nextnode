@@ -90,7 +90,7 @@ var Keystone = function () {
 			fontHover: '#ffe53d'
 		},
 
-		'text separator': ',',
+		'text separator': ', ',
 	};
 	this._redirects = {};
 

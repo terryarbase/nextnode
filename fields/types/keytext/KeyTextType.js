@@ -47,7 +47,7 @@ util.inherits(KeyText, FieldType);
 KeyText.prototype.format = function (item, separator) {
 	const sep = (separator && typeof separator === 'string') || this.separator;
 	const value = this.getItemFromElasticData(item, this.path, separator);
-	return _.values(value).pick('text').join(sep);
+	return _.map(value, v => `(${v.key}: ${v.value || ''})`).join(sep);
 };
 
 /**

@@ -208,10 +208,18 @@ location.prototype.format = function (item, values, delimiter) {
 		return item.get(this.paths.serialised);
 	}
 	var paths = this.paths;
-	values = values.split(' ').map(function (i) {
-		return item.get(paths[i]);
-	});
-	return _.compact(values).join(delimiter || ', ');
+	if (typeof values === 'string') {
+		values = values.split(' ').map(function (i) {
+			return item.get(paths[i]);
+		});
+		return _.compact(values).join(delimiter || ' ');
+	} else if (typeof values === 'object') {
+		values = this.getItemFromElasticData(item, this.path, values);
+		// console.log(values);
+		return _.keys(values).map(k => values[k]).join(' ');
+	}
+	return '';
+	// return _.compact(values).join(delimiter || ', ');
 };
 
 /**
