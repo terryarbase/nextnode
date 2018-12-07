@@ -13,6 +13,7 @@ import { getTranslatedLabel } from '../../../../utils/locale';
 const FORMAT_OPTIONS = [
 	{ label: 'EXCEL', value: 'excel' },
 	{ label: 'JSON', value: 'json' },
+	{ label: 'TEXT', value: 'txt' },
 ];
 
 var ListDownloadForm = React.createClass({

@@ -89,7 +89,7 @@ module.exports = function createDynamicRouter (keystone) {
 	// lists
 	router.all('/api/counts', require('../api/counts'));
 	router.get('/api/:list', initList, checkPermission(1, { allowBasic: true }), require('../api/list/get'));
-	router.get('/api/:list/:format(export.excel|export.json)', initList, checkPermission(1), require('../api/list/download'));
+	router.get('/api/:list/:format(export.excel|export.json|export.txt)', initList, checkPermission(1), require('../api/list/download'));
 	router.post('/api/:list/create', initList, checkPermission(2), require('../api/list/create'));
 	router.post('/api/:list/update', initList, checkPermission(2), require('../api/list/update'));
 	// only refer to the current login user operations

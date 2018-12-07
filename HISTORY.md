@@ -1,5 +1,16 @@
 # Next-nodecms Changelog
 
+## 1.0.3
+### About Critical hotfix issues, Missing Multilingual Parts
+
+Common Improvements:
+* Added download as a text file format
+
+Multilingual Improvements:
+* Fixed cookie language setting cannot found in suporting language pack
+* Added multilingual to AdminUI Landing Dashboard
+* Added multilingual to Account Setting Popup
+
 ## 1.0.2
 ### About Multilingual and Layout, Delegated Model Enhancements, Delegated Options List
 Terry Chan 11/11/2018 (Last Updated at 30/11/2018)

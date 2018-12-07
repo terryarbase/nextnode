@@ -498,9 +498,9 @@ List.prototype.loadItems = function (options, callback) {
 List.prototype.getDownloadURL = function (options) {
 	const url = Keystone.adminPath + '/api/' + this.path;
 	const parts = [];
-	if (options.format !== 'json') {
-		options.format = 'excel';
-	}
+	// if (options.format !== 'json') {
+	// 	options.format = 'excel';
+	// }
 	parts.push(options.search ? 'search=' + options.search : '');
 	parts.push('ts=' + Math.random());
 	parts.push(options.filters.length ? 'filters=' + JSON.stringify(getFilters(options.filters)) : '');

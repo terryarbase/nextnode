@@ -1,7 +1,7 @@
 /*
 TODO: Needs Review and Spec
 */
-
+var _ = require('lodash');
 var moment = require('moment');
 var assign = require('object-assign');
 // const Json2csvParser = require('json2csv').Parser;
@@ -13,7 +13,7 @@ module.exports = function (req, res, next) {
 	var options = {
 		langd: req.locales.langd,
 	};
-	var format = req.params.format.split('.')[1]; // json or csv
+	var format = req.params.format.split('.')[1]; // json or csv or txt
 	var where = {};
 	var filters = req.query.filters;
 	if (filters && typeof filters === 'string') {
@@ -41,7 +41,7 @@ module.exports = function (req, res, next) {
 	.then(function (results) {
 		var data;
 		var fields = [];
-		if (format === 'excel') {
+		if (format === 'excel' || format === 'txt') {
 			data = results.map(function (item) {
 				var row = req.list.getCSVData(item, {
 					...options,
@@ -60,6 +60,8 @@ module.exports = function (req, res, next) {
 				});
 				return row;
 			});
+		}
+		if (format === 'excel') {
 			/*
 			** Terry Chan 04/08/2018
 			*/
@@ -68,11 +70,27 @@ module.exports = function (req, res, next) {
             	Sheets:{},
             };
 			wb.Sheets['datasheet'] = xlsx.utils.json_to_sheet(data);
-            const fileName = req.list.path + '-' + moment().format('YYYYMMDD-HHMMSS') + '.xlsx';
+            const fileName = req.list.path + '-' + moment().format('YYYYMMDDHHMMSS') + '.xlsx';
             res.setHeader('Content-disposition', 'attachment; filename=' + fileName);
             res.setHeader('Content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             const wbout = xlsx.write(wb, { bookType: 'xlsx', type: 'buffer'});
             res.send(new Buffer(wbout));
+		} else if (format === 'txt') {
+			var texts = [fields.join(keystone.get('text separator'))];
+			texts = [
+				...texts,
+				..._.reduce(data, (a, row) => {
+					return [
+						...a,
+						fields.map(f => row[f]).join(keystone.get('text separator'))
+					];
+				}, []),
+			];
+
+			const fileName = req.list.path + '-' + moment().format('YYYYMMDDHHMMSS') + '.txt';
+			res.setHeader('Content-type', "application/octet-stream");
+			res.setHeader('Content-disposition', `attachment; filename=${fileName}`);
+			res.send(texts.join('\r\n'));
 		} else {
 			data = results.map(function (item) {
 				return req.list.getData(item, req.query.select, req.query.expandRelationshipFields, {

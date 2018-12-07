@@ -89,6 +89,8 @@ var Keystone = function () {
 			fontColor: '#ffffff',
 			fontHover: '#ffe53d'
 		},
+
+		'text separator': ',',
 	};
 	this._redirects = {};
 

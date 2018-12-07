@@ -31,7 +31,7 @@ module.exports = {
 		borderColor: theme.input.border.color.default,
 		borderRadius: '0.4em',
 		display: 'flex',
-		fontSize: theme.font.size.small,
+		fontSize: theme.font.size.xxsmall,
 		paddingLeft: 1,
 		paddingRight: 1,
 	},

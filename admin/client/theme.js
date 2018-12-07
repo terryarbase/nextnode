@@ -31,7 +31,7 @@ theme.breakpoint = {
 theme.container = {
 	gutter: 20,
 	size: {
-		small:  750,
+		small:  600,
 		medium: 970,
 		large: 1170,
 	},
