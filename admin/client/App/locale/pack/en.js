@@ -27,11 +27,14 @@ const locales = {
 
    },
    message: {
+      noItemMerchantId: 'No item matching id',
+      goBackTo: 'Go back to',
       operationError: 'Operation Error! Please contact the Service Administrator.',
       successSave: 'The content has been saved.',
       validationTitle: 'There were {{errorCount}} errors saving the information',
       required: '{{field}} is required field',
       invalid: '{{field}} content is incorrect. Please check it.',
+      unknownError: 'An unknown error has ocurred, please refresh.',
       networkError: 'There is a problem with the network. Please make sure your network is worked and refresh the page to try again.',
    },
    // createForm:{  
@@ -159,6 +162,8 @@ const locales = {
       pageShow:'Showing {{start}} to {{end}} of {{total}}',
       selectAllRows: 'Select all rows',
       disselectAllRows: 'Unselect all rows',
+      nolistHeader: 'Let Create a {{listName}}',
+      nolistDesc: 'The {{listName}} list must only has one item and you are allowed to create a {{listName}} information. The page will be redirect to the unique information after create the first record.',
    },
    form: {  
       ...{
@@ -169,6 +174,7 @@ const locales = {
             previousMonth: 'Previous',
          },
          'day-picker-month': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+         relationship: 'Relationships',
          createANew:'Create a new {{listName}}',
          create:'Create',
          select: 'Please select...',

@@ -6,6 +6,9 @@
 Common Improvements:
 * Added download as a text file format
 
+List Improvements:
+* Added disable listview option
+
 Multilingual Improvements:
 * Fixed cookie language setting cannot found in suporting language pack
 * Added multilingual to AdminUI Landing Dashboard
