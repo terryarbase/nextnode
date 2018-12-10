@@ -4,6 +4,7 @@
 
 import React, { PropTypes } from 'react';
 import { Button, Modal } from '../elemental';
+import { translate } from "react-i18next";
 
 function ConfirmationDialog ({
 	cancelLabel,
@@ -13,6 +14,7 @@ function ConfirmationDialog ({
 	html,
 	isOpen,
 	onCancel,
+	t,
 	onConfirmation,
 	...props
 }) {
@@ -35,10 +37,10 @@ function ConfirmationDialog ({
 			)}
 			<Modal.Footer>
 				<Button autoFocus size="small" data-button-type="confirm" color={confirmationType} onClick={onConfirmation}>
-					{confirmationLabel}
+					{confirmationLabel || t('confirm')}
 				</Button>
 				<Button size="small" data-button-type="cancel" variant="link" color="cancel" onClick={onCancel}>
-					{cancelLabel}
+					{cancelLabel || t('cancel')}
 				</Button>
 			</Modal.Footer>
 		</Modal.Dialog>
@@ -53,10 +55,10 @@ ConfirmationDialog.propTypes = {
 	onConfirmation: PropTypes.func,
 };
 ConfirmationDialog.defaultProps = {
-	cancelLabel: 'Cancel',
-	confirmationLabel: 'Okay',
+	cancelLabel: null,
+	confirmationLabel: null,
 	confirmationType: 'danger',
 	isOpen: false,
 };
 
-export default ConfirmationDialog;
+export default translate('form')(ConfirmationDialog);
