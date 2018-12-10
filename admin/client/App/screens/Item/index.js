@@ -9,6 +9,7 @@ import React from 'react';
 import { Center, Container, Spinner } from '../../elemental';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import { translate } from "react-i18next";
 
 import { listsByKey } from '../../../utils/lists';
 import CreateForm from '../../shared/CreateForm';
@@ -84,7 +85,7 @@ var ItemView = React.createClass({
 		return (
 			<div className="Relationships">
 				<Container>
-					<h2>Relationships</h2>
+					<h2>{t('form:relationship')}</h2>
 					{keys.map(key => {
 						const relationship = relationships[key];
 						const refList = listsByKey[relationship.ref];
@@ -109,6 +110,7 @@ var ItemView = React.createClass({
 	// Handle errors
 	handleError (error) {
 		const detail = error.detail;
+		const { t } = this.props;
 		if (detail) {
 			// Item not found
 			if (detail.name === 'CastError'
@@ -116,7 +118,7 @@ var ItemView = React.createClass({
 				return (
 					<Container>
 						<Alert color="danger" style={{ marginTop: '2em' }}>
-							No item matching id "{this.props.routeParams.itemId}".&nbsp;
+							{t('noItemMerchantId')} "{this.props.routeParams.itemId}"&nbsp;
 							<Link to={`${Keystone.adminPath}/${this.props.routeParams.listId}`}>
 								Go back to {this.props.routeParams.listId}?
 							</Link>
@@ -131,7 +133,7 @@ var ItemView = React.createClass({
 				return (
 					<Container>
 						<Alert color="danger" style={{ marginTop: '2em' }}>
-							We encountered some network problems, please refresh.
+							{t('networkError')}
 						</Alert>
 					</Container>
 				);
@@ -140,7 +142,7 @@ var ItemView = React.createClass({
 		return (
 			<Container>
 				<Alert color="danger" style={{ marginTop: '2em' }}>
-					An unknown error has ocurred, please refresh.
+					{t('unknownError')}
 				</Alert>
 			</Container>
 		);
@@ -197,7 +199,7 @@ var ItemView = React.createClass({
 	},
 });
 
-module.exports = connect(state => {
+module.exports = translate(['message', 'form'])(connect(state => {
 	const { lists } = state;
 	var isLocale = false;
 	if (lists.currentList) {
@@ -215,4 +217,4 @@ module.exports = connect(state => {
 		relationshipData: state.item.relationshipData,
 		drag: state.item.drag,
 	};
-})(ItemView);
+})(ItemView));

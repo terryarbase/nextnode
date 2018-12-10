@@ -5,34 +5,10 @@ module.exports = function (req, res) {
 	if (!keystone.security.csrf.validate(req)) {
 		return res.apiError(403, req.t.__('msg_invalid_csrf'));
 	}
-	const { body, locales, list: { options: { multilingual }, fields } } = req;
+	const { body, locales, list: { options: { multilingual, nolist }, fields } } = req;
 	// var newData = {};
 	const newData = req.list.prepareCorrectParam(body);
-	/*
-	** if turn on localization and the list is supporting multilingual
-	** then convert the multilingual field to json object also
-	*/
-	// if (locales && multilingual && _.keys(body).length) {
-	// 	_.forOwn(body, (b, key) => {
-	// 		if (fields[key] && fields[key].options.multilingual) {
-	// 			newData = {
-	// 				...newData,
-	// 				...{
-	// 					[key]: req.list.convertJson(b),
-	// 				},
-	// 			};
-	// 		} else {
-	// 			newData = {
-	// 				...newData,
-	// 				...{
-	// 					[key]: b,
-	// 				},
-	// 			};
-	// 		}
-	// 	});
-	// } else {
-	// 	newData = { ...body };
-	// }
+		
 	const item = new req.list.model();
 	const options = {
 		files: req.files,

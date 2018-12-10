@@ -26,6 +26,8 @@ import ListHeaderTitle from './components/ListHeaderTitle';
 import ListHeaderToolbar from './components/ListHeaderToolbar';
 import ListManagement from './components/ListManagement';
 
+import NoListView from './components/NoListView';
+
 import ConfirmationDialog from '../../shared/ConfirmationDialog';
 import CreateForm from '../../shared/CreateForm';
 import FlashMessages from '../../shared/FlashMessages';
@@ -93,6 +95,13 @@ const ListView = React.createClass({
 		if ((isReady && checkForQueryChange(nextProps, this.props)) || isRealTimeChanged) {
 			this.setState({ realTimeInfo: null, realTimeCol: null });
 			this.props.dispatch(selectList(nextProps.params.listId));
+		}
+		// the list record is loaded and the item result at least one item
+		if (this.props.loading && !nextProps.loading) {
+			if (nextProps.items && nextProps.items.results && nextProps.items.results.length) {
+				const { items: { results } } = nextProps;
+				this.context.router.push(`${Keystone.adminPath}/${nextProps.currentList.path}/${results[0].id}`);
+			}
 		}
 	},
 	componentWillUnmount () {
@@ -616,11 +625,12 @@ const ListView = React.createClass({
 				&& !this.props.active.filters.length;
 	},
 	renderBlankState () {
-		const { currentList } = this.props;
-
+		// if nolist, use other noListView instead
 		if (!this.showBlankState()) return null;
+		const { t, currentList } = this.props;
 
-		const { t } = this.props;
+		if (currentList.nolist) return this.renderNoListView();
+
 		// create and nav directly to the item view, or open the create modal
 		const onClick = currentList.autocreate
 			? this.createAutocreate
@@ -649,7 +659,8 @@ const ListView = React.createClass({
 		);
 	},
 	renderActiveState () {
-		if (this.showBlankState()) return null;
+		const { currentList: { nolist } } = this.props;
+		if (this.showBlankState() || nolist) return null;
 
 		const containerStyle = {
 			transition: 'max-width 160ms ease-out',
@@ -739,6 +750,18 @@ const ListView = React.createClass({
 					}
 				</h2>
 			</BlankState>
+		);
+	},
+	renderNoListView () {
+		return (
+			<NoListView
+				t={this.props.t}
+				items={this.props.items}
+				isOpen={this.state.showCreateForm}
+				router={this.context.router}
+				onCreate={this.openCreateModal}
+				list={this.props.currentList}
+			/>
 		);
 	},
 	renderSpinner () {

@@ -42,6 +42,9 @@ export const EditFormHeader = React.createClass({
 		}
 	},
 	renderDrilldown () {
+		if (this.props.list.nolist) {
+			return null;
+		}
 		return (
 			<ToolbarSection left>
 				{this.renderDrilldownItems()}
@@ -105,6 +108,9 @@ export const EditFormHeader = React.createClass({
 	},
 	renderSearch () {
 		var list = this.props.list;
+		if (list.nolist) {
+			return null;
+		}
 		return (
 			<form action={`${Keystone.adminPath}/${list.path}`} className="EditForm__header__search">
 				<EditFormHeaderSearch
@@ -129,6 +135,9 @@ export const EditFormHeader = React.createClass({
 		);
 	},
 	renderInfo () {
+		if (this.props.list.nolist) {
+			return null;
+		}
 		return (
 			<ToolbarSection right>
 				{this.renderCreateButton()}
@@ -136,9 +145,11 @@ export const EditFormHeader = React.createClass({
 		);
 	},
 	renderCreateButton () {
-		const { nocreate, autocreate, singular } = this.props.list;
-
-		if (nocreate) return null;
+		const { nocreate, nolist } = this.props.list;
+		if (nocreate || nolist) {
+			return null;
+		}
+		const { autocreate, singular } = this.props.list;
 		const { t } = this.props;
 		let props = {};
 		if (autocreate) {
