@@ -7,6 +7,7 @@ import React from 'react';
 // import { findDOMNode } from 'react-dom'; // TODO re-implement focus when ready
 import numeral from 'numeral';
 import _ from 'lodash';
+import { translate } from "react-i18next";
 import { connect } from 'react-redux';
 
 import {
@@ -162,19 +163,20 @@ const ListView = React.createClass({
 	},
 	massDelete () {
 		const { checkedItems } = this.state;
+		const { t } = this.props;
 		const list = this.props.currentList;
 		const itemCount = pluralize(checkedItems, ('* ' + list.singular.toLowerCase()), ('* ' + list.plural.toLowerCase()));
 		const itemIds = Object.keys(checkedItems);
 		this.setState({
 			confirmationDialog: {
 				isOpen: true,
-				label: 'Delete',
+				label: t('delete'),
 				body: (
 					<div>
-						Are you sure you want to delete {itemCount}?
+						{t('deleteAskMsg')}?
 						<br />
 						<br />
-						This cannot be undone.
+						{t('cannotUndo')}
 					</div>
 				),
 				onConfirmation: () => {
@@ -239,13 +241,14 @@ const ListView = React.createClass({
 		return formData;
 	},
 	realTimeSave () {
+		const { t } = this.props;
 		this.setState({
 			confirmationDialog: {
 				isOpen: true,
-				label: 'Save',
+				label: t('save'),
 				body: (
 					<div>
-						Are you sure you want to save those items?
+						{t('saveAskMsg')}
 					</div>
 				),
 				onConfirmation: () => {
@@ -266,9 +269,10 @@ const ListView = React.createClass({
 	},
 	renderConfirmationDialog () {
 		const props = this.state.confirmationDialog;
+		const { t } = this.props;
 		return (
 			<ConfirmationDialog
-				confirmationLabel={props.label}
+				confirmationLabel={t('confirm')}
 				isOpen={props.isOpen}
 				onCancel={this.removeConfirmationDialog}
 				onConfirmation={props.onConfirmation}
@@ -470,17 +474,17 @@ const ListView = React.createClass({
 		}
 
 		e.preventDefault();
-
+		const { t } = this.props;
 		this.setState({
 			confirmationDialog: {
 				isOpen: true,
-				label: 'Delete',
+				label: t('Delete'),
 				body: (
 					<div>
-						Are you sure you want to delete <strong>{item.name}</strong>?
+						{t('deleteAskMsg')}?
 						<br />
 						<br />
-						This cannot be undone.
+						{t('cannotUndo')}
 					</div>
 				),
 				onConfirmation: () => {
@@ -616,6 +620,7 @@ const ListView = React.createClass({
 
 		if (!this.showBlankState()) return null;
 
+		const { t } = this.props;
 		// create and nav directly to the item view, or open the create modal
 		const onClick = currentList.autocreate
 			? this.createAutocreate
@@ -624,7 +629,7 @@ const ListView = React.createClass({
 		// display the button if create allowed
 		const button = !currentList.nocreate ? (
 			<GlyphButton color="success" glyph="plus" position="left" onClick={onClick} data-e2e-list-create-button="no-results">
-				Create {currentList.singular}
+				{t('create')}
 			</GlyphButton>
 		) : null;
 
@@ -633,11 +638,11 @@ const ListView = React.createClass({
 				{(this.props.error) ? (
 					<FlashMessages
 						messages={{ error: [{
-							title: "There is a problem with the network, we're trying to reconnect...",
+							title: t('message:networkError'),
 						}] }}
 					/>
 				) : null}
-				<BlankState heading={`No ${this.props.currentList.plural.toLowerCase()} found...`} style={{ marginTop: 40 }}>
+				<BlankState heading={t('filter:noresult')} style={{ marginTop: 40 }}>
 					{button}
 				</BlankState>
 			</Container>
@@ -655,6 +660,7 @@ const ListView = React.createClass({
 		if (!this.state.constrainTableWidth) {
 			containerStyle.maxWidth = '100%';
 		}
+		const { t } = this.props;
 		return (
 			<div>
 				{this.renderHeader()}
@@ -669,7 +675,7 @@ const ListView = React.createClass({
 					{(this.props.error) ? (
 						<FlashMessages
 							messages={{ error: [{
-								title: "There is a problem with the network, we're trying to reconnect..",
+								title: t('message:networkError'),
 							}] }}
 						/>
 					) : null}
@@ -713,10 +719,13 @@ const ListView = React.createClass({
 	renderNoSearchResults () {
 		if (this.props.items.results.length) return null;
 		let matching = this.props.active.search;
+		const { t } = this.props;
 		if (this.props.active.filters.length) {
-			matching += (matching ? ' and ' : '') + pluralize(this.props.active.filters.length, '* filter', '* filters');
+			matching += (matching ? t('filter:and') : '') + t('filter:filter', {
+				postfix: this.props.active.filters.length > 1 ? '' : 's',
+			})
 		}
-		matching = matching ? ' found matching ' + matching : '.';
+		matching = matching ? t('filter:matching') + matching : '.';
 		return (
 			<BlankState style={{ marginTop: 20, marginBottom: 20 }}>
 				<Glyph
@@ -725,7 +734,9 @@ const ListView = React.createClass({
 					style={{ marginBottom: 20 }}
 				/>
 				<h2 style={{ color: 'inherit' }}>
-					No {this.props.currentList.plural.toLowerCase()}{matching}
+					{
+						t('filter:noresult')
+					}
 				</h2>
 			</BlankState>
 		);
@@ -779,7 +790,7 @@ const ListView = React.createClass({
 	},
 });
 
-module.exports = connect(state => {
+module.exports = translate(['form', 'message', 'filter'])(connect(state => {
 	const { lists } = state;
 	var isLocale = false;
 	if (lists.currentList) {
@@ -802,4 +813,4 @@ module.exports = connect(state => {
 		realLoading: state.lists.realTime.isLoading,
 		realError: state.lists.realTime.error,
 	};
-})(ListView);
+})(ListView));
