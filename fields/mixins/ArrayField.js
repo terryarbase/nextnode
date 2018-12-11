@@ -79,10 +79,11 @@ module.exports = {
 	},
 
 	renderField: function () {
+		const { t } = this.props;
 		return (
 			<div>
 				{this.state.values.map(this.renderItem)}
-				<Button ref="button" onClick={this.addItem}>Add item</Button>
+				<Button ref="button" onClick={this.addItem}>{t('addItem')}</Button>
 			</div>
 		);
 	},
