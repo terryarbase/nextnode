@@ -98,7 +98,10 @@ const ListView = React.createClass({
 		}
 		// the list record is loaded and the item result at least one item
 		if (this.props.loading && !nextProps.loading) {
-			if (nextProps.items && nextProps.items.results && nextProps.items.results.length) {
+			if (nextProps.items && 
+				nextProps.items.results && 
+				nextProps.items.results.length && 
+				nextProps.currentList.nolist) {
 				const { items: { results } } = nextProps;
 				this.context.router.push(`${Keystone.adminPath}/${nextProps.currentList.path}/${results[0].id}`);
 			}
