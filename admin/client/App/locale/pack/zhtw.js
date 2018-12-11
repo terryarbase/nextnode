@@ -24,16 +24,18 @@ const locales = {
       cancel:'取消',
       newPassword:'新密碼',
       confirmPwd:'確認新密碼',
-      cancel:'取消',
       msg: '您的個人資料已成功更改。您可以在下次登錄時獲取最新的個人資料。',
    },
    message: {
+      noItemMerchantId: '没有项目匹配ID',
+      goBackTo: '回去',
       operationError: '操作错误！ 请联系服务管理员。',
       successSave: '内容已成功保存',
       validationTitle: '儲存這個資訊時發生{{errorCount}}個錯誤',
       required: '{{field}}是必須填寫',
       invalid: '請檢查一下{{field}}的内容並不正確',
-      networkError: '網絡存在問題，請檢查網絡並嘗試刷新頁面以重新連接！',
+      unknownError: '發生了未知錯誤，請刷新頁面以重新連接!',
+      networkError: '網絡存在問題，請檢查網絡並嘗試刷新頁面以重新連接!',
    },
    // createForm:{  
    //    createANew:'新增一個新的{{listName}}',
@@ -161,6 +163,8 @@ const locales = {
       pageShow:'顯示總數:{{total}} ({{start}}至{{end}})',
       selectAllRows: '選擇所有行',
       disselectAllRows: '取消選擇所有行',
+      nolistHeader: '立即建立一個{{listName}}',
+      nolistDesc: '{{listName}}页面只能创建一个项目，您可以立刻创建这个唯一{{listName}}项目。 创建第一条记录后，页面将重定向到这个项目。',
    },
    form:{  
       ...{
@@ -173,6 +177,7 @@ const locales = {
          'day-picker-month': ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
          createANew:'新增一個新的{{listName}}',
          create:'新增',
+         relationship: '關聯連結',
          select: '請選擇...',
          selectWithListname: '請選擇{{listName}}...',
          fileReaderNotSupport:'瀏覽器不支援文件讀取器',

@@ -98,10 +98,14 @@ const ListView = React.createClass({
 		}
 		// the list record is loaded and the item result at least one item
 		if (this.props.loading && !nextProps.loading) {
+<<<<<<< HEAD
 			if (nextProps.items && 
 				nextProps.items.results && 
 				nextProps.items.results.length && 
 				nextProps.currentList.nolist) {
+=======
+			if (nextProps.items && nextProps.items.results && nextProps.items.results.length) {
+>>>>>>> 89cbcf44ca5337307b7aa21c5ad3605bd203cf96
 				const { items: { results } } = nextProps;
 				this.context.router.push(`${Keystone.adminPath}/${nextProps.currentList.path}/${results[0].id}`);
 			}

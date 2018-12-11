@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"zhcn":{"section_system":"系统设置","section_localization":"语言环境","section_user":"用户"},"zhtw":{"section_system":"系統相關","section_localization":"語言環境","section_user":"用户"},"en":{"section_system":"System","section_localization":"Localization","section_user":"User"}}
+=======
+{"zhcn":{"section_system":"System","section_localization":"Localization","section_common":"Common"},"zhtw":{"section_system":"System","section_localization":"Localization","section_common":"Common"},"en":{"section_system":"System","section_localization":"Localization","section_common":"Common"}}
+>>>>>>> 89cbcf44ca5337307b7aa21c5ad3605bd203cf96

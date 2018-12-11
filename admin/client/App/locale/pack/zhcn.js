@@ -28,11 +28,14 @@ const locales = {
 
    },
    message: {
+      noItemMerchantId: '沒有項目匹配ID',
+      goBackTo: '回去',
       operationError: '操作錯誤！ 請聯繫服務管理員。',
       successSave: '內容已成功保存',
       validationTitle: '储存这个资讯时发生{{errorCount}}个错误',
       required: '{{field}}是必须填写',
       invalid: '请检查一下{{field}}的内容並不正确',
+      unknownError: '发生了未知错误，请刷新页面以重新连接!',
       networkError: '网络存在问题，请检查网络并尝试刷新页面以重新连接！',
    },
    // createForm:{  
@@ -160,6 +163,8 @@ const locales = {
       pageShow:'显示总数: {{total}} ({{start}}至{{end}})',
       selectAllRows: '选择所有行',
       disselectAllRows: '取消选择所有行',
+      nolistHeader: '立即建立一个{{listName}}',
+      nolistDesc: '{{listName}}頁面只能創建一個項目，您可以立刻創建這個唯一{{listName}}項目。創建第一條記錄後，頁面將重定向到這個項目',
    },
    form:{ 
       ...{
@@ -173,6 +178,7 @@ const locales = {
          createANew:'新增一个新的{{listName}}',
          create:'新增',
          select: '请选择...',
+         relationship: '关联连结',
          selectWithListname: '请选择{{listName}}...',
          fileReaderNotSupport:'浏览器不支援文件读取器',
          fileFormatNotSupport:'不支援的文件类型支援的格式有:GIF, PNG, JPG, BMP, ICO, PDF, TIFF, EPS, PSD, SVG',
