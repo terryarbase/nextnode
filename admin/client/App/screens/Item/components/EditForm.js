@@ -313,7 +313,7 @@ var EditForm = React.createClass({
 				el.content = getTranslatedLabel(t, {
 					listKey, 
 					prefix: 'heading', 
-					content: _.toLower(el.content),
+					content: _.camelCase(el.content),
 				});
 				elements = [ ...elements, React.createElement(FormHeading, el) ];
 			}
