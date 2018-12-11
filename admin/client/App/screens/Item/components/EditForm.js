@@ -248,7 +248,7 @@ var EditForm = React.createClass({
 		}
 	},
 	renderNameField () {
-		const { t } = this.props;
+		const { t, list } = this.props;
 		var nameField = this.props.list.nameField;
 		var nameFieldIsFormHeader = this.props.list.nameFieldIsFormHeader;
 		var wrapNameField = field => (
@@ -256,14 +256,18 @@ var EditForm = React.createClass({
 				{field}
 			</div>
 		);
-		if (nameFieldIsFormHeader) {
+		if (list.nolist) {
+			return wrapNameField(
+				<h2>{t(`table_${list.key}`)}</h2>
+			);
+		} else if (nameFieldIsFormHeader) {
 			var nameFieldProps = this.getFieldProps(nameField);
 			nameFieldProps.label = null;
 			nameFieldProps.size = 'full';
 			nameFieldProps.autoFocus = true;
 			nameFieldProps.inputProps = {
 				className: 'item-name-field',
-				placeholder: nameField.label,
+				placeholder: _.startCase('name'),
 				size: 'large',
 			};
 			return wrapNameField(

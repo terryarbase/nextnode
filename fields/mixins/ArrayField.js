@@ -72,6 +72,7 @@ module.exports = {
 	},
 
 	valueChanged: function (values) {
+		console.log(values, this.props.path);
 		this.props.onChange({
 			path: this.props.path,
 			value: values,
@@ -83,6 +84,7 @@ module.exports = {
 		return (
 			<div>
 				{this.state.values.map(this.renderItem)}
+				<FormInput type="hidden" name={this.getInputName(this.props.path)} />
 				<Button ref="button" onClick={this.addItem}>{t('addItem')}</Button>
 			</div>
 		);
@@ -93,7 +95,7 @@ module.exports = {
 		const value = this.processInputValue ? this.processInputValue(item.value) : item.value;
 		return (
 			<FormField key={item.key}>
-				<Input ref={'item_' + (index + 1)} name={this.getInputName(this.props.path)} value={value} onChange={this.updateItem.bind(this, item)} onKeyDown={this.addItemOnEnter} autoComplete="off" />
+				<Input ref={'item_' + (index + 1)} value={value} onChange={this.updateItem.bind(this, item)} onKeyDown={this.addItemOnEnter} autoComplete="off" />
 				<Button type="link-cancel" onClick={this.removeItem.bind(this, item)} className="keystone-relational-button">
 					<span className="octicon octicon-x" />
 				</Button>
