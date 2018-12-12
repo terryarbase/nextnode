@@ -29,6 +29,8 @@ const locales = {
    message: {
       noItemMerchantId: '没有项目匹配ID',
       goBackTo: '回去',
+      itemCreate: '項目已創建',
+      connectionFail: '連接失敗',
       operationError: '操作错误！ 请联系服务管理员。',
       successSave: '内容已成功保存',
       validationTitle: '儲存這個資訊時發生{{errorCount}}個錯誤',
@@ -175,6 +177,8 @@ const locales = {
             previousMonth: '上個月',
          },
          'day-picker-month': ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+         change: '更改文件',
+         upload: '上傳文件',
          createANew:'新增一個新的{{listName}}',
          create:'新增',
          relationship: '關聯連結',

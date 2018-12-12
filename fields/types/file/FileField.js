@@ -254,11 +254,11 @@ module.exports = Field.create({
 	},
 	renderUI () {
 		// console.log(this.state.userSelectedFile, );
-		const { label, note, path } = this.props;
+		const { label, note, path, t } = this.props;
 		const buttons = (
 			<div style={this.hasFile() ? { marginTop: '1em' } : null}>
 				<Button onClick={this.triggerFileBrowser}>
-					{this.hasFile() ? 'Change' : 'Upload'} File
+					{this.hasFile() ? t('change') : t('upload')}
 				</Button>
 				{this.hasFile() && this.renderClearButton()}
 			</div>

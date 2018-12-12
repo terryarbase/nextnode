@@ -168,10 +168,11 @@ file.prototype.validateInput = function (data, callback) {
  * Validates that input has been provided
  */
 file.prototype.validateRequiredInput = function (item, data, callback) {
+	var value = this.getValueFromData(data);
 	// TODO: We need to also get the `files` argument, so we can check for
 	// uploaded files. without it, this will return false negatives so we
 	// can't actually validate required input at the moment.
-	var result = true;
+	var result = value || item;
 	// var value = this.getValueFromData(data);
 	// debug('[%s.%s] Validating required input: ', this.list.key, this.path, value);
 	// TODO: Need to actually check a dynamic path based on the adapter

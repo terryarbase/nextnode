@@ -36,13 +36,15 @@ var AlertMessages = React.createClass({
 	renderValidationErrors () {
 		let errors = this.props.alerts.error.detail;
 		const { t, list={}, localization } = this.props;
-		if (errors.name === 'ValidationError') {
+		// console.log(errors);
+		if (errors && errors.name === 'ValidationError') {
 			errors = errors.errors;
 		}
 		let errorCount = Object.keys(errors).length;
 		let alertContent;
 		let messages = Object.keys(errors).map((path) => {
-			const { [path]: { type, fieldType, error, lang } } = errors;
+			const { [path]: { kind, fieldType, error, lang } } = errors;
+			let { [path]: { type } } = errors;
 			const field = _.startCase(
 				getTranslatedLabel(t, {
 					listKey: list.key || '',
@@ -53,12 +55,14 @@ var AlertMessages = React.createClass({
 				})
 			);
 			const languageVerionPrefix =  localization && localization[lang] ? `${localization[lang].label} ` : '';
+			if (kind) type = kind;
+			console.log(t('required'));
 			if (errorCount > 1) {
 				return (
 					<li key={path}>
 						{
 							// upcase(errors[path].error || errors[path].message)
-							`${languageVerionPrefix}${t(type, {
+							`${languageVerionPrefix}${t(`message:${type}`, {
 								field,
 							})}`
 						}
@@ -72,7 +76,7 @@ var AlertMessages = React.createClass({
 						}
 						{
 							// upcase(errors[path].error || errors[path].message)
-							`${languageVerionPrefix}${t(type, {
+							`${languageVerionPrefix}${t(`message:${type}`, {
 								field: field,
 							})}`
 						}
@@ -97,11 +101,20 @@ var AlertMessages = React.createClass({
 	render () {
 		const { t } = this.props;
 		let { error, success } = this.props.alerts;
+
 		if (error) {
 			// Render error alerts
 			switch (_.toLower(error.error)) {
 				case 'validation errors':
 					return this.renderValidationErrors();
+				case 'database error':
+					if (typeof error.detail === 'object') {
+						return this.renderValidationErrors();
+					} else if (typeof error.detail === 'string') {
+						return <Alert color="danger">{error.detail}</Alert>;
+					} else {
+						return <Alert color="danger">{t('message:operationError')}</Alert>;
+					}
 				case 'error':
 					if (error.detail.name === 'ValidationError') {
 						return this.renderValidationErrors();
