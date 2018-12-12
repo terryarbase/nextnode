@@ -130,6 +130,7 @@ module.exports = async function (req, res, next, nextNode) {
 	req.menuLanguage = await getStaticNavLanguageSectionFile(nextNode);
 
 	nextNode.set('langf', req.locales.langf);
+	nextNode.set('langd', req.locales.langd);
 	nextNode.set('language pack', req.locales.localization);
 	// console.log(req.menu, req.appLanguage);
 	if (next) next();
