@@ -5,6 +5,9 @@
 	"msg_user_notfound": "找不到用户",
 	"msg_request_filed_invalid": "请求的字段必须是undefined, string, 或array.",
 
+	"msg_required_field": "{{lang}}: 栏位{{field}}资料是必须填写",
+	"msg_invalid_field": "{{lang}}: 栏位{{field}}资料填写不正确",
+
 	"msg_drilldown_invalid": "{{key}}无效：路径{{path}}上的字段没有数据关系。",
 	"msg_nodelete_permission": "无法删除列表",
 	"msg_delete_yourself": "你不应该删除自己的唯一数据",
