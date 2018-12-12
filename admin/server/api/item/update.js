@@ -22,14 +22,11 @@ module.exports = function (req, res) {
 			frontLang: locales && locales.frontLang,
 		};
 		req.list.updateItem(item, newData, options, function (err) {
-			console.log(err);
+			// console.log('err: ', err);
 			if (err) {
 				var status = err.error === 'validation errors' ? 400 : 500;
-				// const error = err.error === 'database error' ? req.t.__('msg_db_error_without', {
-				// 	reason: err.detail,
-				// }) : err;
 				var error = err.error === 'database error' ? err.detail : err;
-				return res.apiError(status, error);
+				return res.apiError(status, err);
 			}
 			// Reload the item from the database to prevent save hooks or other
 			// application specific logic from messing with the values in the item
