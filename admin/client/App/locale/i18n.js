@@ -1,9 +1,10 @@
 import i18n from "i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
+import { reactI18nextModule } from "react-i18next";
+// import LanguageDetector from "i18next-browser-languagedetector";
 // language packs
 import locales from "./";
 
-i18n.use(LanguageDetector).init({
+i18n.use(reactI18nextModule).init({
 // we init with resources
 	resources: locales,
 
@@ -11,6 +12,8 @@ i18n.use(LanguageDetector).init({
 	lng: Keystone.currentUILanguage || 'en',
 	fallbackLng: Keystone.currentUILanguage || 'en',
 	debug: false,
+
+	load: "languageOnly",
 	
 	// have a common namespace used around the full app
 	ns: ["form"],
@@ -25,7 +28,7 @@ i18n.use(LanguageDetector).init({
 	
 	react: {
 		wait: true,
-		nsMode: 'fallback',
+		nsMode: "default"
 	}
 });
 

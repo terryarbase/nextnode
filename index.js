@@ -5,6 +5,7 @@ const path = require('path');
 const utils = require('keystone-utils');
 const i18n = require('i18n');
 var locales = require('./locales');
+require('extend-error');
 locales = locales.toJS();
 
 const importer = require('./lib/core/importer');
@@ -89,6 +90,10 @@ var Keystone = function () {
 			fontColor: '#ffffff',
 			fontHover: '#ffe53d'
 		},
+
+		'customized error': {
+	        HookCheckError: Error.extend('HookCheckError', 500),
+	    },
 
 		'text separator': ', ',
 	};

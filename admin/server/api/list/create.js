@@ -22,11 +22,10 @@ module.exports = function (req, res) {
 	};
 	req.list.updateItem(item, newData, options, function (err) {
 		if (err) {
+			console.log(typeof err.detail);
 			var status = err.error === 'validation errors' ? 400 : 500;
-			const error = err.error === 'database error' ? req.t.__('msg_db_error_without', {
-					reason: err.detail,
-				}) : err;
-			return res.apiError(status, error);
+			var error = err.error === 'database error' ? err.detail : err;
+			return res.apiError(status, err);
 		}
 		res.json(req.list.getData(item, undefined, null, options));
 	});
