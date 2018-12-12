@@ -34,13 +34,28 @@ module.exports = function (req, res, next) {
 			detail = error.detail;
 			error = error.error;
 		}
-		// turn Errors into useful output
-		if (error instanceof Error) {
-			error = error.name !== 'Error' ? error.name + ': ' + error.message : error.message;
+		// console.log('detail: ', detail);
+		// if (!detail && error.errors) {
+		// 	detail = error.errors;
+		// 	error = error.name;
+		// }
+		console.log('error: ', error.name);
+		console.log('detail: ', detail.name);
+		if (detail.name === 'ValidationError') {
+			// console.log('db ValidationError: ', detail.errors);
+			detail = detail.errors;
+		} else {
+			// turn Errors into useful output
+			if (error instanceof Error) {
+				error = error.name !== 'Error' ? error.name + ': ' + error.message : error.message;
+			}
+			if (detail instanceof Error) {
+				// console.log(detail.name, detail.message);
+				detail = detail.name !== 'Error' ? detail.name + ': ' + detail.message : detail.message;
+			}
 		}
-		if (detail instanceof Error) {
-			detail = detail.name !== 'Error' ? detail.name + ': ' + detail.message : detail.message;
-		}
+
+
 		// send error as json
 		var data = typeof error === 'string' || (error && detail)
 			? { error: error, detail: detail }

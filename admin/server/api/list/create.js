@@ -22,7 +22,6 @@ module.exports = function (req, res) {
 	};
 	req.list.updateItem(item, newData, options, function (err) {
 		if (err) {
-			console.log(typeof err.detail);
 			var status = err.error === 'validation errors' ? 400 : 500;
 			var error = err.error === 'database error' ? err.detail : err;
 			return res.apiError(status, err);

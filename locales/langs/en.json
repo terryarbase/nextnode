@@ -5,6 +5,9 @@
 	"msg_user_notfound": "The request user is not found",
 	"msg_request_filed_invalid": "The requested fields must be undefined, a string, or an array.",
 
+	"msg_required_field": "{{lang}}: The {{field}} is required.",
+	"msg_invalid_field": "{{lang}}: The {{field}} is invalid.",
+
 	"msg_drilldown_invalid": "Drilldown for {{key}} is invalid: field at path {{path}} is not a relationship.",
 	"msg_nodelete_permission": "The list cannot be deleted.",
 	"msg_delete_yourself": "You should not be abled to delete yourself.",

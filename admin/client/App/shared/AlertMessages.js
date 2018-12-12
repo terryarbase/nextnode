@@ -43,8 +43,11 @@ var AlertMessages = React.createClass({
 		let errorCount = Object.keys(errors).length;
 		let alertContent;
 		let messages = Object.keys(errors).map((path) => {
-			const { [path]: { kind, fieldType, error, lang } } = errors;
-			let { [path]: { type } } = errors;
+			const { [path]: { kind, fieldType, error } } = errors;
+			let { [path]: { type, lang } } = errors;
+			if (!lang) {
+				lang = Keystone.currentUILanguage;
+			}
 			const field = _.startCase(
 				getTranslatedLabel(t, {
 					listKey: list.key || '',

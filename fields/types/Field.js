@@ -132,13 +132,14 @@ var Base = module.exports.Base = {
 		return <FormInput noedit={true}>{this.props.value}</FormInput>;
 	},
 	renderUI () {
+		const { required } = this.props;
 		var wrapperClassName = classnames(
 			'field-type-' + this.props.type,
 			this.props.className,
 			{ 'field-monospace': this.props.monospace }
 		);
 		return (
-			<FormField htmlFor={this.props.path} label={this.props.label} className={wrapperClassName} cropLabel>
+			<FormField htmlFor={this.props.path} label={`${this.props.label}${required ? ' *' : ''}`} className={wrapperClassName} cropLabel>
 				<div className={'FormField__inner field-size-' + this.props.size}>
 					{this.shouldRenderField() ? this.renderField() : this.renderValue()}
 				</div>
