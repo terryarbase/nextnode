@@ -79,7 +79,7 @@ const CreateForm = React.createClass({
 	},
 	// Set the props of a field
 	getFieldProps (field) {
-		const { isLocale, currentLang, t } = this.props;
+		const { isLocale, currentLang, t, i18n } = this.props;
 		const { values } = this.state;
 		// console.log(currentLang, values);
 		return {
@@ -87,6 +87,7 @@ const CreateForm = React.createClass({
 			value: this.props.list.getProperlyValue({ field, isLocale, currentLang, values }),
 			values,
 			t,
+			i18n,
 			listKey: this.props.list.key,
 			currentLang,
 			onChange: this.handleChange,
@@ -115,7 +116,7 @@ const CreateForm = React.createClass({
 		const createForm = event.target;
 		// get basic formdata first
 		var formData = new FormData(createForm);
-		const { isLocale, currentLang } = this.props;
+		const { isLocale, currentLang, t } = this.props;
 		const { values } = this.state;
 		// convert multilingual field to formdata
 		formData = this.props.list.getFormCreateData({
@@ -133,7 +134,7 @@ const CreateForm = React.createClass({
 						values: {},
 						alerts: {
 							success: {
-								success: 'Item created',
+								success: t('message:itemCreate'),
 							},
 						},
 					});
@@ -141,14 +142,14 @@ const CreateForm = React.createClass({
 			} else {
 				if (!err) {
 					err = {
-						error: 'connection error',
+						error: t('message:connectionFail'),
 					};
 				}
 				// If we get a database error, show the database error message
 				// instead of only saying "Database error"
-				if (err.error === 'database error') {
-					err.error = err.detail.errmsg;
-				}
+				// if (err.error === 'database error') {
+				// 	err.error = err.detail.errmsg;
+				// }
 				this.setState({
 					alerts: {
 						error: err,
@@ -161,11 +162,11 @@ const CreateForm = React.createClass({
 	renderForm () {
 		if (!this.props.isOpen) return;
 
-		var form = [];
-		var list = this.props.list;
-		var nameField = this.props.list.nameField;
+		let form = [];
+		let list = this.props.list;
+		let nameField = this.props.list.nameField;
 		const { currentLang, t } = this.props;
-		var focusWasSet;
+		let focusWasSet;
 
 		// If the name field is an initial one, we need to render a proper
 		// input for it
@@ -176,7 +177,7 @@ const CreateForm = React.createClass({
 				nameFieldProps.className = 'item-name-field';
 				nameFieldProps.placeholder = nameField.label;
 				nameFieldProps.t = this.props.t;
-				nameFieldProps.i18n = this.props.i18n
+				nameFieldProps.i18n = this.props.i18n;
 				nameFieldProps.label = '';
 			}
 			form.push(React.createElement(Fields[nameField.type], nameFieldProps));

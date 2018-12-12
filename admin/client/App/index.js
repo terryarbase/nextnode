@@ -29,15 +29,13 @@ Keystone.User = listsByKey[Keystone.userList];
 
 ReactDOM.render(
 	<Provider store={store}>
-		<I18nextProvider i18n={i18n}>
-			<Router history={history}>
-				<Route path={Keystone.adminPath} component={App}>
-					<IndexRoute component={Home} />
-					<Route path=":listId" component={List} />
-					<Route path=":listId/:itemId" component={Item} />
-				</Route>
-			</Router>
-		</I18nextProvider>
+		<Router history={history}>
+			<Route path={Keystone.adminPath} component={App}>
+				<IndexRoute component={Home} />
+				<Route path=":listId" component={List} />
+				<Route path=":listId/:itemId" component={Item} />
+			</Route>
+		</Router>
 	</Provider>,
 	document.getElementById('react-root')
 );

@@ -1,5 +1,6 @@
 var assign = require('object-assign');
-
+const nextnode = require('./../../../');
+// .get('customized error').
 /*
 	This middleware simplifies returning errors from the API.
 
@@ -24,6 +25,7 @@ module.exports = function (req, res, next) {
 		if (statusCode) {
 			res.status(statusCode);
 		}
+		// console.log(nextnode.get('customized error').HookCheckError, error);
 		// unpack { error, detail } objects passed as the error argument w/o detail argument
 		if (!detail && typeof error === 'object'
 			&& error.toString() === '[object Object]'
