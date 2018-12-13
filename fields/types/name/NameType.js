@@ -195,6 +195,8 @@ name.prototype.validateInput = function (data, callback) {
 name.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getInputFromData(data);
 	var result;
+	const first = (item.get && item.get(this.paths.first)) || item[this.path.first];
+	const last = (item.get && item.get(this.paths.last)) || item[this.path.last];
 	if (value === null) {
 		result = false;
 	} else {
@@ -203,9 +205,8 @@ name.prototype.validateRequiredInput = function (item, data, callback) {
 			|| typeof value === 'object' && (
 				typeof value.first === 'string' && value.first.length
 				|| typeof value.last === 'string' && value.last.length)
-			|| (item.get(this.paths.full)
-				|| item.get(this.paths.first)
-				|| item.get(this.paths.last)) && (
+				|| first
+				|| last && (
 					value === undefined
 					|| (value.first === undefined
 						&& value.last === undefined))

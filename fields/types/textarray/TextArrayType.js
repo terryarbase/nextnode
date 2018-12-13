@@ -130,9 +130,10 @@ textarray.prototype.validateInput = function (data, callback) {
 textarray.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getValueFromData(data);
 	var result = false;
+	const newItem = (item.get && item.get(this.path)) || item[this.path] || [];
 	// If the value is undefined and we have something stored already, validate
 	if (value === undefined) {
-		if (item.get(this.path) && item.get(this.path).length) {
+		if (newItem.length) {
 			result = true;
 		}
 	}

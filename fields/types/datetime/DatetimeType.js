@@ -67,7 +67,8 @@ datetime.prototype.getInputFromData = function (data) {
 datetime.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getInputFromData(data);
 	var result = !!value;
-	if (value === undefined && item.get(this.path)) {
+	const newItem = (item.get && item.get(this.path)) || item[this.path];
+	if (value === undefined && newItem) {
 		result = true;
 	}
 	utils.defer(callback, result);

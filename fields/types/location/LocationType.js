@@ -279,7 +279,7 @@ location.prototype.validateInput = function (data, callback) {
 location.prototype.validateRequiredInput = function (item, data, callback) {
 	var result = true;
 	var input = this.getInputFromData(data);
-	var currentValue = item.get(this.path);
+	var currentValue = (item.get && item.get(this.path)) || item[this.path] || [];
 	this.requiredPaths.forEach(function (path) {
 		// ignore missing values if they already exist in the item
 		if (input[path] === undefined && currentValue[path]) return;

@@ -117,7 +117,8 @@ module.exports = Field.create({
 		);
 	},
 	renderUI () {
-		const { label, value } = this.props;
+		const { label, value, required } = this.props;
+		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		return (
 			<div className={css(classes.container)}>
 				<h3 data-things="whatever">{label}</h3>
