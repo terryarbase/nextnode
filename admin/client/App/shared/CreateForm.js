@@ -6,6 +6,7 @@
 import React from 'react';
 import assign from 'object-assign';
 import vkey from 'vkey';
+import _ from 'lodash';
 import AlertMessages from './AlertMessages';
 import { Fields } from 'FieldTypes';
 import InvalidFieldType from './InvalidFieldType';
@@ -201,7 +202,7 @@ const CreateForm = React.createClass({
 					label: getTranslatedLabel(t, {
 						listKey: list.key, 
 						prefix: 'field', 
-						content: fieldProps.path,
+						content: _.camelCase(fieldProps.path),
 					}),	
 				},
 			};
@@ -212,7 +213,7 @@ const CreateForm = React.createClass({
 						note: getTranslatedLabel(t, {
 							listKey: list.key, 
 							prefix: 'note', 
-							content: fieldProps.path,
+							content: _.camelCase(fieldProps.path),
 							altContent: fieldProps.note,
 						}),
 					},

@@ -74,7 +74,8 @@ geopoint.prototype.validateInput = function (data, callback) {
  */
 geopoint.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getValueFromData(data);
-	var result = (value || (value === undefined && item.get(this.path) && item.get(this.path).length === 2)) ? true : false;
+	const newItem = (item.get && item.get(this.path)) || item[this.path] || [];
+	var result = (value || (value === undefined && newItem.length === 2)) ? true : false;
 	utils.defer(callback, result);
 };
 

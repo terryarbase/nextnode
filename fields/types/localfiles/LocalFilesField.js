@@ -246,8 +246,10 @@ module.exports = Field.create({
 	},
 
 	renderUI () {
+		const { required } = this.props;
+		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		return (
-			<FormField label={this.props.label} className="field-type-localfiles" htmlFor={this.props.path}>
+			<FormField label={label} className="field-type-localfiles" htmlFor={this.props.path}>
 				{this.renderFieldAction()}
 				{this.renderUploadsField()}
 				{this.renderFileField()}

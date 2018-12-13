@@ -254,7 +254,8 @@ module.exports = Field.create({
 	},
 	renderUI () {
 		// console.log(this.state.userSelectedFile, );
-		const { label, note, path, t, required } = this.props;
+		const { note, path, t, required } = this.props;
+		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		const buttons = (
 			<div style={this.hasFile() ? { marginTop: '1em' } : null}>
 				<Button onClick={this.triggerFileBrowser}>
@@ -265,7 +266,7 @@ module.exports = Field.create({
 		);
 		return (
 			<div data-field-name={path} data-field-type="file">
-				<FormField label={`${label}${required ? ' *' : ''}`} htmlFor={path}>
+				<FormField label={label} htmlFor={path}>
 					{this.shouldRenderField() ? (
 						<div>
 							{this.hasFile() && this.isImage() && this.renderImagePreview()}

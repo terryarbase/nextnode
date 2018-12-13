@@ -179,9 +179,10 @@ select.prototype.validateInput = function (data, callback) {
  */
 select.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getValueFromData(data);
+	const newItem = (item.get && item.get(this.path)) || item[this.path] || [];
 	var result = false;
 	if (value === undefined) {
-		if (item.get(this.path)) {
+		if (newItem) {
 			result = true;
 		}
 	} else if (value) {

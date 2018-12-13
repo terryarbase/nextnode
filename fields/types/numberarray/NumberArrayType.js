@@ -83,9 +83,10 @@ numberarray.prototype.validateInput = function (data, callback) {
 numberarray.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getValueFromData(data);
 	var result = false;
+	const newItem = (item.get && item.get(this.path)) || item[this.path] || [];
 	// If the field is undefined but has a value saved already, validate
 	if (value === undefined) {
-		if (item.get(this.path) && item.get(this.path).length) {
+		if (item.get(this.path) && newItem.length) {
 			result = true;
 		}
 	}
