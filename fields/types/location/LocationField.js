@@ -270,7 +270,8 @@ module.exports = Field.create({
 			: null;
 		/* eslint-enable */
 
-		const { label, path, t} = this.props;
+		const { path, t, required } = this.props;
+		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		return (
 			<div data-field-name={path} data-field-type="location">
 				<FormField label={label} htmlFor={path}>

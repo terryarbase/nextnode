@@ -221,8 +221,9 @@ var validate = password.validate = function (pass, confirm, min, max, complexity
 password.prototype.validateRequiredInput = function (item, data, callback) {
 	var hashValue = this.getValueFromData(data, '_hash');
 	var passwordValue = this.getValueFromData(data);
+	const newItem = (item.get && item.get(this.path)) || item[this.path];
 	var result = hashValue || passwordValue ? true : false;
-	if (!result && passwordValue === undefined && hashValue === undefined && item.get(this.path)) result = true;
+	if (!result && passwordValue === undefined && hashValue === undefined && newItem) result = true;
 	utils.defer(callback, result);
 };
 

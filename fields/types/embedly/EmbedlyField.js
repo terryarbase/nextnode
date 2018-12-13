@@ -61,7 +61,8 @@ module.exports = Field.create({
 	},
 
 	renderUI () {
-		const { t } = this.props;
+		const { t, required } = this.props;
+		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		if (!this.props.value.exists) {
 			return (
 				<FormField label={this.props.label}>

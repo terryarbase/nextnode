@@ -382,6 +382,7 @@ Field.prototype.validateRequiredInput = function (item, data, callback) {
 Field.prototype.inputIsValid = function (data, required, item) {
 	if (!required) return true;
 	var value = this.getValueFromData(data);
+	const newItem = (item.get && item.get(this.path)) || item[this.path];
 	if (value === undefined && item && item.get(this.path)) return true;
 	if (typeof data[this.path] === 'string') {
 		return (data[this.path].trim()) ? true : false;

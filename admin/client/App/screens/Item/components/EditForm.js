@@ -325,6 +325,7 @@ var EditForm = React.createClass({
 			if (el.type === 'field') {
 				var field = this.props.list.fields[el.field];
 				var props = this.getFieldProps(field);
+				console.log(props.path);
 				props = {
 					...props,
 					...{
@@ -332,7 +333,7 @@ var EditForm = React.createClass({
 						label: getTranslatedLabel(t, {
 							listKey, 
 							prefix: 'field', 
-							content: props.path,
+							content: _.camelCase(props.path),
 							altContent: props.label,
 						}),
 					},
@@ -345,7 +346,7 @@ var EditForm = React.createClass({
 							note: getTranslatedLabel(t, {
 								listKey, 
 								prefix: 'note', 
-								content: props.path,
+								content: _.camelCase(props.path),
 								altContent: props.note,
 							})
 						},
@@ -355,23 +356,36 @@ var EditForm = React.createClass({
 				if (typeof Fields[field.type] !== 'function') {
 					elements = [ ...elements, React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path }) ];
 				}
-				props.key = field.path;
+				props.key = `${field.path}-${currentLang}`;
 				if (index === 0 && this.state.focusFirstField) {
 					props.autoFocus = true;
 				}
 
 				var element = React.createElement(Fields[field.type], props);
 				// console.log(field.type, field.path, props);
+
 				// prevent stateless file element to be rendered again, get from state
-				if (field.stateless && field.multilingual) {
+				if ((field.stateless || field.cloneable) && field.multilingual) {
 					if (this.statelessUI[field.path]) {
+						if (this.statelessUI[field.path][currentLang]) {
 						// once remove then recreate the element
 						// if (!(typeof this.statelessUI[field.path] === 'string' && 
 							// this.statelessUI[field.path] === '')) {
-						element = this.statelessUI[field.path][currentLang] || element;
+							// element = this.statelessUI[field.path][currentLang] || element;
+							if (field.cloneable) {
+								element = React.cloneElement(
+									this.statelessUI[field.path][currentLang],
+									props
+								);
+							} else {
+								element = this.statelessUI[field.path][currentLang] || element;
+									
+							}
 						// }
+						}
 					}
-					// console.log(element);
+					
+					// console.log(field.path, currentLang, element);
 					// store the stateless element to state, no matter it is existing
 					this.statelessUI = {
 						...this.statelessUI,
@@ -389,7 +403,7 @@ var EditForm = React.createClass({
 						keys.forEach(key => {
 							elements = [ 
 								...elements,
-								<div key={key} style={{ display: key === currentLang ? 'block' : 'none' }}>
+								<div key={`${field.path}${key}`} style={{ display: key === currentLang ? 'block' : 'none' }}>
 									{this.statelessUI[field.path][key]}
 								</div>
 							];

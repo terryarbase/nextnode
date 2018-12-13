@@ -44,8 +44,9 @@ number.prototype.validateInput = function (data, callback) {
 
 number.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getValueFromData(data);
+	const newItem = (item.get && item.get(this.path)) || item[this.path];
 	var result = !!(value || typeof value === 'number');
-	if (value === undefined && typeof item.get(this.path) === 'number') {
+	if (value === undefined && typeof newItem === 'number') {
 		result = true;
 	}
 	utils.defer(callback, result);

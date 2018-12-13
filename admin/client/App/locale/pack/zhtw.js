@@ -166,7 +166,7 @@ const locales = {
       selectAllRows: '選擇所有行',
       disselectAllRows: '取消選擇所有行',
       nolistHeader: '立即建立一個{{listName}}',
-      nolistDesc: '{{listName}}页面只能创建一个项目，您可以立刻创建这个唯一{{listName}}项目。 创建第一条记录后，页面将重定向到这个项目。',
+      nolistDesc: '{{listName}}頁面只能創建一個項目，您可以立刻創建這個唯一{{listName}}項目。創建第一條記錄後，頁面將重定向到這個項目。',
    },
    form:{  
       ...{

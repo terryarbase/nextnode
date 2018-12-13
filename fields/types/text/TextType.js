@@ -49,8 +49,9 @@ text.prototype.validateInput = function (data, callback) {
 
 text.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getValueFromData(data);
+	const newItem = (item.get && item.get(this.path)) || item[this.path];
 	var result = !!value;
-	if (value === undefined && item.get(this.path)) {
+	if (value === undefined && newItem) {
 		result = true;
 	}
 	utils.defer(callback, result);

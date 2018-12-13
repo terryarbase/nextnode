@@ -175,14 +175,15 @@ relationship.prototype.validateInput = function (data, callback) {
  */
 relationship.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getValueFromData(data);
+	const newItem = (item.get && item.get(this.path)) || item[this.path] || [];
 	var result = false;
 	if (value === undefined) {
 		if (this.many) {
-			if (item.get(this.path).length) {
+			if (newItem.length) {
 				result = true;
 			}
 		} else {
-			if (item.get(this.path)) {
+			if (newItem) {
 				result = true;
 			}
 		}
