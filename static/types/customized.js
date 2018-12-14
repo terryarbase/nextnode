@@ -57,9 +57,10 @@ class Customized extends ImmutableType {
 		}
 		// return Map(options);
 		var newOptions = options;
-		if (!newOptions instanceof Map || newOptions instanceof List) {
+		if (typeof newOptions.toJS === 'function') {
 			newOptions = options.toJS();
 		}
+		// console.log(newOptions);
 		return _.values(newOptions);
 	}
 

@@ -13,7 +13,7 @@ var EmailColumn = React.createClass({
 		if (!value) return;
 
 		return (
-			<ItemsTableValue to={'mailto:' + value} padded exterior field={this.props.col.type}>
+			<ItemsTableValue target="_blank" to={'mailto:' + value} padded exterior field={this.props.col.type}>
 				{value}
 			</ItemsTableValue>
 		);

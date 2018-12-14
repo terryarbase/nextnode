@@ -19,11 +19,11 @@ class Device extends ImmutableType {
 				label: 'Android',
 				key: 'select_option_android',
 			},
-			wos: {
-				value: 'window',
-				label: 'Window',
-				key: 'select_option_windowos',
-			},
+			// wos: {
+			// 	value: 'window',
+			// 	label: 'Window',
+			// 	key: 'select_option_windowos',
+			// },
 		});
 		super(node);
 		super.initialize({ type, isTransfer: true });

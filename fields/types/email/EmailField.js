@@ -31,7 +31,7 @@ module.exports = Field.create({
 	},
 	renderValue () {
 		return this.props.value ? (
-			<FormInput noedit component="a" href={'mailto:' + this.props.value}>
+			<FormInput noedit component="a" target="_blank" href={'mailto:' + this.props.value}>
 				{this.props.value}
 			</FormInput>
 		) : (
