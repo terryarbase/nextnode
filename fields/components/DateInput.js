@@ -110,6 +110,29 @@ module.exports = React.createClass({
 		const modifiers = {
 			selected: (day) => moment(day).format(this.props.format) === selectedDay,
 		};
+		var { maxDate, minDate } = this.props;
+		var optional = {};
+		if (maxDate) {
+			optional = {
+				disabledDays: {
+					after: moment(maxDate).toDate(),
+				},
+			};
+		}
+		// console.log(minDate, maxDate, optional);
+		if (minDate) {
+			optional = {
+				...optional,
+				...{
+					disabledDays: {
+						...optional.disabledDays,
+						...{
+							before: moment(minDate).toDate(),
+						},
+					},
+				},
+			};
+		}
 
 		return (
 			<div>
@@ -137,6 +160,7 @@ module.exports = React.createClass({
 						onDayClick={this.handleDaySelect}
 						ref="picker"
 						tabIndex={-1}
+						
 					/>
 				</Popout>
 			</div>
