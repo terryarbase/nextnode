@@ -73,6 +73,7 @@ module.exports = Field.create({
 					name={this.getInputName(path)}
 					value={value}
 					options={options}
+					placeholder={this.props.t('select')}
 					onChange={this.valueChanged}
 				/>
 			</div>
