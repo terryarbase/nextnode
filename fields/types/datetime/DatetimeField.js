@@ -107,6 +107,7 @@ module.exports = Field.create({
 	},
 
 	renderUI () {
+		const { maxDate, minDate } = this.props;
 		var input;
 		if (this.shouldRenderField()) {
 			input = (
@@ -114,6 +115,8 @@ module.exports = Field.create({
 					<Group>
 						<Section grow>
 							<DateInput
+								maxDate={maxDate}
+								minDate={minDate}
 								format={this.dateInputFormat}
 								name={this.getInputName(this.props.paths.date)}
 								onChange={this.dateChanged}

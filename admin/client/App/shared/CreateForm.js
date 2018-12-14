@@ -181,6 +181,19 @@ const CreateForm = React.createClass({
 				nameFieldProps.i18n = this.props.i18n;
 				nameFieldProps.label = '';
 			}
+			if (nameFieldProps.note) {
+				nameFieldProps = {
+					...nameFieldProps,
+					...{
+						note: getTranslatedLabel(t, {
+							listKey: list.key, 
+							prefix: 'note', 
+							content: _.camelCase(nameFieldProps.path),
+							altContent: nameFieldProps.note,
+						})
+					},
+				};
+			}
 			form.push(React.createElement(Fields[nameField.type], nameFieldProps));
 		};
 		// console.log('list.initialFields: ', list.initialFields);

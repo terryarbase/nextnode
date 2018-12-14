@@ -13,7 +13,7 @@ function date (list, path, options) {
 	this._nativeType = Date;
 	this._underscoreMethods = ['format', 'moment', 'parse'];
 	this._fixedSize = 'medium';
-	this._properties = ['formatString', 'yearRange', 'isUTC', 'inputFormat'];
+	this._properties = ['formatString', 'yearRange', 'isUTC', 'inputFormat', 'maxDate', 'minDate'];
 	this.parseFormatString = options.inputFormat || 'YYYY-MM-DD';
 	this.formatString = (options.format === false) ? false : (options.format || 'Do MMM YYYY');
 
