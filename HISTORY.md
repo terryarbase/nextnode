@@ -5,6 +5,7 @@
 
 Common Improvements:
 * Added download as a text file format
+* Fixed Multilingual label for name field in Create Form and Edit Form
 
 List Improvements:
 * Added disable listview option

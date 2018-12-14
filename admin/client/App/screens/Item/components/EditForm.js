@@ -270,6 +270,19 @@ var EditForm = React.createClass({
 				placeholder: _.startCase('name'),
 				size: 'large',
 			};
+			if (nameFieldProps.note) {
+				nameFieldProps = {
+					...nameFieldProps,
+					...{
+						note: getTranslatedLabel(t, {
+							listKey: list.key, 
+							prefix: 'note', 
+							content: _.camelCase(nameFieldProps.path),
+							altContent: nameFieldProps.note,
+						})
+					},
+				};
+			}
 			return wrapNameField(
 				React.createElement(Fields[nameField.type], nameFieldProps)
 			);
@@ -325,7 +338,6 @@ var EditForm = React.createClass({
 			if (el.type === 'field') {
 				var field = this.props.list.fields[el.field];
 				var props = this.getFieldProps(field);
-				console.log(props.path);
 				props = {
 					...props,
 					...{

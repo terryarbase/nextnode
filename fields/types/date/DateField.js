@@ -69,7 +69,13 @@ module.exports = Field.create({
 		);
 	},
 	renderField () {
-		const { t } = this.props;
+		/*
+		** Add picker options supports (e.g. disabled days)
+		** Terry Chan
+		** 14/12/2018
+		*/
+		const { t, maxDate, minDate } = this.props;
+
 		var dateAsMoment = this.toMoment(this.props.value);
 		var value = this.props.value && dateAsMoment.isValid()
 			? dateAsMoment.format(this.props.inputFormat)
@@ -79,6 +85,8 @@ module.exports = Field.create({
 			<Group>
 				<Section grow>
 					<DateInput
+						maxDate={maxDate}
+						minDate={minDate}
 						format={this.props.inputFormat}
 						name={this.getInputName(this.props.path)}
 						onChange={this.valueChanged}
