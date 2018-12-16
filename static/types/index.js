@@ -40,6 +40,7 @@ class ImmutableType {
 			options: this.sectionTypes,
 			immutable: this.iSectionTypes,
 			values: this.getSectionValues(),
+			pure: this.iSectionTypes.toJS(),
 			keys: this.getSections(),
 			boolean: this._isBoolean,
 		};
