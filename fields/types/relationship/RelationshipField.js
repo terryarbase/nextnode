@@ -195,7 +195,6 @@ module.exports = Field.create({
 
 	renderSelect (noedit) {
 		const { t, refList } = this.props;
-		console.log(refList.key, t(`table_${refList.key}`));
 		return (
 			<div>
 				{/* This input element fools Safari's autocorrect in certain situations that completely break react-select */}
