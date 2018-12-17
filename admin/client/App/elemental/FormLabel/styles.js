@@ -30,7 +30,7 @@ module.exports = {
 
 	'FormLabel--crop-text': {
 		overflow: 'hidden',
-		textOverflow: 'ellipsis',
-		whiteSpace: 'nowrap',
+		// textOverflow: 'ellipsis',
+		// whiteSpace: 'nowrap',
 	},
 };
