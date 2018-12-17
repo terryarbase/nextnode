@@ -14,7 +14,7 @@ class Device extends ImmutableType {
 				label: 'iOS',
 				key: 'select_option_ios',
 			},
-			aos: {
+			android: {
 				value: 'android',
 				label: 'Android',
 				key: 'select_option_android',

@@ -67,7 +67,6 @@ class ImmutableType {
 		} else {
 			this._type = type.toJS();
 		}
-		// console.log(this._type);
 	}
 
 	configuration(type) {

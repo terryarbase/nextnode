@@ -39,7 +39,7 @@ class Customized extends ImmutableType {
 	validateFormat(options) {
 		const value = this.getProperlyValue(options);
 		var isTransfer = false;
-		_.forEach(value, (v, i) => {
+		_.forOwn(value, (v, i) => {
 			// if directly provide object then ignore the isTransfer
 			if (v.key && typeof v.label !== 'object') {
 				isTransfer = true;
@@ -48,7 +48,8 @@ class Customized extends ImmutableType {
 				throw new Error(`Option: ${i+1} is missing value or label field. Please adjust the customized option first.`);
 			}
 		});
-		return { type: List(value), isTransfer };
+
+		return { type: value, isTransfer };
 	}
 
 	getProperlyValue(options) {
@@ -60,8 +61,8 @@ class Customized extends ImmutableType {
 		if (typeof newOptions.toJS === 'function') {
 			newOptions = options.toJS();
 		}
-		// console.log(newOptions);
-		return _.values(newOptions);
+		return newOptions
+		// return _.values(newOptions);
 	}
 
 }
