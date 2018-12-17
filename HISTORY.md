@@ -7,6 +7,7 @@ Common Improvements:
 * Added download as a text file format
 * Fixed Column Type.Email, Type.Url target blank
 * Fixed Multilingual label for name field in Create Form and Edit Form
+* Fixed Multilingual value for customized options list in Column View
 
 List Improvements:
 * Added disable listview option
