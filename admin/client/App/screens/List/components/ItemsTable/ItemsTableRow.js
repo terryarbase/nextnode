@@ -90,11 +90,13 @@ const ItemsRow = React.createClass({
 					},
 				};
 			}
+			// console.log(col.path, currentValue);
 			return <ColumnType
 				key={col.path}
 				list={this.props.list}
 				col={col}
 				data={newItem}
+				currentLang={currentLang}
 				noedit={manageMode || noedit || restrictDelegated}
 				currentValue={currentValue}
 				linkTo={linkTo}
