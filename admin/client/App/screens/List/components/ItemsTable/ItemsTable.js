@@ -162,6 +162,7 @@ const ItemsTable = React.createClass({
 		) : (
 			<tbody >
 				{items.results.map((item, i) => {
+					// console.log(item);
 					return (
 						<TableRow key={item.id}
 							deleteTableItem={this.props.deleteTableItem}
