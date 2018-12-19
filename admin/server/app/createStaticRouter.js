@@ -25,8 +25,8 @@ function buildFieldTypesStream (fieldTypes) {
 		});
 		// Append ID and Unrecognised column types
 		if (i === 'Column') {
-			src += 'id: require("../fields/components/columns/IdColumn"),\n';
-			src += '__unrecognised__: require("../fields/components/columns/InvalidColumn"),\n';
+			src += 'id: require("../../fields/components/columns/IdColumn"),\n';
+			src += '__unrecognised__: require("../../fields/components/columns/InvalidColumn"),\n';
 		}
 
 		src += '};\n';
