@@ -10,7 +10,7 @@ var utils = require('keystone-utils');
 function text (list, path, options) {
 	this.options = options;
 	this._nativeType = String;
-	this._properties = ['monospace'];
+	this._properties = ['monospace', 'copy'];
 	this._underscoreMethods = ['crop'];
 	// representive the placeholder elements
 	this.placeholder = [
