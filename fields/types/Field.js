@@ -1,4 +1,6 @@
 import classnames from 'classnames';
+import { css } from 'glamor';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import evalDependsOn from '../utils/evalDependsOn.js';
 import React from 'react';
 import _forEach from 'lodash/forEach';
@@ -33,7 +35,9 @@ function validateSpec (spec) {
 
 var Base = module.exports.Base = {
 	getInitialState () {
-		return {};
+		return {
+			copied: false,
+		};
 	},
 	getDefaultProps () {
 		return {
@@ -127,6 +131,25 @@ var Base = module.exports.Base = {
 		*/
 		if (this.props.base64Image) {
 			return this.renderBaseImages();
+		}
+		if (this.props.copy) {
+			const { t } = this.props;
+			return (
+				<FormField>
+					<FormInput noedit={true}>{this.props.value}</FormInput>
+					<CopyToClipboard text={this.props.value}
+				        onCopy={() => alert(t('message:copySuccess'))}>
+				        <span className={
+				        	css({
+				        		float: 'right',
+				        		margin: '5px',
+				        		fontWeight: 'bolder',
+				        		cursor: 'pointer',
+				        	})
+				        }>{t('copy')}</span>
+				    </CopyToClipboard>
+				</FormField>
+			);
 		}
 		// console.log('this.props.value: ', this.props.value);
 		return <FormInput noedit={true}>{this.props.value}</FormInput>;
