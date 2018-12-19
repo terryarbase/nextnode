@@ -10,6 +10,7 @@ var browserify = require('../middleware/browserify');
 var express = require('express');
 var less = require('less-middleware');
 var path = require('path');
+const _ = require('lodash');
 var str = require('string-to-stream');
 
 function buildFieldTypesStream (fieldTypes) {
@@ -20,12 +21,12 @@ function buildFieldTypesStream (fieldTypes) {
 		src += 'exports.' + i + 's = {\n';
 		types.forEach(function (type) {
 			if (typeof fieldTypes[type] !== 'string') return;
-			src += type + ': require("../../fields/types/' + type + '/' + fieldTypes[type] + i + '"),\n';
+			src += type + ': require("../../fields/types/' + _.toLower(type) + '/' + fieldTypes[type] + i + '"),\n';
 		});
 		// Append ID and Unrecognised column types
 		if (i === 'Column') {
-			src += 'id: require("../../fields/components/columns/IdColumn"),\n';
-			src += '__unrecognised__: require("../../fields/components/columns/InvalidColumn"),\n';
+			src += 'id: require("../fields/components/columns/IdColumn"),\n';
+			src += '__unrecognised__: require("../fields/components/columns/InvalidColumn"),\n';
 		}
 
 		src += '};\n';
