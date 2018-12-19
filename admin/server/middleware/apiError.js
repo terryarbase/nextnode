@@ -39,9 +39,9 @@ module.exports = function (req, res, next) {
 		// 	detail = error.errors;
 		// 	error = error.name;
 		// }
-		console.log('error: ', error.name);
-		console.log('detail: ', detail.name);
-		if (detail.name === 'ValidationError') {
+		// console.log('error: ', error.name);
+		// console.log('detail: ', detail.name);
+		if (detail && detail.name === 'ValidationError') {
 			// console.log('db ValidationError: ', detail.errors);
 			detail = detail.errors;
 		} else {
