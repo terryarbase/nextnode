@@ -26,6 +26,7 @@ var DEFAULT_OPTION_KEYS = [
 	'noedit',
 	'realedit',
 	'nocol',
+	'copy',
 	'nosort',
 	'indent',
 	'hidden',

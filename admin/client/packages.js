@@ -30,6 +30,7 @@ module.exports = [
 	'universal-cookie', 
 	'react-addons-css-transition-group',
 	'react-alt-text',
+	'react-copy-to-clipboard',
 	'react-bootstrap',
 	'react-color',
 	'react-day-picker',
