@@ -28,7 +28,7 @@ var moduleRoot = (function (_rootPath) {
 var Keystone = function () {
 	grappling.mixin(this).allowHooks('pre:static', 'pre:dynamic', 'pre:bodyparser', 'pre:session', 'pre:logger', 'pre:admin', 'pre:routes', 'pre:render', 'updates', 'signin', 'signout');
 	
-	const rootPath = path.resolve(__dirname);
+	const rootPath = __dirname;
 	const defaultLang = 'en';
 	const defaultAdminPath = 'webadmin';
 
