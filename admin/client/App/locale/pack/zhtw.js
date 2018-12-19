@@ -261,7 +261,7 @@ const locales = {
          resetTo:'重置更改的內容至',
          deleteAskMsg:'你確定要刪除',
          cannotUndo:'這不能被撤消更改',
-         copy: '複製',
+         copy: '複製{{target}}',
          saving:'正在儲存更改',
          save:'更改',
          'field-id': '編號',

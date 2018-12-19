@@ -145,8 +145,9 @@ var Base = module.exports.Base = {
 				        		margin: '5px',
 				        		fontWeight: 'bolder',
 				        		cursor: 'pointer',
+				        		color: '#666',
 				        	})
-				        }>{t('copy')}</span>
+				        }>{t('copy', { target: this.props.label })}</span>
 				    </CopyToClipboard>
 				</FormField>
 			);

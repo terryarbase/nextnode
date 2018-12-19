@@ -261,7 +261,7 @@ const locales = {
          saving:'Saving the changes',
          save:'Update',
          keyPlaceholder: 'Key Label',
-         copy: 'Copy',
+         copy: 'Copy {{target}}',
          text: 'Content',
          'field-id': 'ID',
          'field-_id': 'ID',

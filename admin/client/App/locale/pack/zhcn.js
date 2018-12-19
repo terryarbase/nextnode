@@ -259,7 +259,7 @@ const locales = {
          deleteAskMsg:'你确定要删除',
          cannotUndo:'这不能被撤消更改',
          saving:'正在储存更改',
-         copy: '拷贝',
+         copy: '拷贝{{target}}',
          save:'更改',
          keyPlaceholder: '识别文字',
          text: '內容',
