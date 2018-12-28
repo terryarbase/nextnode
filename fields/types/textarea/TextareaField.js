@@ -16,7 +16,7 @@ module.exports = Field.create({
 			overflowY: 'auto',
 		};
 
-		var { value } = this.props;
+		var { value = '' } = this.props;
 		// @Terry Chan 04/08/2018
 		const newlineValue = value.split('\\n');
 		if (newlineValue.length) {
