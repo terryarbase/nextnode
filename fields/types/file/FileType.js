@@ -1,5 +1,6 @@
 var FieldType = require('../Type');
 var util = require('util');
+const moment = require('moment');
 const _ = require('lodash');
 const keystone = require('../../../');
 // const mongoose = require('mongoose');
@@ -70,9 +71,18 @@ file.prototype.upload = function (item, file, options, callback) {
 		** Terry Chan
 		*/
 		var newResult = result;
+		const packNo = Math.random(0, 9999999);
 		if (options.subPath) {
 			newResult = item.get(field.path) || {};
 			newResult[options.subPath] = result;
+			/*
+			** add version timestamp for the new uploaded file
+			** Terry Chan
+			** 28/12/2018
+			*/
+			newResult[options.subPath].version = `v${moment().unix()}${packNo}`;
+		} else {
+			newResult.version = `v${moment().unix()}${packNo}`;
 		}
 		item.set(field.path, newResult);
 		// console.log('>>>>>upload>>>', options.subPath, newResult);
