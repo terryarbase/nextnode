@@ -1,6 +1,6 @@
 {
   "name": "next-nodecms",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Web Application Framework and Admin GUI / Content Management System built on Express.js and Mongoose From KeystoneJS",
   "main": "index.js",
   "repository": {
@@ -112,6 +112,7 @@
     "sharp": "^0.21.0",
     "string-to-stream": "1.1.0",
     "universal-cookie": "^3.0.6",
+    "user": "0.0.0",
     "utf8": "^3.0.0",
     "vkey": "1.0.1",
     "watchify": "3.9.0",

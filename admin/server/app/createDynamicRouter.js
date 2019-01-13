@@ -110,7 +110,7 @@ module.exports = function createDynamicRouter (keystone) {
 	// 	}
 	// );
 	router.post('/api/:list/delete', initList, checkPermission(2), require('../api/list/delete'));
-	router.post('/api/:list/delete', initList, checkPermission(2), require('../api/list/delete'));
+	// router.post('/api/:list/delete', initList, checkPermission(2), require('../api/list/delete'));
 	// items
 	router.get('/api/:list/:id', initList, checkPermission(1, { allowBasic: true }), require('../api/item/get'));
 	router.post('/api/:list/:id', initList, checkPermission(2), require('../api/item/update'));

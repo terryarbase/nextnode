@@ -1,5 +1,10 @@
 # Next-nodecms Changelog
 
+## 1.0.4
+## 1.0.5
+hot fix realtime edit
+copyable fields
+
 ## 1.0.3
 ### About Critical hotfix issues, Missing Multilingual Parts
 
