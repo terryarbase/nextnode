@@ -413,7 +413,6 @@ Field.prototype.updateItem = function (item, data, callback) {
  * @api public
  */
 Field.prototype.getValueFromData = function (data, subpath) {
-	// console.log(this.options.isMultilingual, this.path);
 	return this._path.get(data, subpath);
 };
 

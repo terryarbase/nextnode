@@ -6,6 +6,7 @@ module.exports = function (req, res) {
 		return res.apiError(403, req.t.__('msg_invalid_csrf'));
 	}
 	const { params: { id }, body, locales } = req;
+	// console.log(body);
 	// locales, list: { options: { multilingual }, fields } } = req;
 	const newData = req.list.prepareCorrectParam(body);
 	req.list.model.findById(id, function (err, item) {
