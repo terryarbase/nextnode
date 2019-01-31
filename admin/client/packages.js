@@ -47,6 +47,7 @@ module.exports = [
 	'redux-saga',
 	'redux-thunk',
 	'redux',
+	'sardius-fullcalendar-wrapper',
 	'vkey',
 	'xhr',
 ];

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { ButtonGroup, Button } from 'react-bootstrap'; 
 import { translate } from "react-i18next";
 import {
 	GlyphButton,
@@ -85,13 +86,17 @@ function ListHeaderToolbar ({
 	currentLang,
 	defaultLang,
 	currentUILang,
+	
+	calendarView,
+	showCalendar,
+	switchCalendarView,
 
 	...props
 }) {
 	return (
 		<Group block cssStyles={classes.wrapper}>
 			{
-				!nofilter ? 
+				!nofilter && !showCalendar ? 
 				<Section grow cssStyles={classes.search}>
 					<ListHeaderSearch
 						handleChange={searchHandleChange}
@@ -107,7 +112,7 @@ function ListHeaderToolbar ({
 			<Section grow cssStyles={classes.buttons}>
 				<Group block>
 					{
-						!nofilter ? 
+						!nofilter && !showCalendar ? 
 						<Section cssStyles={classes.filter}>
 							<ListFiltersAdd
 								dispatch={dispatch}
@@ -142,7 +147,7 @@ function ListHeaderToolbar ({
 					}
 					{
 						isLocale ?
-						<Section grow cssStyles={classes.filter}>
+						<Section grow cssStyles={[classes.filter, { flex: `0 0 0` }]}>
 							<div className="localization_List-section">
 								<LocalizationSelector
 									dispatch={dispatch}
@@ -152,7 +157,18 @@ function ListHeaderToolbar ({
 						</Section> : null
 					}
 					{
-						!noscale ? 
+						calendarView ?
+							<Section grow cssStyles={[classes.filter, { flex: `0 0 0` }]}>
+								<ButtonGroup style={{ display: `flex` }}>
+									<Button onClick={() => switchCalendarView(false)}>{t(`listView`)}</Button>
+									<Button onClick={() => switchCalendarView(true)}>{t(`calendarView`)}</Button>
+								</ButtonGroup>
+							</Section>
+						:
+							null
+					}
+					{
+						!noscale && !showCalendar ? 
 						<Section cssStyles={classes.expand}>
 							<ButtonDivider>
 								<GlyphButton
@@ -164,16 +180,19 @@ function ListHeaderToolbar ({
 							</ButtonDivider>
 						</Section> : null
 					}
-					{createIsAvailable && <Section cssStyles={classes.create}>
-						<ButtonDivider>
-							<CreateButton
-								listName={createListName}
-								onClick={createOnClick}
-								t={t}
-								list={list}
-							/>
-						</ButtonDivider>
-					</Section>}
+					
+					{createIsAvailable && 
+						<Section cssStyles={classes.create}>
+							<ButtonDivider>
+								<CreateButton
+									listName={createListName}
+									onClick={createOnClick}
+									t={t}
+									list={list}
+								/>
+							</ButtonDivider>
+						</Section>
+					}
 				</Group>
 			</Section>
 		</Group>

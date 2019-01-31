@@ -27,6 +27,7 @@ import ListHeaderToolbar from './components/ListHeaderToolbar';
 import ListManagement from './components/ListManagement';
 
 import NoListView from './components/NoListView';
+import CalendarView from './components/CalendarView';
 
 import ConfirmationDialog from '../../shared/ConfirmationDialog';
 import CreateForm from '../../shared/CreateForm';
@@ -69,13 +70,13 @@ const ListView = React.createClass({
 			showUpdateForm: false,
 			realTimeCol: null,	// store all of real time col state
 			realTimeInfo: null,	// store the real time edit content
+			showCalendar: false,
 		};
 	},
 	componentWillMount () {
 		// When we directly navigate to a list without coming from another client
 		// side routed page before, we need to initialize the list and parse
 		// possibly specified query parameters
-
 		this.props.dispatch(selectList(this.props.params.listId));
 
 		const isNoCreate = this.props.lists.data[this.props.params.listId].nocreate;
@@ -347,6 +348,7 @@ const ListView = React.createClass({
 			nodownload,
 			nofilter,
 			noscale,
+			calendarView,
 		} = this.props.currentList;
 
 		// console.log(singular, plural);
@@ -407,6 +409,11 @@ const ListView = React.createClass({
 					nodownload={nodownload}
 					nofilter={nofilter}
 					noscale={noscale}
+					
+					// calendar view button
+					calendarView={calendarView} 
+					showCalendar={this.state.showCalendar}
+					switchCalendarView={this.switchCalendarView}
 				/>
 				{
 					!nofilter ? 
@@ -662,9 +669,11 @@ const ListView = React.createClass({
 		);
 	},
 	renderActiveState () {
-		const { currentList: { nolist } } = this.props;
+		const { currentList: { nolist, calendarView } } = this.props;
 		if (this.showBlankState() || nolist) return null;
-
+		
+		if (this.state.showCalendar) return this.renderCalendarView();
+		
 		const containerStyle = {
 			transition: 'max-width 160ms ease-out',
 			msTransition: 'max-width 160ms ease-out',
@@ -774,6 +783,25 @@ const ListView = React.createClass({
 			</Center>
 		);
 	},
+	switchCalendarView(switcher) {
+		this.setState({
+			showCalendar: switcher,
+		});
+	},
+	renderCalendarView() {
+		return (
+			<CalendarView
+				t={this.props.t}
+				items={this.props.items}
+				isOpen={this.state.showCreateForm}
+				router={this.context.router}
+				onCreate={this.openCreateModal}
+				list={this.props.currentList}
+				renderHeader={this.renderHeader}
+				switchCalendarView={this.switchCalendarView}
+			/>
+		);
+	},
 	render () {
 		// console.log(this.state.realTimeInfo, this.state.realTimeCol);
 		if (!this.props.ready) {
@@ -799,6 +827,7 @@ const ListView = React.createClass({
 							onCancel={this.closeCreateModal}
 							onCreate={this.onCreate}
 						/>
+						
 						<UpdateForm
 							isOpen={this.state.showUpdateForm}
 							itemIds={Object.keys(this.state.checkedItems)}

@@ -128,6 +128,6 @@ module.exports = function createDynamicRouter (keystone) {
 	});
 
 	// TODO: catch 404s and errors with Admin-UI specific handlers
-
+	
 	return router;
 };

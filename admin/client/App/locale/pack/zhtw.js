@@ -1,4 +1,7 @@
 const locales = {  
+   init: {
+	   key: 'zh-tw',
+   },
    nav:{  
       ...{
          welcome:'你好:',
@@ -50,7 +53,8 @@ const locales = {
    headerToolBar:{  
       createButton:'新增{{listName}}',
       placeholder:'搜尋',
-
+	  listView: '列表',
+	  calendarView: '月曆',
    },
    sort:{  
       label:'排序',

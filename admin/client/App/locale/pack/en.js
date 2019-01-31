@@ -1,4 +1,7 @@
 const locales = {
+   init: {
+	   key: 'en',
+   },
    nav: {
       ...{  
          welcome:'Welcome:',
@@ -49,7 +52,8 @@ const locales = {
    headerToolBar:{  
       createButton:'Create {{listName}}',
       placeholder:'Search',
-
+	  listView: 'List',
+	  calendarView: 'Calendar',
    },
    sort:{  
       label:'Sort',
