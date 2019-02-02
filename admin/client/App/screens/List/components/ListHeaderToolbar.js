@@ -124,17 +124,20 @@ function ListHeaderToolbar ({
 							/>
 						</Section> : null
 					}
-					<Section cssStyles={classes.columns}>
-						<ListColumnsForm
-							availableColumns={columnsAvailable}
-							activeColumns={columnsActive}
-							dispatch={dispatch}
-							t={t}
-							list={list}
-						/>
-					</Section>
 					{
-						!nodownload ? 
+						!showCalendar ?
+						<Section cssStyles={classes.columns}>
+							<ListColumnsForm
+								availableColumns={columnsAvailable}
+								activeColumns={columnsActive}
+								dispatch={dispatch}
+								t={t}
+								list={list}
+							/>
+						</Section> : null
+					}
+					{
+						!nodownload && !showCalendar ? 
 						<Section cssStyles={classes.download}>
 							<ListDownloadForm
 								currentLang={isLocale ? currentLang : null}

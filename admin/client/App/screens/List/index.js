@@ -19,6 +19,8 @@ import {
 	Spinner,
 } from '../../elemental';
 
+import { clearAllFilters } from './actions';
+
 import Pagination from '../../elemental/Pagination';
 
 import ListFilters from './components/Filtering/ListFilters';
@@ -78,6 +80,12 @@ const ListView = React.createClass({
 		// side routed page before, we need to initialize the list and parse
 		// possibly specified query parameters
 		this.props.dispatch(selectList(this.props.params.listId));
+		
+		/*
+			clear filter when redirect
+			Honor Cheung @ 2/2/2019
+		*/
+// 		this.props.dispatch(clearAllFilters());
 
 		const isNoCreate = this.props.lists.data[this.props.params.listId].nocreate;
 		const shouldOpenCreate = this.props.location.search === '?create';
@@ -416,7 +424,7 @@ const ListView = React.createClass({
 					switchCalendarView={this.switchCalendarView}
 				/>
 				{
-					!nofilter ? 
+					!nofilter && !this.state.showCalendar ? 
 					<ListFilters
 						dispatch={this.props.dispatch}
 						filters={this.props.active.filters}
@@ -789,14 +797,23 @@ const ListView = React.createClass({
 		});
 	},
 	renderCalendarView() {
+		const { 
+			currentList: { 
+				calendarMap, 
+				calendarTitle,
+				defaultColumns,
+				path,
+			}, 
+			items, 
+		} = this.props;
 		return (
 			<CalendarView
-				t={this.props.t}
-				items={this.props.items}
-				isOpen={this.state.showCreateForm}
+				events={items}
+				calendarMap={calendarMap}
+				calendarTitle={calendarTitle}
+				path={path}
 				router={this.context.router}
-				onCreate={this.openCreateModal}
-				list={this.props.currentList}
+				defaultColumns={defaultColumns}
 				renderHeader={this.renderHeader}
 				switchCalendarView={this.switchCalendarView}
 			/>

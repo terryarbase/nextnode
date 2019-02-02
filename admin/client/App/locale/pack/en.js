@@ -172,6 +172,13 @@ const locales = {
       nolistHeader: 'Let Create a {{listName}}',
       nolistDesc: 'The {{listName}} list must only has one item and you are allowed to create a {{listName}} information. The page will be redirect to the unique information after create the first record.',
    },
+   calendar: {
+	   today: 'Today',
+	   month: 'Month',
+	   week: 'Week',
+	   day: 'Day',
+	   listDay: 'List',
+   },
    form: {  
       ...{
          'day-picker-weekshort': ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],

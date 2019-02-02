@@ -173,6 +173,13 @@ const locales = {
       nolistHeader: '立即建立一個{{listName}}',
       nolistDesc: '{{listName}}頁面只能創建一個項目，您可以立刻創建這個唯一{{listName}}項目。創建第一條記錄後，頁面將重定向到這個項目。',
    },
+    calendar: {
+	   today: '今天',
+	   month: '月',
+	   week: '週',
+	   day: '天',
+	   listDay: '日程',
+   },
    form:{  
       ...{
          'day-picker-weekshort': ['日', '一', '二', '三', '四', '五', '六'],
