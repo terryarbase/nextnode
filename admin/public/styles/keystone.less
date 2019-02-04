@@ -76,11 +76,12 @@
 .DayPicker-Month {
 	border-collapse: collapse;
 	border-spacing: 0;
-	display: table;
+	display: inline-block;
 	// margin: 0 1rem;
 	table-layout: fixed;
 	user-select: none;
-	width: 100%;
+	vertical-align: top;
+	margin: 0 10px;
 }
 
 .DayPicker-NavBar {
@@ -108,6 +109,22 @@
 .DayPicker-NavButton--next {
 	right: 1rem;
 	background-image: url("../images/datepicker-next.svg");
+}
+
+.Selectable .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
+	background-color: #f0f8ff !important;
+	color: #4a90e2;
+}
+.Selectable .DayPicker-Day {
+	border-radius: 0 !important;
+}
+.Selectable .DayPicker-Day--start {
+	border-top-left-radius: 50% !important;
+	border-bottom-left-radius: 50% !important;
+}
+.Selectable .DayPicker-Day--end {
+	border-top-right-radius: 50% !important;
+	border-bottom-right-radius: 50% !important;
 }
 
 

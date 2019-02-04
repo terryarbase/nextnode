@@ -125,7 +125,7 @@ module.exports = Field.create({
 		return note;
 	},
 	renderField () {
-		const { max, t } = this.props;
+		const { max, t, isCore } = this.props;
 		const { values = [] } = this.state;
 		return (
 			<div>
@@ -136,7 +136,7 @@ module.exports = Field.create({
 						name={this.getInputName(this.props.path)} />
 				}
 				{
-					(max && values.length < max) || !max
+					((max && values.length < max) || !max && !isCore)
 					&& <Button ref="button" onClick={this.addItem}>{t('addItem')}</Button>
 				}
 				{

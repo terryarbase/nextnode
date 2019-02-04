@@ -204,13 +204,14 @@ Keystone.prototype.isReservedLanguageSectionFields = function (field) {
 ** 03/12/2018
 */
 Keystone.prototype.reservedCollections = function () {
+	const localization = this.get('localization');
 	return {
 		system: [
 			'Role',
 			'User',
 		],
 		localization: [
-			...(this.get('localization') ? ['Locale'] : null),
+			...(localization ? ['Locale'] : []),
 			'ApplicationLanguage',
 			'NavigationLanguage',
 		],

@@ -100,6 +100,7 @@ var EditForm = React.createClass({
 		props.currentLang = currentLang;
 		props.onChange = this.handleChange;
 		props.mode = 'edit';
+		props.isCore = this.props.list.isCore;
 		props.listKey = this.props.list.key;
 		props.t = t;
 		props.i18n = i18n;
