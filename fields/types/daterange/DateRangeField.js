@@ -1,10 +1,10 @@
-import DateInput from '../../components/DateInput';
+import DateRangeInput from '../../components/DateRangeInput';
 import Field from '../Field';
 import moment from 'moment';
-import DayPicker, { DateUtils } from 'react-day-picker';
+// import DayPicker, { DateUtils } from 'react-day-picker';
 import React from 'react';
 import {
-	Button,
+	// Button,
 	FormInput,
 	InlineGroup as Group,
 	InlineGroupSection as Section,
@@ -40,6 +40,7 @@ module.exports = Field.create({
 	},
 
 	valueChanged ({ value }) {
+		// console.log('> valueChanged: ', value, this.props.path);
 		this.props.onChange({
 			path: this.props.path,
 			value: value,
@@ -76,25 +77,22 @@ module.exports = Field.create({
 		** Terry Chan
 		** 14/12/2018
 		*/
-		const { t, maxDate, minDate } = this.props;
+		// const { value } = this.props;
 
-		var dateAsMoment = this.toMoment(this.props.value);
-		var value = this.props.value && dateAsMoment.isValid()
-			? dateAsMoment.format(this.props.inputFormat)
-			: this.props.value;
-
+		// var dateAsMoment = this.toMoment(this.props.value);
+		// var value = this.props.value && dateAsMoment.isValid()
+		// 	? dateAsMoment.format(this.props.inputFormat)
+		// 	: this.props.value;
 		return (
 			<Group>
 				<Section grow>
-					<DateInput
-						maxDate={maxDate}
-						minDate={minDate}
+					<DateRangeInput
+						{...this.props}
 						format={this.props.inputFormat}
 						name={this.getInputName(this.props.path)}
 						onChange={this.valueChanged}
 						ref="dateRangeInput"
-						range={true}
-						value={value}
+						currentLang={this.props.currentLang}
 					/>
 				</Section>
 			</Group>

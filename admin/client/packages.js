@@ -34,6 +34,8 @@ module.exports = [
 	'react-bootstrap',
 	'react-color',
 	'react-day-picker',
+	'react-bootstrap-datetimerangepicker', 
+	'bootstrap-daterangepicker',
 	'react-dnd-html5-backend',
 	'react-dnd',
 	'react-dom',

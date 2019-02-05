@@ -568,10 +568,11 @@ var EditForm = React.createClass({
 							{this.renderWarning()}
 							{/* this.renderKeyOrId() */}
 							{this.renderFormElements()}
-							{this.renderTrackingMeta()}
 						</Form>
 					</Grid.Col>
-					<Grid.Col large="one-quarter"><span /></Grid.Col>
+					<Grid.Col large="one-quarter">
+						{this.renderTrackingMeta()}
+					</Grid.Col>
 				</Grid.Row>
 				{this.renderFooterBar()}
 				<ConfirmationDialog

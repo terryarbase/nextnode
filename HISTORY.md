@@ -1,7 +1,13 @@
 # Next-nodecms Changelog
 
-## 1.0.4
+## 1.0.6
+### About DateRange Types, DateTimeRange Type Enhancements
+
+Data Enhancements:
+* Added Types.DateRange, Types.DateTimeRange
+
 ## 1.0.5
+## 1.0.4
 hot fix realtime edit
 copyable fields
 

@@ -11,8 +11,8 @@ var TextType = require('../text/TextType');
  */
 function daterange (list, path, options) {
 	this._nativeType = {
-		from: Date,
-		to: Date,
+		startDate: Date,
+		endDate: Date,
 	};
 	this._underscoreMethods = ['format', 'moment', 'parse'];
 	this._fixedSize = 'medium';
@@ -47,22 +47,35 @@ daterange.properName = 'DateRange';
 util.inherits(daterange, FieldType);
 
 
-daterange.prototype.validateRequiredInput = TextType.prototype.validateRequiredInput;
 
+daterange.prototype.validateRequiredInput = function (item, data, callback) {
+	const startValue = this.getValueFromData(data, 'startDate');
+	const endValue = this.getValueFromData(data, 'endDate');
+	const result = !!startValue && !!endValue;
+	utils.defer(callback, result);
+};
 /**
  * Add filters to a query
  */
 daterange.prototype.addFilterToQuery = function (filter) {
 	var query = {};
+	const startPath = `${this.path}.startDate`;
+	const endPath = `${this.path}.endDate`;
 	if (filter.mode === 'between') {
 		if (filter.after && filter.before) {
 			filter.after = moment(filter.after);
 			filter.before = moment(filter.before);
 			if (filter.after.isValid() && filter.before.isValid()) {
-				query[this.path] = {
+				query[startPath] = {
 					$gte: filter.after.startOf('day').toDate(),
+				};
+				query[endPath] = {
 					$lte: filter.before.endOf('day').toDate(),
 				};
+				// query[this.path] = {
+				// 	$lte: filter.after.startOf('day').toDate(),
+				// 	$gte: filter.before.endOf('day').toDate(),
+				// };
 			}
 		}
 	} else if (filter.value) {
@@ -72,18 +85,26 @@ daterange.prototype.addFilterToQuery = function (filter) {
 		day.start = day.moment.startOf('day').toDate();
 		day.end = moment(filter.value).endOf('day').toDate();
 		if (day.moment.isValid()) {
+			query[this.path] = {};
 			if (filter.mode === 'after') {
-				query[this.path] = { $gt: day.end };
+				query[startPath] = { $gt: day.end };
 			} else if (filter.mode === 'before') {
-				query[this.path] = { $lt: day.start };
+				query[endPath] = { $lt: day.start };
 			} else {
-				query[this.path] = { $gte: day.start, $lte: day.end };
+				query[startPath] = {
+					$gte: day.start,
+				};
+				query[endPath] = {
+					$lte: day.end,
+				};
+				// query[this.path] = { $gte: day.start, $lte: day.end };
 			}
 		}
 	}
 	if (filter.inverted) {
 		query[this.path] = { $not: query[this.path] };
 	}
+	console.log('> ', query);
 	return query;
 };
 
@@ -91,19 +112,24 @@ daterange.prototype.addFilterToQuery = function (filter) {
  * Formats the field value
  */
 daterange.prototype.format = function (item, format) {
-	const datFormat = (format && typeof format === 'string') || this.formatString;
-	if (datFormat) {
-		return item.get(this.path) ? this.moment(item).format(datFormat) : '';
-	} else {
-		return item.get(this.path) || '';
-	}
+	const datFormat = (format && typeof format === 'string') || this.formatString || 'YYYY-MM-DD';
+	// if (datFormat) {
+	// use start date instead if no end date specified
+	// const endDate = item.endDate || item.startDate;
+	return item.get(this.path) ? 
+		`${this.moment(item, 'startDate').format(datFormat)} - ${this.moment(item, 'endDate').format(datFormat)}` :
+		'';
+	// } 
+	// else {
+	// 	return item.get(this.path) || '';
+	// }
 };
 
 /**
  * Returns a new `moment` object with the field value
  */
-daterange.prototype.moment = function (item) {
-	var m = moment(item.get(this.path));
+daterange.prototype.moment = function (item, subPath) {
+	var m = moment(item.get(this.path)[subPath]);
 	if (this.isUTC) m.utc();
 	return m;
 };
@@ -127,10 +153,16 @@ daterange.prototype.parse = function (value, format, strict) {
  * Asynchronously confirms that the provided date is valid
  */
 daterange.prototype.validateInput = function (data, callback) {
-	var value = this.getValueFromData(data);
+	const startValue = this.getValueFromData(data, 'startDate');
+	const endValue = this.getValueFromData(data, 'endDate');
 	var result = true;
-	if (value) {
-		result = this.parse(value).isValid();
+	if (startValue) {
+		result = moment(startValue).isValid();
+		// console.log(startValue, moment(startValue), result);
+	}
+	if (endValue) {
+		result = moment(endValue).isValid();
+		// console.log(endValue, result);
 	}
 	utils.defer(callback, result);
 };
@@ -144,38 +176,89 @@ daterange.prototype.validateInput = function (data, callback) {
  * attempt to add the server offset to it to fix the date.
  */
 daterange.prototype.getData = function (item) {
-	var value = item.get(this.path);
-	var momentDate = this.isUTC ? moment.utc(value) : moment(value);
+		var value = item.get(this.path);
+		if (value && value.startDate && value.endDate) {
+		var startMomentDate = this.isUTC ? moment.utc(value.startDate) : moment(value.startDate);
+		var endMomentDate = this.isUTC ? moment.utc(value.endDate) : moment(value.endDate);
+		var dates = {
+			startDate: startMomentDate.toDate(),
+			endDate: endMomentDate.toDate(),
+		};
+		if (this.isUTC) {
+			if (startMomentDate.format('HH:mm:ss:SSS') !== '00:00:00:000') {
+				// Time is NOT midnight. So, let's try and add the server timezone offset
+				// to convert it (back?) to the original intended time. Since we don't know
+				// if the time was recorded during daylight savings time or not, allow +/-
+				// 1 hour leeway.
 
-	if (this.isUTC) {
-		if (momentDate.format('HH:mm:ss:SSS') !== '00:00:00:000') {
-			// Time is NOT midnight. So, let's try and add the server timezone offset
-			// to convert it (back?) to the original intended time. Since we don't know
-			// if the time was recorded during daylight savings time or not, allow +/-
-			// 1 hour leeway.
+				var adjustedMomentDate = moment.utc(startMomentDate);
 
-			var adjustedMomentDate = moment.utc(momentDate);
+				// Add the server the time so that it is within +/- 1 hour of midnight.
+				adjustedMomentDate.add(this.timezoneUtcOffsetMinutes, 'minutes');
 
-			// Add the server the time so that it is within +/- 1 hour of midnight.
-			adjustedMomentDate.add(this.timezoneUtcOffsetMinutes, 'minutes');
+				// Add 1 hour to the time so then we know any valid date/time would be between
+				// 00:00 and 02:00 on the correct day
+				adjustedMomentDate.add(1, 'hours'); // So
+				var timeAsNumber = Number(adjustedMomentDate.format('HHmmssSSS'));
+				if (timeAsNumber >= 0 && timeAsNumber <= 20000000) {
+					// Time is close enough to midnight so extract the date with a zeroed (ie. midnight) time value
+					dates = {
+						...dates,
+						startDate: adjustedMomentDate.startOf('day').toDate(),
+					};
+				} else {
+					// Seems that that adding the server time offset didn't produce a time
+					// that is close enough to midnight. Therefore, let's use the date/time
+					// as-is
+					dates = {
+						...dates,
+						startDate: startMomentDate.toDate(),
+					};
+				}
+			}
+			if (endMomentDate.format('HH:mm:ss:SSS') !== '00:00:00:000') {
+				// Time is NOT midnight. So, let's try and add the server timezone offset
+				// to convert it (back?) to the original intended time. Since we don't know
+				// if the time was recorded during daylight savings time or not, allow +/-
+				// 1 hour leeway.
 
-			// Add 1 hour to the time so then we know any valid date/time would be between
-			// 00:00 and 02:00 on the correct day
-			adjustedMomentDate.add(1, 'hours'); // So
-			var timeAsNumber = Number(adjustedMomentDate.format('HHmmssSSS'));
-			if (timeAsNumber >= 0 && timeAsNumber <= 20000000) {
-				// Time is close enough to midnight so extract the date with a zeroed (ie. midnight) time value
-				return adjustedMomentDate.startOf('day').toDate();
-			} else {
-				// Seems that that adding the server time offset didn't produce a time
-				// that is close enough to midnight. Therefore, let's use the date/time
-				// as-is
-				return momentDate.toDate();
+				var adjustedMomentDate = moment.utc(endMomentDate);
+
+				// Add the server the time so that it is within +/- 1 hour of midnight.
+				adjustedMomentDate.add(this.timezoneUtcOffsetMinutes, 'minutes');
+
+				// Add 1 hour to the time so then we know any valid date/time would be between
+				// 00:00 and 02:00 on the correct day
+				adjustedMomentDate.add(1, 'hours'); // So
+				var timeAsNumber = Number(adjustedMomentDate.format('HHmmssSSS'));
+				if (timeAsNumber >= 0 && timeAsNumber <= 20000000) {
+					// Time is close enough to midnight so extract the date with a zeroed (ie. midnight) time value
+					dates = {
+						...dates,
+						endDate: adjustedMomentDate.endOf('day').toDate(),
+					};
+				} else {
+					// Seems that that adding the server time offset didn't produce a time
+					// that is close enough to midnight. Therefore, let's use the date/time
+					// as-is
+					dates = {
+						...dates,
+						endDate: endMomentDate.toDate(),
+					};
+				}
 			}
 		}
+		return {
+			startDate: startMomentDate.toDate(),
+			endDate: endMomentDate.toDate(),
+		};
 	}
+	return {};
+};
 
-	return momentDate.toDate();
+daterange.prototype.getValueFromData = function(data, subPath) {
+	const path = `${this.path}.${subPath}`;
+	return data[path] ? data[path] : null;
 };
 
 /**
@@ -185,11 +268,21 @@ daterange.prototype.getData = function (item) {
  * Deprecated
  */
 daterange.prototype.inputIsValid = function (data, required, item) {
-	if (!(this.path in data) && item && item.get(this.path)) return true;
-	var newValue = moment(data[this.path], this.parseFormatString);
-	if (required && (!newValue.isValid())) {
+	var startValue = this.getValueFromData(data, 'startDate');
+	var endValue = this.getValueFromData(data, 'endDate');
+	if (!startValue && !endValue) return false;
+	startValue = moment(startValue, this.parseFormatString);
+	endValue = moment(endValue, this.parseFormatString);
+	// if (!(this.path in data) && item && item.get(this.path)) return true;
+	// var startValue = moment(data[this.path].startDate, this.parseFormatString);
+	// var endValue = moment(data[this.path].endDate, this.parseFormatString);
+	if (required && (!startValue.isValid() || !endValue.isValid())) {
 		return false;
-	} else if (data[this.path] && newValue && !newValue.isValid()) {
+	} else if (startValue && !startValue.isValid()) {
+		return false;
+	} else if (endValue && !endValue.isValid()) {
+		return false;
+	} else if (startValue.isAfter(endValue)) {
 		return false;
 	} else {
 		return true;
@@ -200,13 +293,34 @@ daterange.prototype.inputIsValid = function (data, required, item) {
  * Updates the value for this field in the item from a data object
  */
 daterange.prototype.updateItem = function (item, data, callback) {
-	var value = this.getValueFromData(data);
-	if (value !== null && value !== '') {
+	var startDate = this.getValueFromData(data, 'startDate');
+	var endDate = this.getValueFromData(data, 'endDate');
+	// console.log('> ', startDate, endDate);
+	if (!!startDate && !!endDate) {
 		// If the value is not null, empty string or undefined, parse it
-		var newValue = this.parse(value);
+		startDate = moment(startDate);
+		endDate = moment(endDate);
+		var newValue = null;
 		// If it's valid and not the same as the last value, save it
-		if (newValue.isValid() && (!item.get(this.path) || !newValue.isSame(item.get(this.path)))) {
-			item.set(this.path, newValue.toDate());
+		if (startDate.isValid()) {
+		// && (!item.get(this.path) || !newValue.isSame(item.get(this.path)))) {
+			// item.set(this.path, newValue.toDate());
+			newValue = {
+				...newValue,
+				startDate: startDate.startOf('day').toDate(),
+			}
+		}
+		if (endDate.isValid()) {
+			// && (!item.get(this.path) || !newValue.isSame(item.get(this.path)))) {
+				// item.set(this.path, newValue.toDate());
+			newValue = {
+				...newValue,
+				endDate: endDate.endOf('day').toDate(),
+			}
+		}
+
+		if (newValue) {
+			item.set(this.path, newValue);
 		}
 	} else {
 		// If it's null or empty string, clear it out
