@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { Badge } from 'react-bootstrap';
 import ItemsTableCell from '../../components/ItemsTableCell';
 import ItemsTableValue from '../../components/ItemsTableValue';
 
@@ -17,9 +18,21 @@ var DateRangeColumn = React.createClass({
 		const { format } = this.props;
 		const dateFormat = (this.props.col.type === 'datetime') ? 
 			(format ? format : 'DD/MM/YYYY HH:mm') : (format ? format : 'DD/MM/YYYY');
-		if (value.startDate && value.endDate) {
-			return `${moment(value.startDate).format(dateFormat)} - ${moment(value.endDate).format(dateFormat)}`;
-		}
+			if (value.startDate && value.endDate) {
+				return (
+					<div>
+						<Badge variant="primary">
+							{moment(value.startDate).format(dateFormat)}
+						</Badge>
+						<span> - </span>
+						<Badge variant="primary">
+							{moment(value.endDate).format(dateFormat)}
+						</Badge>
+					</div>
+				);
+				// return `${moment(value.startDate).format(dateFormat)} - ${moment(value.endDate).format(dateFormat)}`;
+			}
+			return null;
 		return '';
 	},
 	render () {

@@ -14,7 +14,6 @@ const _ = require('lodash');
 var str = require('string-to-stream');
 
 function buildFieldTypesStream (fieldTypes) {
-	// console.log('>>>>>>>>>>>> ', fieldTypes);
 	var src = '';
 	var types = Object.keys(fieldTypes);
 	['Column', 'Field', 'Filter'].forEach(function (i) {
@@ -38,7 +37,7 @@ module.exports = function createStaticRouter (keystone) {
 	var keystoneHash = keystone.createKeystoneHash();
 	var writeToDisk = keystone.get('cache admin bundles');
 	var router = express.Router();
-
+	// console.log('> fieldTypes: ', keystone.fieldTypes);
 	/* Prepare browserify bundles */
 	var bundles = {
 		fields: browserify({
