@@ -92,6 +92,7 @@ const ListView = React.createClass({
 
 		this.setState({
 			showCreateForm: (shouldOpenCreate && !isNoCreate) || Keystone.createFormErrors,
+			showCalendar: this.props.currentList.calendarView ? true : false,
 		});
 
 	},
@@ -129,7 +130,14 @@ const ListView = React.createClass({
 		this.toggleCreateModal(false);
 		// Redirect to newly created item path
 		const list = this.props.currentList;
-		this.context.router.push(`${Keystone.adminPath}/${list.path}/${item.id}`);
+
+		/*
+		** switch to detail page when a new item is created
+		** Honor Cheung @ 7/2/2019
+		*/
+		if (!this.state.showCalendar) {
+			this.context.router.push(`${Keystone.adminPath}/${list.path}/${item.id}`);	
+		}
 	},
 	createAutocreate () {
 		const list = this.props.currentList;
@@ -804,10 +812,12 @@ const ListView = React.createClass({
 				defaultColumns,
 				path,
 			}, 
+			lists,
 			items, 
 		} = this.props;
 		return (
 			<CalendarView
+				list={lists}
 				events={items}
 				calendarMap={calendarMap}
 				calendarTitle={calendarTitle}

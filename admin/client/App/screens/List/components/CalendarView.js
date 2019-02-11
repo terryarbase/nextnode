@@ -7,7 +7,7 @@ import FullCalendar from 'sardius-fullcalendar-wrapper';
 import { 
 	ButtonToolbar, 
 	ButtonGroup, 
-	Button 
+	Button, 
 } from 'react-bootstrap';
 import { 
 	setFilter, 
@@ -31,7 +31,7 @@ const CalendarView = React.createClass({
 	getInitialState: function() {
 		return {
 			events: [],
-			headerRightMargin: window.innerWidth >= 1370 ? 745 : 745 - (1370 - window.innerWidth),
+			headerWidth: window.innerWidth >= 1370 ? 1135 : window.innerWidth <= 743 ? 508 : 1135 - (1370 - window.innerWidth),
 		}
 	},
 	componentWillMount: function() {
@@ -82,7 +82,7 @@ const CalendarView = React.createClass({
 	},
 	handleResize: function() {
 		this.setState({
-			headerRightMargin: window.innerWidth >= 1370 ? 745 : 745 - (1370 - window.innerWidth),
+			headerWidth: window.innerWidth >= 1370 ? 1135 : window.innerWidth <= 743 ? 508 : 1135 - (1370 - window.innerWidth),
 		});
 	},
 	handleDateChange: function(action) {
@@ -107,17 +107,30 @@ const CalendarView = React.createClass({
 		const { router, path } = this.props;
 		router.push(`${Keystone.adminPath}/${path}/${event.event.id}`);
 	},
-	handleEventDrop: function(event) {
-		/* save change */
-		console.log('drop: ', event);
-	},
-	handleEventResize: function(event) {
-		/* save change */
-		console.log('resize: ', event);
+	handleEventChange: function(event) {
+		/*
+		**	save change when the event was dragged or resized
+		**	Honor Cheung @ 11/2/2019
+		*/
+		const { list, calendarMap } = this.props;
+		const formData = new FormData();
+		const newDateTime = {
+			startDate: event.event.start,
+			endDate: event.event.end,
+		};
+		
+		formData.append(calendarMap, newDateTime);
+		list.currentList.updateItem(event.event.id, formData, (err, data) => {
+			if (err) {
+				console.log('all blood');
+			} else {
+				console.log('done');
+			}
+		});
 	},
 	render: function() {
-		const { t, renderHeader } = this.props;
-		const { events, headerRightMargin } = this.state;
+		const { t, renderHeader, calendarMap } = this.props;
+		const { events, headerWidth } = this.state;
 		return (
 			<div>
 				{renderHeader()}
@@ -126,29 +139,35 @@ const CalendarView = React.createClass({
 					<ButtonToolbar
 						style={{
 							position: `absolute`,
+							display: `flex`,
 							top: `190px`,
+							width: `${headerWidth}px`
 						}}
 					>
-						<ButtonGroup>
-							<Button onClick={() => this.handleDateChange('prev')}><div className="fc-icon fc-icon-left-single-arrow"/></Button>
-							<Button onClick={() => this.handleDateChange('next')}><div className="fc-icon fc-icon-right-single-arrow"/></Button>
-						</ButtonGroup>
+						<div style={{ display: `flex`, flex: 1 }}>
+							<ButtonGroup style={{ marginLeft: `5px` }}>
+								<Button onClick={() => this.handleDateChange('prev')}><div className="fc-icon fc-icon-left-single-arrow"/></Button>
+								<Button onClick={() => this.handleDateChange('next')}><div className="fc-icon fc-icon-right-single-arrow"/></Button>
+							</ButtonGroup>
+							
+							<ButtonGroup style={{ marginLeft: `5px` }}>
+								<Button onClick={() => this.handleDateChange('today')}>{t(`calendar:today`)}</Button>
+							</ButtonGroup>
+						</div>
 						
-						<ButtonGroup>
-							<Button onClick={() => this.handleDateChange('today')}>{t(`calendar:today`)}</Button>
-						</ButtonGroup>
-						
-						<ButtonGroup style={{ marginLeft: `${headerRightMargin}px` }}>
-							<Button onClick={() => this.handleViewChange('month')}>{t(`calendar:month`)}</Button>
-							<Button onClick={() => this.handleViewChange('agendaWeek')}>{t(`calendar:week`)}</Button>
-							<Button onClick={() => this.handleViewChange('agendaDay')}>{t(`calendar:day`)}</Button>
-							<Button onClick={() => this.handleViewChange('listDay')}>{t(`calendar:listDay`)}</Button>
-						</ButtonGroup>
+						<div style={{ display: `flex`, flex: 1, flexDirection: `row-reverse` }}>
+							<ButtonGroup>
+								<Button onClick={() => this.handleViewChange('month')}>{t(`calendar:month`)}</Button>
+								<Button onClick={() => this.handleViewChange('agendaWeek')}>{t(`calendar:week`)}</Button>
+								<Button onClick={() => this.handleViewChange('agendaDay')}>{t(`calendar:day`)}</Button>
+								<Button onClick={() => this.handleViewChange('listDay')}>{t(`calendar:listDay`)}</Button>
+							</ButtonGroup>
+						</div>
 					</ButtonToolbar>
 						
 						
 					<FullCalendar
-						editable
+						editable={(calendarMap !== 'createdAt' && calendarMap !== 'updatedAt') ? true : false }
 						ref={(ref) => {this.fullCalendar = ref;}}
 						header={{
 							left: '',
@@ -170,8 +189,8 @@ const CalendarView = React.createClass({
 						navLinks={true}
 						events={events}
 						eventClick={this.handleEventClick}
-						eventDrop={this.handleEventDrop}
-						eventResize={this.handleEventResize}
+						eventDrop={this.handleEventChange}
+						eventResize={this.handleEventChange}
 						locale={t('key')}
 					/>
 				</Container>
