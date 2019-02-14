@@ -6,7 +6,7 @@ import theme from '../../../theme';
 
 module.exports = {
 	'FormField': {
-		marginBottom: '1em',
+		marginBottom: '1.5em',
 		position: 'relative',
 	},
 
@@ -18,7 +18,18 @@ module.exports = {
 			tableLayout: 'fixed',
 			width: '100%',
 		},
+		// [`@media (min-width: ${theme.breakpoint.desktopMin})`]: {
+		// 	display: 'inline-block',
+		// 	width: '50%',
+		// },
+
 	},
+
+	// 'FormField__inner': {
+	// 	[`@media (min-width: ${theme.breakpoint.desktopMin})`]: {
+	// 		display: 'table-cell'
+	// 	},
+	// },
 
 	// inside horizontal form
 	// typically for use with submit button inside
@@ -32,7 +43,7 @@ module.exports = {
 		'display': 'inline-block',
 		'paddingLeft': '0.25em',
 		'paddingRight': '0.25em',
-		'verticalAlign': 'top',
+		'verticalAlign': 'middle',
 
 		':first-child': { paddingLeft: 0 },
 		':last-child': { paddingRight: 0 },

@@ -39,10 +39,10 @@ module.exports = function (opts) {
 	var src;
 	var etag;
 
-	var logName = file.replace(/^\.\//, '');
-	var fileName = logName;
-	var outputFilename = path.resolve(path.join(__dirname, '../../bundles/js', hash + '-' + fileName));
-
+	var logName = file.replace(/^\.\/|\..\//, '');
+	var fileName = opts.out || logName;
+	var outputFilename =  path.resolve(path.join(__dirname, '../../bundles/js', hash + '-' + fileName));
+	console.log('> outputFilename: ', outputFilename);
 	function updateBundle (newSrc) {
 		src = newSrc;
 		etag = crypto.createHash('md5').update(src).digest('hex').slice(0, 6);
@@ -63,7 +63,7 @@ module.exports = function (opts) {
 				if (err) {
 					logError(discFile, err);
 				} else {
-					fs.outputFile(path.resolve(path.join(__dirname, '../../bundles/disc', discFile)), html, 'utf8');
+					// fs.outputFile(path.resolve(path.join(__dirname, '../../bundles/disc', discFile)), html, 'utf8');
 					console.log(ts() + chalk.green('wrote disc for ' + chalk.underline(file)));
 				}
 			});
