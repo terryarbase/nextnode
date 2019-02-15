@@ -1,10 +1,16 @@
 # Next-nodecms Changelog
 
 ## 1.0.6
+### About Extend Customized AdminUI and Admin Signin UI
 ### About DateRange Types, DateTimeRange Type Enhancements
+
+UI Enhancements:
+* Added Customized AdminUI config, supported customized client's js
+* Removed client bundle js during starting the server
 
 Data Enhancements:
 * Added Types.DateRange, Types.DateTimeRange
+
 
 ## 1.0.5
 ## 1.0.4

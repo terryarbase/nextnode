@@ -33,11 +33,22 @@ function buildFieldTypesStream (fieldTypes) {
 	return str(src);
 }
 
+
+
 module.exports = function createStaticRouter (keystone) {
 	var keystoneHash = keystone.createKeystoneHash();
 	var writeToDisk = keystone.get('cache admin bundles');
 	var router = express.Router();
-	// console.log('> fieldTypes: ', keystone.fieldTypes);
+	const delegatedAdminBrowserify = browserify({
+		file: './App/index.js',
+		hash: keystoneHash,
+		writeToDisk: writeToDisk,
+	});
+	const delegatedSiginBrowserify = browserify({
+		file: './Signin/index.js',
+		hash: keystoneHash,
+		writeToDisk: writeToDisk,
+	});
 	/* Prepare browserify bundles */
 	var bundles = {
 		fields: browserify({
@@ -47,24 +58,67 @@ module.exports = function createStaticRouter (keystone) {
 			hash: keystoneHash,
 			writeToDisk: writeToDisk,
 		}),
-		signin: browserify({
-			file: './Signin/index.js',
-			hash: keystoneHash,
-			writeToDisk: writeToDisk,
-		}),
-		admin: browserify({
-			file: './App/index.js',
-			hash: keystoneHash,
-			writeToDisk: writeToDisk,
-		}),
-		// login: browserify({
-  //           file: `${keystone.get('project root')}/client/Login/index.js`,
-  //           out: 'client/Login/index.js',
-		// 	hash: keystoneHash,
-		// 	writeToDisk: writeToDisk,
-  //       }),
 	};
 
+	/*
+	** Customized client's signin bundle
+	** Terry Chan
+	** 15/02/2019
+	*/
+	if (keystone.get('customized signin')) {
+		const { file, out } = keystone.get('customized signin');
+		if (file) {
+			bundles = {
+				...bundles,
+				signin: browserify({
+					file,
+					out,
+					hash: keystoneHash,
+					writeToDisk: writeToDisk,
+				}),
+			};
+		} else {
+			bundles = {
+				...bundles,
+				signin: delegatedSiginBrowserify,
+			}
+		}
+	} else {
+		bundles = {
+			...bundles,
+			signin: delegatedSiginBrowserify,
+		}
+	}
+	/*
+	** Customized client's admin bundle
+	** Terry Chan
+	** 15/02/2019
+	*/
+	if (keystone.get('customized admin')) {
+		const { file, out } = keystone.get('customized admin');
+		if (file) {
+			bundles = {
+				...bundles,
+				admin: browserify({
+					file,
+					out,
+					hash: keystoneHash,
+					writeToDisk: writeToDisk,
+				}),
+			};
+		} else {
+			bundles = {
+				...bundles,
+				admin: delegatedAdminBrowserify,
+			}
+		}
+	} else {
+		bundles = {
+			...bundles,
+			admin: delegatedAdminBrowserify,
+		}
+	}
+	// console.log(bundles);
 	// prebuild static resources on the next tick in keystone dev mode; this
 	// improves first-request performance but delays server start
 	if (process.env.KEYSTONE_DEV === 'true' || process.env.KEYSTONE_PREBUILD_ADMIN === 'true') {

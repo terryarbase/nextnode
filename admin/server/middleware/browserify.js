@@ -42,18 +42,19 @@ module.exports = function (opts) {
 	var logName = file.replace(/^\.\/|\..\//, '');
 	var fileName = opts.out || logName;
 	var outputFilename =  path.resolve(path.join(__dirname, '../../bundles/js', hash + '-' + fileName));
-	console.log('> outputFilename: ', outputFilename);
 	function updateBundle (newSrc) {
 		src = newSrc;
 		etag = crypto.createHash('md5').update(src).digest('hex').slice(0, 6);
 	}
 
 	function writeBundle (buff) {
+		console.log('> AdminUI Bundle: ', outputFilename);
 		if (devWriteBundles || writeToDisk) {
 			fs.outputFile(outputFilename, buff, 'utf8', function (err) {
 				if (err) {
 					return logError(fileName, err);
 				}
+
 			});
 		}
 
@@ -103,13 +104,14 @@ module.exports = function (opts) {
 		if (devMode) {
 			b = watchify(b, { poll: 500 });
 		}
-
 		b.bundle(function (err, buff) {
+
 			if (err) return logError(logName, err);
 			updateBundle(buff);
 			queue.forEach(function (reqres) {
 				send.apply(null, reqres);
 			});
+			// console.log('> 1');
 			writeBundle(buff);
 		});
 
@@ -118,27 +120,32 @@ module.exports = function (opts) {
 				if (err) return logError(logName, err);
 				else logRebuild(logName);
 				updateBundle(buff);
+				// console.log('> 2');
 				writeBundle(buff);
 			});
 		});
 	}
 
 	function serve (req, res) {
+		// console.log('> ', src);
 		if (src) {
 			return send(req, res);
 		}
 
 		fs.readFile(outputFilename, function (err, data) {
 			if (data) {
-				updateBundle(data);
-				if (devMode) {
-					build();
-				}
-				send(req, res);
-			} else {
-				queue.push([req, res]);
-				build();
-			}
+				fs.removeSync(outputFilename);
+				// updateBundle(data);
+				// if (devMode) {
+				// 	build();
+				// }
+				// send(req, res);
+			} 
+			// else {
+				// console.log('> ', src);
+			queue.push([req, res]);
+			build();
+			//}
 		});
 	}
 
