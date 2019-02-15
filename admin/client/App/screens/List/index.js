@@ -135,8 +135,10 @@ const ListView = React.createClass({
 		** switch to detail page when a new item is created
 		** Honor Cheung @ 7/2/2019
 		*/
-		if (!this.state.showCalendar) {
-			this.context.router.push(`${Keystone.adminPath}/${list.path}/${item.id}`);	
+		if (this.state.showCalendar) {
+			
+		} else {
+			this.context.router.push(`${Keystone.adminPath}/${list.path}/${item.id}`);
 		}
 	},
 	createAutocreate () {
