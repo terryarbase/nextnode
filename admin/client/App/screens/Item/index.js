@@ -15,6 +15,7 @@ import { listsByKey } from '../../../utils/lists';
 import CreateForm from '../../shared/CreateForm';
 import Alert from '../../elemental/Alert';
 import EditForm from './components/EditForm';
+import RoleForm from './components/RoleForm';
 import EditFormHeader from './components/EditFormHeader';
 import RelatedItemsList from './components/RelatedItemsList/RelatedItemsList';
 
@@ -157,6 +158,7 @@ var ItemView = React.createClass({
 			);
 		}
 		// When we have the data, render the item view with it
+		if(this.props.currentList.key!=='Role'){
 		return (
 			<div data-screen-id="item">
 				{(this.props.error) ? this.handleError(this.props.error) : (
@@ -196,6 +198,48 @@ var ItemView = React.createClass({
 				)}
 			</div>
 		);
+		}else{ //render custom role form
+			return (
+				<div data-screen-id="item">
+				{(this.props.error) ? this.handleError(this.props.error) : (
+					<div>
+						<Container>
+							<EditFormHeader
+								dispatch={this.props.dispatch}
+								list={this.props.currentList}
+								data={this.props.data}
+								isLocale={this.props.isLocale}
+								currentLang={this.props.currentLanguage}
+								defaultLang={this.props.defaultLanguage}
+								toggleCreate={this.toggleCreateModal}
+							/>
+							<CreateForm
+								dispatch={this.props.dispatch}
+								list={this.props.currentList}
+								isOpen={this.state.createIsOpen}
+								isLocale={this.props.isLocale}
+								currentLang={this.props.currentLanguage}
+								defaultLang={this.props.defaultLanguage}
+								onCancel={() => this.toggleCreateModal(false)}
+								onCreate={(item) => this.onCreate(item)}
+							/>
+							<RoleForm
+								lists={this.props.initialLists}
+								list={this.props.currentList}
+								data={this.props.data}
+								dispatch={this.props.dispatch}
+								isLocale={this.props.isLocale}
+								currentLang={this.props.currentLanguage}
+								defaultLang={this.props.defaultLanguage}
+								router={this.context.router}
+							/>
+						</Container>
+						{this.renderRelationships()}
+					</div>
+				)}
+			</div>
+			);
+		}
 	},
 });
 
@@ -210,6 +254,7 @@ module.exports = translate(['message', 'form'])(connect(state => {
 		loading: state.item.loading,
 		ready: state.item.ready,
 		error: state.item.error,
+		initialLists: state.lists.initialLists,
 		currentList: state.lists.currentList,
 		currentLanguage: state.lists.locale.current,
 		isLocale: state.lists.locale.active,

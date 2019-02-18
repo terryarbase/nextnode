@@ -3,6 +3,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import assign from 'object-assign';
 import { translate } from "react-i18next";
+import Select from 'react-select';
 
 import {
 	Form,
@@ -108,6 +109,7 @@ var EditForm = React.createClass({
 	handleChange({ path, value }) {
 		// const { path, value } = e;
 		// console.log(path, value);
+
 		const { isLocale, currentLang } = this.props;
 		const { values: currentValue } = this.state;
 		const values = this.props.list.getProperlyChangedValue({
@@ -313,13 +315,7 @@ var EditForm = React.createClass({
 		var headings = 0;
 		const { currentLang, t, list: { key: listKey }, i18next } = this.props;
 		var elements = [];
-		var uiElements = this.props.list.uiElements;
-		if(Keystone.role[`${listKey}_fields_writeable`].length>0){
-			_.map(Keystone.role[`${listKey}_fields_writeable`],(field)=>{
-				 _.remove(uiElements,{type: "field", field: field});
-			})
-		}
-		uiElements.forEach((el, index) => {
+		this.props.list.uiElements.forEach((el, index) => {
 			// Don't render the name field if it is the header since it'll be rendered in BIG above
 			// the list. (see renderNameField method, this is the reverse check of the one it does)
 			if (
@@ -380,6 +376,41 @@ var EditForm = React.createClass({
 				}
 
 				var element = React.createElement(Fields[field.type], props);
+				if (field.norender && field.type === "textarray") {
+					const { isLocale, currentLang, t } = this.props;
+					const { values } = this.state;
+					var options = []
+					Object.keys(this.props.lists[field.label].fields).forEach(function (key) {
+						options = [
+							...options,
+							{
+								value: key, label: getTranslatedLabel(t, {
+									listKey: field.label,
+									prefix: 'field',
+									content: _.camelCase(key),
+									altContent: key,
+								})
+							}
+						]
+					});
+
+					var path = field.label + '_fields_writeable';
+					var value = this.props.list.getProperlyValue({ field: { path }, isLocale, currentLang, values });
+					var shouldRender = this.props.list.getProperlyValue({ field: { path:field.label }, isLocale, currentLang, values });
+					if(shouldRender===3){
+						element = React.createElement(Fields['select'], {
+							t, path, currentLang, value, values, ops: options, onChange: this.handleChange, restrictDelegated: field.restrictDelegated, multi: true, label: getTranslatedLabel(t, {
+								listKey,
+								prefix: 'field',
+								content: _.camelCase(path),
+								altContent: path,
+							}),
+						});
+					}else{
+						element= null;
+					}
+
+				}
 				// prevent stateless file element to be rendered again, get from state
 				if ((field.stateless || field.cloneable) && field.multilingual) {
 					if (this.statelessUI[field.path]) {

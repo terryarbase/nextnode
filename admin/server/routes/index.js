@@ -101,6 +101,7 @@ module.exports = function IndexRoute (req, res, isRender) {
 		} },
 		appLanguage: req.appLanguage,
 		menuLanguage: req.menuLanguage,
+		role: req.user.role,
 	};
 	keystoneData.csrf.header[keystone.security.csrf.CSRF_HEADER_KEY] = keystone.security.csrf.getToken(req, res);
 

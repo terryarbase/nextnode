@@ -91,11 +91,10 @@ module.exports = function createDynamicRouter (keystone) {
 	router.get('/api/:list', initList, checkPermission(1, { allowBasic: true }), require('../api/list/get'));
 	router.get('/api/:list/:format(export.excel|export.json|export.txt)', initList, checkPermission(1), require('../api/list/download'));
 	router.post('/api/:list/create', initList, checkPermission(2), require('../api/list/create'));
-	router.post('/api/:list/update', initList, checkPermission(2), require('../api/list/update'));
+	router.post('/api/:list/update', initList, checkPermission(3), require('../api/list/update'));
 	// only refer to the current login user operations
 	router.post('/api/:list/updateMyProfile',
 		initList,
-		checkPermission(2),
 		(req, res) => {
 			const Account = require('../api/account');
 			new Account(req, res).updateMyProfile();
@@ -114,7 +113,7 @@ module.exports = function createDynamicRouter (keystone) {
 	// items
 	router.get('/api/:list/:id', initList, checkPermission(1, { allowBasic: true }), require('../api/item/get'));
 	router.post('/api/:list/:id', initList, checkPermission(2), require('../api/item/update'));
-	router.post('/api/:list/:id/delete', initList, checkPermission(2), require('../api/list/delete'));
+	router.post('/api/:list/:id/delete', initList, checkPermission(3), require('../api/list/delete'));
 	router.post('/api/:list/:id/sortOrder/:sortOrder/:newOrder', initList, checkPermission(2), require('../api/item/sortOrder'));
 
 	// #6: List Routes

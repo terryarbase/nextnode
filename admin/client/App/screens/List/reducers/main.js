@@ -1,5 +1,6 @@
 import assign from 'object-assign';
 import List from './../../../../utils/List';
+import _ from 'lodash';
 import {
 	SELECT_LIST,
 	ITEMS_LOADED,
@@ -27,6 +28,7 @@ import {
 var initialState = {
 	loadingRef: null,
 	loadCounter: 0,
+	initialLists: null,
 	currentList: null,
 	loading: false,
 	ready: false,
@@ -106,7 +108,19 @@ function lists (state = initialState, action) {
 			if (list.items.count !== null) {
 				items = list.items;
 			}
+			// var fields = {};
+			// var uiElements = [];
+			// _.map(Keystone.role[`${list.key}_fields_writeable`],(field)=>{
+			// 	fields[field]=list.fields[field];
+			// 	uiElements.push(list.uiElements[_.findIndex(list.uiElements,{type: "field", field: field})])
+			// })
+			// list.fields=fields;
+			// list.uiElements=uiElements;
+			// console.log(JSON.stringify(fields))
+			// console.log(JSON.stringify(list))
+
 			return assign({}, state, {
+				initialLists: initialLists,
 				currentList: list,
 				ready: false,
 				items: items,

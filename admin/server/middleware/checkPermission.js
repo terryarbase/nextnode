@@ -2,6 +2,11 @@ module.exports = function checkPermission(requiredLevel, options) {
     options = Object.assign({}, { allowBasic: false }, options);
     return function(req, res, next) {
         var keystone = req.keystone;
+
+        if(req.user.role[req.list.key]===3){
+            return next();
+        }
+        
         if (!keystone.get('rbac')) {
             return next();
         }

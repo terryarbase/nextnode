@@ -45,6 +45,8 @@ var DEFAULT_OPTION_KEYS = [
 	'min',
 	'noeditkey',
 	'noeditadd', // the add item should be hided in edit mode, usually use the pre defined list and record
+	'norender', // disable server rendering for custom client-side rendering component
+	'availableFields',
 ];
 
 /**
