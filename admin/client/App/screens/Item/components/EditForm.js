@@ -1,6 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import assign from 'object-assign';
+import _ from 'lodash';
 import {
 	Form,
 	FormField,
@@ -85,12 +86,14 @@ var EditForm = React.createClass({
 				props.isValid = false;
 			}
 		}
-
-		props.value = this.state.values[field.path] || field.defaultValue;
+		props.value = this.state.values[field.path];
+		if (!props.value && !_.isBoolean(props.value)) {
+			props.value = field.defaultValue;
+		}
 		props.values = this.state.values;
 		props.onChange = this.handleChange;
 		props.mode = 'edit';
-		console.log('> this.state.values[field.path]: ', props, field.path);
+		console.log('> this.state.values[field.path]: ', this.state.values[field.path], field.path);
 		return props;
 	},
 	handleChange (event) {
