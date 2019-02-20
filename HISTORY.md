@@ -17,6 +17,7 @@ Data Enhancements:
 * Added min length and max length supporting for Types.Number
 * Added Regex for Type.Text
 * Added Advanced User Model's definations for the delegrated User model ('advanced user model')
+* Added Advanced Role Permission list to individual model ('advanced role permissions')
 
 ## 1.0.5
 ## 1.0.4
