@@ -127,6 +127,9 @@ module.exports = function IndexRoute (req, res, isRender) {
 			id: req.user.id,
 			name: UserList.getDocumentName(req.user) || '(no name)',
 		};
+		if (req.user.role) {
+			keystoneData.roleKey = req.user.role.roleKey;
+		}
 	};
 	/*
 	** Localization
@@ -162,5 +165,6 @@ module.exports = function IndexRoute (req, res, isRender) {
 	if (!isRender) {
 		return locals;
 	}
+
 	renderFile(req, res, keystone, locals);
 };
