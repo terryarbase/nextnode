@@ -85,11 +85,12 @@ var EditForm = React.createClass({
 				props.isValid = false;
 			}
 		}
-		console.log('> this.state.values[field.path]: ', this.state.values, field.path);
+
 		props.value = this.state.values[field.path] || field.defaultValue;
 		props.values = this.state.values;
 		props.onChange = this.handleChange;
 		props.mode = 'edit';
+		console.log('> this.state.values[field.path]: ', props, field.path);
 		return props;
 	},
 	handleChange (event) {
