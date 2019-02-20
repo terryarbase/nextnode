@@ -10,11 +10,13 @@ Bug Fixings
 UI Enhancements:
 * Added Customized AdminUI config, supported customized client's js
 * Removed client bundle js during starting the server
+* Added adminUI customized stylesheet ('adminui custom style')
 
 Data Enhancements:
 * Added Types.DateRange, Types.DateTimeRange
 * Added min length and max length supporting for Types.Number
 * Added Regex for Type.Text
+* Added Advanced User Model's definations for the delegrated User model ('advanced user model')
 
 ## 1.0.5
 ## 1.0.4
