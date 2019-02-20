@@ -37,7 +37,7 @@ module.exports = Field.create({
 	},
 	renderUI () {
 		const { indent, value, label, path } = this.props;
-		console.log('> ', value);
+		console.log('> ', path, value);
 		return (
 			<div data-field-name={path} data-field-type="boolean">
 				<FormField offsetAbsentLabel={indent}>
