@@ -37,6 +37,7 @@ var DEFAULT_OPTION_KEYS = [
 	'multilingual',
 	// file upload use
 	'stateless',
+	'regex',	// add regex for value checking
 	'cloneable',
 	// customized select option use
 	'assign',
