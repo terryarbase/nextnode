@@ -97,9 +97,10 @@ file.prototype.reset = function (item, options) {
 			value = null;
 		} 
 	} else {
-		Object.keys(this.storage.schema).forEach(function (path) {
-			value[path] = null;
-		});
+		value = null;
+		// Object.keys(this.storage.schema).forEach(function (path) {
+		// 	value[path] = null;
+		// });
 	}
 	item.set(this.path, value);
 	// special for Mixed type without auto detecting
@@ -234,7 +235,7 @@ file.prototype.updateItem = function (item, data, files, callback) {
 	if (value === 'remove') {
 		this.remove(item, null, options);
 		// return callback();
-		utils.defer(callback);
+		return utils.defer(callback);
 	}
 
 
