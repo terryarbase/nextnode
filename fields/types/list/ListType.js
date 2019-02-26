@@ -11,7 +11,7 @@ var isReserved = require('../../../lib/list/isReserved');
  * @api public
  */
 function list (keystoneList, path, options) {
-	this._underscoreMethods = ['format'];
+	this._underscoreMethods = ['format', 'single'];
 	list.super_.call(this, keystoneList, path, options);
 }
 list.properName = 'List';
