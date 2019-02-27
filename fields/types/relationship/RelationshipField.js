@@ -2,7 +2,8 @@ import async from 'async';
 import Field from '../Field';
 import { listsByKey } from '../../../admin/client/utils/lists';
 import React from 'react';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
+import AsyncSelect from 'react-select/lib/Async';
 import xhr from 'xhr';
 import {
 	Button,
@@ -12,12 +13,14 @@ import {
 } from '../../../admin/client/App/elemental';
 import _ from 'lodash';
 
-function compareValues (current, next) {
-	const currentLength = current ? current.length : 0;
-	const nextLength = next ? next.length : 0;
+function compareValues (current=[], next=[]) {
+	const currentValue = !Array.isArray(current) ? current.split(',') : current;
+	const nextValue = !Array.isArray(next) ? next.split(',') : next;
+	const currentLength = currentValue ? currentValue.length : 0;
+	const nextLength = nextValue ? nextValue.length : 0;
 	if (currentLength !== nextLength) return false;
 	for (let i = 0; i < currentLength; i++) {
-		if (current[i] !== next[i]) return false;
+		if (currentValue[i] !== nextValue[i]) return false;
 	}
 	return true;
 }
@@ -33,17 +36,19 @@ module.exports = Field.create({
 		return {
 			value: null,
 			createIsOpen: false,
+			isLoading: false,
 		};
 	},
 
 	componentDidMount () {
 		this._itemsCache = {};
-		this.loadValue(this.props.value);
+		// this.loadValue(this.props.value);
 	},
 
 	componentWillReceiveProps (nextProps) {
 		if (nextProps.value === this.props.value || nextProps.many && compareValues(this.props.value, nextProps.value)) return;
-		this.loadValue(nextProps.value);
+		// console.log('> ', nextProps.value);
+		// this.loadValue(nextProps.value);
 	},
 
 	shouldCollapse () {
@@ -87,56 +92,102 @@ module.exports = Field.create({
 	},
 
 	cacheItem (item) {
-		item.href = Keystone.adminPath + '/' + this.props.refList.path + '/' + item.id;
-		this._itemsCache[item.id] = item;
+		if (item && item.id) {
+			item.href = Keystone.adminPath + '/' + this.props.refList.path + '/' + (item.id || item.value);
+			this._itemsCache[(item.id || item.value)] = item;
+		}
 	},
 
-	loadValue (values) {
-		if (!values) {
-			return this.setState({
-				loading: false,
-				value: null,
-			});
-		};
-		values = Array.isArray(values) ? values : values.split(',');
-		const cachedValues = values.map(i => this._itemsCache[i]).filter(i => i);
-		if (cachedValues.length === values.length) {
-			this.setState({
-				loading: false,
-				value: this.props.many ? cachedValues : cachedValues[0],
-			});
-			return;
-		}
-		this.setState({
-			loading: true,
-			value: null,
-		});
-		async.map(values, (value, done) => {
-			xhr({
-				url: Keystone.adminPath + '/api/' + this.props.refList.path + '/' + value + `?ts=${Math.random()}&basic&alangd=${this.props.currentLang}`,
-				responseType: 'json',
-			}, (err, resp, data) => {
-				if (err || !data) return done(err);
-				this.cacheItem(data);
-				done(err, data);
-			});
-		}, (err, expanded) => {
-			if (!this.isMounted()) return;
-			//handle unexpected JSON string not parsed
-			expanded = typeof expanded === 'string' ? JSON.parse(expanded) : expanded;
-			this.setState({
-				loading: false,
-				value: this.props.many ? expanded : expanded[0],
-			});
-		});
-	},
+	// loadValue (values) {
+	// 	if (!values) {
+	// 		return this.setState({
+	// 			loading: false,
+	// 			value: null,
+	// 		});
+	// 	};
+	// 	// console.log('> 1', this._itemsCache, this.state.value);
+	// 	values = Array.isArray(values) ? values : values.split(',');
+	// 	const cachedValues = values.map(i => this._itemsCache[i]).filter(i => i);
+	// 	if (cachedValues.length === values.length) {
+	// 		this.setState({
+	// 			loading: false,
+	// 			value: this.props.many ? cachedValues : cachedValues[0],
+	// 		});
+	// 		return;
+	// 	}
+	// 	this.setState({
+	// 		loading: true,
+	// 		// value: null,
+	// 	});
+	// 	async.map(values, (value, done) => {
+	// 		xhr({
+	// 			url: Keystone.adminPath + '/api/' + this.props.refList.path + '/' + value + `?ts=${Math.random()}&basic&alangd=${this.props.currentLang}`,
+	// 			responseType: 'json',
+	// 		}, (err, resp, data) => {
+	// 			if (err || !data) return done(err);
+	// 			this.cacheItem(data);
+	// 			done(err, data);
+	// 		});
+	// 	}, (err, expanded) => {
+	// 		if (!this.isMounted()) return;
+	// 		//handle unexpected JSON string not parsed
+	// 		expanded = typeof expanded === 'string' ? JSON.parse(expanded) : expanded;
+	// 		// this.setState({
+	// 		// 	loading: false,
+	// 		// 	value: this.props.many ? expanded : expanded[0],
+	// 		// });
+	// 	});
+	// },
 
 	// NOTE: this seems like the wrong way to add options to the Select
 	loadOptionsCallback: {},
+	afterLoadOptions(results, callback) {
+		const { display, many, mode, noedit } = this.props;
+		let { value } = this.props;
+		const selections = _.map(results, ({ id, name, fields }) => {
+			let label = name;
+			if (!!display && fields && fields[display]) {
+				label = fields[display].url;
+			}
+			return {
+				label,
+				value: id,
+				name,
+				image: display === 'image',
+				isDisabled: mode === 'edit' && noedit
+			}
+		});
+		if (value) {
+			if (!Array.isArray(value)) {
+				value = value.split(',');
+			}
+		} else {
+			value = '';
+		}
+		// console.log('> split: ', value);
+		value = _.map(value, v => ({ value: String(v) }));
+		value = _.intersectionBy(selections, value, 'value');
+		// console.log(selections);
+		if (!many && value.length) {
+			value = value[0];
+		}
+		this.setState({
+			loading: false,
+			value,
+		}, () => callback(selections));
+		// console.log(selections, callback);
+
+		// callback(selections);
+	},
 	loadOptions (input, callback) {
+		const { many } = this.props;
+		// console.log(this.props.display);
 		// NOTE: this seems like the wrong way to add options to the Select
 		this.loadOptionsCallback = callback;
 		const filters = this.buildFilters();
+		this.setState({
+			loading: true,
+		});
 		xhr({
 			url: Keystone.adminPath + '/api/' + this.props.refList.path + `?ts=${Math.random()}&basic&search=` + input + '&' + filters,
 			responseType: 'json',
@@ -147,19 +198,39 @@ module.exports = Field.create({
 			}
 			//handle unexpected JSON string not parsed
 			data = typeof data === 'string' ? JSON.parse(data) : data;
-			data.results.forEach(this.cacheItem);
-			callback(null, {
-				options: data.results,
-				complete: data.results.length === data.count,
-			});
+			const results = data.results || [];
+			this.afterLoadOptions(results, callback);
+			// callback(
+			// 	_.map(results, ({ id, name, fields }) => {
+			// 		let label = name;
+			// 		if (!!display && fields && fields[displayField]) {
+			// 			label = fields[displayField].url;
+			// 		}
+			// 		return {
+			// 			label,
+			// 			value: id,
+			// 		}
+			// 	})
+			// );
+			// data.results.forEach(this.cacheItem);
+			// callback(null, {
+			// 	options: data.results,
+			// 	complete: data.results.length === data.count,
+			// });
 		});
 	},
 
-	valueChanged (value) {
+	valueChanged (item) {
+		const { many } = this.props;
 		this.props.onChange({
 			path: this.props.path,
-			value: value,
+			value: many ? _.map(item, i => i.value).join(',') : item.value,
 		});
+
+		this.setState({
+			value: item,
+		});
+		
 	},
 
 	openCreate () {
@@ -182,7 +253,7 @@ module.exports = Field.create({
 			values.push(item.id);
 			this.valueChanged(values.join(','));
 		} else {
-			this.valueChanged(item.id);
+			this.valueChanged(item.label);
 		}
 
 		// NOTE: this seems like the wrong way to add options to the Select
@@ -192,24 +263,68 @@ module.exports = Field.create({
 		});
 		this.closeCreate();
 	},
-
-	renderSelect (noedit) {
-		const { t, refList } = this.props;
+	customizedOptions(props) {
+		const { data: { label, value, name, image } } = props;
+		const { mode, noedit, t } = this.props;
+		if (mode === 'edit' && noedit) return null;
+		return (
+			<components.Option {...props}>
+				{
+					image ? <div>
+						<img src={label} alt={label} style={{ maxWidth: '200px', maxHeight: '100px', height: 'auto' }} />
+						<div>{name}</div>
+					</div> : label
+				}
+			</components.Option>
+		);
+	},
+	customizedSelections(props) {
+		const { data: { label, value, image } } = props;
+		// console.log(this.props.refList.path, this.props.item);
+		return (
+			<components.MultiValueLabel {...props}>
+				{
+					image ? <div>
+						<img src={label} alt={label} style={{ maxWidth: '200px', maxHeight: '100px', height: 'auto' }} />
+					</div> : label
+				}
+			</components.MultiValueLabel>
+		);
+	},
+	customizedRemove(props) {
+		const { mode, noedit, t } = this.props;
+		// console.log(this.props.refList.path, this.props.item);
+		if (mode === 'edit' && noedit) return null;
+		return (
+			<components.MultiValueRemove {...props}>
+				x
+			</components.MultiValueRemove>
+		);
+	},
+	renderSelect (noedit, isMulti) {
+		const { t, refList, many, value } = this.props;
+		// let value =  
+		// console.log(this.state.value);
 		return (
 			<div>
 				{/* This input element fools Safari's autocorrect in certain situations that completely break react-select */}
 				<input type="text" style={{ position: 'absolute', width: 1, height: 1, zIndex: -1, opacity: 0 }} tabIndex="-1"/>
-				<Select.Async
-					multi={this.props.many}
-					disabled={noedit}
+				<AsyncSelect
+					isMulti={many}
+					isClearable={!noedit}
+					isSearchable={!noedit}
 					loadOptions={this.loadOptions}
-					labelKey="name"
+					defaultOptions={true}
 					placeholder={t('selectWithListname', { listName: t(`table_${refList.key}`) })}
 					name={this.getInputName(this.props.path)}
 					onChange={this.valueChanged}
-					simpleValue
+					isLoading={this.state.isLoading}
+					components={{
+						Option: this.customizedOptions,
+						MultiValueLabel: this.customizedSelections,
+						MultiValueRemove: this.customizedRemove,
+					}}
 					value={this.state.value}
-					valueKey="id"
 				/>
 			</div>
 		);
@@ -240,22 +355,24 @@ module.exports = Field.create({
 	},
 
 	renderValue () {
-		const { many } = this.props;
+		// const { many } = this.props;
 		const { value } = this.state;
+		// console.log(this.state.value);
 		const props = {
 			children: value ? value.name : null,
 			component: value ? 'a' : 'span',
 			href: value ? value.href : null,
 			noedit: true,
 		};
-		return many ? this.renderSelect(true) : <FormInput {...props} />;
+		return this.renderSelect(true);
+		// return many ? this.renderSelect(true) : <FormInput {...props} />;
 	},
 
 	renderField () {
 		if (this.props.createInline) {
 			return this.renderInputGroup();
 		} else {
-			return this.renderSelect();
+			return this.renderSelect(false);
 		}
 	},
 

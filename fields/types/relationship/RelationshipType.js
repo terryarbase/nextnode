@@ -17,7 +17,7 @@ function relationship (list, path, options) {
 	this._defaultSize = 'full';
 	this._nativeType = keystone.mongoose.Schema.Types.ObjectId;
 	this._underscoreMethods = ['format', 'getExpandedData'];
-	this._properties = ['isValid', 'many', 'filters', 'createInline'];
+	this._properties = ['isValid', 'many', 'filters', 'createInline', 'display'];
 	// representive the placeholder elements
 	this.placeholder = [
 		'loading',

@@ -155,6 +155,20 @@ var Base = module.exports.Base = {
 		// console.log('this.props.value: ', this.props.value);
 		return <FormInput noedit={true}>{this.props.value}</FormInput>;
 	},
+	isImage (value) {
+		const imageMimeType = [
+			"image/png",
+			"image/jpeg",
+			"image/jpg",
+			"image/gif",
+		];
+		for(var i = 0; i < imageMimeType.length; i++){
+			if(value.mimetype === imageMimeType[i]){
+				return true;
+			}
+		}
+		return false;
+	},
 	renderUI () {
 		const { required } = this.props;
 		var wrapperClassName = classnames(

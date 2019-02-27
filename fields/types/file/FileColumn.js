@@ -9,13 +9,36 @@ var LocalFileColumn = React.createClass({
 		if (!value || !value.filename) return;
 		return value.filename;
 	},
+	isImage (value) {
+		const imageMimeType = [
+			"image/png",
+			"image/jpeg",
+			"image/jpg",
+			"image/gif",
+		];
+		for(var i = 0; i < imageMimeType.length; i++){
+			if(value.mimetype === imageMimeType[i]){
+				return true;
+			}
+		}
+		return false;
+	},
 	render: function () {
+
 		var value = this.props.data.fields[this.props.col.path];
-		var href = value && value.url ? value.url : null;
-		var label = value && value.filename ? value.filename : null;
+		const { linkTo } = this.props;
+		// console.log('linkTo: ', this.props.linkTo, value);
+		let href = linkTo ? linkTo : 
+			(value && value.url ? value.url : 
+				(value && value.public)
+			);
+		let label = value && value.filename ? value.filename : null;
+		if (this.isImage(value)) {
+			label = (<img src={value.url} style={{ maxWidth: '150px', maxHeight: '150px', height: 'auto', border: '1px solid #ccc' }} />);
+		}
 		return (
-			<ItemsTableCell href={href} padded interior field={this.props.col.type}>
-				<ItemsTableValue>{label}</ItemsTableValue>
+			<ItemsTableCell padded interior field={this.props.col.type}>
+				<ItemsTableValue to={href}>{label}</ItemsTableValue>
 			</ItemsTableCell>
 		);
 	},
