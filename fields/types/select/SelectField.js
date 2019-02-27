@@ -1,5 +1,6 @@
 import Field from '../Field';
 import React from 'react';
+import _ from 'lodash';
 import Select from 'react-select';
 import { FormInput } from '../../../admin/client/App/elemental';
 
@@ -15,14 +16,14 @@ module.exports = Field.create({
 		type: 'Select',
 	},
 
-	valueChanged (newValue) {
+	valueChanged ({ value }) {
 		// TODO: This should be natively handled by the Select component
-		if (this.props.numeric && typeof newValue === 'string') {
-			newValue = newValue ? Number(newValue) : undefined;
+		if (this.props.numeric && typeof value === 'string') {
+			value = value ? Number(value) : undefined;
 		}
 		this.props.onChange({
 			path: this.props.path,
-			value: newValue,
+			value,
 		});
 	},
 
@@ -54,24 +55,30 @@ module.exports = Field.create({
 	renderField () {
 		const { numeric, ops, path, value: val, currentLang } = this.props;
 		// TODO: This should be natively handled by the Select component
+		let value = String(val);
 		var options = ops;
 		if (ops.length) {
 			options = ops.map(function (i) {
-				return { label: this.convertObject(i.label), value: String(i.value) };
+				return {
+					label: this.convertObject(i.label),
+					value: String(i.value),
+					isSelected: String(i.value) === value,
+				};
 			}, this);
 		}
-		const value = String(val);
 		// if (typeof val === 'number' || typeof val === 'boolean') {
 		// 	value = String(val)
 		// }
+		// console.log(value);
+		value = _.find(options, o => o.isSelected);
+		// console.log(options, value);
 		return (
 			<div>
 				{/* This input element fools Safari's autocorrect in certain situations that completely break react-select */}
 				<input type="text" style={{ position: 'absolute', width: 1, height: 1, zIndex: -1, opacity: 0 }} tabIndex="-1"/>
 				<Select
-					simpleValue
 					name={this.getInputName(path)}
-					value={value}
+					defaultValue={value}
 					options={options}
 					placeholder={this.props.t('select')}
 					onChange={this.valueChanged}
