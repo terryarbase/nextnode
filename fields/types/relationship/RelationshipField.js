@@ -25,6 +25,12 @@ function compareValues (current=[], next=[]) {
 	return true;
 }
 
+const optionsStyle = {
+	maxWidth: '200px',
+	maxHeight: '100px',
+	height: 'auto'
+};
+
 module.exports = Field.create({
 
 	displayName: 'RelationshipField',
@@ -271,8 +277,9 @@ module.exports = Field.create({
 			<components.Option {...props}>
 				{
 					image ? <div>
-						<img src={label} alt={label} style={{ maxWidth: '200px', maxHeight: '100px', height: 'auto' }} />
-						<div>{name}</div>
+						<img src={label} alt={label} style={{
+							...optionsStyle,
+						}} />
 					</div> : label
 				}
 			</components.Option>
@@ -280,19 +287,23 @@ module.exports = Field.create({
 	},
 	customizedSelections(props) {
 		const { data: { label, value, image } } = props;
-		// console.log(this.props.refList.path, this.props.item);
+		const url = `${Keystone.adminPath}/${this.props.refList.path}/${value}`;
 		return (
 			<components.MultiValueLabel {...props}>
+				<a href={url} target="_blank">
 				{
-					image ? <div>
-						<img src={label} alt={label} style={{ maxWidth: '200px', maxHeight: '100px', height: 'auto' }} />
-					</div> : label
+					image ? 
+					<img src={label} alt={label} style={{
+						...optionsStyle,
+					}} />
+					: label
 				}
+				</a>
 			</components.MultiValueLabel>
 		);
 	},
 	customizedRemove(props) {
-		const { mode, noedit, t } = this.props;
+		const { mode, noedit, image } = this.props;
 		// console.log(this.props.refList.path, this.props.item);
 		if (mode === 'edit' && noedit) return null;
 		return (
@@ -301,8 +312,18 @@ module.exports = Field.create({
 			</components.MultiValueRemove>
 		);
 	},
+	customizedDropdownIndicator(props) {
+		const { mode, noedit, t, image } = this.props;
+		// console.log(this.props.refList.path, this.props.item);
+		if (mode === 'edit' && noedit) return null;
+		return (
+			<components.DropdownIndicator {...props}>
+				{t('dropdown')}
+			</components.DropdownIndicator>
+		);
+	},
 	renderSelect (noedit, isMulti) {
-		const { t, refList, many, value } = this.props;
+		const { t, refList, many, value, mode, display, noedit: disabled } = this.props;
 		// let value =  
 		// console.log(this.state.value);
 		return (
@@ -313,16 +334,26 @@ module.exports = Field.create({
 					isMulti={many}
 					isClearable={!noedit}
 					isSearchable={!noedit}
+					openMenuOnFocus={false}
+					openMenuOnClick={false}
 					loadOptions={this.loadOptions}
 					defaultOptions={true}
-					placeholder={t('selectWithListname', { listName: t(`table_${refList.key}`) })}
+					placeholder={ !noedit ? t('selectWithListname', { listName: t(`table_${refList.key}`) }) : '---'}
 					name={this.getInputName(this.props.path)}
 					onChange={this.valueChanged}
 					isLoading={this.state.isLoading}
+					styles={{
+						option: base => ({
+							...base,
+							border: `1px disabled #ccc`,
+							height: '100%',
+						}),
+					}}
 					components={{
 						Option: this.customizedOptions,
 						MultiValueLabel: this.customizedSelections,
 						MultiValueRemove: this.customizedRemove,
+						DropdownIndicator: this.customizedDropdownIndicator,
 					}}
 					value={this.state.value}
 				/>

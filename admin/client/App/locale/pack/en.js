@@ -176,6 +176,7 @@ const locales = {
             nextMonth: 'Next',
             previousMonth: 'Previous',
          },
+         dropdown: 'Select',
          change: 'Change File',
          upload: 'Upload File',
          'day-picker-month': ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],

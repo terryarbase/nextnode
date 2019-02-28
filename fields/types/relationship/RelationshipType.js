@@ -147,6 +147,7 @@ relationship.prototype.format = function (item) {
  */
 relationship.prototype.validateInput = function (data, callback) {
 	var value = this.getValueFromData(data);
+	console.log('> ', this.path, data, value);
 	var result = false;
 	if (value === undefined || value === null || value === '') {
 		result = true;
