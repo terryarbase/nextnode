@@ -179,6 +179,7 @@ const locales = {
          },
          'day-picker-month': ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
          change: '更改文件',
+         dropdown: '选择',
          upload: '上传文件',
          createANew:'新增一个新的{{listName}}',
          create:'新增',

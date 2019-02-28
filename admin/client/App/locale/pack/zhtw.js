@@ -240,6 +240,7 @@ const locales = {
          firstName:'名字',
          lastName:'姓',
          passwordSet:'密碼設置',
+         dropdown: '選擇',
          newPassword:'新密碼',
          confirmPwd:'確認新密碼',
          changePwd:'更改密碼',
