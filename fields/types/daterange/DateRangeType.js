@@ -104,7 +104,7 @@ daterange.prototype.addFilterToQuery = function (filter) {
 	if (filter.inverted) {
 		query[this.path] = { $not: query[this.path] };
 	}
-	console.log('> ', query);
+	// console.log('> ', query);
 	return query;
 };
 

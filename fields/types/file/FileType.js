@@ -111,13 +111,15 @@ file.prototype.reset = function (item, options) {
  * Deletes the stored file and resets the field value
  */
 // TODO: Should we accept a callback here? Seems like a good idea.
-file.prototype.remove = function (item, subPath, options) {
+file.prototype.remove = function (item, subPath, options, callback) {
 	var target = item.get(this.path);
 	if (options.subPath) {
 		const langFile = item.get(this.path);
 		target = langFile[options.subPath];
 	}
-	this.storage.removeFile(target, function() {});
+	this.storage.removeFile(target, function(result) {
+		if (callback) callback(result);
+	});
 	this.reset(item, options);
 };
 
