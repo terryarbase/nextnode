@@ -11,6 +11,7 @@ UI Enhancements:
 * Added Customized AdminUI config, supported customized client's js
 * Removed client bundle js during starting the server
 * Added adminUI customized stylesheet ('adminui custom style')
+* Upgraded react-select to v2 for Types.Select, Types.Relationship
 
 Data Enhancements:
 * Added Types.DateRange, Types.DateTimeRange
