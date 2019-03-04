@@ -11,18 +11,23 @@ class Appellation extends ImmutableType {
 		const type = Map({
 			mr: {
 				value: 'mr',
-				label: 'Mr',
+				label: 'Mr.',
 				key: 'select_option_mr',
 			},
 			miss: {
 				value: 'miss',
-				label: 'Miss',
+				label: 'Ms.',
 				key: 'select_option_miss',
 			},
 			mrs: {
 				value: 'mrs',
 				label: 'Mrs.',
 				key: 'select_option_mrs',
+			},
+			dr: {
+				value: 'dr',
+				label: 'Dr.',
+				key: 'select_option_drs',
 			},
 		});
 		super(node);
