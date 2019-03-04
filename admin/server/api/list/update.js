@@ -17,9 +17,10 @@ module.exports = function (req, res) {
 				id: data.id,
 			});
 			
-			// console.log(data);
+			console.log(item);
 				
 			req.list.updateItem(item, data, {
+				ignoreNoEdit: true,
 				files: req.files,
 				user: req.user,
 				__: req.t.__,
