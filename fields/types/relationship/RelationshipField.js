@@ -227,10 +227,17 @@ module.exports = Field.create({
 	},
 
 	valueChanged (item) {
-		const { many } = this.props;
+		let value = null;
+		if (this.props.many) {
+			if (item) {
+				value = _.map(item, i => i.value).join(',');
+			}
+		} else if (item) {
+			value = item.value
+		}
 		this.props.onChange({
 			path: this.props.path,
-			value: many ? _.map(item, i => i.value).join(',') : item.value,
+			value,
 		});
 
 		this.setState({

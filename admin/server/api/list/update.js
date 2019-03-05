@@ -16,8 +16,6 @@ module.exports = function (req, res) {
 				error: req.t.__('msg_user_notfound'),
 				id: data.id,
 			});
-			
-			console.log(item);
 				
 			req.list.updateItem(item, data, {
 				ignoreNoEdit: true,
