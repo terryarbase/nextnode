@@ -29,14 +29,25 @@ number.properName = 'Number';
 util.inherits(number, FieldType);
 
 number.prototype.validateInput = function (data, callback) {
+	var max = this.options.max;
+	var min = this.options.min;
+
 	var value = this.getValueFromData(data);
 	var result = value === undefined || typeof value === 'number' || value === null;
 	if (typeof value === 'string') {
+
 		if (value === '') {
 			result = true;
+			if (min) {
+				result = +value >= min;
+			}
 		} else {
 			value = utils.number(value);
 			result = !isNaN(value);
+
+			if (max && result) {
+				result = +value <= max;
+			}
 		}
 	}
 	utils.defer(callback, result);

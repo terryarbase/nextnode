@@ -1,5 +1,5 @@
 const async = require('async');
-
+const _ 	= require('lodash');
 
 module.exports = function (req, res) {
 	async.map(req.body.items, function (param, done) {
@@ -16,10 +16,13 @@ module.exports = function (req, res) {
 				error: req.t.__('msg_user_notfound'),
 				id: data.id,
 			});
-				
 			req.list.updateItem(item, data, {
+				ignoreNoEdit: true,
 				files: req.files,
 				user: req.user,
+				fields: _.map(_.keys(data), f => {
+					return req.list.fields[f];
+				}),
 				__: req.t.__,
 			}, function (err) {
 				if (err) {

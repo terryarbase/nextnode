@@ -11,6 +11,9 @@
     <link rel="stylesheet" href="<%= adminPath %>/styles/bootstrap.min.css">
     <link rel="stylesheet" href="<%= codemirrorPath %>/codemirror.css">
     <link rel="stylesheet" href="<%= adminPath %>/styles/keystone.min.css">
+    <!-- <link rel="stylesheet" href="<%= adminPath %>/styles/vendor/react-datepicker/react-datepicker.min.css"> -->
+    <link rel="stylesheet" href="<%= adminPath %>/styles/vendor/react-date-range/styles.css">
+    <link rel="stylesheet" href="<%= adminPath %>/styles/vendor/react-date-range/default.css">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   </head>
   <body>
@@ -21,7 +24,7 @@
       var Keystone = <%- JSON.stringify(keystone) %>;
     </script>
 <%# Old jQuery, editor and Cloudinary scripts %>
-    <script src="<%= adminPath %>/js/lib/jquery/jquery-1.10.2.min.js"></script>
+    <script src="<%= adminPath %>/js/lib/jquery/jquery-3.3.1.min.js"></script>
 <% if (fieldTypes.wysiwyg) { -%>
     <script src="<%= adminPath %>/js/lib/tinymce/tinymce.min.js"></script>
 <% if (cloudinaryScript) { -%>

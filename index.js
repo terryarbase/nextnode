@@ -204,13 +204,14 @@ Keystone.prototype.isReservedLanguageSectionFields = function (field) {
 ** 03/12/2018
 */
 Keystone.prototype.reservedCollections = function () {
+	const localization = this.get('localization');
 	return {
 		system: [
 			'Role',
 			'User',
 		],
 		localization: [
-			...(this.get('localization') ? ['Locale'] : null),
+			...(localization ? ['Locale'] : []),
 			'ApplicationLanguage',
 			'NavigationLanguage',
 		],
@@ -283,6 +284,7 @@ Keystone.prototype.createLocalization = require('./lib/core/delegation/createLoc
 Keystone.prototype.createAccount = require('./lib/core/delegation/createAccount');
 Keystone.prototype.delegatedLanguageSection = require('./lib/core/delegation/createLanguageSection');
 Keystone.prototype.delegatedNavLanguageSection = require('./lib/core/delegation/createNavLanguageSection');
+Keystone.prototype.createCountry = require('./lib/core/delegation/createCountry');
 
 // Keystone.prototype.hooks = function() {};
 // hooks.prototype.localization = require('./lib/core/hook/localization');

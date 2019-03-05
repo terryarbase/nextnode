@@ -25,7 +25,9 @@ text.prototype.validateInput = function (data, callback) {
 	// console.log(this.options.isMultilingual);
 	var max = this.options.max;
 	var min = this.options.min;
+	var regex = this.options.regex;
 	var value = this.getValueFromData(data);
+
 	/*
 	** casting to string, prevent input number directly
 	** Terry Chan
@@ -33,9 +35,7 @@ text.prototype.validateInput = function (data, callback) {
 	*/ 
 	value = String(value);
 	var result = value === undefined || value === null || typeof value === 'string';
-	if (max && typeof value === 'string') {
-		result = value.length < max;
-	}
+
 	/*
 	** Logical Concern for less and equals than
 	** Terry Chan
@@ -44,6 +44,15 @@ text.prototype.validateInput = function (data, callback) {
 	if (min && typeof value === 'string') {
 		result = value.length >= min;
 	}
+
+	if (max && typeof value === 'string') {
+		result = value.length <= max;
+	}
+
+	if (regex && typeof value === 'string') {
+		result = new RegExp(regex).test(value);
+	}
+
 	utils.defer(callback, result);
 };
 

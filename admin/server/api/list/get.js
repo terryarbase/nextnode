@@ -45,9 +45,9 @@ module.exports = function (req, res) {
 			query.populate(i.path);
 		});
 	}
-	if (where.$or) {
-		console.log(where.$or[0].$or, where);
-	}
+	// if (where.$or) {
+	// 	console.log(where.$or[0].$or, where);
+	// }
 	var sort = req.list.expandSort(req.query.sort);
 	async.waterfall([
 		function (next) {
@@ -61,7 +61,7 @@ module.exports = function (req, res) {
 				return next(null, count, []);
 			}
 			query.find();
-			query.limit(Number(req.query.limit) || 100);
+			query.limit(Number(req.query.limit) || 10000);
 			query.skip(Number(req.query.skip) || 0);
 			if (sort.string) {
 				query.sort(sort.string);

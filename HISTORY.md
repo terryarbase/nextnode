@@ -1,5 +1,30 @@
 # Next-nodecms Changelog
 
+## 1.0.6
+### About Extend Customized AdminUI and Admin Signin UI
+### About DateRange Types, DateTimeRange Type Enhancements
+
+Bug Fixings
+* Types.Text max length checking (use less than equals)
+
+UI Enhancements:
+* Added Customized AdminUI config, supported customized client's js
+* Removed client bundle js during starting the server
+* Added adminUI customized stylesheet ('adminui custom style')
+* Upgraded react-select to v2 for Types.Select, Types.Relationship
+
+Data Enhancements:
+* Added Types.DateRange, Types.DateTimeRange
+* Added min length and max length supporting for Types.Number
+* Added Regex for Type.Text
+* Added Advanced User Model's definations for the delegrated User model ('advanced user model')
+* Added Advanced Role Permission list to individual model ('advanced role permissions')
+
+## 1.0.5
+## 1.0.4
+hot fix realtime edit
+copyable fields
+
 ## 1.0.3
 ### About Critical hotfix issues, Missing Multilingual Parts
 
@@ -7,6 +32,7 @@ Common Improvements:
 * Added download as a text file format
 * Fixed Column Type.Email, Type.Url target blank
 * Fixed Multilingual label for name field in Create Form and Edit Form
+* Fixed Multilingual value for customized options list in Column View
 
 List Improvements:
 * Added disable listview option

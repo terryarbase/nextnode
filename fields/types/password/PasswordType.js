@@ -254,6 +254,7 @@ password.prototype.inputIsValid = function (data, required, item) {
 password.prototype.updateItem = function (item, data, callback) {
 	var hashValue = this.getValueFromData(data, '_hash');
 	var passwordValue = this.getValueFromData(data);
+	// console.log('>>>>> ', data);
 	if (passwordValue !== undefined) {
 		item.set(this.path, passwordValue);
 	} else if (hashValue !== undefined) {

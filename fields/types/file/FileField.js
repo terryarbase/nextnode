@@ -19,7 +19,7 @@ import ImageThumbnail from '../../components/ImageThumbnail';
 let uploadInc = 1000;
 
 const buildInitialState = (props, forceInit) => ({
-	action: null,
+	action: props.value === 'reset' ? props.value : null,
 	removeExisting: false,
 	uploadFieldPath: `File-${props.path}-${++uploadInc}`,
 	userSelectedFile: null,
@@ -62,7 +62,7 @@ module.exports = Field.create({
 			this.props.value.filename !== nextProps.value.filename ||
 			this.props.value.name !== nextProps.value.name) {
 			const state = buildInitialState(nextProps);
-			// console.log('>>>>>>', state);
+			// console.log('>>>>>>', nextProps);
 			this.setState(state);
 		}
 
@@ -113,7 +113,7 @@ module.exports = Field.create({
 	},
 	handleRemove (e) {
 		var state = {};
-
+		let action = '';
 		if (this.state.userSelectedFile) {
 			state = buildInitialState(this.props, true);
 		} else if (this.hasExisting()) {
@@ -121,7 +121,7 @@ module.exports = Field.create({
 
 			if (this.props.autoCleanup) {
 				if (e.altKey) {
-					state.action = 'reset';
+					state.action = action = 'reset';
 				} else {
 					state.action = 'delete';
 				}
@@ -129,7 +129,7 @@ module.exports = Field.create({
 				if (e.altKey) {
 					state.action = 'delete';
 				} else {
-					state.action = 'reset';
+					state.action = action = 'reset';
 				}
 			}
 		}
@@ -137,7 +137,7 @@ module.exports = Field.create({
 		// handle callback to client UI onchange
 		this.props.onChange({
 			path: this.props.path,
-			value: '',
+			value: action,
 		});
 	},
 	undoRemove () {
@@ -212,7 +212,7 @@ module.exports = Field.create({
 		if (this.state.userSelectedFile || this.state.action) {
 			const value = this.state.userSelectedFile
 				? `upload:${this.state.uploadFieldPath}`
-				: (this.state.action === 'delete' ? 'remove' : '');
+				: (this.state.action === 'delete' || this.state.action === 'reset' ? 'remove' : '');
 			return (
 				<input
 					name={this.getInputName(this.props.path)}
@@ -239,8 +239,8 @@ module.exports = Field.create({
 		return false;
 	},
 	renderImagePreview () {
-		const imageSrc = this.props.value.publicPath + this.props.value.filename;
-
+		const { value: { publicPath, filename, url } } = this.props;
+		const imageSrc = publicPath ? publicPath + filename : url;
 		return (
 			<ImageThumbnail
 				component="a"
@@ -248,12 +248,11 @@ module.exports = Field.create({
 				target="__blank"
 				style={{ float: 'left', marginRight: '1em' }}
 			>
-				<img src={imageSrc} style={{ height: 90 }} />
+				<img src={imageSrc} style={{ height: 'auto', maxWidth: '100%', maxHeight: '90px' }} />
 			</ImageThumbnail>
 		);
 	},
 	renderUI () {
-		// console.log(this.state.userSelectedFile, );
 		const { note, path, t, required } = this.props;
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		const buttons = (

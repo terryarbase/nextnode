@@ -37,6 +37,7 @@ var DEFAULT_OPTION_KEYS = [
 	'multilingual',
 	// file upload use
 	'stateless',
+	'regex',	// add regex for value checking
 	'cloneable',
 	// customized select option use
 	'assign',
@@ -413,7 +414,6 @@ Field.prototype.updateItem = function (item, data, callback) {
  * @api public
  */
 Field.prototype.getValueFromData = function (data, subpath) {
-	// console.log(this.options.isMultilingual, this.path);
 	return this._path.get(data, subpath);
 };
 

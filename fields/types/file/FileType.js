@@ -107,9 +107,10 @@ file.prototype.reset = function (item, options) {
 			value = null;
 		} 
 	} else {
-		Object.keys(this.storage.schema).forEach(function (path) {
-			value[path] = null;
-		});
+		value = null;
+		// Object.keys(this.storage.schema).forEach(function (path) {
+		// 	value[path] = null;
+		// });
 	}
 	item.set(this.path, value);
 	// special for Mixed type without auto detecting
@@ -120,13 +121,15 @@ file.prototype.reset = function (item, options) {
  * Deletes the stored file and resets the field value
  */
 // TODO: Should we accept a callback here? Seems like a good idea.
-file.prototype.remove = function (item, subPath, options) {
+file.prototype.remove = function (item, subPath, options, callback) {
 	var target = item.get(this.path);
 	if (options.subPath) {
 		const langFile = item.get(this.path);
 		target = langFile[options.subPath];
 	}
-	this.storage.removeFile(target, function() {});
+	this.storage.removeFile(target, function(result) {
+		if (callback) callback(result);
+	});
 	this.reset(item, options);
 };
 
@@ -244,7 +247,7 @@ file.prototype.updateItem = function (item, data, files, callback) {
 	if (value === 'remove') {
 		this.remove(item, null, options);
 		// return callback();
-		utils.defer(callback);
+		return utils.defer(callback);
 	}
 
 

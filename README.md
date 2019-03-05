@@ -1,4 +1,4 @@
-Next-NodeCMS Beta 1.0.2
+Next-NodeCMS Beta 1.0.5
 ===================================
 
 [![Build Status](https://travis-ci.org/keystonejs/keystone.svg?branch=master)](https://travis-ci.org/keystonejs/keystone)
@@ -11,6 +11,11 @@ Next-NodeCMS Beta 1.0.2
 
 ------------------------------------------------------------------------------------------------
 # Next-nodecms Changelog
+
+## 1.0.4
+## 1.0.5
+* Hotfix realtime edit
+* Hotfix copyable fields
 
 ## 1.0.3
 ### About Critical hotfix issues, Missing Multilingual Parts

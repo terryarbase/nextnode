@@ -115,6 +115,7 @@ var Setting = React.createClass({
 			const fieldPorps = this.getFieldProps(field);
 			fieldPorps.label = getTranslatedLabel(t, {
 				listKey: list.key, 
+				namespace: 'form',
 				prefix: 'field', 
 				content: fieldPorps.path,
 				altContent: fieldPorps.label,

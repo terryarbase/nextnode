@@ -71,12 +71,10 @@ class Account {
     	list.updateItem(item, info, { user }, err => {
     		// console.log('>>>>>>>>', err);
 			if (err) {
-				var status = err.error === 'validation errors' ? 400 : 500;
-				const error = this.req.t.__('msg_db_error', {
-                    reason: err.error === 'database error' ?  err.detail : err
-                });
-				return res.apiError(status, error);
-			}
+                var status = err.error === 'validation errors' ? 400 : 500;
+                var error = err.error === 'database error' ? err.detail : err;
+                return res.apiError(status, err);
+            }
 			res.json(list.getData(item));
 		});
     }

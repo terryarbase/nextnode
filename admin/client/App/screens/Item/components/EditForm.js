@@ -100,6 +100,7 @@ var EditForm = React.createClass({
 		props.currentLang = currentLang;
 		props.onChange = this.handleChange;
 		props.mode = 'edit';
+		props.isCore = this.props.list.isCore;
 		props.listKey = this.props.list.key;
 		props.t = t;
 		props.i18n = i18n;
@@ -107,7 +108,7 @@ var EditForm = React.createClass({
 	},
 	handleChange ({ path, value }) {
 		// const { path, value } = e;
-		// console.log(path, value);
+		console.log(path, value);
 		const { isLocale, currentLang } = this.props;
 		const { values: currentValue } = this.state;
 		const values = this.props.list.getProperlyChangedValue({
@@ -567,10 +568,11 @@ var EditForm = React.createClass({
 							{this.renderWarning()}
 							{/* this.renderKeyOrId() */}
 							{this.renderFormElements()}
-							{this.renderTrackingMeta()}
 						</Form>
 					</Grid.Col>
-					<Grid.Col large="one-quarter"><span /></Grid.Col>
+					<Grid.Col large="one-quarter">
+						{this.renderTrackingMeta()}
+					</Grid.Col>
 				</Grid.Row>
 				{this.renderFooterBar()}
 				<ConfirmationDialog
