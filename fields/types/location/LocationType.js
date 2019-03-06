@@ -16,7 +16,7 @@ function location (list, path, options) {
 
 	this._underscoreMethods = ['format', 'googleLookup', 'kmFrom', 'milesFrom'];
 	this._fixedSize = 'full';
-	this._properties = ['enableMapsAPI'];
+	this._properties = ['enableMapsAPI', 'noAddress'];
 	this.enableMapsAPI = (options.enableImprove === true || (options.enableImprove !== false && keystone.get('google server api key'))) ? true : false;
 	// representive the placeholder elements
 	this.placeholder = [
@@ -59,7 +59,7 @@ function location (list, path, options) {
 	if (!this.requiredPaths) {
 		this.requiredPaths = ['street1', 'suburb'];
 	}
-
+	
 	location.super_.call(this, list, path, options);
 }
 location.properName = 'Location';

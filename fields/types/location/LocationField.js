@@ -270,24 +270,26 @@ module.exports = Field.create({
 			: null;
 		/* eslint-enable */
 
-		const { path, t, required } = this.props;
+		const { path, t, required, noAddress } = this.props;
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		return (
 			<div data-field-name={path} data-field-type="location">
-				<FormField label={label} htmlFor={path}>
-					{showMore}
-					<FormInput
-						type="hidden"
-						name={path}
-					/>
-				</FormField>
+				{this.renderGeo()}
+				{
+					!noAddress && <FormField label={label} htmlFor={path}>
+						{showMore}
+						<FormInput
+							type="hidden"
+							name={path}
+						/>
+					</FormField> 
+				}
 				{this.renderField('number', t('poBoxShop'), true, true)}
 				{this.renderField('name', t('buildingName'), true)}
 				{this.renderField('street1', t('streetAddress1'))}
 				{this.renderField('street2', t('streetAddress2'), true)}
 				{this.renderSuburbState()}
 				{this.renderPostcodeCountry()}
-				{this.renderGeo()}
 				{this.renderGoogleOptions()}
 				{this.renderNote()}
 			</div>
