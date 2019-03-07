@@ -124,9 +124,21 @@ module.exports = function IndexRoute (req, res, isRender) {
 
 	if (req.user) {
 		keystoneData.user = {
+			...(
+				_.omit(req.user, [
+					'_id',
+					'password',
+					'lastLoginAt',
+					'incorrectPassword',
+					'lockedAt',
+					'isAdmin',
+					'delegated',
+					'accountStatus',
+				])
+			),
 			id: req.user.id,
 			name: UserList.getDocumentName(req.user) || '(no name)',
-			organization: req.user.organization,
+			// organization: req.user.organization,
 		};
 		if (req.user.role) {
 			keystoneData.roleKey = req.user.role.roleKey;
