@@ -126,6 +126,7 @@ module.exports = function IndexRoute (req, res, isRender) {
 		keystoneData.user = {
 			id: req.user.id,
 			name: UserList.getDocumentName(req.user) || '(no name)',
+			organization: req.user.organization,
 		};
 		if (req.user.role) {
 			keystoneData.roleKey = req.user.role.roleKey;
