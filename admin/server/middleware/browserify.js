@@ -134,18 +134,17 @@ module.exports = function (opts) {
 
 		fs.readFile(outputFilename, function (err, data) {
 			if (data) {
-				fs.removeSync(outputFilename);
-				// updateBundle(data);
-				// if (devMode) {
-				// 	build();
-				// }
-				// send(req, res);
-			} 
-			// else {
+				// fs.removeSync(outputFilename);
+				updateBundle(data);
+				if (devMode) {
+					build();
+				}
+				send(req, res);
+			} else {
 				// console.log('> ', src);
 				queue.push([req, res]);
 				build();
-			// }
+			}
 		});
 	}
 
