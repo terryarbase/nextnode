@@ -20,9 +20,7 @@ module.exports = function (req, res) {
 				ignoreNoEdit: true,
 				files: req.files,
 				user: req.user,
-				fields: _.map(_.keys(data), f => {
-					return req.list.fields[f];
-				}),
+				fields: _.keys(data).filter(f => f !== '_id'),
 				__: req.t.__,
 			}, function (err) {
 				if (err) {
