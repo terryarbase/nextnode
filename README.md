@@ -12,6 +12,27 @@ Next-NodeCMS Beta 1.0.5
 ------------------------------------------------------------------------------------------------
 # Next-nodecms Changelog
 
+## 1.0.6
+### About Extend Customized AdminUI and Admin Signin UI
+### About DateRange Types, DateTimeRange Type Enhancements
+
+Bug Fixings
+* Types.Text max length checking (use less than equals)
+
+UI Enhancements:
+* Added Customized AdminUI config, supported customized client's js
+* Removed client bundle js during starting the server
+* Added adminUI customized stylesheet ('adminui custom style')
+* Upgraded react-select to v2 for Types.Select, Types.Relationship
+
+Data Enhancements:
+* Added Types.DateRange, Types.DateTimeRange
+* Added min length and max length supporting for Types.Number
+* Added Regex for Type.Text
+* Added Advanced User Model's definations for the delegrated User model ('advanced user model')
+* Added Advanced Role Permission list to individual model ('advanced role permissions')
+
+
 ## 1.0.4
 ## 1.0.5
 * Hotfix realtime edit
