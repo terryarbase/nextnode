@@ -12,6 +12,9 @@ Next-NodeCMS Beta 1.0.5
 ------------------------------------------------------------------------------------------------
 # Next-nodecms Changelog
 
+## 1.0.7
+### Hotfix for Password fields (frequently-used)
+
 ## 1.0.6
 ### About Extend Customized AdminUI and Admin Signin UI
 ### About DateRange Types, DateTimeRange Type Enhancements
