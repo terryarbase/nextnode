@@ -1,5 +1,8 @@
 # Next-nodecms Changelog
 
+## 1.0.8
+### Hotfix for browserify-css package missing
+
 ## 1.0.7
 ### Hotfix for Password fields (frequently-used)
 

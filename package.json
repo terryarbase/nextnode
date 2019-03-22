@@ -1,6 +1,6 @@
 {
   "name": "next-nodecms",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Web Application Framework and Admin GUI / Content Management System built on Express.js and Mongoose From KeystoneJS",
   "main": "index.js",
   "repository": {
@@ -123,11 +123,11 @@
     "vkey": "1.0.1",
     "watchify": "3.9.0",
     "xhr": "2.4.0",
-    "xlsx": "^0.13.3"
+    "xlsx": "^0.13.3",
+    "browserify-css": "^0.14.0"
   },
   "devDependencies": {
     "@ljharb/eslint-config": "^11.0.0",
-    "browserify-css": "^0.14.0",
     "browserify-middleware": "7.1.0",
     "codeclimate-test-reporter": "0.5.0",
     "connect-mongo": "1.3.2",
