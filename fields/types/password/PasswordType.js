@@ -20,7 +20,7 @@ var detailMsg = {
 	lowChar: 'use at least one lower case character',
 	upperChar: 'use at least one upper case character',
 };
-const defaultOptions = { min: 8, max: 72, workFactor: 10, rejectCommon: true };
+const defaultOptions = { min: 6, max: 72, workFactor: 10, rejectCommon: true };
 
 /**
  * password FieldType Constructor
@@ -205,9 +205,9 @@ var validate = password.validate = function (pass, confirm, min, max, complexity
 		}
 	}
 
-	if (pass && typeof pass === 'string' && rejectCommon && dumbPasswords.check(pass)) {
-		messages.push('Password must not be a common, frequently-used password.');
-	}
+	// if (pass && typeof pass === 'string' && rejectCommon && dumbPasswords.check(pass)) {
+	// 	messages.push('Password must not be a common, frequently-used password.');
+	// }
 
 	return {
 		result: messages.length === 0,
