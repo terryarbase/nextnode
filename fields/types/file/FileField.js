@@ -62,7 +62,7 @@ module.exports = Field.create({
 			this.props.value.filename !== nextProps.value.filename ||
 			this.props.value.name !== nextProps.value.name) {
 			const state = buildInitialState(nextProps);
-			// console.log('>>>>>>', nextProps);
+			console.log('>>>>>>', nextProps);
 			this.setState(state);
 		}
 
@@ -105,7 +105,7 @@ module.exports = Field.create({
 		this.setState({
 			userSelectedFile: userSelectedFile,
 		});
-		// console.log('uploadFieldPath name: ', this.state.uploadFieldPath);
+		// console.log(userSelectedFile ? `upload:${this.state.uploadFieldPath}` : null);
 		this.props.onChange({
 			path: this.props.path,
 			value: userSelectedFile ? `upload:${this.state.uploadFieldPath}` : null,

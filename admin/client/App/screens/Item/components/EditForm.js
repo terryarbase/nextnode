@@ -378,7 +378,8 @@ var EditForm = React.createClass({
 				// console.log(field.type, field.path, props);
 
 				// prevent stateless file element to be rendered again, get from state
-				if ((field.stateless || field.cloneable) && field.multilingual) {
+				if (field.stateless || field.cloneable) {
+				// if ((field.stateless || field.cloneable) && field.multilingual) {
 					if (this.statelessUI[field.path]) {
 						if (this.statelessUI[field.path][currentLang]) {
 						// once remove then recreate the element
