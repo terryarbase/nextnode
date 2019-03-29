@@ -8,6 +8,7 @@
 
 var browserify = require('../middleware/browserify');
 var express = require('express');
+var fs = require('fs');
 var less = require('less-middleware');
 var path = require('path');
 const _ = require('lodash');
@@ -118,6 +119,19 @@ module.exports = function createStaticRouter (keystone) {
 			admin: delegatedAdminBrowserify,
 		}
 	}
+
+	// service worker part
+	const serviceWorker = keystone.get('service worker js');
+	if (serviceWorker) {
+		bundles = {
+			...bundles,
+			serviceWorker: browserify({
+				file: serviceWorker,
+				hash: keystoneHash,
+				writeToDisk: writeToDisk,
+			}),
+		}
+	}
 	// console.log(bundles);
 	// prebuild static resources on the next tick in keystone dev mode; this
 	// improves first-request performance but delays server start
@@ -125,6 +139,9 @@ module.exports = function createStaticRouter (keystone) {
 		bundles.fields.build();
 		bundles.signin.build();
 		bundles.admin.build();
+		if (serviceWorker) {
+			bundles.serviceWorker.build();
+		}
 		// bundles.login.build();
 	}
 
@@ -150,6 +167,21 @@ module.exports = function createStaticRouter (keystone) {
 	router.get('/js/fields.js', bundles.fields.serve);
 	router.get('/js/signin.js', bundles.signin.serve);
 	router.get('/js/admin.js', bundles.admin.serve);
+
+
+	/*
+	** Add support service worker file from the customized path
+	** Terry Chan
+	** 29/03/2019
+	*/
+	if (serviceWorker) {
+		router.get('/js/sw.js', (req, res) => {
+			res.type('text/javascript');
+			const swContent = fs.readFileSync(serviceWorker, 'utf8');
+			console.log(swContent);
+			res.send(swContent);
+		});
+	}
 	// router.get('/js/login.js', bundles.login.serve);
 	router.use(express.static(path.resolve(__dirname + '/../../public')));
 
