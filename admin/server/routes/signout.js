@@ -10,7 +10,7 @@ module.exports =  function SignoutRoute (req, res) {
 			** Terry Chan
 			** 29/03/2019
 			*/
-			user.browserDeviceToken = null;
+			// user.browserDeviceToken = null;
 			user.enabledBrowserPush = false;
 			try {
 				await user.save();
