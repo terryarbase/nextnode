@@ -33,7 +33,7 @@ theme.container = {
 	size: {
 		small:  600,
 		medium: 970,
-		large: 1170,
+		large: 1280,
 	},
 };
 

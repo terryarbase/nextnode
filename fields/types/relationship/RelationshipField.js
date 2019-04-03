@@ -355,6 +355,36 @@ module.exports = Field.create({
 							border: `1px disabled #ccc`,
 							height: '100%',
 						}),
+						indicatorSeparator: base => ({
+						    ...base,
+						    visibility: (noedit ? 'hidden' : 'visibility'),
+						}),
+						container: base => {
+							let style = { ...base };
+							if (noedit) {
+								style = {
+									...style,
+									outline: 'none',
+									backgroundColor: '#e6e6e6',
+								};
+							}
+							return style;
+						},
+						indicatorsContainer: base => {
+							let style = { ...base };
+							if (noedit) {
+								style = {
+									...style,
+									outline: 'none',
+									backgroundColor: '#e6e6e6',
+								};
+							}
+							return style;
+						},
+						valueContainer: base => ({
+						    ...base,
+						    zIndex: 9999,
+						}),
 					}}
 					components={{
 						Option: this.customizedOptions,
