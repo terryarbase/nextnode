@@ -100,7 +100,10 @@ var Base = module.exports.Base = {
 	*/
 	renderBaseImageBlock (path) {
 		if (!path) return null;
-		var fullPath = `data:image/jpeg;base64,${path}`;
+		let fullPath = `data:image/jpeg;base64,${path}`;
+		if (!this.props.base64Prefix) {
+			fullPath = path;
+		}
 		return (
 			<a target="_blank" onClick={() => {
 				const win = window.open('');

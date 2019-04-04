@@ -22,6 +22,7 @@ var DEFAULT_OPTION_KEYS = [
 	'initial',
 	'required',
 	'base64Image',
+	'base64Prefix',
 	'col',
 	'noedit',
 	'realedit',
