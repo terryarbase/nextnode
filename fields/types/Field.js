@@ -105,7 +105,7 @@ var Base = module.exports.Base = {
 			fullPath = path;
 		}
 		return (
-			<a target="_blank" onClick={() => {
+			<a target="_blank" className="_base64_image_preview" onClick={() => {
 				const win = window.open('');
 				win.document.write(`<img src='${fullPath}' />`);
 			}}>
@@ -114,11 +114,15 @@ var Base = module.exports.Base = {
 		);
 	},
 	renderBaseImages () {
-		var { value } = this.props;
+		var { value, base64Delimiter } = this.props;
 		const self = this;
 		var images = [];
 		if (value) {
-			value = value.split(';');
+			if (base64Delimiter) {
+				value = value.split(base64Delimiter);
+			} else {
+				value = [value];
+			}
 			if (value.length) {
 				_forEach(value, function(path) {
 					images = _concat([], images, [self.renderBaseImageBlock(path)]);
