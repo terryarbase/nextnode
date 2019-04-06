@@ -44,12 +44,13 @@ class FormInput extends Component {
 
 		const setRef = (n) => (this.target = n);
 		const Tag = multiline ? 'textarea' : 'input';
-
+		// console.log(props.id, props.value);
 		return (
 			<Tag
 				ref={setRef}
 				disabled={props.disabled}
 				{...props}
+				value={props.value || ''}
 			/>
 		);
 	}

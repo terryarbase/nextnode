@@ -381,10 +381,10 @@ module.exports = Field.create({
 							}
 							return style;
 						},
-						valueContainer: base => ({
-						    ...base,
-						    zIndex: 9999,
-						}),
+						// valueContainer: base => ({
+						//     ...base,
+						//     zIndex: 9999,
+						// }),
 					}}
 					components={{
 						Option: this.customizedOptions,

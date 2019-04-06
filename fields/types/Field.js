@@ -81,6 +81,7 @@ var Base = module.exports.Base = {
 	},
 	renderField () {
 		const { autoFocus, value, inputProps, disabled } = this.props;
+		// console.log('1>>> ', this.props.path, value);
 		return (
 			<FormInput {...{
 				...inputProps,
@@ -184,6 +185,7 @@ var Base = module.exports.Base = {
 			{ 'field-monospace': this.props.monospace }
 		);
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
+		// console.log('>>>> ', this.props.path, this.props.value);
 		return (
 			<FormField htmlFor={this.props.path} label={label} className={wrapperClassName} cropLabel>
 				<div className={'FormField__inner field-size-' + this.props.size}>
