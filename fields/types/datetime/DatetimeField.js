@@ -29,16 +29,26 @@ module.exports = Field.create({
 	parseFormats: ['YYYY-MM-DD', 'YYYY-MM-DD h:m:s a', 'YYYY-MM-DD h:m a', 'YYYY-MM-DD H:m:s', 'YYYY-MM-DD H:m'],
 
 	getInitialState () {
-		return {
-			dateValue: this.props.value && this.moment(this.props.value).format(this.dateInputFormat),
-			timeValue: this.props.value && this.moment(this.props.value).format(this.timeInputFormat),
-			tzOffsetValue: this.props.value ? this.moment(this.props.value).format(this.tzOffsetInputFormat) : this.moment().format(this.tzOffsetInputFormat),
-		};
+		return this.setValue(this.props);
 	},
 
 	getDefaultProps () {
 		return {
 			formatString: 'YYYY-MM-DD HH:mm:ss',
+		};
+	},
+
+	componentWillReceiveProps (nextProps) {
+		if (this.props.value !== nextProps.value) {
+			this.setState(this.setValue(nextProps));
+		}
+	},
+
+	setValue(props) {
+		return {
+			dateValue: props.value && this.moment(props.value).format(this.dateInputFormat),
+			timeValue: props.value && this.moment(props.value).format(this.timeInputFormat),
+			tzOffsetValue: props.value ? this.moment(props.value).format(this.tzOffsetInputFormat) : this.moment().format(this.tzOffsetInputFormat),
 		};
 	},
 

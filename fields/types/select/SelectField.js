@@ -72,7 +72,7 @@ module.exports = Field.create({
 		// }
 		// console.log(value);
 		value = _.find(options, o => o.isSelected);
-		console.log(options, value);
+		// console.log(options, value);
 		return (
 			<div>
 				{/* This input element fools Safari's autocorrect in certain situations that completely break react-select */}
@@ -80,6 +80,7 @@ module.exports = Field.create({
 				<Select
 					name={this.getInputName(path)}
 					defaultValue={value}
+					value={value}
 					options={options}
 					placeholder={this.props.t('select')}
 					onChange={this.valueChanged}

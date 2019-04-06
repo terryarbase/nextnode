@@ -41,6 +41,7 @@ module.exports = Field.create({
 	getInitialState () {
 		return {
 			value: null,
+			options: [],
 			createIsOpen: false,
 			isLoading: false,
 		};
@@ -55,6 +56,7 @@ module.exports = Field.create({
 		if (nextProps.value === this.props.value || nextProps.many && compareValues(this.props.value, nextProps.value)) return;
 		// console.log('> ', nextProps.value);
 		// this.loadValue(nextProps.value);
+		this.afterLoadOptions(this.state.options, nextProps.value);
 	},
 
 	shouldCollapse () {
@@ -131,13 +133,16 @@ module.exports = Field.create({
 	// 			responseType: 'json',
 	// 		}, (err, resp, data) => {
 	// 			if (err || !data) return done(err);
-	// 			this.cacheItem(data);
+	// 			// this.cacheItem(data);
 	// 			done(err, data);
 	// 		});
 	// 	}, (err, expanded) => {
 	// 		if (!this.isMounted()) return;
+
 	// 		//handle unexpected JSON string not parsed
 	// 		expanded = typeof expanded === 'string' ? JSON.parse(expanded) : expanded;
+	// 		const results = expanded.results || [];
+	// 		this.afterLoadOptions(results);
 	// 		// this.setState({
 	// 		// 	loading: false,
 	// 		// 	value: this.props.many ? expanded : expanded[0],
@@ -147,9 +152,10 @@ module.exports = Field.create({
 
 	// NOTE: this seems like the wrong way to add options to the Select
 	loadOptionsCallback: {},
-	afterLoadOptions(results, callback) {
+	afterLoadOptions(results, selected=[], callback) {
 		const { display, many, mode, noedit } = this.props;
-		let { value } = this.props;
+		// let { value } = this.props;
+		let value = [ ...selected ];
 		const selections = _.map(results, ({ id, name, fields }) => {
 			let label = name;
 			if (!!display && fields && fields[display]) {
@@ -173,20 +179,21 @@ module.exports = Field.create({
 		// console.log('> split: ', value);
 		value = _.map(value, v => ({ value: String(v) }));
 		value = _.intersectionBy(selections, value, 'value');
-		// console.log(selections);
+		// console.log(results, selected, value);
 		if (!many && value.length) {
 			value = value[0];
 		}
 		this.setState({
 			loading: false,
 			value,
-		}, () => callback(selections));
+			options: results,
+		}, () => callback ? callback(selections) : null);
 		// console.log(selections, callback);
 
 		// callback(selections);
 	},
 	loadOptions (input, callback) {
-		const { many } = this.props;
+		const { many, value } = this.props;
 		// console.log(this.props.display);
 		// NOTE: this seems like the wrong way to add options to the Select
 		this.loadOptionsCallback = callback;
@@ -205,7 +212,7 @@ module.exports = Field.create({
 			//handle unexpected JSON string not parsed
 			data = typeof data === 'string' ? JSON.parse(data) : data;
 			const results = data.results || [];
-			this.afterLoadOptions(results, callback);
+			this.afterLoadOptions(results, value, callback);
 			// callback(
 			// 	_.map(results, ({ id, name, fields }) => {
 			// 		let label = name;
@@ -332,7 +339,7 @@ module.exports = Field.create({
 	renderSelect (noedit, isMulti) {
 		const { t, refList, many, value, mode, display, noedit: disabled } = this.props;
 		// let value =  
-		// console.log(this.state.value);
+		// console.log(this.props.value);
 		return (
 			<div>
 				{/* This input element fools Safari's autocorrect in certain situations that completely break react-select */}
