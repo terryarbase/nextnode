@@ -152,10 +152,10 @@ module.exports = Field.create({
 
 	// NOTE: this seems like the wrong way to add options to the Select
 	loadOptionsCallback: {},
-	afterLoadOptions(results, selected=[], callback) {
+	afterLoadOptions(results, selected, callback) {
 		const { display, many, mode, noedit } = this.props;
 		// let { value } = this.props;
-		let value = [ ...selected ];
+		let value = selected;
 		const selections = _.map(results, ({ id, name, fields }) => {
 			let label = name;
 			if (!!display && fields && fields[display]) {
