@@ -1,4 +1,4 @@
-Next-NodeCMS Beta 1.0.5
+Next-NodeCMS Beta 1.0.9
 ===================================
 
 [![Build Status](https://travis-ci.org/keystonejs/keystone.svg?branch=master)](https://travis-ci.org/keystonejs/keystone)
@@ -11,6 +11,12 @@ Next-NodeCMS Beta 1.0.5
 
 ------------------------------------------------------------------------------------------------
 # Next-nodecms Changelog
+
+## 1.0.9
+### Customized extra fields for the Deletagated Account Modal
+### Fixed Customized AdminUI Style
+### Added Customized plugins registration for the Deletagated Account Modal
+### Hotfix for field update api bugs
 
 ## 1.0.8
 ### Hotfix for browserify-css package missing
