@@ -62,7 +62,6 @@ module.exports = Field.create({
 			this.props.value.filename !== nextProps.value.filename ||
 			this.props.value.name !== nextProps.value.name) {
 			const state = buildInitialState(nextProps);
-			console.log('>>>>>>', nextProps);
 			this.setState(state);
 		}
 

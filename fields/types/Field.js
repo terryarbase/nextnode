@@ -81,6 +81,7 @@ var Base = module.exports.Base = {
 	},
 	renderField () {
 		const { autoFocus, value, inputProps, disabled } = this.props;
+		// console.log('1>>> ', this.props.path, value);
 		return (
 			<FormInput {...{
 				...inputProps,
@@ -100,9 +101,12 @@ var Base = module.exports.Base = {
 	*/
 	renderBaseImageBlock (path) {
 		if (!path) return null;
-		var fullPath = `data:image/jpeg;base64,${path}`;
+		let fullPath = `data:image/jpeg;base64,${path}`;
+		if (!this.props.base64Prefix) {
+			fullPath = path;
+		}
 		return (
-			<a target="_blank" onClick={() => {
+			<a target="_blank" className="_base64_image_preview" onClick={() => {
 				const win = window.open('');
 				win.document.write(`<img src='${fullPath}' />`);
 			}}>
@@ -111,11 +115,15 @@ var Base = module.exports.Base = {
 		);
 	},
 	renderBaseImages () {
-		var { value } = this.props;
+		var { value, base64Delimiter } = this.props;
 		const self = this;
 		var images = [];
 		if (value) {
-			value = value.split(';');
+			if (base64Delimiter) {
+				value = value.split(base64Delimiter);
+			} else {
+				value = [value];
+			}
 			if (value.length) {
 				_forEach(value, function(path) {
 					images = _concat([], images, [self.renderBaseImageBlock(path)]);
@@ -177,6 +185,7 @@ var Base = module.exports.Base = {
 			{ 'field-monospace': this.props.monospace }
 		);
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
+		// console.log('>>>> ', this.props.path, this.props.value);
 		return (
 			<FormField htmlFor={this.props.path} label={label} className={wrapperClassName} cropLabel>
 				<div className={'FormField__inner field-size-' + this.props.size}>

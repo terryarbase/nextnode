@@ -19,6 +19,10 @@
 	"title_field_error": "Field Errors",
 	"title_invalid_configuration": "Invalid Configuration",
 
+	"select_option_publishing": "Publishing",
+	"select_option_sent": "Sent",
+	"select_option_failed": "Failed",
+
 	"select_option_please": "Please Select",
 	"select_option_female": "Female",
 	"select_option_male": "Male",

@@ -19,6 +19,10 @@
 	"title_field_error": "字段錯誤",
 	"title_invalid_configuration": "無效配置",
 
+	"select_option_publishing": "等待處理",
+	"select_option_sent": "已送出",
+	"select_option_failed": "送出失敗",
+
 	"select_option_please": "請選擇",
 	"select_option_female": "女士",
 	"select_option_male": "男士",

@@ -88,6 +88,15 @@ module.exports = function createDynamicRouter (keystone) {
 
 	// lists
 	router.all('/api/counts', require('../api/counts'));
+	// if (serviceWorker) {
+	/*
+	** register for the current login user (e.g. browser device id)
+	** Terry Chan
+	** 29/03/2019
+	*/ 
+	router.post('/api/register', require('../api/common/register'));
+	// }
+
 	router.get('/api/:list', initList, checkPermission(1, { allowBasic: true }), require('../api/list/get'));
 	router.get('/api/:list/:format(export.excel|export.json|export.txt)', initList, checkPermission(1), require('../api/list/download'));
 	router.post('/api/:list/create', initList, checkPermission(2), require('../api/list/create'));
