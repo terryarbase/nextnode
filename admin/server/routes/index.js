@@ -35,11 +35,11 @@ module.exports = function IndexRoute (req, res, isRender) {
 	if (keystone.get('rbac') && req.user) {
 		// console.log(keystone.get('nav'));
 		const newNav = keystone.mergeNavOptionWithReservedCollections();
-		keystone.nav = keystone.initNav(newNav, req.user.role);
+		keystone.nav = keystone.initNav(newNav, req.roleList);
 		Object.keys(lists).forEach(key => {
 			const listKey = lists[key].key;
-			if (req.user.role[listKey]) {
-				switch (req.user.role[listKey]) {
+			if (req.roleList[listKey]) {
+				switch (req.roleList[listKey]) {
 					// view-only
 					case 1: {
 						lists[key].noedit = true;
@@ -66,7 +66,7 @@ module.exports = function IndexRoute (req, res, isRender) {
 	 */
 	var orphanedLists = [];
 	if (req.user) {
-		keystone.getOrphanedLists(req.user.role).map(function (list) {
+		keystone.getOrphanedLists(req.roleList).map(function (list) {
 			return _.pick(list, ['key', 'label', 'path']);
 		});
 	}
@@ -140,8 +140,8 @@ module.exports = function IndexRoute (req, res, isRender) {
 			name: UserList.getDocumentName(req.user) || '(no name)',
 			// organization: req.user.organization,
 		};
-		if (req.user.role) {
-			keystoneData.roleKey = req.user.role.roleKey;
+		if (req.roleList) {
+			keystoneData.roleKey = req.roleList.roleKey;
 		}
 	};
 	/*
