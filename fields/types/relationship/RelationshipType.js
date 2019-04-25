@@ -63,8 +63,9 @@ relationship.prototype.getExpandedData = function (item, options) {
 	var value = item.get(this.path);
 	if (this.many) {
 		if (!value || !Array.isArray(value)) return [];
+		const self = this;
 		return value.map(function(v) {
-			return expandRelatedItemData.bind(this)(v, options);
+			return expandRelatedItemData.bind(self)(v, options);
 		}).filter(truthy);
 	} else {
 		return expandRelatedItemData.call(this, value, options);
