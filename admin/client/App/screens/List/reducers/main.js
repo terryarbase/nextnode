@@ -4,6 +4,7 @@ import {
 	SELECT_LIST,
 	ITEMS_LOADED,
 	LOAD_ITEMS,
+	ITEM_LOADING_DENIED,
 	ITEM_LOADING_ERROR,
 	SET_CURRENT_PAGE,
 	QUERY_HAS_CHANGED,
@@ -30,6 +31,7 @@ var initialState = {
 	currentList: null,
 	loading: false,
 	ready: false,
+	denied: false,
 	error: null,
 	data: {},
 	items: {
@@ -139,6 +141,7 @@ function lists (state = initialState, action) {
 			return assign({}, state, {
 				loading: false,
 				ready: true,
+				denied: false,
 				error: null,
 				items: action.items,
 				data: {
@@ -147,10 +150,19 @@ function lists (state = initialState, action) {
 				},
 				loadCounter: 0,
 			});
+		case ITEM_LOADING_DENIED:
+			return assign({}, state, {
+				loading: false,
+				ready: true,
+				denied: true,
+				error: action.err,
+				loadCounter: 0,
+			});
 		case ITEM_LOADING_ERROR:
 			return assign({}, state, {
 				loading: true,
 				ready: true,
+				denied: false,
 				error: action.err,
 				loadCounter: 0,
 			});

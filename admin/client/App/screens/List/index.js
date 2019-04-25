@@ -767,6 +767,46 @@ const ListView = React.createClass({
 			/>
 		);
 	},
+	renderListForm () {
+		return (
+			<div>
+				{this.renderBlankState()}
+				{this.renderActiveState()}
+				<CreateForm
+					dispatch={this.props.dispatch}
+					err={Keystone.createFormErrors}
+					isOpen={this.state.showCreateForm}
+					isLocale={this.props.isLocale}
+					currentLang={this.props.currentLanguage}
+					defaultLang={this.props.defaultLanguage}
+					list={this.props.currentList}
+					onCancel={this.closeCreateModal}
+					onCreate={this.onCreate}
+				/>
+				<UpdateForm
+					isOpen={this.state.showUpdateForm}
+					itemIds={Object.keys(this.state.checkedItems)}
+					list={this.props.currentList}
+					isLocale={this.props.isLocale}
+					currentLang={this.props.currentLanguage}
+					defaultLang={this.props.defaultLanguage}
+					onCancel={() => this.toggleUpdateModal(false)}
+				/>
+				{this.renderConfirmationDialog()}
+			</div>
+		);
+	},
+	renderPermissionDenied () {
+		return (
+			<Container style={{ marginTop: '2em' }}>
+				<FlashMessages
+					messages={{ error: [{
+						title: this.props.error,
+					}] }}
+				/>
+			</Container>
+		);
+	},
 	renderSpinner () {
 		return (
 			<Center height="50vh" data-screen-id="list">
@@ -779,38 +819,12 @@ const ListView = React.createClass({
 		if (!this.props.ready) {
 			return this.renderSpinner();
 		}
+
 		// const { lists: { currentList } } = this.props;
+		const result = this.props.denied ? this.renderPermissionDenied() : this.renderListForm();
 		return (
 			<div data-screen-id="list">
-				{
-					this.props.realLoading ? 
-					this.renderSpinner() : 
-					<div>
-						{this.renderBlankState()}
-						{this.renderActiveState()}
-						<CreateForm
-							dispatch={this.props.dispatch}
-							err={Keystone.createFormErrors}
-							isOpen={this.state.showCreateForm}
-							isLocale={this.props.isLocale}
-							currentLang={this.props.currentLanguage}
-							defaultLang={this.props.defaultLanguage}
-							list={this.props.currentList}
-							onCancel={this.closeCreateModal}
-							onCreate={this.onCreate}
-						/>
-						<UpdateForm
-							isOpen={this.state.showUpdateForm}
-							itemIds={Object.keys(this.state.checkedItems)}
-							list={this.props.currentList}
-							isLocale={this.props.isLocale}
-							currentLang={this.props.currentLanguage}
-							defaultLang={this.props.defaultLanguage}
-							onCancel={() => this.toggleUpdateModal(false)}
-						/>
-						{this.renderConfirmationDialog()}
-					</div>
-				}
+				{this.props.realLoading ? this.renderSpinner() : result }
 			</div>
 		);
 	},
@@ -825,6 +839,7 @@ module.exports = translate(['form', 'message', 'filter'])(connect(state => {
 	return {
 		lists: state.lists,
 		loading: state.lists.loading,
+		denied: state.lists.denied,
 		error: state.lists.error,
 		currentList: state.lists.currentList,
 		items: state.lists.items,

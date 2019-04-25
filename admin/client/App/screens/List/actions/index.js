@@ -58,6 +58,7 @@ import {
 	loadItems,
 	itemsLoaded,
 	itemLoadingError,
+	itemLoadingPermissionDenied,
 	deleteItems,
 	downloadItems,
 } from './items';
@@ -86,6 +87,7 @@ export {
 	clearCachedQuery,
 	loadItems,
 	itemsLoaded,
+	itemLoadingPermissionDenied,
 	itemLoadingError,
 	deleteItems,
 	setDragBase,

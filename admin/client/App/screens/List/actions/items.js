@@ -1,6 +1,7 @@
 import {
 	LOAD_ITEMS,
 	ITEMS_LOADED,
+	ITEM_LOADING_DENIED,
 	ITEM_LOADING_ERROR,
 } from '../constants';
 
@@ -25,8 +26,7 @@ export function loadItems (options = {}) {
 			columns: state.active.columns,
 			page: state.lists.page,
 			lang: state.lists.locale.current,
-		}, (err, items) => {
-
+		}, (err, items, permissionDenied) => {
 			// Create a new state snapshot and compare the current active list id
 			// to the id of the currentList referenced above.
 			// If they are the same, then this is the latest fetch request, we may resolve this normally.
@@ -35,6 +35,12 @@ export function loadItems (options = {}) {
 
 			if (getState().active.id !== currentList.id) return;
 			if (getState().lists.loadCounter > currentLoadCounter) return;
+
+			if (permissionDenied) {
+				dispatch(itemLoadingPermissionDenied(err));
+				return;
+			}
+
 			if (items) {
 
 				// if (page.index !== drag.page && drag.item) {
@@ -101,6 +107,14 @@ export function itemsLoaded (items) {
  * Dispatched when unsuccessfully trying to load the items, will redispatch
  * loadItems after NETWORK_ERROR_RETRY_DELAY milliseconds until we get items back
  */
+export function itemLoadingPermissionDenied (err) {
+	return (dispatch) => {
+		dispatch({
+			type: ITEM_LOADING_DENIED,
+			err,
+		});
+	};
+}
 
 export function itemLoadingError () {
 	return (dispatch) => {

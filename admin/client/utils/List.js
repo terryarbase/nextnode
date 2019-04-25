@@ -479,6 +479,10 @@ List.prototype.loadItems = function (options, callback) {
         // handle unexpected JSON string not parsed
         data = typeof data === 'string' ? JSON.parse(data) : data;
 		// Pass the data as result or error, depending on the statusCode
+		if (resp.statusCode === 403) {
+			const permissionDenied = true;
+			return callback(data.error, null, permissionDenied);
+		}
 		if (resp.statusCode === 200) {
 			callback(null, data);
 		} else {

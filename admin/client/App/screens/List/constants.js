@@ -6,6 +6,7 @@ export const INITIAL_LIST_LOAD = 'app/List/INITIAL_LIST_LOAD';
 export const LOAD_ITEMS = 'app/List/LOAD_ITEMS';
 export const LOADING_ITEMS = 'app/List/LOADING_ITEMS';
 export const ITEMS_LOADED = 'app/List/ITEMS_LOADED';
+export const ITEM_LOADING_DENIED = 'app/List/ITEM_LOADING_DENIED';
 export const ITEM_LOADING_ERROR = 'app/List/ITEM_LOADING_ERROR';
 // Active
 export const SELECT_ACTIVE_SORT = 'app/List/SELECT_ACTIVE_SORT';

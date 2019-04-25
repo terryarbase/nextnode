@@ -65,10 +65,11 @@ module.exports = function createDynamicRouter (keystone) {
 	}
 
 	// #3: Home route
-	router.get('/', function(req, res) {
-		const render = true;
-		return IndexRoute(req, res, render);
-	});
+	// router.get('/', function(req, res) {
+	// 	const render = true;
+	// 	return IndexRoute(req, res, render);
+	// });
+	
 	// #4: Cloudinary and S3 specific APIs
 	// TODO: poor separation of concerns; should / could this happen elsewhere?
 	if (keystone.get('cloudinary config')) {
