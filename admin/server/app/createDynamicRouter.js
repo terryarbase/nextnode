@@ -3,6 +3,7 @@ var express = require('express');
 var multer = require('multer');
 
 const requestMiddleware = require('../middleware/request');
+const combinePermission = require('../middleware/combinePermission');
 
 module.exports = function createDynamicRouter (keystone) {
 	// ensure keystone nav has been initialised
@@ -67,6 +68,7 @@ module.exports = function createDynamicRouter (keystone) {
 	// #3: Home route
 	// router.get('/', function(req, res) {
 	// 	const render = true;
+	// 	combinePermission(req, res);
 	// 	return IndexRoute(req, res, render);
 	// });
 	
@@ -130,6 +132,7 @@ module.exports = function createDynamicRouter (keystone) {
 	// #6: List Routes
 	router.all('/*', function(req, res) {
 		const render = true;
+		combinePermission(req, res);
 		return IndexRoute(req, res, render);
 	});
 	// router.all('/:list/:item', function(req, res) {

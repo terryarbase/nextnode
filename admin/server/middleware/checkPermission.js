@@ -1,3 +1,5 @@
+const combinePermission = require('../middleware/combinePermission');
+
 module.exports = function checkPermission(requiredLevel, options) {
     options = Object.assign({}, { allowBasic: false }, options);
     return function(req, res, next) {
