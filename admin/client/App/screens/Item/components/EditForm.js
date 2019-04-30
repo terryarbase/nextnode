@@ -108,7 +108,7 @@ var EditForm = React.createClass({
 	},
 	handleChange ({ path, value }) {
 		// const { path, value } = e;
-		console.log(path, value);
+		// console.log(path, value);
 		const { isLocale, currentLang } = this.props;
 		const { values: currentValue } = this.state;
 		const values = this.props.list.getProperlyChangedValue({

@@ -72,7 +72,7 @@ module.exports = {
 	},
 
 	valueChanged: function (values) {
-		console.log(values, this.props.path);
+		// console.log(values, this.props.path);
 		this.props.onChange({
 			path: this.props.path,
 			value: values,

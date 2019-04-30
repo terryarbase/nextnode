@@ -24,6 +24,7 @@ function FormInputNoedit ({
 		(props.href || props.onClick) ? classes.anchor : null,
 		className
 	);
+
 	/* @Terry 04/08/2018
 	** Replace DIV as Component, render HTML Tag
 	*/
@@ -39,8 +40,10 @@ function FormInputNoedit ({
 			},
 		};
 	}
-
-	return <Component {...props} />;
+	let newProps = { ...props };
+	delete newProps.t;
+	delete newProps.i18n;
+	return <Component {...newProps} />;
 };
 
 FormInputNoedit.propTypes = {

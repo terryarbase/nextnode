@@ -70,7 +70,7 @@ module.exports = React.createClass({
 			}
 		}
 	},
-	handleDaySelect (e, date, modifiers) {
+	handleDaySelect (date, modifiers, e) {
 		if (modifiers && modifiers.disabled) return;
 
 		var value = moment(date).format(this.props.format);
@@ -87,7 +87,8 @@ module.exports = React.createClass({
 	},
 	showCurrentMonth () {
 		if (!this.refs.picker) return;
-		this.refs.picker.showMonth(this.state.month);
+
+		// this.refs.picker.showMonth(this.state.month);
 	},
 	handleFocus (e) {
 		if (this.state.pickerIsOpen) return;
