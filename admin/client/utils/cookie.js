@@ -9,8 +9,8 @@ const setCookie = (name, value, options) => {
 	const cookies = new Cookies();
 	cookies.set(name, value, options);
 	// console.log(getCookie(name));
-	window.console.warn(`[Cookie/${name}]: saving language: ${value}`);
-	window.console.warn('[Cookie/'+name+'] options:', options);
+	// window.console.warn(`[Cookie/${name}]: saving language: ${value}`);
+	// window.console.warn('[Cookie/'+name+'] options:', options);
 };
 
 const getCookie = name => {

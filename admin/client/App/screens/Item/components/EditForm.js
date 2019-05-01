@@ -396,7 +396,10 @@ var EditForm = React.createClass({
 								);
 								self.statelessUI[path][language] = stateless;
 							} else {
-								stateless = stateless[language];
+								stateless = React.cloneElement(
+									stateless[language],
+									props,
+								);
 							}
 							allComponents = [
 								...allComponents,
