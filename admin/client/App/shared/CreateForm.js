@@ -240,7 +240,7 @@ const CreateForm = React.createClass({
 				fieldProps.autoFocus = focusWasSet = true;
 			}
 
-			const element = React.createElement(Fields[field.type], props);
+			const element = React.createElement(Fields[field.type], fieldProps);
 				// console.log(field.type, path, props);
 
 				// prevent stateless file element to be rendered again, get from state
@@ -261,7 +261,7 @@ const CreateForm = React.createClass({
 							stateless = React.cloneElement(
 								element,
 								{
-									...props,
+									...fieldProps,
 									key: `${path}-${language}`,
 								}
 							);
@@ -269,7 +269,7 @@ const CreateForm = React.createClass({
 						} else {
 							stateless = React.cloneElement(
 								stateless[language],
-								props,
+								fieldProps,
 							);
 						}
 						allComponents = [
