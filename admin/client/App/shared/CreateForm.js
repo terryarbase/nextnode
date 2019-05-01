@@ -200,11 +200,11 @@ const CreateForm = React.createClass({
 		// Render inputs for all initial fields
 		Object.keys(list.initialFields).forEach(key => {
 			var field = list.fields[list.initialFields[key]];
-
+			const { path } = field;
 			// If there's something weird passed in as field type, render the
 			// invalid field type component
 			if (typeof Fields[field.type] !== 'function') {
-				form.push(React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path }));
+				form.push(React.createElement(InvalidFieldType, { type: field.type, path, key: path }));
 				return;
 			}
 			// Get the props for the input field
@@ -232,60 +232,119 @@ const CreateForm = React.createClass({
 					},
 				};
 			}
-			var element = React.createElement(Fields[field.type], fieldProps);
+			// var element = React.createElement(Fields[field.type], fieldProps);
 			// If there was no focusRef set previously, set the current field to
 			// be the one to be focussed. Generally the first input field, if
 			// there's an initial name field that takes precedence.
 			if (!focusWasSet) {
 				fieldProps.autoFocus = focusWasSet = true;
 			}
-			if ((field.stateless || field.cloneable) && field.multilingual) {
-				if (this.statelessUI[field.path]) {
-					if (this.statelessUI[field.path][currentLang]) {
-						/*
-						** [IMPORTANT]
-						** Special for handle two kinds of element
-						** 1. stateless: the state should be only handled inside the component without any value inspection (FILE Stream types)
-						** 2. cloneable: the state should be only copied to everytime except the first time (HTML type)
-						** Terry Chan
-						** 23/11/2018
-						*/
-						if (field.cloneable) {
-							element = React.cloneElement(
-								this.statelessUI[field.path][currentLang],
-								fieldProps
+
+			const element = React.createElement(Fields[field.type], props);
+				// console.log(field.type, path, props);
+
+				// prevent stateless file element to be rendered again, get from state
+			if (field.stateless || field.cloneable) {
+				const { localization } = Keystone;
+				const self = this;
+				let stateless = this.statelessUI[path];
+				let allComponents = [];
+				if (field.multilingual) {
+					if (!stateless) {
+						stateless = {};
+						this.statelessUI[path] = {};
+					}
+					// console.log('>>> ', stateless);
+					_.keys(localization).forEach(language => {
+						// console.log(language);
+						if (!stateless[language]) {
+							stateless = React.cloneElement(
+								element,
+								{
+									...props,
+									key: `${path}-${language}`,
+								}
 							);
+							self.statelessUI[path][language] = stateless;
 						} else {
-							element = this.statelessUI[field.path][currentLang];
-								
+							stateless = stateless[language];
 						}
-					}
-				}
-				// store the stateless element to state, no matter it is existing
-				this.statelessUI = {
-					...this.statelessUI,
-					...{
-						[field.path]: {
-							...this.statelessUI[field.path],
-							...{
-								[currentLang]: element,
-							}
-						}
-					}
-				}
-				const keys = Object.keys(this.statelessUI[field.path]);
-				if (keys && keys.length) {
-					keys.forEach(key => {
-						form.push(
-							<div key={`${field.path}${key}`} style={{ display: key === currentLang ? 'block' : 'none' }}>
-								{this.statelessUI[field.path][key]}
-							</div>
-						);
+						allComponents = [
+							...allComponents,
+							(
+								<div key={`${path}${language}`} style={{
+									display: language === currentLang ? 'block' : 'none'
+								}}>
+									{ stateless }
+								</div>
+							)
+						];
 					});
+				} else {
+					if (!stateless) {
+						self.statelessUI[path] = element;
+					}
+					allComponents = [
+						(stateless || element),
+					];
 				}
+				form = [ 
+					...form,
+					...allComponents,
+				];
+				// } else if (!stateless[currentLang]) {
+				// 	elements = [ ...elements, element ];
+				// }
 			} else {
-				form.push(element);
+				form = [ ...form, element ];
 			}
+			// if ((field.stateless || field.cloneable) && field.multilingual) {
+			// 	if (this.statelessUI[field.path]) {
+			// 		if (this.statelessUI[field.path][currentLang]) {
+			// 			/*
+			// 			** [IMPORTANT]
+			// 			** Special for handle two kinds of element
+			// 			** 1. stateless: the state should be only handled inside the component without any value inspection (FILE Stream types)
+			// 			** 2. cloneable: the state should be only copied to everytime except the first time (HTML type)
+			// 			** Terry Chan
+			// 			** 23/11/2018
+			// 			*/
+			// 			if (field.cloneable) {
+			// 				element = React.cloneElement(
+			// 					this.statelessUI[field.path][currentLang],
+			// 					fieldProps
+			// 				);
+			// 			} else {
+			// 				element = this.statelessUI[field.path][currentLang];
+								
+			// 			}
+			// 		}
+			// 	}
+			// 	// store the stateless element to state, no matter it is existing
+			// 	this.statelessUI = {
+			// 		...this.statelessUI,
+			// 		...{
+			// 			[field.path]: {
+			// 				...this.statelessUI[field.path],
+			// 				...{
+			// 					[currentLang]: element,
+			// 				}
+			// 			}
+			// 		}
+			// 	}
+			// 	const keys = Object.keys(this.statelessUI[field.path]);
+			// 	if (keys && keys.length) {
+			// 		keys.forEach(key => {
+			// 			form.push(
+			// 				<div key={`${field.path}${key}`} style={{ display: key === currentLang ? 'block' : 'none' }}>
+			// 					{this.statelessUI[field.path][key]}
+			// 				</div>
+			// 			);
+			// 		});
+			// 	}
+			// } else {
+			// 	form.push(element);
+			// }
 			// form.push(React.createElement(Fields[field.type], fieldProps));
 		});
 		return (

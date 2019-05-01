@@ -334,98 +334,100 @@ var EditForm = React.createClass({
 					content: _.camelCase(el.content),
 				});
 				elements = [ ...elements, React.createElement(FormHeading, el) ];
-			}
-
-			if (el.type === 'field') {
-				var field = this.props.list.fields[el.field];
-				var props = this.getFieldProps(field);
+			} else if (el.type === 'field') {
+				let field = this.props.list.fields[el.field];
+				let props = this.getFieldProps(field);
+				const { path } = field;
 				props = {
 					...props,
-					...{
-						restrictDelegated: field.restrictDelegated,
-						label: getTranslatedLabel(t, {
-							listKey, 
-							prefix: 'field', 
-							content: _.camelCase(props.path),
-							altContent: props.label,
-						}),
-					},
+					restrictDelegated: field.restrictDelegated,
+					label: getTranslatedLabel(t, {
+						listKey, 
+						prefix: 'field', 
+						content: _.camelCase(props.path),
+						altContent: props.label,
+					}),
 				};
 
 				if (props.note) {
 					props = {
 						...props,
-						...{
-							note: getTranslatedLabel(t, {
-								listKey, 
-								prefix: 'note', 
-								content: _.camelCase(props.path),
-								altContent: props.note,
-							})
-						},
+						note: getTranslatedLabel(t, {
+							listKey, 
+							prefix: 'note', 
+							content: _.camelCase(props.path),
+							altContent: props.note,
+						}),
 					};
 				}
 				// console.log(props.label);
 				if (typeof Fields[field.type] !== 'function') {
-					elements = [ ...elements, React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path }) ];
+					elements = [ ...elements, React.createElement(InvalidFieldType, { type: field.type, path, key: path }) ];
 				}
-				props.key = `${field.path}-${currentLang}`;
+				props.key = `${path}-${currentLang}`;
 				if (index === 0 && this.state.focusFirstField) {
 					props.autoFocus = true;
 				}
 
-				var element = React.createElement(Fields[field.type], props);
-				// console.log(field.type, field.path, props);
+				const element = React.createElement(Fields[field.type], props);
+				// console.log(field.type, path, props);
 
 				// prevent stateless file element to be rendered again, get from state
 				if (field.stateless || field.cloneable) {
-				// if ((field.stateless || field.cloneable) && field.multilingual) {
-					if (this.statelessUI[field.path]) {
-						if (this.statelessUI[field.path][currentLang]) {
-						// once remove then recreate the element
-						// if (!(typeof this.statelessUI[field.path] === 'string' && 
-							// this.statelessUI[field.path] === '')) {
-							// element = this.statelessUI[field.path][currentLang] || element;
-							if (field.cloneable) {
-								element = React.cloneElement(
-									this.statelessUI[field.path][currentLang],
-									props
+					const { localization } = Keystone;
+					const self = this;
+					let stateless = this.statelessUI[path];
+					let allComponents = [];
+					if (field.multilingual) {
+						if (!stateless) {
+							stateless = {};
+							this.statelessUI[path] = {};
+						}
+						// console.log('>>> ', stateless);
+						_.keys(localization).forEach(language => {
+							// console.log(language);
+							if (!stateless[language]) {
+								stateless = React.cloneElement(
+									element,
+									{
+										...props,
+										key: `${path}-${language}`,
+									}
 								);
+								self.statelessUI[path][language] = stateless;
 							} else {
-								element = this.statelessUI[field.path][currentLang] || element;
-									
+								stateless = stateless[language];
 							}
-						// }
-						}
-					}
-					
-					// console.log(field.path, currentLang, element);
-					// store the stateless element to state, no matter it is existing
-					this.statelessUI = {
-						...this.statelessUI,
-						...{
-							[field.path]: {
-								...this.statelessUI[field.path],
-								...{
-									[currentLang]: element,
-								}
-							}
-						}
-					}
-					const keys = Object.keys(this.statelessUI[field.path]);
-					if (keys && keys.length) {
-						keys.forEach(key => {
-							elements = [ 
-								...elements,
-								<div key={`${field.path}${key}`} style={{ display: key === currentLang ? 'block' : 'none' }}>
-									{this.statelessUI[field.path][key]}
-								</div>
+							allComponents = [
+								...allComponents,
+								(
+									<div key={`${path}${language}`} style={{
+										display: language === currentLang ? 'block' : 'none'
+									}}>
+										{ stateless }
+									</div>
+								)
 							];
 						});
+					} else {
+						if (!stateless) {
+							self.statelessUI[path] = element;
+						}
+						allComponents = [
+							(stateless || element),
+						];
 					}
+					elements = [ 
+						...elements,
+						...allComponents,
+					];
+					// } else if (!stateless[currentLang]) {
+					// 	elements = [ ...elements, element ];
+					// }
 				} else {
 					elements = [ ...elements, element ];
 				}
+				
 			}
 		});
 

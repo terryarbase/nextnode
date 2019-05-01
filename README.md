@@ -1,4 +1,4 @@
-Next-NodeCMS Beta 1.0.9
+Next-NodeCMS Beta 1.0.10
 ===================================
 
 [![Build Status](https://travis-ci.org/keystonejs/keystone.svg?branch=master)](https://travis-ci.org/keystonejs/keystone)
@@ -11,6 +11,11 @@ Next-NodeCMS Beta 1.0.9
 
 ------------------------------------------------------------------------------------------------
 # Next-nodecms Changelog
+
+## 1.0.10
+### Hotfix for Type.File bugs for dependsOn and multilingual
+### Added extra fields for the Role table
+### Added multiple Role for System User
 
 ## 1.0.9
 ### Customized extra fields for the Deletagated Account Modal
