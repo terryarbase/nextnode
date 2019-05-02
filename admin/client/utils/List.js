@@ -6,6 +6,7 @@
 const listToArray = require('list-to-array');
 const qs = require('qs');
 const xhr = require('xhr');
+const _ = require('lodash');
 const assign = require('object-assign');
 // Filters for truthy elements in an array
 const truthy = (i) => i;
@@ -181,19 +182,24 @@ List.prototype.getFormCreateData = function({ isLocale, formData, values }) {
 			const key = pair[0];
 			// console.log(key, typeof values[key]);
 			if (values[key] && isLocale && fields[key].multilingual) {
+				
 				// formData.set(key, );
 				if (typeof values[key] === 'object') {
-					const keys = Object.keys(values[key]);
+					const keys = _.keys(values[key]);
 					if (keys.length) {
 						formData.set(key, JSON.stringify(values[key]));
 					}
 				}
+				
 
 			} else if (Array.isArray(values[key])) {
+				
 				formData.delete(key);
 				formData.set(key, JSON.stringify(values[key]));
+				
 			} else if (typeof values[key] === 'object') {
-				const keys = Object.keys(values[key]);
+				// console.log('> 3', values[key], key);
+				const keys = _.keys(values[key]);
 				if (keys.length) {
 					// delete orginal formdata attr
 					formData.delete(key);
