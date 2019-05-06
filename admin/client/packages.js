@@ -46,6 +46,7 @@ module.exports = [
 	'react-router-redux',
 	'react-router',
 	'react-select',
+	'qrcode.react',
 	'react',
 	'redux-saga',
 	'redux-thunk',

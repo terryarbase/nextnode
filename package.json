@@ -27,6 +27,7 @@
     "bootstrap-daterangepicker": "^3.0.3",
     "brfs": "2.0.0",
     "browserify": "16.2.2",
+    "browserify-css": "^0.14.0",
     "browserify-shim": "3.8.14",
     "caller-id": "0.1.0",
     "canvas": "^2.0.1",
@@ -83,6 +84,7 @@
     "multer": "0.1.8",
     "numeral": "2.0.6",
     "object-assign": "4.1.1",
+    "qrcode.react": "^0.9.3",
     "qs": "6.5.2",
     "queryfilter": "0.0.4",
     "range_check": "1.4.0",
@@ -123,8 +125,7 @@
     "vkey": "1.0.1",
     "watchify": "3.9.0",
     "xhr": "2.4.0",
-    "xlsx": "^0.13.3",
-    "browserify-css": "^0.14.0"
+    "xlsx": "^0.13.3"
   },
   "devDependencies": {
     "@ljharb/eslint-config": "^11.0.0",
