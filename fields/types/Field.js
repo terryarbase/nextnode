@@ -134,7 +134,7 @@ var Base = module.exports.Base = {
 		return images;
 	},
 	renderQRCodeImages() {
-		const { value } = this.props;
+		const { value, t } = this.props;
 		return (
 			<div>
 				<div><QRCode value={value} renderAs='svg' /></div>
