@@ -101,7 +101,6 @@ var ListFiltersAdd = React.createClass({
 			} else if (el.type === 'field') {
 				const path = el.field.path;
 				const filterIsActive = activeFilterPaths.length && (activeFilterPaths.indexOf(path) > -1);
-				console.log('path: ', path);
 				label = getTranslatedLabel(t, {
 					listKey: list.key,
 					prefix: 'field',

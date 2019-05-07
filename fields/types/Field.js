@@ -11,6 +11,8 @@ import { FormField, FormInput, FormNote } from '../../admin/client/App/elemental
 import blacklist from 'blacklist';
 import CollapsedFieldLabel from '../components/CollapsedFieldLabel';
 
+const Button = require('elemental').Button;
+
 function isObject (arg) {
 	return Object.prototype.toString.call(arg) === '[object Object]';
 }
@@ -96,6 +98,19 @@ var Base = module.exports.Base = {
 			}} />
 		);
 	},
+	downloadQrCode() {
+		// use hook to solve the lib no ref problem
+		const canvas = document.getElementById(`${this.props.path}-qrcode`);
+		console.log(canvas);
+		if (canvas) {
+			const anchorEl = document.createElement('a');
+            anchorEl.href = canvas.toDataURL();
+            anchorEl.download = `${this.props.value}.png`;
+            document.body.appendChild(anchorEl); // required for firefox
+            anchorEl.click();
+            anchorEl.remove();
+		}
+	},
 	/*
 	** Render individual image block 
 	** Terry Chan@11/09/2018
@@ -135,10 +150,21 @@ var Base = module.exports.Base = {
 	},
 	renderQRCodeImages() {
 		const { value, t } = this.props;
+		if (!value) return (<div />);
 		return (
 			<div>
-				<div><QRCode value={value} renderAs='svg' /></div>
-				<FormNote html={value} />
+				<div><QRCode
+					value={value}
+					id={`${this.props.path}-qrcode`}
+				/></div>
+				{
+					this.props.download && <Button ref="button" onClick={this.downloadQrCode}>
+						{t('downloadqrCode')}
+					</Button>
+				}
+				{
+					this.props.copy && <FormNote html={value} />
+				}
 				{
 					this.props.copy && <CopyToClipboard text={value}
 			        onCopy={() => alert(t('message:copySuccess'))}>

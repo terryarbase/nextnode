@@ -193,6 +193,7 @@ const locales = {
          today:'今天',
          title:'標題',
          description:'描述',
+         downloadqrCode: '下載二維碼',
          search:'搜尋',
          saveToUpload:'保存並上傳',
          contentVersion:'內容語言版本',

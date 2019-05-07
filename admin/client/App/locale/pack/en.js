@@ -191,6 +191,7 @@ const locales = {
          removeImage:'Remove Image',
          today:'Today',
          title:'Title',
+         downloadqrCode: 'Download QR Code',
          profileSuccessMsg:'Your profile have been changed successfully. You are able to get the latest profile in the next login.',
          search:'Search',
          searchPlaceholder:'Search Keyword',
