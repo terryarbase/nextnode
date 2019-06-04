@@ -6,7 +6,7 @@ const navigationLanguage = require('../../../lib/handler/staticGenerator/navigat
 
 const getStaticLanguageFile = async (nextNode) => {
 	const path = `${nextNode.get('app root')}/${nextNode.get('static lang path')}`;
-	var data;
+	let data;
 	try {
 		data = JSON.parse(fs.readFileSync(path, 'utf8'));
 	} catch (err) { // if the language cannnot be read, then query db
@@ -21,7 +21,7 @@ const getStaticLanguageFile = async (nextNode) => {
 
 const getStaticNavLanguageSectionFile = async (nextNode) => {
 	const path = `${nextNode.get('app root')}/${nextNode.get('static navigation path')}`;
-	var data;
+	let data;
 	try {
 		data = JSON.parse(fs.readFileSync(path, 'utf8'));
 	} catch (err) { // if the language cannnot be read, then query db
@@ -37,7 +37,7 @@ const getStaticNavLanguageSectionFile = async (nextNode) => {
 
 const getStaticAppLanguageSectionFile = async (nextNode) => {
 	const path = `${nextNode.get('app root')}/${nextNode.get('static section path')}`;
-	var data;
+	let data;
 	try {
 		data = JSON.parse(fs.readFileSync(path, 'utf8'));
 	} catch (err) { // if the language cannnot be read, then query db
@@ -64,8 +64,8 @@ const getCurrentLanguage = (nextNode, req, res) => {
 		return lang;
 	};
 
-	var dataCookie = req.cookies[dataCookieName];
-	var frontendCookie = req.cookies[frontendCookieName];
+	let dataCookie = req.cookies[dataCookieName];
+	let frontendCookie = req.cookies[frontendCookieName];
 	// set data cookie if not exists
 	if (!dataCookie) {
 		res.cookie(dataCookieName, currentLang, cookieOpts);

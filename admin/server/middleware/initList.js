@@ -1,3 +1,4 @@
+
 module.exports = function initList (req, res, next) {
 	var keystone = req.keystone;
 	req.list = keystone.list(req.params.list);

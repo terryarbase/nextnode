@@ -1,6 +1,6 @@
 {
   "name": "next-nodecms",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Web Application Framework and Admin GUI / Content Management System built on Express.js and Mongoose From KeystoneJS",
   "main": "index.js",
   "repository": {

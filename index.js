@@ -171,6 +171,7 @@ Keystone.prototype.isReservedCollection = function (key, options) {
 		'role',
 		'user',
 		'locale',
+		'systemIdentity',
 		'applicationLanguage',
 		'navigationLanguage'
 	];
@@ -208,6 +209,7 @@ Keystone.prototype.reservedCollections = function () {
 	return {
 		system: [
 			'Role',
+			'SystemIdentity',
 			'User',
 		],
 		localization: [
@@ -280,6 +282,7 @@ Keystone.prototype.createKeystoneHash = require('./lib/core/createKeystoneHash')
 ** 25/11/2018
 */
 Keystone.prototype.createRole = require('./lib/core/delegation/createRole');
+Keystone.prototype.createSystemIdentity = require('./lib/core/delegation/createSystemIdentity');
 Keystone.prototype.createLocalization = require('./lib/core/delegation/createLocalization');
 Keystone.prototype.createAccount = require('./lib/core/delegation/createAccount');
 Keystone.prototype.delegatedLanguageSection = require('./lib/core/delegation/createLanguageSection');

@@ -124,7 +124,6 @@ module.exports = function createDynamicRouter (keystone) {
 		'/api/:list/update',
 		initList,
 		checkPermission(2),
-		initDataPermission,
 		require('../api/list/update'),
 	);
 	// only refer to the current login user operations
@@ -148,7 +147,6 @@ module.exports = function createDynamicRouter (keystone) {
 	router.post(
 		'/api/:list/delete',
 		initList, checkPermission(2),
-		initDataPermission,
 		require('../api/list/delete'),
 	);
 	// router.post('/api/:list/delete', initList, checkPermission(2), require('../api/list/delete'));
@@ -157,19 +155,16 @@ module.exports = function createDynamicRouter (keystone) {
 		'/api/:list/:id',
 		initList,
 		checkPermission(1, { allowBasic: true }),
-		initDataPermission,
 		require('../api/item/get'),
 	);
 	router.post(
 		'/api/:list/:id',
 		initList, checkPermission(2),
-		initDataPermission,
 		require('../api/item/update'),
 	);
 	router.post(
 		'/api/:list/:id/delete',
 		initList, checkPermission(2),
-		initDataPermission,
 		require('../api/list/delete'),
 	);
 	router.post(
