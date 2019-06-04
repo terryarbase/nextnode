@@ -84,13 +84,13 @@ module.exports = function createDynamicRouter (keystone) {
 	}
 
 	// #5: Core Lists API
-	var initList = require('../middleware/initList');
-
+	const initList = require('../middleware/initList');
+	const initDataPermission = require('../middleware/initDataPermission');
 	// #6 rbac middleware
 	var checkPermission = require('../middleware/checkPermission');
 
 	// lists
-	router.all('/api/counts', require('../api/counts'));
+	router.all('/api/counts', initDataPermission, require('../api/counts'));
 	// if (serviceWorker) {
 	/*
 	** register for the current login user (e.g. browser device id)
@@ -100,12 +100,35 @@ module.exports = function createDynamicRouter (keystone) {
 	router.post('/api/register', require('../api/common/register'));
 	// }
 
-	router.get('/api/:list', initList, checkPermission(1, { allowBasic: true }), require('../api/list/get'));
-	router.get('/api/:list/:format(export.excel|export.json|export.txt)', initList, checkPermission(1), require('../api/list/download'));
-	router.post('/api/:list/create', initList, checkPermission(2), require('../api/list/create'));
-	router.post('/api/:list/update', initList, checkPermission(2), require('../api/list/update'));
+	router.get(
+		'/api/:list',
+		initList,
+		checkPermission(1, { allowBasic: true }),
+		initDataPermission,
+		require('../api/list/get'),
+	);
+	router.get(
+		'/api/:list/:format(export.excel|export.json|export.txt)',
+		initList,
+		checkPermission(1),
+		initDataPermission,
+		require('../api/list/download'),
+	);
+	router.post(
+		'/api/:list/create',
+		initList,
+		checkPermission(2),
+		require('../api/list/create'),
+	);
+	router.post(
+		'/api/:list/update',
+		initList,
+		checkPermission(2),
+		require('../api/list/update'),
+	);
 	// only refer to the current login user operations
-	router.post('/api/:list/updateMyProfile',
+	router.post(
+		'/api/:list/updateMyProfile',
 		initList,
 		checkPermission(2),
 		(req, res) => {
@@ -121,13 +144,34 @@ module.exports = function createDynamicRouter (keystone) {
 	// 		console.log('>>>>>>>>>', req.body, req.query);
 	// 	}
 	// );
-	router.post('/api/:list/delete', initList, checkPermission(2), require('../api/list/delete'));
+	router.post(
+		'/api/:list/delete',
+		initList, checkPermission(2),
+		require('../api/list/delete'),
+	);
 	// router.post('/api/:list/delete', initList, checkPermission(2), require('../api/list/delete'));
 	// items
-	router.get('/api/:list/:id', initList, checkPermission(1, { allowBasic: true }), require('../api/item/get'));
-	router.post('/api/:list/:id', initList, checkPermission(2), require('../api/item/update'));
-	router.post('/api/:list/:id/delete', initList, checkPermission(2), require('../api/list/delete'));
-	router.post('/api/:list/:id/sortOrder/:sortOrder/:newOrder', initList, checkPermission(2), require('../api/item/sortOrder'));
+	router.get(
+		'/api/:list/:id',
+		initList,
+		checkPermission(1, { allowBasic: true }),
+		require('../api/item/get'),
+	);
+	router.post(
+		'/api/:list/:id',
+		initList, checkPermission(2),
+		require('../api/item/update'),
+	);
+	router.post(
+		'/api/:list/:id/delete',
+		initList, checkPermission(2),
+		require('../api/list/delete'),
+	);
+	router.post(
+		'/api/:list/:id/sortOrder/:sortOrder/:newOrder',
+		initList, checkPermission(2),
+		require('../api/item/sortOrder'),
+	);
 
 	// #6: List Routes
 	router.all('/*', function(req, res) {

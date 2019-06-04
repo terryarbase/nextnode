@@ -1,10 +1,16 @@
-var async = require('async');
+const async = require('async');
 
 module.exports = function (req, res) {
-	var keystone = req.keystone;
-	var counts = {};
+	const keystone = req.keystone;
+	let counts = {};
+	const permissionQueries = req.permissionQuery || {};
+	let conditions = {};
+	// console.log(permissionQueries);
 	async.each(keystone.lists, function (list, next) {
-		list.model.count(function (err, count) {
+		if (permissionQueries[list.key]) {
+			conditions = { ...permissionQueries[list.key] };
+		}
+		list.model.count(conditions, function (err, count) {
 			counts[list.key] = count;
 			next(err);
 		});

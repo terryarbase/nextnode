@@ -26,6 +26,17 @@ module.exports = function (req, res, next) {
 	if (req.query.search) {
 		assign(where, req.list.addSearchToQuery(req.query.search, options));
 	}
+	/*
+	** [ADDON]
+	** combine with the permission query from request
+	** Terry Chan
+	** 04/05/2019
+	*/
+	where = {
+		...where,
+		...req.permissionQuery,
+	};
+	
 	var query = req.list.model.find(where);
 	if (req.query.populate) {
 		query.populate(req.query.populate);

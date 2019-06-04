@@ -106,8 +106,10 @@ number.prototype.addFilterToQuery = function (filter) {
  */
 number.prototype.format = function (item, format) {
 	var value = item.get(this.path);
-	if (format || this.formatString) {
-		return (typeof value === 'number') ? numeral(value).format(format || this.formatString) : '';
+	if (format && typeof format === 'string') {
+		return (typeof value === 'number') ? numeral(value).format(format) : '';
+	} else if (this.formatString) {
+		return (typeof value === 'number') ? numeral(value).format(this.formatString) : '';
 	} else {
 		return value || value === 0 ? String(value) : '';
 	}

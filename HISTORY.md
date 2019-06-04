@@ -1,5 +1,14 @@
 # Next-nodecms Changelog
 
+## 1.0.11
+### Hotfix for image display in the list with multilingal
+### About Data Permission improvements
+
+List Improvements:
+* Added App Identity Delegated Model
+* Added App Identity Login for data permissions
+* User Permission according to App Identity
+
 ## 1.0.10
 ### Hotfix for Type.File bugs for dependsOn and multilingual
 ### Added extra fields for the Role table
