@@ -2,9 +2,14 @@ const async = require('async');
 const _ 	= require('lodash');
 
 module.exports = function (req, res) {
+	const keystone = req.keystone;
 	async.map(req.body.items, function (param, done) {
-		var data = req.list.convertJson(param);
-		req.list.model.findById(data.id, function (err, item) {
+		let data = req.list.convertJson(param);
+		req.list.prepareDataPermission(req, data);
+		req.list.model.findOne({
+			_id: keystone.mongoose.Types.ObjectId(data.id),
+			...req.permissionquery,
+		}, function (err, item) {
 			if (err) return done({
 				statusCode: 500,
 				error: req.t.__('msg_db_error_withoutReason'),

@@ -7,7 +7,7 @@
  *  Section list for locaization
  */
 const _ = require('lodash');
-const { Map, Seq } = require('immutable');
+const { Map, Seq, OrderedMap } = require('immutable');
 
 // const SectionTypes = Map({
 // 	en: {
@@ -65,7 +65,7 @@ class ImmutableType {
 		if (isLocaization && isTransfer) {
 			this._type = this.configuration(type);
 		} else {
-			this._type = type.toJS();
+			this._type = type instanceof OrderedMap ? type.toJS() : type;
 		}
 	}
 
