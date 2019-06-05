@@ -75,5 +75,6 @@ module.exports = initDataPermission = (req, res, next) => {
 	} else {
 		req.permissionQuery = preparePermissionQueries(req.user, nextnode)
 	}
+	// console.log(req.permissionQuery);
 	next();
 };

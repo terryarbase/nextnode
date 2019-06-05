@@ -1,6 +1,6 @@
 # Next-nodecms Changelog
 
-## 1.0.11
+## 1.0.11 [Data Permission]
 ### Hotfix for image display in the list with multilingal
 ### About Data Permission improvements
 

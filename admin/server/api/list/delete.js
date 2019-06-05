@@ -32,7 +32,10 @@ module.exports = function (req, res) {
 	}
 	var deletedCount = 0;
 	var deletedIds = [];
-	req.list.model.find().where('_id').in(ids).exec(function (err, results) {
+	// console.log(req.permissionQuery);
+	req.list.model.find({
+		...req.permissionQuery,
+	}).where('_id').in(ids).exec(function (err, results) {
 		if (err) {
 			console.log('Error deleting ' + req.list.key + ' items:', err);
 			return res.apiError(req.t.__('msg_db_error_withoutReason'), err);

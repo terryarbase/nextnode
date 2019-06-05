@@ -5,7 +5,10 @@ var listToArray = require('list-to-array');
 module.exports = function (req, res) {
 	var keystone = req.keystone;
 	const { locales } = req;
-	var query = req.list.model.findById(req.params.id);
+	var query = req.list.model.findOne({
+		_id: keystone.mongoose.Types.ObjectId(req.params.id),
+		...req.permissionquery,
+	});
 	var fields = req.query.fields;
 	if (fields === 'false') {
 		fields = false;
