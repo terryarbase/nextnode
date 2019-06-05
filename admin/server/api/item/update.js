@@ -6,13 +6,14 @@ module.exports = function (req, res) {
 		return res.apiError(403, req.t.__('msg_invalid_csrf'));
 	}
 	const { params: { id }, body, locales } = req;
-	// console.log(body);
 	// locales, list: { options: { multilingual }, fields } } = req;
 	const newData = req.list.prepareCorrectParam(body);
+
 	req.list.model.findOne({
 		_id: keystone.mongoose.Types.ObjectId(id),
 		...req.permissionquery,
 	}, function (err, item) {
+
 		if (err) return res.status(500).json({ error: req.t.__('msg_db_error_withoutReason'), detail: err });
 		if (!item) return res.status(404).json({ error: req.t.__('msg_user_notfound'), id });
 		const options = {
@@ -26,7 +27,6 @@ module.exports = function (req, res) {
 			frontLang: locales && locales.frontLang,
 		};
 		req.list.updateItem(item, newData, options, function (err) {
-			// console.log('err: ', err);
 			if (err) {
 				var status = err.error === 'validation errors' ? 400 : 500;
 				var error = err.error === 'database error' ? err.detail : err;

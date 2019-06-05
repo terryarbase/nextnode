@@ -162,7 +162,8 @@ module.exports = function createDynamicRouter (keystone) {
 	);
 	router.post(
 		'/api/:list/:id',
-		initList, checkPermission(2),
+		initList,
+		checkPermission(2),
 		initDataPermission,
 		require('../api/item/update'),
 	);
