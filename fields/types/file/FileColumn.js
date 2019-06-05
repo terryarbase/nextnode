@@ -10,15 +10,17 @@ var LocalFileColumn = React.createClass({
 		return value.filename;
 	},
 	isImage (value) {
-		const imageMimeType = [
-			"image/png",
-			"image/jpeg",
-			"image/jpg",
-			"image/gif",
-		];
-		for(var i = 0; i < imageMimeType.length; i++){
-			if(value.mimetype === imageMimeType[i]){
-				return true;
+		if (value) {
+			const imageMimeType = [
+				"image/png",
+				"image/jpeg",
+				"image/jpg",
+				"image/gif",
+			];
+			for(var i = 0; i < imageMimeType.length; i++){
+				if(value.mimetype === imageMimeType[i]){
+					return true;
+				}
 			}
 		}
 		return false;

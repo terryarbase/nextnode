@@ -403,6 +403,9 @@ Field.prototype.inputIsValid = function (data, required, item) {
  */
 Field.prototype.updateItem = function (item, data, callback) {
 	var value = this.getValueFromData(data);
+	if (!value && !_.isPlainObject(data)) {
+		value = data;
+	}
 	// This is a deliberate type coercion so that numbers from forms play nice
 	if (value !== undefined && value != item.get(this.path)) { // eslint-disable-line eqeqeq
 		item.set(this.path, value);

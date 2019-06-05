@@ -59,7 +59,6 @@ module.exports = function (req, res) {
 	}
 	// if (where.$or) {
 	// 	console.log(where.$or[0].$or, where);
-	// }
 	var sort = req.list.expandSort(req.query.sort);
 	async.waterfall([
 		function (next) {
