@@ -15,7 +15,7 @@ Next-NodeCMS Beta 1.0.12
 ## 1.0.12 
 ### Hotfix use system user prefer language setting (frontend)
 ### Hotfix Types.KeyText add button display incorrectly
-### Hotfix Types.Relationship filters with colun mapping (e.g. :field)
+### Hotfix Types.Relationship filters with colon mapping (e.g. :field)
 
 ## 1.0.11 [Data Permission]
 ### Hotfix for image display in the list with multilingal
