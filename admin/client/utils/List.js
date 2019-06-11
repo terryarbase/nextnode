@@ -128,7 +128,7 @@ const List = function (options) {
 ** Terry Chan
 ** 12/11/2018
 */
-List.prototype.getProperlyValue = function({ field, values, isLocale, currentLang }) {
+const getValueFrom = function({ field, values, isLocale, currentLang }) {
 	// console.log(field.path, values);
 	var current = values[field.path];
 	// prevent set multilingual from true to false
@@ -143,6 +143,43 @@ List.prototype.getProperlyValue = function({ field, values, isLocale, currentLan
 	}
 	return current;
 };
+List.prototype.getProperlyValue = getValueFrom;
+/*
+** Format the filters option for the field with self colun mapping for the self value
+** e.g. :_id
+** Terry Chan
+** 11/06/2019
+*/
+List.prototype.getRelatedFilter = (field, initFilters={}, props, state) => {
+	const { isLocale, currentLang, t, i18n, list } = props;
+	let { values } = state;
+	// let mapping = null;
+	if (field.filters) {
+		let { filters={} } = field;
+		filters = {
+			...filters,
+			...initFilters,
+		};
+		let targetField = null;
+		return _.chain(filters).reduce((accum, value, field) => {
+			// while the filter value is mapping field being with colun
+			if (/^:/i.test(value)) {
+				targetField = value.replace(/^:/, '');
+				return {
+					...accum,
+					[field]: getValueFrom({
+						field: list.fields[targetField],
+						isLocale,
+						currentLang,
+						values,
+					}),
+				};
+			}
+			return accum;
+		}, filters).value();
+	}
+	return null;
+}
 List.prototype.getProperlyChangedValue = function({ currentValue, path, value, isLocale, currentLang }) {
 	const fields = this.fields;
 	var values = { ...currentValue };

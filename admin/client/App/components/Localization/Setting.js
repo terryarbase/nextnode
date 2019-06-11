@@ -36,7 +36,7 @@ var Setting = React.createClass({
 		this.closeModal();
 	},
 	renderButton () {
-		const currentUILanguage = getUILanguage();
+		const currentUILanguage = Keystone.currentUILanguage || getUILanguage();
 		return Object.entries(Keystone.localization).map((lang, index) => {
 			return (
 				<div key={lang[0]} style={{marginBottom: `5px`}}>

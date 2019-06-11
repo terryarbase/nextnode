@@ -130,7 +130,8 @@ var PrimaryNavigation = React.createClass({
 	},
 	renderLanguageSwitcher() {
 		const { t } = this.props;
-		const currentUILanguage = getUILanguage();
+		const currentUILanguage = Keystone.currentUILanguage || getUILanguage();
+		// const currentUILanguage = getUILanguage();
 		const currentLangImg = Keystone.localization[currentUILanguage].icon;
 		return (
 			<a

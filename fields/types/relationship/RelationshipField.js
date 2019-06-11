@@ -53,10 +53,19 @@ module.exports = Field.create({
 	},
 
 	componentWillReceiveProps (nextProps) {
-		if (nextProps.value === this.props.value || nextProps.many && compareValues(this.props.value, nextProps.value)) return;
-		// console.log('> ', nextProps.value);
-		// this.loadValue(nextProps.value);
-		this.afterLoadOptions(this.state.options, nextProps.value);
+	
+		if ((nextProps.value !== this.props.value || 
+			nextProps.many && !compareValues(this.props.value, nextProps.value))) {
+			this.afterLoadOptions(this.state.options, nextProps.value);
+		}
+		
+		if (!_.isEqual(this.props.filters, nextProps.filters)) {
+			this.loadOptions('', this.loadOptionsCallback, nextProps);
+		}
+
+		// console.log('> nextprops: ', nextProps.filters);
+		
+		// this.afterLoadOptions(this.state.options, nextProps.value);
 	},
 
 	shouldCollapse () {
@@ -67,10 +76,10 @@ module.exports = Field.create({
 		return this.props.collapse && !this.props.value;
 	},
 
-	buildFilters () {
+	buildFilters (props) {
+		const newProps = props || this.props;
 		var filters = {};
-
-		_.forEach(this.props.filters, (value, key) => {
+		_.forEach(newProps.filters, (value, key) => {
 			if (typeof value === 'string' && value[0] === ':') {
 				var fieldName = value.slice(1);
 
@@ -142,7 +151,8 @@ module.exports = Field.create({
 	// 		//handle unexpected JSON string not parsed
 	// 		expanded = typeof expanded === 'string' ? JSON.parse(expanded) : expanded;
 	// 		const results = expanded.results || [];
-	// 		this.afterLoadOptions(results);
+	// 		console.log(results);
+	// 		// this.afterLoadOptions(results);
 	// 		// this.setState({
 	// 		// 	loading: false,
 	// 		// 	value: this.props.many ? expanded : expanded[0],
@@ -178,11 +188,14 @@ module.exports = Field.create({
 		}
 		// console.log('> split: ', value);
 		value = _.map(value, v => ({ value: String(v) }));
+		// console.log('>>>>> value: ', selections, value);
 		value = _.intersectionBy(selections, value, 'value');
+		// console.log('>>>>> value: ', value);
 		// console.log(results, selected, value);
 		if (!many && value.length) {
 			value = value[0];
 		}
+
 		this.setState({
 			loading: false,
 			value,
@@ -192,12 +205,12 @@ module.exports = Field.create({
 
 		// callback(selections);
 	},
-	loadOptions (input, callback) {
+	loadOptions (input, callback, props) {
 		const { many, value } = this.props;
 		// console.log(this.props.display);
 		// NOTE: this seems like the wrong way to add options to the Select
 		this.loadOptionsCallback = callback;
-		const filters = this.buildFilters();
+		const filters = this.buildFilters(props);
 		this.setState({
 			loading: true,
 		});
@@ -213,23 +226,6 @@ module.exports = Field.create({
 			data = typeof data === 'string' ? JSON.parse(data) : data;
 			const results = data.results || [];
 			this.afterLoadOptions(results, value, callback);
-			// callback(
-			// 	_.map(results, ({ id, name, fields }) => {
-			// 		let label = name;
-			// 		if (!!display && fields && fields[displayField]) {
-			// 			label = fields[displayField].url;
-			// 		}
-			// 		return {
-			// 			label,
-			// 			value: id,
-			// 		}
-			// 	})
-			// );
-			// data.results.forEach(this.cacheItem);
-			// callback(null, {
-			// 	options: data.results,
-			// 	complete: data.results.length === data.count,
-			// });
 		});
 	},
 
@@ -339,7 +335,6 @@ module.exports = Field.create({
 	renderSelect (noedit, isMulti) {
 		const { t, refList, many, value, mode, display, noedit: disabled } = this.props;
 		// let value =  
-		// console.log(this.props.value);
 		return (
 			<div>
 				{/* This input element fools Safari's autocorrect in certain situations that completely break react-select */}
