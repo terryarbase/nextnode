@@ -373,6 +373,7 @@ var EditForm = React.createClass({
 				const { path } = field;
 				props = {
 					...props,
+					list: this.props.list,
 					restrictDelegated: field.restrictDelegated,
 					label: getTranslatedLabel(t, {
 						listKey, 
