@@ -6,7 +6,6 @@
 const listToArray = require('list-to-array');
 const qs = require('qs');
 const xhr = require('xhr');
-const _ = require('lodash');
 const assign = require('object-assign');
 const _ = require('lodash');
 // Filters for truthy elements in an array

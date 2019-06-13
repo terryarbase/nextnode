@@ -12,6 +12,7 @@ Next-NodeCMS Beta 1.0.12
 ------------------------------------------------------------------------------------------------
 # Next-nodecms Changelog
 
+## 1.0.13
 ## 1.0.12 
 ### Hotfix use system user prefer language setting (frontend)
 ### Hotfix Types.KeyText add button display incorrectly
