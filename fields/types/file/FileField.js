@@ -231,7 +231,7 @@ module.exports = Field.create({
 			"image/gif",
 		];
 		for(var i = 0; i < imageMimeType.length; i++){
-			if(this.props.value.mimetype === imageMimeType[i]){
+			if(this.props.value && this.props.value.mimetype === imageMimeType[i]){
 				return true;
 			}
 		}
