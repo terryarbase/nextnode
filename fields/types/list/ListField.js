@@ -22,16 +22,6 @@ const ItemDom = ({  name, id, onRemove, children, t }) => (
 		paddingTop: 15,
 	}}>
 		{name && <input type="hidden" name={name} value={id}/>}
-<<<<<<< HEAD
-		{children}
-		{
-			!single && <div style={{ textAlign: 'right', paddingBottom: 10 }}>
-				<Button size="xsmall" color="danger" onClick={onRemove}>
-					{t('remove')}
-				</Button>
-			</div>
-		}
-=======
 		
 		{React.Children.map(children, child => {
 			return React.cloneElement(child, {
@@ -48,7 +38,6 @@ const ItemDom = ({  name, id, onRemove, children, t }) => (
 				{t('remove')}
 			</Button>
 		</div>
->>>>>>> 1d558449... support list type sub field filter
 	</div>
 );
 
