@@ -3,7 +3,7 @@ import { reactI18nextModule } from "react-i18next";
 // import LanguageDetector from "i18next-browser-languagedetector";
 // language packs
 import locales from "./";
-
+// console.log(Keystone.currentUILanguage);
 i18n.use(reactI18nextModule).init({
 // we init with resources
 	resources: locales,

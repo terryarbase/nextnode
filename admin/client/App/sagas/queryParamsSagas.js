@@ -85,7 +85,6 @@ export function parseQueryParams (query, currentList) {
 	const filters = filtersParser(query.filters, currentList);
 	const currentPage = query.page || 1;
 	const search = query.search || '';
-
 	return {
 		columns,
 		sort,

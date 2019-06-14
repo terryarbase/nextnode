@@ -127,9 +127,9 @@ module.exports = async function (req, res, next, nextNode) {
 		// default language to pickup the data
 		defaultLanguage,
 		// adminUI current data language, serve the any requested lang first before cookie lang
-		langd: req.headers.langd || req.query.langd || req.body.langd || preferLanguage || dataCookie,
+		langd: req.headers.langd || req.query.langd || req.body.langd || dataCookie,
 		// adminUI current layout language
-		langf: preferLanguage || frontendCookie,
+		langf: preferLanguage,
 	};
 	// }
 
@@ -144,10 +144,10 @@ module.exports = async function (req, res, next, nextNode) {
 	** update the user prefer language if it is being changed
 	** 11/06/2019
 	*/
-	if (preferLanguage !== req.locales.langf) {
-		req.user.set('language', req.locales.langf);
-		req.user.save();
-	}
+	// if (preferLanguage !== req.locales.langf) {
+	// 	req.user.set('language', req.locales.langf);
+	// 	req.user.save();
+	// }
 	// console.log(req.menu, req.appLanguage);
 	if (next) next();
 };

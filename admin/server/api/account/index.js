@@ -52,12 +52,23 @@ class Account {
     async updateMyProfile() {
     	await this.userAccountRequired();
     	if (this.item) {
-	    	const body = this.extractFieldSpecicaition(['password', 'password_confirm']);
+	    	const body = this.extractFieldSpecicaition(['password', 'password_confirm', 'language']);
 	    	this.executeUpdate(body);
 	    }
     }
 
-    executeUpdate(info) {
+    // async findLanguage(info) {
+    //     const { language } = info;
+    //     const localeModel = this.keystone.list('Locale').model;
+    //     const currentLanguage = await localeModel.findOne({
+    //         identify: language || this.keystone.get('locale'),
+    //     }).exec();
+    //     if (currentLanguage) {
+    //         info.language = currentLanguage._id;
+    //     }
+    // }
+
+    async executeUpdate(info) {
     	const { 
     		req: {
     			list,
@@ -67,6 +78,9 @@ class Account {
     		item,
     		res,
     	} = this;
+        // if (info.language) {
+        //     await this.findLanguage(info);
+        // }
     	// console.log(this.item, info, user, list);
     	list.updateItem(item, info, { user }, err => {
     		// console.log('>>>>>>>>', err);

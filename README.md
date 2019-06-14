@@ -1,4 +1,4 @@
-Next-NodeCMS Beta 1.0.12
+Next-NodeCMS Beta 1.0.14
 ===================================
 
 [![Build Status](https://travis-ci.org/keystonejs/keystone.svg?branch=master)](https://travis-ci.org/keystonejs/keystone)
@@ -11,6 +11,11 @@ Next-NodeCMS Beta 1.0.12
 
 ------------------------------------------------------------------------------------------------
 # Next-nodecms Changelog
+
+## 1.0.14
+### Hotfix Localization AdminUI use System User's language by default
+### Hotfix Localization image bugs (base64image)
+### Hotfix System User's Identity delegation restriction
 
 ## 1.0.13
 ## 1.0.12 

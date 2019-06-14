@@ -19,6 +19,7 @@ import {
 	REALTIME_SAVED,
 	REALTIME_SAVE_ERROR,
 	SET_LOCALIZATION,
+	SET_UILOCALIZATION,
 } from './../constants';
 
 // import {
@@ -292,6 +293,13 @@ function lists (state = initialState, action) {
 				locale: {
 					...state.locale,
 					current: action.current,
+				},
+			});
+		case SET_UILOCALIZATION: 
+			return assign({}, state, {
+				locale: {
+					...state.locale,
+					currentUILang: action.current,
 				},
 			});
 		default:

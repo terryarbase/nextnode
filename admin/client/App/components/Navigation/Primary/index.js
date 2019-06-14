@@ -15,6 +15,10 @@ import AccountSetting from '../../Setting';
 import LocalizationSetting from '../../Localization/Setting';
 import { getUILanguage } from '../../../../utils/cookie.js';
 
+import {
+	setCurrentUILanguage,
+} from '../../../screens/List/actions';
+
 var PrimaryNavigation = React.createClass({
 	displayName: 'PrimaryNavigation',
 	propTypes: {
@@ -130,7 +134,7 @@ var PrimaryNavigation = React.createClass({
 	},
 	renderLanguageSwitcher() {
 		const { t } = this.props;
-		const currentUILanguage = Keystone.currentUILanguage || getUILanguage();
+		const currentUILanguage = this.props.currentUILanguage;
 		// const currentUILanguage = getUILanguage();
 		const currentLangImg = Keystone.localization[currentUILanguage].icon;
 		return (
@@ -152,6 +156,10 @@ var PrimaryNavigation = React.createClass({
 				</span>
 			</a>
 		);
+	},
+	setCurrentUILanguage(lang) {
+		window.location.reload();
+		// this.props.dispatch(setCurrentUILanguage(lang));
 	},
 	// Render the link to the webpage
 	renderFrontLink () {
@@ -244,6 +252,7 @@ var PrimaryNavigation = React.createClass({
 				<LocalizationSetting
 					isOpen={this.state.localizationIsVisible}
 					onCancel={this.onPopoutSetting}
+					setCurrentUILanguage={this.setCurrentUILanguage}
 					{ ...this.props }
 				/>
 			</div>

@@ -3,6 +3,7 @@ import {
 	REALTIME_SAVED,
 	REALTIME_SAVE_ERROR,
 	SET_LOCALIZATION,
+	SET_UILOCALIZATION,
 } from '../constants';
 
 /*
@@ -53,3 +54,12 @@ export function setCurrentLanguage (current) {
 	});
 }
 
+/*
+** Localization
+*/
+export function setCurrentUILanguage (current) {
+	return dispatch => dispatch({
+		type: SET_UILOCALIZATION,
+		current,
+	});
+}
