@@ -208,6 +208,8 @@ Keystone.prototype.reservedCollections = function () {
 	const localization = this.get('localization');
 	return {
 		system: [
+			'PermissionListField',
+			'Permission',
 			'Role',
 			'SystemIdentity',
 			'User',
@@ -281,6 +283,8 @@ Keystone.prototype.createKeystoneHash = require('./lib/core/createKeystoneHash')
 ** Terry Chan
 ** 25/11/2018
 */
+Keystone.prototype.createPermission = require('./lib/core/delegation/createPermission');
+Keystone.prototype.createDelegatedAdmin = require('./lib/core/delegation/createDelegatedAdmin');
 Keystone.prototype.createRole = require('./lib/core/delegation/createRole');
 Keystone.prototype.createSystemIdentity = require('./lib/core/delegation/createSystemIdentity');
 Keystone.prototype.createLocalization = require('./lib/core/delegation/createLocalization');
