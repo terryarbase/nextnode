@@ -5,6 +5,7 @@ import { css, StyleSheet } from 'aphrodite/no-important';
 import React from 'react';
 import Field from '../Field';
 import Domify from 'react-domify';
+import _map from 'lodash/map';
 
 import { Fields } from 'FieldTypes';
 import { Button, GlyphButton } from '../../../admin/client/App/elemental';
@@ -15,20 +16,26 @@ function generateId () {
 	return i++;
 };
 
-const ItemDom = ({ single, name, id, onRemove, children, t }) => (
+const ItemDom = ({ name, id, onRemove, children, t }) => (
 	<div style={{
 		borderTop: '2px solid #eee',
 		paddingTop: 15,
 	}}>
 		{name && <input type="hidden" name={name} value={id}/>}
-		{children}
-		{
-			!single && <div style={{ textAlign: 'right', paddingBottom: 10 }}>
-				<Button size="xsmall" color="danger" onClick={onRemove}>
-					{t('remove')}
-				</Button>
-			</div>
-		}
+		
+		{React.Children.map(children, child => {
+			return React.cloneElement(child, {
+				name,
+				id,
+				t,
+			});
+		})}
+
+		<div style={{ textAlign: 'right', paddingBottom: 10 }}>
+			<Button size="xsmall" color="danger" onClick={onRemove}>
+				{t('remove')}
+			</Button>
+		</div>
 	</div>
 );
 
@@ -74,7 +81,7 @@ module.exports = Field.create({
 		onChange({ path, value });
 	},
 	renderFieldsForItem (index, value) {
-		return Object.keys(this.props.fields).map((path) => {
+		return _map(Object.keys(this.props.fields), path => {
 			const field = this.props.fields[path];
 			if (typeof Fields[field.type] !== 'function') {
 				return React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path });
@@ -94,10 +101,10 @@ module.exports = Field.create({
 			// 	});
 			// }
 			return React.createElement(Fields[field.type], props);
-		}, this);
+		});
 	},
 	renderItems () {
-		const { value = [], path, t, single } = this.props;
+		const { value = [], path, t } = this.props;
 		const onAdd = this.addItem;
 		return (
 			<div>
@@ -107,16 +114,14 @@ module.exports = Field.create({
 					const onRemove = e => this.removeItem(index);
 
 					return (
-						<ItemDom key={id} {...{ single, id, name, onRemove, t }}>
+						<ItemDom key={id} {...{ id, name, onRemove, t }}>
 							{this.renderFieldsForItem(index, value)}
 						</ItemDom>
 					);
 				})}
-				{
-					!single && <GlyphButton color="success" glyph="plus" position="left" onClick={onAdd}>
-						{t('add')}
-					</GlyphButton>
-				}
+				<GlyphButton color="success" glyph="plus" position="left" onClick={onAdd}>
+					{t('add')}
+				</GlyphButton>
 			</div>
 		);
 	},
