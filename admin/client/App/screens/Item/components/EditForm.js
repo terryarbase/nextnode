@@ -75,6 +75,8 @@ var EditForm = React.createClass({
 		};
 	},
 	componentDidMount () {
+		console.log('>>> [EditForm] this.props', this.props);
+		console.log('>>> permission', this.props.permission);
 		this.__isMounted = true;
 	},
 	componentWillUnmount () {
@@ -104,7 +106,37 @@ var EditForm = React.createClass({
 		props.listKey = this.props.list.key;
 		props.t = t;
 		props.i18n = i18n;
+
 		return props;
+	},
+	/*
+	** check field permission for UI
+	** Fung Lee
+	** 20/06/2019
+	*/
+	checkFieldPermission(props) {
+		const { permission } = this.props;
+		if (permission._ignore) return props;	// ignore checking
+
+		if (_.includes(_.keys(permission), props.path)) {
+			switch(permission[props.path]) {
+				case 0:
+					// No View
+					return;
+				case 1: 
+					// View Only
+					props.noedit = true;
+					return props;
+				case 2:
+					// Edit
+					return props;
+				default:
+					throw new Error('[Field Permission] Cant handle the invalid permission number');
+			}
+		} else {
+			// still render for no permission set
+			return props;
+		}
 	},
 	handleChange ({ path, value }) {
 		// const { path, value } = e;
@@ -284,6 +316,7 @@ var EditForm = React.createClass({
 					},
 				};
 			}
+
 			return wrapNameField(
 				React.createElement(Fields[nameField.type], nameFieldProps)
 			);
@@ -338,6 +371,11 @@ var EditForm = React.createClass({
 				let field = this.props.list.fields[el.field];
 				let props = this.getFieldProps(field);
 				const { path } = field;
+
+				props = this.checkFieldPermission(props);
+				// No permission, no render
+				if (!props) return;
+				
 				props = {
 					...props,
 					restrictDelegated: field.restrictDelegated,
