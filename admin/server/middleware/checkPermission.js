@@ -14,7 +14,7 @@ module.exports = function checkPermission(requiredLevel, options) {
 
         combinePermission(req, res);
 
-        if (req.roleList[req.list.key] < requiredLevel) {
+        if (req.permission[req.list.key] < requiredLevel) {
             return res.status(403).json({ error: req.t.__('msg_permission_denied') });
         }
 
