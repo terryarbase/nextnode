@@ -11,9 +11,9 @@ const { Map } = require('immutable');
 const Configurations = Map({
 	reverseModelName: [
 		'Localization',
-		'Role',
+		// 'Role',
 		'App_Update',
-	];
+	]
 });
 
 module.exports = Configurations;

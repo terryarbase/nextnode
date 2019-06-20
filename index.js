@@ -208,9 +208,9 @@ Keystone.prototype.reservedCollections = function () {
 	const localization = this.get('localization');
 	return {
 		system: [
-			'PermissionListField',
+			// 'PermissionListField',
 			'Permission',
-			'Role',
+			// 'Role',
 			'SystemIdentity',
 			'User',
 		],
@@ -249,7 +249,7 @@ Keystone.prototype.mergeNavOptionWithReservedCollections = function () {
 Keystone.prototype.reservedRoleListCollections = function () {
 	return {
 		...{
-			'Role': true,
+			// 'Role': true,
 			'User': true,
 		},
 		...(this.get('localization') ? { 'Locale': true } : {}),

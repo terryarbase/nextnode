@@ -50,13 +50,16 @@ module.exports = Field.create({
 			if (typeof Fields[field.type] !== 'function') {
 				return React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path });
 			}
+
 			const props = assign({}, field);
 			props.value = value[field.path];
 			props.values = value;
+			props.values.delegated = !!this.props.values.delegated;
 			props.onChange = this.handleFieldChange;
 			props.mode = 'edit';
 			props.inputNamePrefix = `${this.props.path}`;
 			props.key = field.path;
+
 			// TODO ?
 			// if (props.dependsOn) {
 			// 	props.currentDependencies = {};
@@ -79,7 +82,6 @@ module.exports = Field.create({
 		);
 	},
 	renderUI () {
-		console.log('>>> object this.props', this.props);
 		const { required } = this.props;
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		return (
