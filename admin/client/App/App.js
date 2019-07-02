@@ -56,8 +56,6 @@ const App = (props) => {
 	// Default current section key to dashboard
 	const currentSectionKey = (currentSection && currentSection.key) || 'dashboard';
 	const { style: { nav } } = Keystone;
-	console.log('>>> [App] children', children);
-	console.log('>>> [App] user', Keystone.User, Keystone.user)
 	return (
 		<div className={css(classes.wrapper)}>
 			{isShowNav ?
@@ -110,7 +108,7 @@ const App = (props) => {
 					{/* {children} */}
 					{React.Children.map(children, child => {
 						return React.cloneElement(child, {
-							permission: Keystone.user.permission,
+							user: Keystone.user,
 						});
 					})}
 				</main>

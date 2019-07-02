@@ -75,8 +75,6 @@ var EditForm = React.createClass({
 		};
 	},
 	componentDidMount () {
-		console.log('>>> [EditForm] this.props', this.props);
-		console.log('>>> permission', this.props.permission);
 		this.__isMounted = true;
 	},
 	componentWillUnmount () {
@@ -115,11 +113,11 @@ var EditForm = React.createClass({
 	** 20/06/2019
 	*/
 	checkFieldPermission(props) {
-		const { permission } = this.props;
-		if (permission._ignore) return props;	// ignore checking
+		const { user } = this.props;
+		if (user.delegated) return props;	// ignore checking
 
-		if (_.includes(_.keys(permission), props.path)) {
-			switch(permission[props.path]) {
+		if (_.includes(_.keys(user.permission), props.path)) {
+			switch(user.permission[props.path]) {
 				case 0:
 					// No View
 					return;

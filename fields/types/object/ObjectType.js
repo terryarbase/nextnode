@@ -169,7 +169,7 @@ object.prototype.getData = function (item) {
 	const value = item.get(this.path);
 	const fieldsArray = this.fieldsArray;
 
-	let data = { id: value._id, };
+	let data = { id: value._id };
 	_map(fieldsArray, field => {
 		data[field.path] = field.getData(value);
 	})

@@ -12,7 +12,6 @@ module.exports = function combinePermission(req, res) {
         permission = combineSinglePermission(nextNode, userPermission);
     }
 
-    console.log('>>> combine permission', permission);
     req.permission = permission;
 }
 
@@ -22,7 +21,7 @@ function combineSinglePermission(nextNode, userPermission) {
 
     const permission = {};
     _.forOwn(userPermission, (p, list) => {
-        permission[list] = p._table;
+        permission[list] = p._list;
     });
     return permission;
 }
