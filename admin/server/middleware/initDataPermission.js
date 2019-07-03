@@ -31,8 +31,20 @@ const preparePermissionQuery = (user, list, nextnode) => {
 		}
 	} else if (hasIdentityField && identity && ObjectId.isValid(identity)) {
 		// force to query aginst identityBy
+		/*
+		** query extra delegated record
+		** Fung Lee
+		** 03/07/2019
+		*/
 		query = {
-			identifiedBy: ObjectId(identity),
+			$or: [
+				{
+					identifiedBy: ObjectId(identity),
+				},
+				{
+					delegated: true,
+				}
+			],
 		};
 	// prevent not set identity field, then query only empty
 	} else {
