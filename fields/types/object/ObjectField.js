@@ -11,9 +11,9 @@ import InvalidFieldType from '../../../admin/client/App/shared/InvalidFieldType'
 
 const ObjectField = ({ name, id, children, t }) => (
 	<div style={{
-		borderLeft: '2px solid #eee',
-		paddingLeft: 15,
-		marginLeft: 10,
+		// borderLeft: '2px solid #eee',
+		// paddingLeft: 15,
+		// marginLeft: 10,
 	}}>
 		{name && <input type="hidden" name={name} value={id}/>}
 		
@@ -72,6 +72,7 @@ module.exports = Field.create({
 	},
 	renderField () {
 		const { value, path, t } = this.props;
+		console.log('>>> value', value, path);
 		const { id } = value;
 		const name = `${path}[id]`;
 
@@ -82,6 +83,7 @@ module.exports = Field.create({
 		);
 	},
 	renderUI () {
+		console.log('>>> Object Types this.props', this.props);
 		const { required } = this.props;
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		return (
@@ -96,6 +98,9 @@ module.exports = Field.create({
 
 const classes = StyleSheet.create({
 	container: {
-		marginTop: '2em',	
+		marginTop: '2em',
+		background: '#f8f8f8',
+	    padding: 10,
+    	boxShadow: '0px 1px 3px 0px rgba(0, 0, 0, 0.1)',
 	},
 });

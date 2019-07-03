@@ -113,27 +113,23 @@ var EditForm = React.createClass({
 	** 20/06/2019
 	*/
 	checkFieldPermission(props) {
-		const { user } = this.props;
+		const { user, permission } = this.props;
 		if (user.delegated) return props;	// ignore checking
 
-		if (_.includes(_.keys(user.permission), props.path)) {
-			switch(user.permission[props.path]._list) {
-				case 0:
-					// No View
-					return;
-				case 1: 
-					// View Only
-					props.noedit = true;
-					return props;
-				case 2:
-					// Edit
-					return props;
-				default:
-					throw new Error('[Field Permission] Cant handle the invalid permission number');
-			}
-		} else {
-			// still render for no permission set
-			return props;
+		switch(permission[props.path]) {
+			case 0:
+				// No View
+				return;
+			case 1: 
+				// View Only
+				props.noedit = true;
+				return props;
+			case 2:
+				// Edit
+				return props;
+			default:
+				// still render for no permission set
+				return props;
 		}
 	},
 	handleChange ({ path, value }) {

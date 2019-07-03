@@ -1,6 +1,6 @@
 const _ 	= require('lodash');
 
-const preparePermissionQuery = (user, list, nextnode) => {
+const preparePermissionQuery = (user, list, nextnode, req) => {
 	const {
 		identity,
 		delegated,
@@ -31,20 +31,8 @@ const preparePermissionQuery = (user, list, nextnode) => {
 		}
 	} else if (hasIdentityField && identity && ObjectId.isValid(identity)) {
 		// force to query aginst identityBy
-		/*
-		** query extra delegated record
-		** Fung Lee
-		** 03/07/2019
-		*/
 		query = {
-			$or: [
-				{
-					identifiedBy: ObjectId(identity),
-				},
-				{
-					delegated: true,
-				}
-			],
+			identifiedBy: ObjectId(identity),
 		};
 	// prevent not set identity field, then query only empty
 	} else {
@@ -83,7 +71,7 @@ module.exports = initDataPermission = (req, res, next) => {
 	const nextnode = req.keystone;
 	// individual route
 	if (!!req.params.list) {
-		req.permissionQuery = preparePermissionQuery(req.user, req.list, nextnode);
+		req.permissionQuery = preparePermissionQuery(req.user, req.list, nextnode, req);
 	} else {
 		req.permissionQuery = preparePermissionQueries(req.user, nextnode)
 	}
