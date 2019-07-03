@@ -117,7 +117,7 @@ var EditForm = React.createClass({
 		if (user.delegated) return props;	// ignore checking
 
 		if (_.includes(_.keys(user.permission), props.path)) {
-			switch(user.permission[props.path]) {
+			switch(user.permission[props.path]._list) {
 				case 0:
 					// No View
 					return;

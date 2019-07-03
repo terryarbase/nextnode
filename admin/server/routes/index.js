@@ -123,19 +123,19 @@ module.exports = function IndexRoute (req, res, isRender) {
 	};
 
 	if (req.user) {
+		const user = _.omit(req.user._doc, [
+			'_id',
+			'password',
+			'lastLoginAt',
+			'incorrectPassword',
+			'lockedAt',
+			'isAdmin',
+			'delegated',
+			'accountStatus',
+		]);
+		user.permission = _.pick(user.permission, _.keys(keystone.lists));
 		keystoneData.user = {
-			...(
-				_.omit(req.user, [
-					'_id',
-					'password',
-					'lastLoginAt',
-					'incorrectPassword',
-					'lockedAt',
-					'isAdmin',
-					'delegated',
-					'accountStatus',
-				])
-			),
+			...user,
 			id: req.user.id,
 			name: UserList.getDocumentName(req.user) || '(no name)',
 			// organization: req.user.organization,
