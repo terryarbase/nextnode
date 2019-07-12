@@ -168,10 +168,12 @@ Keystone.prototype.prefixModel = function (key) {
 Keystone.prototype.isReservedCollection = function (key, options) {
 	const reservedPaths = [
 		// reserved collection name
-		'role',
+		// 'role',
 		'user',
 		'locale',
 		'systemIdentity',
+		'permission',
+		'permissionListField',
 		'applicationLanguage',
 		'navigationLanguage'
 	];
@@ -208,7 +210,9 @@ Keystone.prototype.reservedCollections = function () {
 	const localization = this.get('localization');
 	return {
 		system: [
-			'Role',
+			// 'PermissionListField',
+			'Permission',
+			// 'Role',
 			'SystemIdentity',
 			'User',
 		],
@@ -247,7 +251,7 @@ Keystone.prototype.mergeNavOptionWithReservedCollections = function () {
 Keystone.prototype.reservedRoleListCollections = function () {
 	return {
 		...{
-			'Role': true,
+			// 'Role': true,
 			'User': true,
 		},
 		...(this.get('localization') ? { 'Locale': true } : {}),
@@ -257,6 +261,35 @@ Keystone.prototype.reservedRoleListCollections = function () {
 		},
 	};
 };
+
+/*
+** Below use for permission
+** Fung Lee
+** 12/07/2019
+*/
+Keystone.prototype.reservedPermissionField = function () {
+	return [
+		'_id',
+		'_list',
+	]
+};
+
+Keystone.prototype.pickFieldPermission = function (permission) {
+	const reservedField = this.reservedPermissionField();
+	if (typeof permission.toObject === 'function') {
+		permissionn = permission.toObject();
+	}
+	return _.pickBy(permission, (p, field) => !_.includes(reservedField, field));
+};
+
+Keystone.prototype.pickListPermission = function (permission) {
+	const lists = _.keys(this.lists);
+	if (typeof permission.toObject === 'function') {
+		permission = permission.toObject();
+	}
+	return _.pick(permission, lists);
+};
+
 /* Attach core functionality to Keystone.prototype */
 
 Keystone.prototype.createItems = require('./lib/core/createItems');
@@ -281,6 +314,8 @@ Keystone.prototype.createKeystoneHash = require('./lib/core/createKeystoneHash')
 ** Terry Chan
 ** 25/11/2018
 */
+Keystone.prototype.createPermission = require('./lib/core/delegation/createPermission');
+Keystone.prototype.createDelegatedAdmin = require('./lib/core/delegation/createDelegatedAdmin');
 Keystone.prototype.createRole = require('./lib/core/delegation/createRole');
 Keystone.prototype.createSystemIdentity = require('./lib/core/delegation/createSystemIdentity');
 Keystone.prototype.createLocalization = require('./lib/core/delegation/createLocalization');

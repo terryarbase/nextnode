@@ -106,6 +106,33 @@ var EditForm = React.createClass({
 		props.i18n = i18n;
 		return props;
 	},
+	/*
+	** check field permission for UI
+	** Fung Lee
+	** 20/06/2019
+	*/
+	checkFieldPermission(props) {
+		const { user, permission } = this.props;
+		console.log('>>> user', user)
+		console.log('>>> permission', permission)
+		if (user.delegated) return props;	// ignore checking
+
+		switch(permission[props.path]) {
+			case 0:
+				// No View
+				return;
+			case 1: 
+				// View Only
+				props.noedit = true;
+				return props;
+			case 2:
+				// Edit
+				return props;
+			default:
+				// still render for no permission set
+				return props;
+		}
+	},
 	handleChange ({ path, value }) {
 		// const { path, value } = e;
 		// console.log(path, value);
@@ -371,6 +398,11 @@ var EditForm = React.createClass({
 				let props = this.getFieldProps(field);
 				const filters = this.props.list.getRelatedFilter(field, props.filters, this.props, this.state);
 				const { path } = field;
+
+				props = this.checkFieldPermission(props);
+				// No permission, no render
+				if (!props) return;
+
 				props = {
 					...props,
 					restrictDelegated: field.restrictDelegated,
