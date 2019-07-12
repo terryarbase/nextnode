@@ -5,7 +5,7 @@ import { css, StyleSheet } from 'aphrodite/no-important';
 import React from 'react';
 import Field from '../Field';
 import Domify from 'react-domify';
-import _cloneDeep from 'lodash/cloneDeep';
+import _map from 'lodash/map';
 
 import { Fields } from 'FieldTypes';
 import { Button, GlyphButton } from '../../../admin/client/App/elemental';
@@ -16,7 +16,7 @@ function generateId () {
 	return i++;
 };
 
-const ItemDom = ({  name, id, onRemove, children, t }) => (
+const ItemDom = ({ name, id, onRemove, children, t }) => (
 	<div style={{
 		borderTop: '2px solid #eee',
 		paddingTop: 15,
@@ -25,10 +25,8 @@ const ItemDom = ({  name, id, onRemove, children, t }) => (
 		
 		{React.Children.map(children, child => {
 			return React.cloneElement(child, {
-
 				name,
 				id,
-				onRemove,
 				t,
 			});
 		})}
@@ -83,45 +81,18 @@ module.exports = Field.create({
 		onChange({ path, value });
 	},
 	renderFieldsForItem (index, value) {
-		return Object.keys(this.props.fields).map((path) => {
+		return _map(Object.keys(this.props.fields), path => {
 			const field = this.props.fields[path];
 			if (typeof Fields[field.type] !== 'function') {
 				return React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path });
 			}
-
-			/* 
-			** getRelatedFilter is support single not nested field
-			** so that, clone the list and set subField data to one-level data
-			** Fung Lee
-			** 13/06/2019
-			*/
-			const list = _cloneDeep(this.props.list);
-			list.fields = this.props.list.fields[this.props.path].fields;
-
-			// cant get child state here, so imitate state from parent props data
-			const state = {
-				values: this.props.values[this.props.path][index],
-			};
-
-			let props = assign({}, field);
-			props.list = list;
-			props.path = field.path;
+			const props = assign({}, field);
 			props.value = value[field.path];
 			props.values = value;
 			props.onChange = this.handleFieldChange.bind(this, index);
 			props.mode = 'edit';
 			props.inputNamePrefix = `${this.props.path}[${index}]`;
 			props.key = field.path;
-
-			const filters = list.getRelatedFilter(field, props.filters, props, state);
-
-			if (filters) {
-				props = {
-					...props,
-					filters,
-				};
-			}
-
 			// TODO ?
 			// if (props.dependsOn) {
 			// 	props.currentDependencies = {};
@@ -130,7 +101,7 @@ module.exports = Field.create({
 			// 	});
 			// }
 			return React.createElement(Fields[field.type], props);
-		}, this);
+		});
 	},
 	renderItems () {
 		const { value = [], path, t } = this.props;
@@ -148,7 +119,6 @@ module.exports = Field.create({
 						</ItemDom>
 					);
 				})}
-
 				<GlyphButton color="success" glyph="plus" position="left" onClick={onAdd}>
 					{t('add')}
 				</GlyphButton>
@@ -175,8 +145,7 @@ module.exports = Field.create({
 const classes = StyleSheet.create({
 	container: {
 		marginTop: '2em',
-		marginLeft: '1em',
-		paddingLeft: '1em',
-		boxShadow: '-2px 0 0 rgba(0, 0, 0, 0.1)',
+		paddingLeft: '2em',
+		boxShadow: '-3px 0 0 rgba(0, 0, 0, 0.1)',
 	},
 });
