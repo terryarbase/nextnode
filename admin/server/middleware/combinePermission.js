@@ -29,18 +29,16 @@ function combineMultiplePermission(nextNode, userPermission) {
     let combineList = [];
     // Format permission to comparator object
     _.forEach(userPermission, singlePermission => {
-        // console.log('>>> singlePermission', singlePermission.permissionKey)
-        permissionKey.push(singlePermission.permissionKey);
-        // console.log('>>> permissionKey', permissionKey)
+        const permission = combineSinglePermission(nextNode, singlePermission);
+        permissionKey.push(permission.key);
 
         // Transform to comparator object
-        const permission = nextNode.pickListPermission(singlePermission);
-        _.forOwn(permission, (field, listPath) => {
-            _.forOwn(field, (p, fieldPath) => {
-                if (fieldPath === '_id') return;
+        _.forOwn(permission.value, (fields, list) => {
+            delete fields._id;
+            _.forOwn(fields, (p, field) => {
                 combineList.push({
-                    list: listPath,
-                    field: fieldPath,
+                    list,
+                    field,
                     permission: p,
                 });
             })
@@ -56,16 +54,16 @@ function combineMultiplePermission(nextNode, userPermission) {
     ))
 
     // Rebuild to original permision object format
-    let combine = {};
+    let combined = {};
     _.forEach(combineList, item => {
-        combine[item.list] = {
-            ...combine[item.list],
+        combined[item.list] = {
+            ...combined[item.list],
             [item.field]: item.permission,
         }
     });
 
     return {
-        value: combine,
+        value: combined,
         key: permissionKey,
     }
 }
