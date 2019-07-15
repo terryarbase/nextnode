@@ -119,14 +119,10 @@ list.prototype.addToSchema = function (schema) {
 list.prototype.getProperties = function (item, separator) {
 	var fields = {};
 	this.fieldsArray.forEach(function (field) {
-		const options = field.getOptions();
-		if (options.hidden) {
-			return;
-		}
-		fields[field.path] = options;
+		fields[field.path] = field.getOptions();
 	});
 	return {
-		fields,
+		fields: fields,
 	};
 };
 
