@@ -27,7 +27,7 @@ function combineSinglePermission(nextNode, userPermission) {
 }
 
 function combineMultiplePermission(nextNode, userPermission) {
-    const permissions = _.map(userPermission, p => singlePermission(nextNode, p));    
+    const permissions = _.map(userPermission, p => combineSinglePermission(nextNode, p));    
     
     const combine = {};
     _.chain(permissions)
