@@ -1,7 +1,13 @@
 # Next-nodecms Changelog
 
+## 1.0.12 
+### Hotfix use system user prefer language setting (frontend)
+### Hotfix Types.KeyText add button display incorrectly
+### Hotfix Types.Relationship filters with colon mapping (e.g. :field)
+
 ## 1.0.11 [Data Permission]
 ### Hotfix for image display in the list with multilingal
+### Hotfix for Number field download format
 ### About Data Permission improvements
 
 List Improvements:

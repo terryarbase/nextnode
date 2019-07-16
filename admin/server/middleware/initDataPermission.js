@@ -1,6 +1,6 @@
 const _ 	= require('lodash');
 
-const preparePermissionQuery = (user, list, nextnode, req) => {
+const preparePermissionQuery = (user, list, nextnode) => {
 	const {
 		identity,
 		delegated,
@@ -71,7 +71,7 @@ module.exports = initDataPermission = (req, res, next) => {
 	const nextnode = req.keystone;
 	// individual route
 	if (!!req.params.list) {
-		req.permissionQuery = preparePermissionQuery(req.user, req.list, nextnode, req);
+		req.permissionQuery = preparePermissionQuery(req.user, req.list, nextnode);
 	} else {
 		req.permissionQuery = preparePermissionQueries(req.user, nextnode)
 	}

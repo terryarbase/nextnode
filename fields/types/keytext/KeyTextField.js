@@ -136,7 +136,7 @@ module.exports = Field.create({
 						name={this.getInputName(this.props.path)} />
 				}
 				{
-					((max && values.length < max) || !max && !isCore)
+					((max && values.length < max) || !max && !isCore || !noeditkey)
 					&& <Button ref="button" onClick={this.addItem}>{t('addItem')}</Button>
 				}
 				{

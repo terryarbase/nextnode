@@ -7,6 +7,7 @@ import React from 'react';
 import { Container } from './elemental';
 import { Link } from 'react-router';
 import { css } from 'glamor';
+import { connect } from 'react-redux';
 
 import MobileNavigation from './components/Navigation/Mobile';
 import AdminMenuNav from './components/Navigation/AdminMenu/AdminMenuNav';
@@ -93,6 +94,9 @@ const App = (props) => {
 						user={Keystone.user}
 						style={nav}
 						showNav={isShowNav}
+						currentUILanguage={props.currentUILanguage}
+						isLocale={props.isLocale}
+						{...props}
 					/>
 					{/* If a section is open currently, show the secondary nav */}
 					{/* {(currentSection) ? (
@@ -108,6 +112,7 @@ const App = (props) => {
 					{React.Children.map(children, child => {
 						return React.cloneElement(child, {
 							user: Keystone.user,
+							permission: Keystone.permission,
 						});
 					})}
 				</main>
@@ -124,4 +129,14 @@ const App = (props) => {
 	);
 };
 
-module.exports = App;
+module.exports = connect(state => {
+	const { lists } = state;
+	var isLocale = false;
+	if (lists.currentList) {
+		isLocale = !!lists.currentList.multilingual;
+	}
+	return {
+		currentUILanguage: state.lists.locale.currentUILang,
+		isLocale,
+	};
+})(App);

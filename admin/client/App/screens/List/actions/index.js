@@ -74,6 +74,7 @@ import {
 import {
 	realtimeSave,
 	setCurrentLanguage,
+	setCurrentUILanguage,
 } from './list';
 
 export {
@@ -98,4 +99,5 @@ export {
 	downloadItems,
 	realtimeSave,
 	setCurrentLanguage,
+	setCurrentUILanguage,
 };

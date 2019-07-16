@@ -1,4 +1,4 @@
-Next-NodeCMS Beta 1.0.11
+Next-NodeCMS Beta 1.0.14
 ===================================
 
 [![Build Status](https://travis-ci.org/keystonejs/keystone.svg?branch=master)](https://travis-ci.org/keystonejs/keystone)
@@ -12,8 +12,20 @@ Next-NodeCMS Beta 1.0.11
 ------------------------------------------------------------------------------------------------
 # Next-nodecms Changelog
 
+## 1.0.14
+### Hotfix Localization AdminUI use System User's language by default
+### Hotfix Localization image bugs (base64image)
+### Hotfix System User's Identity delegation restriction
+
+## 1.0.13
+## 1.0.12 
+### Hotfix use system user prefer language setting (frontend)
+### Hotfix Types.KeyText add button display incorrectly
+### Hotfix Types.Relationship filters with colon mapping (e.g. :field)
+
 ## 1.0.11 [Data Permission]
 ### Hotfix for image display in the list with multilingal
+### Hotfix for Number field download format
 ### About Data Permission improvements
 
 List Improvements:

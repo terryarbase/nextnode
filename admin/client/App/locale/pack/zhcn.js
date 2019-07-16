@@ -183,6 +183,7 @@ const locales = {
          upload: '上传文件',
          createANew:'新增一个新的{{listName}}',
          create:'新增',
+         downloadqrCode: '下载二维码',
          select: '请选择...',
          relationship: '关联连结',
          selectWithListname: '请选择{{listName}}...',

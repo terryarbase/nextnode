@@ -114,6 +114,13 @@ module.exports = async function (req, res, next, nextNode) {
 	frontendCookie = (localization[frontendCookie] && localization[frontendCookie].value) 
 		|| localization[defaultLanguage].value;
 
+
+	/*
+	** Use system user prefer language first
+	** Terry Chan
+	** 11/06/2019
+	*/
+	const preferLanguage = req.user && req.user.language;
 	req.locales = {
 		// localization language set
 		localization,
@@ -122,7 +129,7 @@ module.exports = async function (req, res, next, nextNode) {
 		// adminUI current data language, serve the any requested lang first before cookie lang
 		langd: req.headers.langd || req.query.langd || req.body.langd || dataCookie,
 		// adminUI current layout language
-		langf: frontendCookie,
+		langf: preferLanguage,
 	};
 	// }
 
@@ -132,6 +139,15 @@ module.exports = async function (req, res, next, nextNode) {
 	nextNode.set('langf', req.locales.langf);
 	nextNode.set('langd', req.locales.langd);
 	nextNode.set('language pack', req.locales.localization);
+
+	/*
+	** update the user prefer language if it is being changed
+	** 11/06/2019
+	*/
+	// if (preferLanguage !== req.locales.langf) {
+	// 	req.user.set('language', req.locales.langf);
+	// 	req.user.save();
+	// }
 	// console.log(req.menu, req.appLanguage);
 	if (next) next();
 };

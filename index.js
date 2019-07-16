@@ -168,10 +168,12 @@ Keystone.prototype.prefixModel = function (key) {
 Keystone.prototype.isReservedCollection = function (key, options) {
 	const reservedPaths = [
 		// reserved collection name
-		'role',
+		// 'role',
 		'user',
 		'locale',
 		'systemIdentity',
+		'permission',
+		'permissionListField',
 		'applicationLanguage',
 		'navigationLanguage'
 	];
@@ -259,6 +261,35 @@ Keystone.prototype.reservedRoleListCollections = function () {
 		},
 	};
 };
+
+/*
+** Below use for permission
+** Fung Lee
+** 12/07/2019
+*/
+Keystone.prototype.reservedPermissionField = function () {
+	return [
+		'_id',
+		'_list',
+	]
+};
+
+Keystone.prototype.pickFieldPermission = function (permission) {
+	const reservedField = this.reservedPermissionField();
+	if (typeof permission.toObject === 'function') {
+		permissionn = permission.toObject();
+	}
+	return _.pickBy(permission, (p, field) => !_.includes(reservedField, field));
+};
+
+Keystone.prototype.pickListPermission = function (permission) {
+	const lists = _.keys(this.lists);
+	if (typeof permission.toObject === 'function') {
+		permission = permission.toObject();
+	}
+	return _.pick(permission, lists);
+};
+
 /* Attach core functionality to Keystone.prototype */
 
 Keystone.prototype.createItems = require('./lib/core/createItems');

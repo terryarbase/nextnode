@@ -114,6 +114,7 @@ var EditForm = React.createClass({
 	*/
 	checkFieldPermission(props) {
 		const { user, permission } = this.props;
+
 		if (user.delegated) return props;	// ignore checking
 
 		switch(permission[props.path]) {
@@ -337,6 +338,37 @@ var EditForm = React.createClass({
 	// 	}
 	// 	return altContent || content;
 	// },
+	// getRelatedFilter(field, initFilters={}) {
+	// 	const { isLocale, currentLang, t, i18n, list } = this.props;
+	// 	let { values } = this.state;
+	// 	// let mapping = null;
+	// 	if (field.filters) {
+	// 		let { filters={} } = field;
+	// 		filters = {
+	// 			...filters,
+	// 			...initFilters,
+	// 		};
+	// 		let targetField = null;
+	// 		return _.chain(filters).reduce((accum, value, field) => {
+	// 			// while the filter value is mapping field being with colun
+	// 			if (/^:/i.test(value)) {
+	// 				targetField = value.replace(/^:/, '');
+	// 				return {
+	// 					...accum,
+	// 					[field]: list.getProperlyValue({
+	// 						field: list.fields[targetField],
+	// 						isLocale,
+	// 						currentLang,
+	// 						values,
+	// 					}),
+	// 				};
+	// 			}
+	// 			return accum;
+	// 		}, filters).value();
+	// 	}
+	// 	return null;
+	// 	// this.props.list.getProperlyValue({ field, isLocale, currentLang, values });
+	// },
 	renderFormElements () {
 		var headings = 0;
 		const { currentLang, t, list: { key: listKey }, i18next } = this.props;
@@ -363,13 +395,15 @@ var EditForm = React.createClass({
 				elements = [ ...elements, React.createElement(FormHeading, el) ];
 			} else if (el.type === 'field') {
 				let field = this.props.list.fields[el.field];
+				
 				let props = this.getFieldProps(field);
+				const filters = this.props.list.getRelatedFilter(field, props.filters, this.props, this.state);
 				const { path } = field;
 
 				props = this.checkFieldPermission(props);
 				// No permission, no render
 				if (!props) return;
-				
+
 				props = {
 					...props,
 					restrictDelegated: field.restrictDelegated,
@@ -380,6 +414,13 @@ var EditForm = React.createClass({
 						altContent: props.label,
 					}),
 				};
+
+				if (filters) {
+					props = {
+						...props,
+						filters,
+					};
+				}
 
 				if (props.note) {
 					props = {

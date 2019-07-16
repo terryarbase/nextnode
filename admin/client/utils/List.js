@@ -6,6 +6,7 @@
 const listToArray = require('list-to-array');
 const qs = require('qs');
 const xhr = require('xhr');
+const _ = require('lodash');
 const assign = require('object-assign');
 // Filters for truthy elements in an array
 const truthy = (i) => i;
@@ -127,7 +128,7 @@ const List = function (options) {
 ** Terry Chan
 ** 12/11/2018
 */
-List.prototype.getProperlyValue = function({ field, values, isLocale, currentLang }) {
+const getValueFrom = function({ field, values, isLocale, currentLang }) {
 	// console.log(field.path, values);
 	var current = values[field.path];
 	// prevent set multilingual from true to false
@@ -142,6 +143,43 @@ List.prototype.getProperlyValue = function({ field, values, isLocale, currentLan
 	}
 	return current;
 };
+List.prototype.getProperlyValue = getValueFrom;
+/*
+** Format the filters option for the field with self colun mapping for the self value
+** e.g. :_id
+** Terry Chan
+** 11/06/2019
+*/
+List.prototype.getRelatedFilter = (field, initFilters={}, props, state) => {
+	const { isLocale, currentLang, t, i18n, list } = props;
+	let { values } = state;
+	// let mapping = null;
+	if (field.filters) {
+		let { filters={} } = field;
+		filters = {
+			...filters,
+			...initFilters,
+		};
+		let targetField = null;
+		return _.chain(filters).reduce((accum, value, field) => {
+			// while the filter value is mapping field being with colun
+			if (/^:/i.test(value)) {
+				targetField = value.replace(/^:/, '');
+				return {
+					...accum,
+					[field]: getValueFrom({
+						field: list.fields[targetField],
+						isLocale,
+						currentLang,
+						values,
+					}),
+				};
+			}
+			return accum;
+		}, filters).value();
+	}
+	return null;
+}
 List.prototype.getProperlyChangedValue = function({ currentValue, path, value, isLocale, currentLang }) {
 	const fields = this.fields;
 	var values = { ...currentValue };
@@ -181,19 +219,24 @@ List.prototype.getFormCreateData = function({ isLocale, formData, values }) {
 			const key = pair[0];
 			// console.log(key, typeof values[key]);
 			if (values[key] && isLocale && fields[key].multilingual) {
+				
 				// formData.set(key, );
 				if (typeof values[key] === 'object') {
-					const keys = Object.keys(values[key]);
+					const keys = _.keys(values[key]);
 					if (keys.length) {
 						formData.set(key, JSON.stringify(values[key]));
 					}
 				}
+				
 
 			} else if (Array.isArray(values[key])) {
+				
 				formData.delete(key);
 				formData.set(key, JSON.stringify(values[key]));
+				
 			} else if (typeof values[key] === 'object') {
-				const keys = Object.keys(values[key]);
+				// console.log('> 3', values[key], key);
+				const keys = _.keys(values[key]);
 				if (keys.length) {
 					// delete orginal formdata attr
 					formData.delete(key);

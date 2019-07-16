@@ -10,7 +10,8 @@ import { Fields } from 'FieldTypes';
 import xhr from 'xhr';
 import { Button, Form, Modal } from '../../elemental';
 import { translate } from "react-i18next";
-import { setUILanguage, getUILanguage } from '../../../utils/cookie'
+import { setUILanguage, getUILanguage } from '../../../utils/cookie';
+
 const schema = 'User';
 
 var Setting = React.createClass({
@@ -31,12 +32,36 @@ var Setting = React.createClass({
 	},
 	handleOnClick (lang) {
 		const { i18n } = this.props;
-		i18n.changeLanguage(lang);
-		setUILanguage(lang);
-		this.closeModal();
+		const formData = new FormData();
+		formData.append('language', lang);
+		// list.postIt(`/api/users/updateMyProfile`, formData, (err, data) => {
+		// 	if (err || (data && data.error)) {
+		// 		alert(body.error ? body : err);
+		// 	} else {
+		// 		i18n.changeLanguage(lang);
+		// 		this.closeModal();
+		// 	}
+		// });
+		// console.log(Keystone.localization, lang);
+		xhr({
+			url: `${Keystone.adminPath}/api/users/updateMyProfile?ts=${Math.random()}`,
+			method: 'post',
+			responseType: 'json',
+			body: formData,
+			headers: assign({}, Keystone.csrf.header),
+		}, (err, resp, body) => {
+			if (err || body && body.error) {
+				alert(body.error ? body : err);
+			} else {
+				// i18n.changeLanguage(lang);
+				this.props.setCurrentUILanguage(lang);
+				this.closeModal();
+			}
+			
+		});
 	},
 	renderButton () {
-		const currentUILanguage = getUILanguage();
+		const currentUILanguage = this.props.currentUILanguage;
 		return Object.entries(Keystone.localization).map((lang, index) => {
 			return (
 				<div key={lang[0]} style={{marginBottom: `5px`}}>

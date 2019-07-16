@@ -123,7 +123,7 @@ module.exports = function IndexRoute (req, res, isRender) {
 	};
 
 	if (req.user) {
-		const user = _.omit(req.user._doc, [
+		const user = _.omit(req.user.toObject(), [
 			'_id',
 			'password',
 			'lastLoginAt',
@@ -131,18 +131,38 @@ module.exports = function IndexRoute (req, res, isRender) {
 			'lockedAt',
 			'isAdmin',
 			'delegated',
+			'permission',
 			'accountStatus',
 		]);
-		user.permission = _.pick(user.permission, _.keys(keystone.lists));
 		keystoneData.user = {
 			...user,
 			id: req.user.id,
 			name: UserList.getDocumentName(req.user) || '(no name)',
 			// organization: req.user.organization,
 		};
-		if (req.permission) {
-			keystoneData.permissionKey = req.permission.permissionKey;
-		}
+		keystoneData.permission = req.permission;
+		keystoneData.permissionKey = req.permissionKey;
+
+		// keystoneData.user = {
+		// 	...(
+		// 		_.omit(req.user, [
+		// 			'_id',
+		// 			'password',
+		// 			'lastLoginAt',
+		// 			'incorrectPassword',
+		// 			'lockedAt',
+		// 			'isAdmin',
+		// 			'delegated',
+		// 			'accountStatus',
+		// 		])
+		// 	),
+		// 	id: req.user.id,
+		// 	name: UserList.getDocumentName(req.user) || '(no name)',
+		// 	// organization: req.user.organization,
+		// };
+		// if (req.permission) {
+		// 	keystoneData.permissionKey = req.permission.permissionKey;
+		// }
 	};
 	/*
 	** Localization

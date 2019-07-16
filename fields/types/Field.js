@@ -6,9 +6,12 @@ import React from 'react';
 import _forEach from 'lodash/forEach';
 import _concat from 'lodash/concat';
 import { findDOMNode } from 'react-dom';
+import QRCode from 'qrcode.react';
 import { FormField, FormInput, FormNote } from '../../admin/client/App/elemental';
 import blacklist from 'blacklist';
 import CollapsedFieldLabel from '../components/CollapsedFieldLabel';
+
+const Button = require('elemental').Button;
 
 function isObject (arg) {
 	return Object.prototype.toString.call(arg) === '[object Object]';
@@ -95,6 +98,19 @@ var Base = module.exports.Base = {
 			}} />
 		);
 	},
+	downloadQrCode() {
+		// use hook to solve the lib no ref problem
+		const canvas = document.getElementById(`${this.props.path}-qrcode`);
+		console.log(canvas);
+		if (canvas) {
+			const anchorEl = document.createElement('a');
+            anchorEl.href = canvas.toDataURL();
+            anchorEl.download = `${this.props.value}.png`;
+            document.body.appendChild(anchorEl); // required for firefox
+            anchorEl.click();
+            anchorEl.remove();
+		}
+	},
 	/*
 	** Render individual image block 
 	** Terry Chan@11/09/2018
@@ -115,9 +131,9 @@ var Base = module.exports.Base = {
 		);
 	},
 	renderBaseImages () {
-		var { value, base64Delimiter } = this.props;
+		let { value, base64Delimiter } = this.props;
 		const self = this;
-		var images = [];
+		let images = [];
 		if (value) {
 			if (base64Delimiter) {
 				value = value.split(base64Delimiter);
@@ -132,12 +148,48 @@ var Base = module.exports.Base = {
 		}
 		return images;
 	},
+	renderQRCodeImages() {
+		const { value, t } = this.props;
+		if (!value) return (<div />);
+		return (
+			<div>
+				<div><QRCode
+					value={value}
+					id={`${this.props.path}-qrcode`}
+				/></div>
+				{
+					this.props.download && <Button ref="button" onClick={this.downloadQrCode}>
+						{t('downloadqrCode')}
+					</Button>
+				}
+				{
+					this.props.copy && <FormNote html={value} />
+				}
+				{
+					this.props.copy && <CopyToClipboard text={value}
+			        onCopy={() => alert(t('message:copySuccess'))}>
+			        <span className={
+			        	css({
+			        		float: 'right',
+			        		margin: '5px',
+			        		fontWeight: 'bolder',
+			        		cursor: 'pointer',
+			        		color: '#666',
+			        	})
+			        }>{t('copy', { target: this.props.label })}</span>
+			    </CopyToClipboard>
+				}
+			</div>
+		);
+	},
 	renderValue () {
 		/*
 		** Will override the original Field type and special handle for base64Image value
 		** Terry Chan@11/09/2018
 		*/
-		if (this.props.base64Image) {
+		if (this.props.qrcodeImage) {
+			return this.renderQRCodeImages();
+		} else if (this.props.base64Image) {
 			return this.renderBaseImages();
 		}
 		if (this.props.copy) {

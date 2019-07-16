@@ -66,7 +66,6 @@ var Setting = React.createClass({
 			body: formData,
 			headers: assign({}, Keystone.csrf.header),
 		}, (err, resp, body) => {
-			console.log(err, resp, body);
 			if (err || body && body.error) {
 				this.displayMsg({
 					error: body.error ? body : err,

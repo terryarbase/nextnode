@@ -42,3 +42,5 @@ export const REALTIME_SAVED = 'app/List/REALTIME_SAVED';
 export const REALTIME_SAVE_ERROR = 'app/List/REALTIME_SAVE_ERROR';
 // Localiation
 export const SET_LOCALIZATION = 'app/List/SET_LOCALIZATION';
+export const SET_UILOCALIZATION = 'app/List/SET_UILOCALIZATION';
+
