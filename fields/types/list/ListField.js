@@ -5,7 +5,7 @@ import { css, StyleSheet } from 'aphrodite/no-important';
 import React from 'react';
 import Field from '../Field';
 import Domify from 'react-domify';
-import _cloneDeep from 'lodash/cloneDeep';
+import _ from 'lodash';
 
 import { Fields } from 'FieldTypes';
 import { Button, GlyphButton } from '../../../admin/client/App/elemental';
@@ -83,7 +83,7 @@ module.exports = Field.create({
 		onChange({ path, value });
 	},
 	renderFieldsForItem (index, value) {
-		return _map(Object.keys(this.props.fields), path => {
+		return _.map(_.keys(this.props.fields), path => {
 			const field = this.props.fields[path];
 			if (typeof Fields[field.type] !== 'function') {
 				return React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path });
@@ -95,7 +95,7 @@ module.exports = Field.create({
 			** Fung Lee
 			** 13/06/2019
 			*/
-			const list = _cloneDeep(this.props.list);
+			const list = _.cloneDeep(this.props.list);
 			list.fields = this.props.list.fields[this.props.path].fields;
 
 			// cant get child state here, so imitate state from parent props data

@@ -95,6 +95,7 @@ var EditForm = React.createClass({
 				props.isValid = false;
 			}
 		}
+		props.list = this.props.list;
 		props.value = this.props.list.getProperlyValue({ field, isLocale, currentLang, values });
 		props.values = values;
 		props.currentLang = currentLang;
