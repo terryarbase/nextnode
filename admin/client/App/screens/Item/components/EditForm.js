@@ -95,6 +95,7 @@ var EditForm = React.createClass({
 				props.isValid = false;
 			}
 		}
+		props.list = this.props.list;
 		props.value = this.props.list.getProperlyValue({ field, isLocale, currentLang, values });
 		props.values = values;
 		props.currentLang = currentLang;
@@ -113,8 +114,6 @@ var EditForm = React.createClass({
 	*/
 	checkFieldPermission(props) {
 		const { user, permission } = this.props;
-		console.log('>>> user', user)
-		console.log('>>> permission', permission)
 		if (user.delegated) return props;	// ignore checking
 
 		switch(permission[props.path]) {
