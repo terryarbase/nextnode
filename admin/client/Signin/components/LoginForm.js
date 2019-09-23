@@ -22,6 +22,7 @@ const LoginForm = ({
 						name="email"
 						onChange={handleInputChange}
 						value={email}
+						autoComplete={'off'}
 					/>
 				</FormField>
 				<FormField label="Password" htmlFor="password">
@@ -30,6 +31,7 @@ const LoginForm = ({
 						name="password"
 						onChange={handleInputChange}
 						value={password}
+						autoComplete={'off'}
 					/>
 				</FormField>
 				<Button disabled={isAnimating} color="primary" type="submit">

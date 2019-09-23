@@ -1,4 +1,4 @@
-Next-NodeCMS Beta 1.0.14
+Next-NodeCMS Beta 1.0.22
 ===================================
 
 [![Build Status](https://travis-ci.org/keystonejs/keystone.svg?branch=master)](https://travis-ci.org/keystonejs/keystone)
@@ -10,7 +10,23 @@ Next-NodeCMS Beta 1.0.14
  - [License](#license)
 
 ------------------------------------------------------------------------------------------------
-# Next-nodecms Changelog
+# Next-NodeCMS Changelog
+## 1.0.22
+## 1.0.21
+## 1.0.20
+## 1.0.19
+## 1.0.18
+## 1.0.17
+## 1.0.16
+## 1.0.15
+### Hotfix remove multiple Role selection for the delegated system users
+### Migrate to Mongoose ^5.6.11
+
+List Enhancements:
+* Added Model List Model
+* Added Model List Item Model
+* Added NextNode Data Types List Options
+* Removed LocalFile, LocalFiles and S3File types
 
 ## 1.0.14
 ### Hotfix Localization AdminUI use System User's language by default

@@ -48,7 +48,7 @@ const AdminMenuNavItem = React.createClass({
 					to={to}
 					// Block clicks on active link
 					onClick={(evt) => { 
-						if (active) evt.preventDefault(); 
+						// if (active) evt.preventDefault(); 
 						if (onClick) onClick();
 					}}
 				>

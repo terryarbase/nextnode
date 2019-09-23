@@ -57,7 +57,7 @@
 .ItemList {
 	line-height: 1;
 	margin-bottom: 60px;
-	table-layout: fixed;
+	table-layout: initial;
 	width: 100%;
 }
 
@@ -219,6 +219,12 @@ button{
 // in most cases the first character of the name col is uppercase, so
 // the icon appears to be too low due the absence of a decender in the row name
 // (they are in fact aligned middle correctly)
+
+.ItemList__value {
+	text-overflow: initial;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
 
 .ItemList__value--name,
 .ItemList__value--id {
