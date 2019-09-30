@@ -180,9 +180,9 @@ password.prototype.validateInput = function (data, callback) {
 	utils.defer(callback, validation.result, validation.detail);
 };
 
-var validate = password.validate = function (pass, confirm, min, max, complexity, rejectCommon) {
+var validate = password.validate = function (password, confirm, min, max, complexity, rejectCommon) {
 	var messages = [];
-
+	const pass = String(password);
 	if (confirm !== undefined
 		&& pass !== confirm) {
 		messages.push('Passwords must match.');

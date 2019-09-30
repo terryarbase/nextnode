@@ -312,7 +312,7 @@ Keystone.prototype.createKeystoneHash = require('./lib/core/createKeystoneHash')
 /*
 ** Prepare all of delegated schemas and all of the initial entries
 ** Terry Chan
-** 25/11/2018
+** 23/09/2019
 */
 Keystone.prototype.createPermission = require('./lib/core/delegation/createPermission');
 Keystone.prototype.createDelegatedAdmin = require('./lib/core/delegation/createDelegatedAdmin');
@@ -323,6 +323,11 @@ Keystone.prototype.createAccount = require('./lib/core/delegation/createAccount'
 Keystone.prototype.delegatedLanguageSection = require('./lib/core/delegation/createLanguageSection');
 Keystone.prototype.delegatedNavLanguageSection = require('./lib/core/delegation/createNavLanguageSection');
 Keystone.prototype.createCountry = require('./lib/core/delegation/createCountry');
+
+Keystone.prototype.createModelListItem = require('./lib/core/delegation/modelList/createModelListItem');
+Keystone.prototype.createModelList = require('./lib/core/delegation/modelList/createModelList');
+
+Keystone.prototype.addToDelegationModelList = require('./lib/core/data/addToDelegationModelList');
 
 // Keystone.prototype.hooks = function() {};
 // hooks.prototype.localization = require('./lib/core/hook/localization');
@@ -354,11 +359,10 @@ keystone.Email = require('./lib/email');
 keystone.Field = require('./fields/types/Type');
 keystone.Field.Types = require('./lib/fieldTypes');
 keystone.Keystone = Keystone;
+keystone.Options = require('./lib/options')(keystone);
 keystone.List = require('./lib/list')(keystone);
 keystone.Storage = require('./lib/storage');
 keystone.View = require('./lib/view');
-// Type.Select options
-keystone.Options = {};
 
 // Customized Plugins
 keystone.Plugins = {

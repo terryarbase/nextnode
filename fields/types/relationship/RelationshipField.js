@@ -231,22 +231,25 @@ module.exports = Field.create({
 
 	valueChanged (item) {
 		let value = null;
-		if (this.props.many) {
-			if (item) {
-				value = _.map(item, i => i.value).join(',');
-			}
-		} else if (item) {
-			value = item.value
-		}
-		this.props.onChange({
-			path: this.props.path,
-			value,
-		});
+        let label = [];
+        if (this.props.many) {
+                if (item) {
+                        value = _.map(item, i => i.value).join(',');
+                        label = _.map(item, i => i.name);
+                }
+        } else if (item) {
+                value = item.value;
+                label = [ item.name ];
+        }
+        this.props.onChange({
+            path: this.props.path,
+            value,
+            label,
+        });
 
-		this.setState({
-			value: item,
-		});
-		
+        this.setState({
+                value: item,
+        });
 	},
 
 	openCreate () {

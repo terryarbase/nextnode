@@ -25,7 +25,7 @@ const Brand = function (props) {
 				<a href="/" className="auth-box__brand__logo">
 					<img
 						src={logo.src}
-						width={logo.width ? logo.width : null}
+						width={logo.width ? logo.width : '100px'}
 						height={logo.height ? logo.height : null}
 						alt={props.brand}
 					/>

@@ -39,7 +39,7 @@ function signin (req, res) {
 						session.updateWrongCount(User, user, 1,
 						function (result) {
 							const code = 401;
-							const message = { error: 'The email and password you entered are not valid.' };
+							const message = { error: 'The password you entered is not valid.' };
 							if (err) {
 								code = 500;
 								message = { error: 'Bcrypt error', detail: err };
@@ -52,7 +52,7 @@ function signin (req, res) {
 		} else if (err) {
 			return res.status(500).json({ error: 'Database error', detail: err });
 		} else {
-			return res.status(401).json({ error: 'The email and password you entered are not valid.' });
+			return res.status(401).json({ error: 'The email you entered is not valid.' });
 		}
 	});
 }

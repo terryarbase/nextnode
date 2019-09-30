@@ -49,7 +49,7 @@ module.exports = Field.create({
 						autoComplete="off"
 						name={this.getInputName(path + '[1]')}
 						onChange={this.handleLat}
-						placeholder=t('latitude')
+						placeholder={t('latitude')}
 						ref="lat"
 						value={value[1]}
 					/>
@@ -59,7 +59,7 @@ module.exports = Field.create({
 						autoComplete="off"
 						name={this.getInputName(path + '[0]')}
 						onChange={this.handleLong}
-						placeholder=t('longitude')
+						placeholder={t('longitude')}
 						ref="lng"
 						value={value[0]}
 					/>

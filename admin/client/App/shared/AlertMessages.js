@@ -59,7 +59,6 @@ var AlertMessages = React.createClass({
 			);
 			const languageVerionPrefix =  localization && localization[lang] ? `${localization[lang].label} ` : '';
 			if (kind) type = kind;
-			console.log(t('required'));
 			if (errorCount > 1) {
 				return (
 					<li key={path}>
