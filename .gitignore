@@ -19,6 +19,7 @@ npm-debug.log
 pids
 results
 coverage
+build/*
 coverage.html
 .cover*
 admin/bundles*
