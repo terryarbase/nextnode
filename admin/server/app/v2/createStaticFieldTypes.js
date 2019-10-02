@@ -32,7 +32,7 @@ function createStaticFieldTypes(keystone) {
 			stream: buildFieldTypesStream(keystone.fieldTypes),
 			expose: 'FieldTypes',
 			file: 'FieldTypes.js',
-			location: './../../../../build/static/addon',
+			location: './../../../build/static/plugins',
 			writeToDisk: writeToDisk,
 		}),
 	};
