@@ -56,7 +56,7 @@ module.exports = function (opts) {
 	}
 
 	function writeBundle (buff) {
-		console.log('> AdminUI Bundle: ', outputFilename);
+		console.log('\x1b[32m%s\x1b[0m', `> AdminUI Other Bundle: ${outputFilename}.`);
 		if (devWriteBundles || writeToDisk) {
 			fs.outputFile(outputFilename, buff, 'utf8', function (err) {
 				if (err) {
