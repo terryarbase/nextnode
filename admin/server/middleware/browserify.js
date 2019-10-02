@@ -31,6 +31,7 @@ module.exports = function (opts) {
 	var expose = opts.expose;
 	var file = opts.file;
 	var hash = opts.hash;
+	var location = opts.location;
 	var writeToDisk = opts.writeToDisk;
 
 	var b;
@@ -41,7 +42,14 @@ module.exports = function (opts) {
 
 	var logName = file.replace(/^\.\/|\..\//, '');
 	var fileName = opts.out || logName;
-	var outputFilename =  path.resolve(path.join(__dirname, '../../bundles/js', hash + '-' + fileName));
+	var bundlePath = '../../bundles/js';
+	if (location) {
+		bundlePath = location;
+	}
+	if (hash) {
+		fileName = hash + '-' + fileName;
+	}
+	var outputFilename =  path.resolve(path.join(__dirname, bundlePath, fileName));
 	function updateBundle (newSrc) {
 		src = newSrc;
 		etag = crypto.createHash('md5').update(src).digest('hex').slice(0, 6);

@@ -1,4 +1,4 @@
-Next-NodeCMS Beta 1.0.22
+Next-NodeCMS Beta 1.0.23
 ===================================
 
 [![Build Status](https://travis-ci.org/keystonejs/keystone.svg?branch=master)](https://travis-ci.org/keystonejs/keystone)
@@ -11,6 +11,11 @@ Next-NodeCMS Beta 1.0.22
 
 ------------------------------------------------------------------------------------------------
 # Next-NodeCMS Changelog
+
+## 1.0.23
+### Start new AdminUI migration (React-Material-Admin) (In progress to Next-NodeCMS V2)
+### Migrate to React.js up to v16
+
 ## 1.0.22
 ## 1.0.21
 ## 1.0.20
@@ -20,6 +25,7 @@ Next-NodeCMS Beta 1.0.22
 ## 1.0.16
 ## 1.0.15
 ### Hotfix remove multiple Role selection for the delegated system users
+### Hotfix Types.Code validation bugs
 ### Migrate to Mongoose ^5.6.11
 
 List Enhancements:
@@ -27,6 +33,10 @@ List Enhancements:
 * Added Model List Item Model
 * Added NextNode Data Types List Options
 * Removed LocalFile, LocalFiles and S3File types
+
+List Improvements:  
+* Added download feature for Types.Code
+* Fixed Types.Code code normalization
 
 ## 1.0.14
 ### Hotfix Localization AdminUI use System User's language by default

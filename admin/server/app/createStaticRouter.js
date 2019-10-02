@@ -178,7 +178,7 @@ module.exports = function createStaticRouter (keystone) {
 		router.get('/js/sw.js', (req, res) => {
 			res.type('text/javascript');
 			const swContent = fs.readFileSync(serviceWorker, 'utf8');
-			console.log(swContent);
+			// console.log(swContent);
 			res.send(swContent);
 		});
 	}

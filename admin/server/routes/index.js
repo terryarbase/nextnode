@@ -1,9 +1,10 @@
-var _ = require('lodash');
-var ejs = require('ejs');
-var path = require('path');
+const _ 			= require('lodash');
+const ejs 			= require('ejs');
+const fs 			= require('fs');
+const path 			= require('path');
+const glob 			= require('glob');
 
 var templatePath = path.resolve(__dirname, '../templates/index.html');
-
 function renderFile (req, res, keystone, locals) {
 	ejs.renderFile(templatePath, locals, { delimiter: '%' }, function (err, str) {
 		res.setHeader("x-ua-compatible", "ie=edge");
@@ -16,6 +17,20 @@ function renderFile (req, res, keystone, locals) {
 		}
 		res.send(str);
 	});
+}
+const readBundleFiles = () => {
+	const bundlesPath = path.resolve(__dirname, '../../../build/static/js');
+	if (!fs.existsSync(bundlesPath)){
+        return;
+    }
+    return _.map(glob.sync(bundlesPath + '/**/*.js') || [], file => path.basename(file));
+}
+const readBundleCSS = () => {
+	const bundlesPath = path.resolve(__dirname, '../../../build/static/css');
+	if (!fs.existsSync(bundlesPath)){
+        return;
+    }
+    return _.map(glob.sync(bundlesPath + '/**/*.css') || [], file => path.basename(file));
 }
 
 module.exports = function IndexRoute (req, res, isRender) {
@@ -118,6 +133,13 @@ module.exports = function IndexRoute (req, res, isRender) {
 			property: keystone.get('ga property'),
 			domain: keystone.get('ga domain'),
 		},
+		/*
+		** Dynamic Read the target bundle folder for all of bundle js filename
+		** Terry Chan
+		** 02/10/2019
+		*/
+		bundleFiles: readBundleFiles(),
+		bundleCSS: readBundleCSS(),
 		keystone: keystoneData,
 		title: keystone.get('name') || 'NextNode',
 	};
