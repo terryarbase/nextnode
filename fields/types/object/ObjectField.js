@@ -57,6 +57,7 @@ module.exports = Field.create({
 			props.values.delegated = !!this.props.values.delegated;
 			props.onChange = this.handleFieldChange;
 			props.mode = 'edit';
+			props.currentLang = this.props.currentLang;
 			props.inputNamePrefix = `${this.props.path}`;
 			props.key = field.path;
 
