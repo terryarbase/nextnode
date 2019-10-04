@@ -314,8 +314,14 @@ var EditForm = React.createClass({
 				React.createElement(Fields[nameField.type], nameFieldProps)
 			);
 		} else {
+			// Support Type.Name with empty value
+			let name = this.props.data.name;
+			if (typeof name === 'object') {
+				name = _.compact([name.first, name.last]).join(' ')
+			}
+
 			return wrapNameField(
-				<h2>{this.props.data.name || `(${t('noNameLabel')})`}</h2>
+				<h2>{name || `(${t('noNameLabel')})`}</h2>
 			);
 		}
 	},
