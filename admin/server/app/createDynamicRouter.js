@@ -38,6 +38,16 @@ module.exports = function createDynamicRouter (keystone) {
 	router.use('/api', require('../middleware/apiError'));
 	router.use('/api', require('../middleware/logError'));
 
+	// #0 rbac middleware
+	var checkPermission = require('../middleware/checkPermission');
+	/*
+	** [V2 Enhancement]
+	** Get the static locals config using rest api
+	** Terry Chan
+	** 08/10/2019
+	*/
+	router.get('/app/config', checkPermission(0), require('../api/config'));
+
 	// #1: Session API
 	// TODO: this should respect keystone auth options
 	router.get('/api/session', require('../api/session/get'));
@@ -60,7 +70,7 @@ module.exports = function createDynamicRouter (keystone) {
 		}
 		router.all('/signin', SigninRoute);
 		router.all('/signout', SignoutRoute);
-		router.use(keystone.session.keystoneAuth);
+		router.all('/api*', keystone.session.keystoneAuth);
 	} else if (typeof keystone.get('auth') === 'function') {
 		router.use(keystone.get('auth'));
 	}
@@ -86,10 +96,6 @@ module.exports = function createDynamicRouter (keystone) {
 	// #5: Core Lists API
 	const initList = require('../middleware/initList');
 	const initDataPermission = require('../middleware/initDataPermission');
-	// #6 rbac middleware
-	var checkPermission = require('../middleware/checkPermission');
-	// get keystone config
-	router.all('/api/config', checkPermission(0), require('../api/config'));
 	// lists
 	router.all('/api/counts', initDataPermission, require('../api/counts'));
 	// if (serviceWorker) {
