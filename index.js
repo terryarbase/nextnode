@@ -416,4 +416,5 @@ keystone.session = require('./lib/session');
 ** 02/10/2019
 */
 // AdminUI
-require('./admin/server/app/v2/createStaticClient').createStaticClient(keystone);
+// require('./admin/server/app/v2/createStaticClient').createStaticClient(keystone);
+// require('./admin/server/app/v2/createStaticFieldTypes')(keystone);

@@ -4,7 +4,7 @@ const path = require('path');
 const _ = require('lodash');
 const str = require('string-to-stream');
 
-const buildFieldTypesStream = fieldTypes => {
+const buildFieldTypesStream = ({ fieldTypes }) => {
 	let src = '';
 	const types = _.keys(fieldTypes);
 	['Column', 'Field', 'Filter'].forEach(function (i) {
@@ -24,20 +24,21 @@ const buildFieldTypesStream = fieldTypes => {
 	return str(src);
 }
 
-function createStaticFieldTypes(keystone) {
-	const writeToDisk = keystone.get('cache admin bundles');
+const installStaticFieldTypes = keystone => {
+	const installationDir = _.get(keystone.get('installation'), 'plugins') || process.cwd();
+	// console.log('>>>>> ', process.cwd());
 	/* Prepare browserify bundles */
 	const bundles = {
 		fields: browserify({
-			stream: buildFieldTypesStream(keystone.fieldTypes),
-			expose: 'FieldTypes',
-			file: 'FieldTypes.js',
-			location: './../../../build/static/plugins',
-			writeToDisk: writeToDisk,
+			stream: buildFieldTypesStream(keystone),
+			expose: 'fields',
+			file: './fields.js',
+			location: `${installationDir}/build/js`,
+			writeToDisk: true,
 		}),
 	};
 
 	bundles.fields.build();
 }
 
-module.exports = createStaticFieldTypes;
+module.exports = installStaticFieldTypes;

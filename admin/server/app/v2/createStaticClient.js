@@ -13,7 +13,16 @@ const staticClientConfig = (keystone={}) => {
 	const env = 'production';
 	const reactScriptsConfig = require('react-scripts/config/webpack.config')(env);
 	const appDirectory = fs.realpathSync(__dirname);
-	const adminPath = keystone.get('admin path') || process.env.ADMIN_PATH;
+
+	// let {
+	// 	module,
+	// } = reactScriptsConfig;
+	// module.rules[1].use[0].options.baseConfig = {
+ //        "no-undef": 0,
+ //        "react/jsx-no-undef": 0,
+	// };
+
+	// const adminPath = keystone.get('admin path') || process.env.ADMIN_PATH;
 	return {
 		...reactScriptsConfig,
 		entry: [
@@ -22,9 +31,10 @@ const staticClientConfig = (keystone={}) => {
 		output: {
 			...reactScriptsConfig.output,
 			// use customized <script> src for the bundle js file
-			filename: `static/js/[name].[contenthash:8].js`,
-	      	chunkFilename: `static/js/[name].[contenthash:8].chunk.js`,
+			filename: `static/js/[name].js`,
+	      	chunkFilename: `static/js/[name].chunk.js`,
 		},
+
 		plugins: [
 			...reactScriptsConfig.plugins,
 			new webpack.ProgressPlugin({
@@ -42,19 +52,44 @@ const staticClientConfig = (keystone={}) => {
 }
 
 function createStaticClient(keystone={}) {
+	// const browserify = require('../../middleware/browserify');
+	// /* Prepare browserify bundles */
+	// const bundles = {
+	// 	adminUI: browserify({
+	// 		file: './appv2/main.js',
+	// 		location: './../../../build/static/js',
+	// 		writeToDisk: true,
+	// 	}),
+	// };
+
+	// bundles.adminUI.build();
+	// createStaticFieldTypes(keystone);
 	process.chdir(path.resolve(__dirname, '../../../../'));
 	const config = staticClientConfig(keystone);
 	const router = express.Router();
 	const compiler = webpack(config);
 	// router.use(webpackDevMiddleware(compiler));
 	compiler.run((err, stats) => {
-		if (err || stats.hasErrors()) {
-			throw new Error(`> [Error] AdminUI Bundle (${stats.errors})`);
-		}
+		// if (err && err.details) {
+		// 	console.log('details: ', err.details);
+		// 	throw new Error(err.details);
+	 //    }
+
+	 //    if (stats.hasErrors()) {
+	 //    	const info = stats.toJson();
+	 //    	console.log('errors: ', info.errors);
+	 //        throw new Error(info.errors);
+
+	 //    }
+	 //    if (stats.hasWarnings()) {
+	 //    	console.log('warnings: ', info.warnings);
+	 //        throw new Error(info.warnings);
+	 //    }
+
 		console.log('\x1b[32m%s\x1b[0m', `> AdminUI Main Bundle: ${config.output.filename}.`);
 		console.log('\x1b[32m%s\x1b[0m', `> AdminUI Chunk Bundle: ${config.output.chunkFilename}.`);
 		// bundle the field type after that
-		createStaticFieldTypes(keystone);
+		// createStaticFieldTypes(keystone);
 	});
 }
 

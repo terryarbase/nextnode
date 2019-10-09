@@ -14,9 +14,6 @@
     <!-- <link rel="stylesheet" href="<%= adminPath %>/styles/vendor/react-datepicker/react-datepicker.min.css"> -->
     <link rel="stylesheet" href="<%= adminPath %>/styles/vendor/react-date-range/styles.css">
     <link rel="stylesheet" href="<%= adminPath %>/styles/vendor/react-date-range/default.css">
-<% bundleCSS.forEach(function(css){ %>
-    <link rel="stylesheet" href="<%= adminPath %>/styles/<%= css %>" />
-<% }) %>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   </head>
   <body>
@@ -40,10 +37,9 @@
 <% if (fieldTypes.code) { -%>
     <script src="<%= codemirrorPath %>/codemirror-compressed.js"></script>
 <% } -%>
-    <script src="<%= adminPath %>/plugins/FieldTypes.js"></script>
-<% bundleFiles.forEach(function(bundleFile){ %>
-    <script src="<%= adminPath %>/js/<%= bundleFile %>"></script>
-<% }) %>
+    <script src="<%= adminPath %>/js/packages.js"></script>
+    <script src="<%= adminPath %>/js/fields.js"></script>
+    <script src="<%= adminPath %>/js/admin.js"></script>
 <% if (env === 'production' && ga.property && ga.domain) { -%>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

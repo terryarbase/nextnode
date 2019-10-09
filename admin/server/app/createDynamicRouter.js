@@ -88,7 +88,8 @@ module.exports = function createDynamicRouter (keystone) {
 	const initDataPermission = require('../middleware/initDataPermission');
 	// #6 rbac middleware
 	var checkPermission = require('../middleware/checkPermission');
-
+	// get keystone config
+	router.all('/api/config', checkPermission(0), require('../api/config'));
 	// lists
 	router.all('/api/counts', initDataPermission, require('../api/counts'));
 	// if (serviceWorker) {
