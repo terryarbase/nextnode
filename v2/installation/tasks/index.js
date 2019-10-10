@@ -1,5 +1,4 @@
 const _ 						= require('lodash');
-
 /*
 ** Installation Tasks Interface
 ** [Abstract Interface]

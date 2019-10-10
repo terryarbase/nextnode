@@ -1,7 +1,5 @@
 const _ 						= require('lodash');
 const str                       = require('string-to-stream');
-
-const Browserify                = require('./../../../admin/server/middleware/browserify');
 // Abstract Interface
 const InstallationService       = require('./../');
 /*
@@ -45,6 +43,7 @@ class FieldTypesService extends InstallationService {
     }
     
     async install() {
+        const Browserify = require(`${this.nextnode.get('nextnode root')}/admin/server/middleware/browserify`);
         const stream = this.getFieldTypesStream();
         const location = `${this.defaultDir}/${this.defaultBuildDir}/${this.location}`;
         // output log

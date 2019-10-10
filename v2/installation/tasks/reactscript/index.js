@@ -1,6 +1,5 @@
 const _ 						= require('lodash');
 const readJsonFile              = require("edit-json-file");
-
 // Abstract Interface
 const InstallationService       = require('./../');
 /*

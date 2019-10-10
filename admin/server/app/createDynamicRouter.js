@@ -5,13 +5,13 @@ var multer = require('multer');
 const requestMiddleware = require('../middleware/request');
 const combinePermission = require('../middleware/combinePermission');
 
-module.exports = function createDynamicRouter (keystone) {
-	// ensure keystone nav has been initialised
+module.exports = function createDynamicRouter (nextnode) {
+	// ensure nextnode nav has been initialised
 	// TODO: move this elsewhere (on demand generation, or client-side?)
-	// console.log('keystone: ', keystone.get('name'), keystone.get('nav style'));
+	// console.log('nextnode: ', nextnode.get('name'), nextnode.get('nav style'));
 	// if rbac is enabled, nav will be initialized on demand
-	if (!keystone.get('rbac') && !keystone.nav) {
-		keystone.nav = keystone.initNav();
+	if (!nextnode.get('rbac') && !nextnode.nav) {
+		nextnode.nav = nextnode.initNav();
 	}
 
 	var router = express.Router();
@@ -21,17 +21,35 @@ module.exports = function createDynamicRouter (keystone) {
 	// Use bodyParser and multer to parse request bodies and file uploads
 	router.use(bodyParser.json({}));
 	router.use(bodyParser.urlencoded({ extended: true }));
-	router.use(keystone.get('i18n').init);
+	router.use(nextnode.get('i18n').init);
 	router.use(multer({ includeEmptyFields: true }));
 
-	// Bind the request to the keystone instance
+	// Bind the request to the nextnode instance
 	router.use(function (req, res, next) {
-		requestMiddleware(req, res, next, keystone);
-		// req.keystone = keystone;
+		requestMiddleware(req, res, next, nextnode);
+		// req.nextnode = nextnode;
 	});
 
-	if (keystone.get('healthchecks')) {
-		router.use('/server-health', require('./createHealthchecksHandler')(keystone));
+	/*
+	** [V2 Enhancement]
+	** Prepare all of essential v2 routes
+	** Terry Chan
+	** 10/10/2019
+	*/
+	if (nextnode.get('stage') === 2) {
+		const {
+			routes: RoutesV2,
+		} = nextnode.get('nextnode v2');
+		// prepare all of v2 routings
+		RoutesV2({
+			nextnode,
+			router,
+		});
+	}
+
+
+	if (nextnode.get('healthchecks')) {
+		router.use('/server-health', require('./createHealthchecksHandler')(nextnode));
 	}
 
 	// Init API request helpers
@@ -49,7 +67,7 @@ module.exports = function createDynamicRouter (keystone) {
 	router.get('/app/config', checkPermission(0), require('../api/config'));
 
 	// #1: Session API
-	// TODO: this should respect keystone auth options
+	// TODO: this should respect nextnode auth options
 	router.get('/api/session', require('../api/session/get'));
 	router.post('/api/session/signin', require('../api/session/signin'));
 	router.post('/api/session/signout', require('../api/session/signout'));
@@ -57,22 +75,23 @@ module.exports = function createDynamicRouter (keystone) {
 	// #2: Session Routes
 	// Bind auth middleware (generic or custom) to * routes, allowing
 	// access to the generic signin page if generic auth is used
-	if (keystone.get('auth') === true) {
+	if (nextnode.get('auth') === true) {
 		// TODO: poor separation of concerns; settings should be defaulted elsewhere
-		if (!keystone.get('signout url')) {
-			keystone.set('signout url', '/' + keystone.get('admin path') + '/signout');
+		if (!nextnode.get('signout url')) {
+			nextnode.set('signout url', '/' + nextnode.get('admin path') + '/signout');
 		}
-		if (!keystone.get('signin url')) {
-			keystone.set('signin url', '/' + keystone.get('admin path') + '/signin');
+		if (!nextnode.get('signin url')) {
+			nextnode.set('signin url', '/' + nextnode.get('admin path') + '/signin');
 		}
-		if (!keystone.nativeApp || !keystone.get('session')) {
-			router.all('*', keystone.session.persist);
+		if (!nextnode.nativeApp || !nextnode.get('session')) {
+			router.all('*', nextnode.session.persist);
 		}
 		router.all('/signin', SigninRoute);
 		router.all('/signout', SignoutRoute);
-		router.all('/api*', keystone.session.keystoneAuth);
-	} else if (typeof keystone.get('auth') === 'function') {
-		router.use(keystone.get('auth'));
+		console.log(nextnode.session);
+		router.all('/api*', nextnode.session.keystoneAuth);
+	} else if (typeof nextnode.get('auth') === 'function') {
+		router.use(nextnode.get('auth'));
 	}
 
 	// #3: Home route
@@ -84,12 +103,12 @@ module.exports = function createDynamicRouter (keystone) {
 	
 	// #4: Cloudinary and S3 specific APIs
 	// TODO: poor separation of concerns; should / could this happen elsewhere?
-	if (keystone.get('cloudinary config')) {
+	if (nextnode.get('cloudinary config')) {
 		router.get('/api/cloudinary/get', require('../api/cloudinary').get);
 		router.get('/api/cloudinary/autocomplete', require('../api/cloudinary').autocomplete);
 		router.post('/api/cloudinary/upload', require('../api/cloudinary').upload);
 	}
-	if (keystone.get('s3 config')) {
+	if (nextnode.get('s3 config')) {
 		router.post('/api/s3/upload', require('../api/s3').upload);
 	}
 

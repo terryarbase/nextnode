@@ -48,6 +48,14 @@ var Keystone = function () {
 	this.fieldTypes = {};
 	this.paths = {};
 	this._options = {
+		/*
+		** [Important]
+		** Transition period from nextnode v1.x to v2.0, flag for preparing all of related sections for stage v2
+		** Control from the client callee, stage 2 will be initialized all of sections for stage v2
+		** Terry Chan
+		** 09/10/2019
+		*/
+		'stage': 2,
 		'name': 'Keystone',
 		'brand': 'Keystone',
 		'admin path': defaultAdminPath,
@@ -57,6 +65,7 @@ var Keystone = function () {
 		'localization': false,
 		'logger': ':method :url :status :response-time ms',
 		'auto update': false,
+		'nextnode root': __dirname,
 		'model prefix': null,
 		/*
 		** @Terry Chan 26/10/2018
@@ -86,6 +95,11 @@ var Keystone = function () {
 		*/
 		'admin lock': true,
 		'admin max lock': 5,
+		/*
+		** @Terry Chan 10/10/2019
+		** for admin account locking options
+		*/
+		'admin lock minutes': 5,	// 5 minutes
 		'nav style': {
 			fontColor: '#ffffff',
 			fontHover: '#ffe53d'

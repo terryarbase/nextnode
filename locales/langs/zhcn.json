@@ -5,6 +5,14 @@
 	"msg_user_notfound": "找不到用户",
 	"msg_request_filed_invalid": "请求的字段必须是undefined, string, 或array.",
 
+	"msg_user_nosignin": "请先登录系统用户帐号",
+	"msg_user_signined": "您已登录系统用户帐户",
+	"msg_user_invalidMember": "登录失败！电子邮件地址或用户名不正确",
+	"msg_user_incorrectPassword": "登录失败！密码不正确",
+	"msg_user_accountFreeze": "您的帐户被禁用！请与我们的服务提供商联系以获取帮助。",
+	"msg_user_locked": "您的帐户已被锁定！系统将在{{minutes}}分钟后解锁您的帐户。",
+	
+
 	"msg_required_field": "{{lang}}: 栏位{{field}}资料是必须填写",
 	"msg_invalid_field": "{{lang}}: 栏位{{field}}资料填写不正确",
 
