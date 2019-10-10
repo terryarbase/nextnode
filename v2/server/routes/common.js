@@ -7,6 +7,7 @@ const {
 const registerCommonRoutes = ({
 	nextnode,
 	router,
+	api,
 }) => {
 	const checkPermission = require(`${nextnode.get('nextnode root')}/admin/server/middleware/checkPermission`);
 	// all of routes under v2 should carry about authorization middleware hooking
@@ -15,7 +16,7 @@ const registerCommonRoutes = ({
 	], includeAuthorization);
 
 	// get the initial config either system user or non-signin user
-	router.get('/app/v2/auth/config', checkPermission(0), require('./../api/config'));
+	router.get('/app/v2/config', checkPermission(0), api.config);
 };
 
 module.exports = registerCommonRoutes;

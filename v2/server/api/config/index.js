@@ -188,7 +188,7 @@ const getConfig = (req, res) => {
 	};
 
 	return res.json({
-		config: locals,
+		data: locals,
 	});
 }
 

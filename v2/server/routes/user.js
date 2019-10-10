@@ -8,14 +8,15 @@ const {
 const registerUserRoutes = ({
 	nextnode,
 	router,
+	api,
 }) => {
 	// all of routes under v2/session must carry about authorization
 	router.all([
 		'/app/v2/session*',
 	], includeSystemUser);
-
-	router.post('/app/v2/signin', excludeSystemUser, arg => require('../api/user').user.signin(nextnode, ...arg));
-	router.post('/app/v2/session/profile', require('../api/user/profile'));
+	console.log(api.user.signin);
+	router.post('/app/v2/signin', excludeSystemUser, arg => api.user.signin(nextnode, ...arg));
+	router.post('/app/v2/session/profile', api.user.profile);
 };
 
 module.exports = registerUserRoutes;
