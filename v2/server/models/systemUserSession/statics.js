@@ -97,17 +97,14 @@ const UserSchemaStatics = function(UserSchema) {
 				session,
 			};
 		}
-
-		const systemUserSession = await this.findOne({
+		const condition = {
 			[type]: token,
 			systemUser: _.get(decoded, '_id'),
-		}, {}, options);
-
+		};
 		if (population) {
-			return await systemUserSession.populate('systemUser').execPopulate();
+			return await this.findOne(condition, {}, options).populate('systemUser');
 		}
-
-		return systemUserSession;
+		return await this.findOne(condition, {}, options);
 	};
 
 

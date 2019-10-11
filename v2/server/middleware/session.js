@@ -8,6 +8,7 @@ const authHeader                = require('auth-header');
 
 const nextnode                  = require('./../../../');
 const SystemUserSession 	    = require('./../models/systemUserSession/model');
+const Utils                     = require('./../utils');
 
 const includeRoleList = (req, res, next) => {
     const {
@@ -15,23 +16,8 @@ const includeRoleList = (req, res, next) => {
             role,
         },
     } = req;
-    let roleList = {};
 
-    // single role
-    if (!_.isArray(role)) {
-        roleList = { ...role };
-    } else {
-        // multiple roles
-        const tableList = _.keys(nextnode.lists);
-        const filterRoles = _.map(role, r => _.pick(r, tableList));
-        roleList = _.chain(tableList).reduce((rl, table) => ({
-            ...rl,
-            [table]: _.maxBy(filterRoles, table)[table],
-        }), {}).value();
-        _.map(tableList, table => _.maxBy(filterRoles, table)[table]);
-    }
-
-    req.roleList = roleList;
+    req.roleList = Utils.readUserRoleList(role);
 
     if (next) {
         next();
@@ -60,7 +46,7 @@ const includeAuthorization = async (req, res, next) => {
             		lean: false,
             		population: true,
             	});
-
+                console.log(sysUserSession);
             	if (sysUserSession && sysUserSession.systemUser) {
             		req.user = sysUserSession.systemUser;
                     req.userSession = sysUserSession;
@@ -88,7 +74,7 @@ const includeSystemUser = async (req, res, next) => {
     } = nextnode.get('nextnode v2');
     req.user = await populateUserRole(user);
 
-    next();
+    return includeRoleList(req, res, next);
 };
 
 /*

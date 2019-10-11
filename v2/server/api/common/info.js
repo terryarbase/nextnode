@@ -120,13 +120,12 @@ class ConfigInfoHandler extends APIInterface{
 				property: this.nextnode.get('ga property'),
 				domain: this.nextnode.get('ga domain'),
 			},
-			keystone: nextnodeData,
+			nextnode: nextnodeData,
 			userCanAccessKeystone: !!(this.req.user && this.req.user.canAccessKeystone),
 			title: this.nextnode.get('name') || 'NextNode',
 		};
 
 		if (this.req.user) {
-			console.log(this.req.user);
 			nextnodeData.user = {
 				...(
 					_.pick(this.req.user, [

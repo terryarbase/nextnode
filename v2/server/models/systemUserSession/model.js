@@ -61,6 +61,11 @@ SystemUserSession.schema.index({
     // if the expiredAt is reached, then remove immediately
     expireAfterSeconds,
 });
+
+SystemUserSession.schema.pre('find', function() {
+    this.populate('systemUser');
+});
+
 // assign the statics and methods handler
 statics(SystemUserSession.schema);
 methods(SystemUserSession.schema);

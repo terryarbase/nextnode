@@ -4,7 +4,11 @@ const _ 			= require('lodash');
 ** Terry Chan
 ** 10/09/2019
 */
-const profile = async (req, res) => {
+const profile = async ({
+	nextnode,
+	req,
+	res,
+}) => {
     let data = {};
     let {
     	user,
@@ -19,7 +23,18 @@ const profile = async (req, res) => {
 			'contentLanguage',
 			'identity',
 		]);
+
+		const {
+			utils: {
+				readUserRoleList,
+			},
+		} = nextnode.get('nextnode v2');
 	    
+		data = {
+			...data,
+			role: readUserRoleList(data.role),
+		};
+
 	} catch (err) {
     	return res.apiError(500, err);
     }

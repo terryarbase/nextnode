@@ -2,6 +2,9 @@ const {
 	session: {
 		includeAuthorization,
 	},
+	locale: {
+		includeLocale,
+	},
 } = require('./../middleware');
 
 const registerCommonRoutes = ({
@@ -20,7 +23,8 @@ const registerCommonRoutes = ({
 	], 
 		includeAPIError, 
 		includeLogError,
-		includeAuthorization,
+		includeAuthorization,	// jwt authorization hookin
+		includeLocale,	// localiztion hooking
 	);
 
 	// get the initial config either system user or non-signin user

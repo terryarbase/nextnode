@@ -1,4 +1,6 @@
-const nextnode  		= require('./../../../');
+const _                         = require('lodash');
+
+const nextnode  		        = require('./../../../');
 /*
 ** Identify the validator is error callback function
 ** if so, return to main flow and execute it
@@ -21,7 +23,39 @@ const populateUserRole = async(user) => {
     return populatedUser;
 };
 
+/*
+** Read the user permission role list (supports multiple role)
+** Terry Chan
+** 11/10/2019
+*/
+const normalizeDocumentObject = target => {
+    if (typeof target.toObject === 'function') {
+        return target.toObject();
+    }
+    return target;
+}
+const readUserRoleList = role => {
+	let roleList = {};
+    // single role
+    if (!_.isArray(role)) {
+        roleList = { ...normalizeDocumentObject(role) };
+    } else {
+        // multiple roles
+        const tableList = _.keys(nextnode.lists);
+        const filterRoles = _.map(role, r => _.pick(normalizeDocumentObject(r), tableList));
+        // use the large permission value as the first priority
+        roleList = _.chain(tableList).reduce((rl, table) => ({
+            ...rl,
+            [table]: _.maxBy(filterRoles, table)[table],
+        }), {}).value();
+        _.map(tableList, table => _.maxBy(filterRoles, table)[table]);
+    }
+
+    return roleList;
+};
+
 module.exports = {
 	isValidatorError,
 	populateUserRole,
+	readUserRoleList,
 };

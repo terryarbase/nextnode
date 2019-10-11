@@ -1,148 +1,33 @@
 {
 	"info": {
-		"_postman_id": "8f76a16e-4932-4592-a3b0-20dc285feb34",
+		"_postman_id": "1d98c21f-651f-417e-8400-bc0b01b89514",
 		"name": "NextNode V2 API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "App",
+			"name": "user",
 			"item": [
 				{
-					"name": "1.1. Get API Config",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}{{api}}static",
-							"host": [
-								"{{host}}{{api}}static"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "1.2. Get App Config",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}config",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}config"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "1.3. Get Landing Info",
+					"name": "Login User",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "b78519f2-43a1-409e-b54c-13b803fa20ed",
 								"exec": [
 									"var jsondata = pm.response.json();",
-									"if (jsondata.status === true) {",
-									"    if (jsondata.data.code) {",
-									"        pm.environment.set(\"code\", jsondata.data.code);",
-									"    }",
+									"if (jsondata.data.sessionToken) {",
+									"    pm.environment.set(\"loginToken\", jsondata.data.sessionToken);",
+									"}",
+									"if (jsondata.data.refreshToken) {",
+									"    pm.environment.set(\"refreshToken\", jsondata.data.refreshToken);",
 									"}"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}landing",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}landing"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "1.4. Get Ticket Info",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}ticket/info",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}ticket"
-							],
-							"path": [
-								"info"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "User",
-			"item": [
-				{
-					"name": "1.5. Send SMS Verification Code",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var jsondata = pm.response.json();",
-									"if (jsondata.status === true) {",
-									"    if (jsondata.data.code) {",
-									"        pm.environment.set(\"code\", jsondata.data.code);",
-									"    }",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "phone",
-									"value": "{{phone}}",
-									"type": "text"
-								},
-								{
-									"key": "language",
-									"value": "zhtw",
-									"type": "text"
-								},
-								{
-									"key": "country",
-									"value": "{{country}}",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}user/sms",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}user"
-							],
-							"path": [
-								"sms"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "1.6. Signup",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -151,551 +36,50 @@
 							"formdata": [
 								{
 									"key": "email",
-									"value": "terrychan@4d.com.hk",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "password",
-									"value": "jZi9DRihF%2FcpFNCmoBZ3zCfRzAQiiJwRC%2FbAtu70R%2BQC33ejWnjlhXzhOQFUZar%2BbHwjoPke8hbPhl2EZkHLqM%2FpXXkx0c34IYgGynaJ0wVKOKt1d0O4gEUAHUKqOsaaZUfdaVD8rYUPuKrLpg8%2F17wFZ4TlXxma%2B82v8XmgLTTX2NdocSwKD9H6WL8i3ceb9SSyhbaegruDc6vLJWAuGzCqv1pdzv9CMJ5%2BiIsEaYzLq5ahhqpqFy1KtVM4HG19%2Bah99JJ0tn%2BYh7Vwf3gERDwTpXgAwQw47HDBgUnvymWZEYZxo7d04FDx13EoZ0p1mcBZZdgF%2BPuC0gdzerIS7JVcOVW67t8sw%2Fys0zhwA7RZoLO68xpVb3r0M7YEdyJ3FcMVXuVujgPnVdLSpwR9AcIs1e3x4mqNzwITWq4t5y0lYsmKcb%2Fk5kaUwFFAuyEIucmp0h8wswI0PZB7J9zOoa8QxoFILNZZMQX9dWVCJy5DrRVqZUGwhlOJh%2Fhljq%2F5suq7KgX9YrhkaWbJZVa9%2FIVrMPSupGH6FBqxJF2SdtLJvFKY07hPXu56DQk7JON18UZN%2FowaiRkMI3CQCDa8fuFn9bG5p%2F4iypoN2o72e%2FWTH73m2wfFPR45FFtQUJ5MGA%2F%2BAY6N0wMy0UqLMvAP7KiKInAp9i%2FWM6I7y73feys%3D",
-									"type": "text"
-								},
-								{
-									"key": "password_confirm",
-									"value": "jZi9DRihF%2FcpFNCmoBZ3zCfRzAQiiJwRC%2FbAtu70R%2BQC33ejWnjlhXzhOQFUZar%2BbHwjoPke8hbPhl2EZkHLqM%2FpXXkx0c34IYgGynaJ0wVKOKt1d0O4gEUAHUKqOsaaZUfdaVD8rYUPuKrLpg8%2F17wFZ4TlXxma%2B82v8XmgLTTX2NdocSwKD9H6WL8i3ceb9SSyhbaegruDc6vLJWAuGzCqv1pdzv9CMJ5%2BiIsEaYzLq5ahhqpqFy1KtVM4HG19%2Bah99JJ0tn%2BYh7Vwf3gERDwTpXgAwQw47HDBgUnvymWZEYZxo7d04FDx13EoZ0p1mcBZZdgF%2BPuC0gdzerIS7JVcOVW67t8sw%2Fys0zhwA7RZoLO68xpVb3r0M7YEdyJ3FcMVXuVujgPnVdLSpwR9AcIs1e3x4mqNzwITWq4t5y0lYsmKcb%2Fk5kaUwFFAuyEIucmp0h8wswI0PZB7J9zOoa8QxoFILNZZMQX9dWVCJy5DrRVqZUGwhlOJh%2Fhljq%2F5suq7KgX9YrhkaWbJZVa9%2FIVrMPSupGH6FBqxJF2SdtLJvFKY07hPXu56DQk7JON18UZN%2FowaiRkMI3CQCDa8fuFn9bG5p%2F4iypoN2o72e%2FWTH73m2wfFPR45FFtQUJ5MGA%2F%2BAY6N0wMy0UqLMvAP7KiKInAp9i%2FWM6I7y73feys%3D",
-									"type": "text"
-								},
-								{
-									"key": "deviceId",
-									"value": "48269C3B-FFB8-4790-BEAA-E01136A3F623",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "deviceType",
-									"value": "ios",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "language",
-									"value": "zhtw",
-									"type": "text"
-								},
-								{
-									"key": "username",
-									"value": "terrychan",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "notification",
-									"value": "true",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "smsCode",
-									"value": "{{code}}",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "country",
-									"value": "{{country}}",
-									"type": "text"
-								},
-								{
-									"key": "phone",
-									"value": "11111157",
-									"type": "text"
-								},
-								{
-									"key": "invitationTo",
-									"value": "uUmLleeNjjziy",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "vip",
-									"value": "HT0003",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "ticketRequired[0]",
-									"value": "5ccf0de6bffbaa386dfd8bba",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "ticketRequired[1]",
-									"value": "5cd30be87585d3b112dfd299",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "ticketRequired[2]",
-									"value": "5cd30c15da2d6fb11ff1cfe4",
-									"type": "text",
-									"disabled": true
-								}
-							]
-						},
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}user/signup",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}user"
-							],
-							"path": [
-								"signup"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "2.1. Forgot Password",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "phone",
-									"value": "66477981",
-									"type": "text"
-								},
-								{
-									"key": "country",
-									"value": "5cd0088a808a95047eb31462",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}user/forgot",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}user"
-							],
-							"path": [
-								"forgot"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Member",
-			"item": [
-				{
-					"name": "1.7. Signin",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var jsondata = pm.response.json();",
-									"if (jsondata.status === true) {",
-									"    if (jsondata.data.loginToken) {",
-									"        pm.environment.set(\"loginToken\", jsondata.data.loginToken);",
-									"    }",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "username",
-									"value": "{{phone}}",
+									"value": "{{email}}",
 									"type": "text"
 								},
 								{
 									"key": "password",
 									"value": "{{password}}",
-									"description": "12345678",
-									"type": "text"
-								},
-								{
-									"key": "deviceType",
-									"value": "android",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "deviceId",
-									"value": "d8T99GblUwc:APA91bE0qF6cJU6Hs6fxi6lpy8Y6VAmYzi759hmPepgCJyEmmb7PcUcY5vDLO68HkkkvVAFeRljuuuWjc7LjTuXu2v0-XiK0mpB541UFvrX1LKbVj-JcwWP9hl6qMHvlX6vOt3h-r7BH",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "language",
-									"value": "zhtw",
-									"type": "text"
-								},
-								{
-									"key": "country",
-									"value": "{{country}}",
 									"type": "text"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}user/signin",
+							"raw": "{{host}}{{api}}signin",
 							"host": [
-								"{{host}}{{api}}{{apiVersion}}user"
-							],
-							"path": [
-								"signin"
+								"{{host}}{{api}}signin"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "1.8. Signout",
+					"name": "Get User Profile",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "b78519f2-43a1-409e-b54c-13b803fa20ed",
 								"exec": [
 									"var jsondata = pm.response.json();",
 									"if (jsondata.status === true) {",
-									"    pm.environment.set(\"loginToken\", '');",
+									"    if (jsondata.data.sessionToken) {",
+									"        pm.environment.set(\"loginToken\", jsondata.data.sessionToken);",
+									"    }",
+									"    if (jsondata.data.refreshToken) {",
+									"        pm.environment.set(\"refreshToken\", jsondata.data.refreshToken);",
+									"    }",
 									"}"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{loginToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}member/signout",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}member"
-							],
-							"path": [
-								"signout"
-							]
-						}
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
 					},
-					"response": []
-				},
-				{
-					"name": "1.9. Get Account Status",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{loginToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}member/status",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}member"
-							],
-							"path": [
-								"status"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "2.0. Update Member Profile",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{loginToken}}"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "username",
-									"value": "kelvin",
-									"type": "text"
-								},
-								{
-									"key": "deviceId",
-									"value": "d8T99GblUwc:APA91bE0qF6cJU6Hs6fxi6lpy8Y6VAmYzi759hmPepgCJyEmmb7PcUcY5vDLO68HkkkvVAFeRljuuuWjc7LjTuXu2v0-XiK0mpB541UFvrX1LKbVj-JcwWP9hl6qMHvlX6vOt3h-r7BH",
-									"type": "text"
-								},
-								{
-									"key": "deviceType",
-									"value": "android",
-									"type": "text"
-								},
-								{
-									"key": "notification",
-									"value": "true",
-									"type": "text"
-								},
-								{
-									"key": "email",
-									"value": "terrykaka2003@gmail.com",
-									"type": "text"
-								},
-								{
-									"key": "vipCode",
-									"value": "VIP2",
-									"type": "text"
-								},
-								{
-									"key": "language",
-									"value": "zhcn",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "UWbmpGobRKeA3WBQqG7ckW6SyDzMNT0qYXoQGuadi1y%2FdrgjVRtczPIw8QS5uFdti%2BmuTa9wsziOk2rAimw9%2FkjrzePUpIz%2FXVP9C0Q4suUMCtwRK20%2Fg0z1JBnCvDP6DlmJftbnxzQ0kcsoHnGCWTV7jn4CnhxdPdwtSVMzM%2F6wArCFaaFU2EZxWbcpy6%2FnLTmIz%2Bj14jHeNEf0rho9S68%2F82Pm6%2F0SrTtYaH%2BNj1NrkpPd41CyV6YPumLxSs%2BzyCaGyw%2FH5CpOQ7KMk270xeDQa9vfMdUXS%2FJzmLzZEaSS1LjG9sSI3Y4hUXGwqPN8b9i5dsNqz3RNRbBd3sR5I8QBHy1Hov5eceMXgiBekPCHuJZ6DTD9HbxpaRBVAltvpDCZeMM29yxw7pQ7OSqsmsyvKVpBTBJWnWoVRjWqxVXwuSWsy6vqNNdmvbv9idufhUfv6JV%2FprJRfc8Z9ZaPSnpyI0V2oQnyjt0uzrGia5UbB6Nzuc%2BAxFYV%2B%2FWQixiOU2I2Q7hskNT3CaWuQWvzkorN5xuO3wnvLTHC9uaqF6zk7vVahVi6qvqPYiR35M8%2Bn5%2BmLKwHPlhNHDtAFHEyXNI%2FfiaxeBhcWEtgfRkVXKwOWnM8T0niyNYUlH13UU0gs2yaTaMwOeDoNvMupwZ26CruXGgbewX8pdXgFwaIReM%3D",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "password_confirm",
-									"value": "UWbmpGobRKeA3WBQqG7ckW6SyDzMNT0qYXoQGuadi1y%2FdrgjVRtczPIw8QS5uFdti%2BmuTa9wsziOk2rAimw9%2FkjrzePUpIz%2FXVP9C0Q4suUMCtwRK20%2Fg0z1JBnCvDP6DlmJftbnxzQ0kcsoHnGCWTV7jn4CnhxdPdwtSVMzM%2F6wArCFaaFU2EZxWbcpy6%2FnLTmIz%2Bj14jHeNEf0rho9S68%2F82Pm6%2F0SrTtYaH%2BNj1NrkpPd41CyV6YPumLxSs%2BzyCaGyw%2FH5CpOQ7KMk270xeDQa9vfMdUXS%2FJzmLzZEaSS1LjG9sSI3Y4hUXGwqPN8b9i5dsNqz3RNRbBd3sR5I8QBHy1Hov5eceMXgiBekPCHuJZ6DTD9HbxpaRBVAltvpDCZeMM29yxw7pQ7OSqsmsyvKVpBTBJWnWoVRjWqxVXwuSWsy6vqNNdmvbv9idufhUfv6JV%2FprJRfc8Z9ZaPSnpyI0V2oQnyjt0uzrGia5UbB6Nzuc%2BAxFYV%2B%2FWQixiOU2I2Q7hskNT3CaWuQWvzkorN5xuO3wnvLTHC9uaqF6zk7vVahVi6qvqPYiR35M8%2Bn5%2BmLKwHPlhNHDtAFHEyXNI%2FfiaxeBhcWEtgfRkVXKwOWnM8T0niyNYUlH13UU0gs2yaTaMwOeDoNvMupwZ26CruXGgbewX8pdXgFwaIReM%3D",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "password_old",
-									"value": "htDM878WD5oQDRz%2Fqw23PpWzcvFUO5rMHEzkgATuQ%2Fn31MLl5WZ3k7Wu1QwcUQrV3Gx3K3Xnk3vsGQ0jx6CXvc5R9E%2F6giMQj4zzM5k8NYTJ0P2F1Q29DP32MhvN%2Bu%2BauphlQZWdHfKvbm43%2BZR%2B0VtSGRv%2FFh3jWpZSarZOt8QTwBl0kZuN2z4BzGtpHGS5x3SxlTOiV1wtNPnF7uICj%2ByxMQN%2BcdySBXYDziABtMbjCyDXRnQI1DEWxeGvIPR4gR5YkLj5KYoOKdxfCx0Q0wcTs07Co28wwgtR2G3lpc0R0Q5q8mNX83GDpcpcUKWT8rjsRrwS9qKqh5tyY79%2FKrp97odha2myoW0TyAJw4gVdG0kXyU4hydbfeDGhEsFpd9vhBmgRaYVOYUeP7%2BGMcIv8z3X2BCHcix0BxbYAivbsg2tv8wdUopSEnYcnV%2FPgRV0PKZH3O4LqTMtIeBOyLZ4zcXcnIm5EYJ6vODR5egLKxBk13gPJ2fnZ9g%2BenvVqfdszO0qKhRibcvQQkOQBh3ER8W2Dm7zZwVfdHA1x%2BqlrxWoUfojRzDOt5YBl92w%2BXFN4T21O4MoEOCwOOTtYJsbXfFVzg9wIn7lYINLMYmF9FP7KTljjJqMIyqI0cZ2Efz3n6v%2BVXBtX8K88NPSl7kicRmeiSMBsL6XCv%2BxAHGI%3D",
-									"type": "text",
-									"disabled": true
-								}
-							]
-						},
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}member/info",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}member"
-							],
-							"path": [
-								"info"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "2.2. Get Member Ticket Rejection List",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{loginToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}member/ticket/reject",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}member"
-							],
-							"path": [
-								"ticket",
-								"reject"
-							]
-						},
-						"description": "That represents which ticket should be rejected\nExample: if use data[Ticket Object ID] and data[Ticket Object ID].vipDraw is true, then vip ticket drawing should be rejected\n\nResponse Example: \n{\n\t\"Ticket Object ID 1\": {\n\t\tvipDraw: true,\n\t\tnormalDraw: true,\n\t\tredeemedDraw: true, \n\t},\n\t\"Ticket Object ID 2\": {\n\t\tvipDraw: true,\n\t\tredeemedDraw: true, \n\t}\n}\n\nRemark: In the above example, Ticket Object ID 2 can accept normal ticket drawing for the member as well, and also, Ticket Object ID 1 cannot accept drawing anymore as all of drawing type is true (means Rejected)"
-					},
-					"response": []
-				},
-				{
-					"name": "2.3. Get Member Ticket Info List",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{loginToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}member/ticket/info",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}member"
-							],
-							"path": [
-								"ticket",
-								"info"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "2.4. Apply Ticket",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{loginToken}}"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "ticketRequired[0]",
-									"value": "5ccf0de6bffbaa386dfd8bba",
-									"description": "// day 1 selected",
-									"type": "text"
-								},
-								{
-									"key": "ticketRequired[1]",
-									"value": "5cd30be87585d3b112dfd299",
-									"description": "// day 2 selected",
-									"type": "text"
-								},
-								{
-									"key": "ticketRequired[2]",
-									"value": "5cd30c15da2d6fb11ff1cfe4",
-									"description": "// day 3 selected",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}member/ticket/apply",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}member"
-							],
-							"path": [
-								"ticket",
-								"apply"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "2.5. Get Member Reward Tasks List",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{loginToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}member/activity/task?page=1",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}member"
-							],
-							"path": [
-								"activity",
-								"task"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "2.6. Member Join Tasks / Scan QrCode",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{loginToken}}"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "qrcode",
-									"value": "catchLogos-5cd7c8330620e635055c2bf9",
-									"description": "if social sharing callback, please post the activity id to complete the activity excpet \"merchantTasks\" activity",
-									"type": "text"
-								},
-								{
-									"key": "activity",
-									"value": "5ce059d5755210331edb82f9",
-									"description": "social sharing",
-									"type": "text",
-									"disabled": true
-								}
-							]
-						},
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}member/activity/join",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}member"
-							],
-							"path": [
-								"activity",
-								"join"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "2.7. Get Member Summarize Info",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{loginToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}member/summarize",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}member"
-							],
-							"path": [
-								"summarize"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "2.8. Get Member Notification List",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -705,37 +89,14 @@
 								"type": "text"
 							}
 						],
+						"body": {},
 						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}member/notification",
+							"raw": "{{host}}{{api}}session/profile",
 							"host": [
-								"{{host}}{{api}}{{apiVersion}}member"
+								"{{host}}{{api}}session"
 							],
 							"path": [
-								"notification"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "2.8. Get Member Notification Details",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{loginToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}member/notification/5ce65dee2baad5ee78b40f54",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}member"
-							],
-							"path": [
-								"notification",
-								"5ce65dee2baad5ee78b40f54"
+								"profile"
 							]
 						}
 					},
@@ -744,366 +105,25 @@
 			]
 		},
 		{
-			"name": "Staff",
-			"item": [
-				{
-					"name": "3.0. Worker Signin",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var jsondata = pm.response.json();",
-									"if (jsondata.status === true) {",
-									"    if (jsondata.data.loginToken) {",
-									"        pm.environment.set(\"workerLoginToken\", jsondata.data.loginToken);",
-									"    }",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "username",
-									"value": "{{workerPhone}}",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "{{password}}",
-									"description": "12345678",
-									"type": "text"
-								},
-								{
-									"key": "deviceType",
-									"value": "android",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "deviceId",
-									"value": "d8T99GblUwc:APA91bE0qF6cJU6Hs6fxi6lpy8Y6VAmYzi759hmPepgCJyEmmb7PcUcY5vDLO68HkkkvVAFeRljuuuWjc7LjTuXu2v0-XiK0mpB541UFvrX1LKbVj-JcwWP9hl6qMHvlX6vOt3h-r7BH",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "language",
-									"value": "zhtw",
-									"type": "text"
-								},
-								{
-									"key": "country",
-									"value": "{{country}}",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}worker/signin",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}worker"
-							],
-							"path": [
-								"signin"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "3.3. Worker Scanner",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{workerLoginToken}}"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "qrcode",
-									"value": "pass-W614ofqjW9swHuRe0MqCeeNjjziy",
-									"description": "entry pass - entry helper use",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "qrcode",
-									"value": "vipticket-MKD000014",
-									"description": "vip ticket - show helper use",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "qrcode",
-									"value": "coupon-COP200001",
-									"description": "coupon - shop staff use",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "qrcode",
-									"value": "user-5cd730f0f931f404bfadb9ad",
-									"description": "member account qrcode - merchant use",
-									"type": "text"
-								},
-								{
-									"key": "activityId",
-									"value": "5ce3a42bbbb3ca233710108d",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}worker/member/scanner",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}worker"
-							],
-							"path": [
-								"member",
-								"scanner"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "3.1. Worker Signout",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var jsondata = pm.response.json();",
-									"if (jsondata.status === true) {",
-									"    pm.environment.set(\"workerLoginToken\", '');",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{workerLoginToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}worker/member/signout",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}worker"
-							],
-							"path": [
-								"member",
-								"signout"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "3.2. Get Worker Member Account Status",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"type": "text",
-								"value": "Bearer {{workerLoginToken}}"
-							}
-						],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}worker/member/status",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}worker"
-							],
-							"path": [
-								"member",
-								"status"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Content",
-			"item": [
-				{
-					"name": "1.2. Get Category Brand List",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}category/5ccad830db99f40ceed8d015/brands?page=1",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}category"
-							],
-							"path": [
-								"5ccad830db99f40ceed8d015",
-								"brands"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "1.2. Search All Category Brand List",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}category/search?page=1",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}category"
-							],
-							"path": [
-								"search"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "1"
-								},
-								{
-									"key": "keyword",
-									"value": "b",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "1.2. Get Category Banner",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}category/5ccadc5e5606940e2f4f8590/banner",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}category"
-							],
-							"path": [
-								"5ccadc5e5606940e2f4f8590",
-								"banner"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "1.2. Get Public Reward Tasks List",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}activity/task?",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}activity"
-							],
-							"path": [
-								"task"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "1",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "2.9. Get Tutorial List",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{host}}{{api}}{{apiVersion}}tutorial",
-							"host": [
-								"{{host}}{{api}}{{apiVersion}}tutorial"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "1.0. Heath Checking",
+			"name": "App Info",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{host}}{{api}}{{apiVersion}}heathCheck",
-					"host": [
-						"{{host}}{{api}}{{apiVersion}}heathCheck"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "[SPECIAL] Test Public Cryptography",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var jsondata = pm.response.json();",
-							"if (jsondata.status === true) {",
-							"    if (jsondata.data.value) {",
-							"        pm.environment.set(\"password\", jsondata.data.value);",
-							"    }",
-							"}"
-						]
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{loginToken}}",
+						"type": "text",
+						"disabled": true
 					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "value",
-							"value": "12345678",
-							"type": "text"
-						}
-					]
-				},
+				],
+				"body": {},
 				"url": {
-					"raw": "{{host}}{{api}}test",
+					"raw": "{{host}}{{api}}info",
 					"host": [
-						"{{host}}{{api}}test"
+						"{{host}}{{api}}info"
 					]
 				}
 			},

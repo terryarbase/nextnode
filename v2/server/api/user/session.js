@@ -1,37 +1,33 @@
 const _ 			= require('lodash');
 /*
-** Prepare the Member Profile
+** Initial the client's side for the member session
 ** Terry Chan
-** 10/09/2019
+** 11/09/2019
 */
-const profile = async (req, res) => {
-    let data = {};
-    let {
-    	user,
-    } = req;
-	try {
-	    user = await user
-	    			.populate('role', '-name -createdAt -updatedAt -updatedFrom -__v -delegated')
-	    			.populate('identity', '-name -createdAt -updatedAt -enabled -__v')
-	    			.execPopulate();
-	    
-	    data = _.pick(user, [
-			'_id',
-			'email',
-			'name',
-			'role',
-			'language',
-			'contentLanguage',
-			'identity',
-		]);
-	    
-	} catch (err) {
-    	return res.apiError(500, err);
-    }
+const session = async ({
+	nextnode,
+	req,
+	res,
+}) => {
+    // get config information
+    const {
+		api: {
+			common: {
+				info: InfoAPI,
+			},
+		},
+	} = nextnode.get('nextnode v2');
 
-    return res.json({
-    	data,
-    });
+	// get the common app info after login
+	const data = new InfoAPI({
+		nextnode,
+		req,
+		res,
+	}).getInfo();
+
+	res.json({
+		data,
+	});
 }
 
-module.exports = profile;
+module.exports = session;
