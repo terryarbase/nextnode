@@ -65,5 +65,6 @@ module.exports = function (req, res, next) {
 			statusCode: statusCode,
 		}, data);
 	};
+
 	next();
 };

@@ -5,13 +5,13 @@
 	"msg_user_notfound": "The request user is not found",
 	"msg_request_filed_invalid": "The requested fields must be undefined, a string, or an array.",
 
-	"msg_user_nosignin": "Please sign in the system user account first",
-	"msg_user_signined": "You are signed in a system user account.",
-	"msg_user_invalidMember": "Login Failed! Email Address/Username is incorrect",
+	"msg_user_nosignin": "Please signin your system account.",
+	"msg_user_signined": "You are already signed in.",
+	"msg_user_invalidMember": "Login Failed! Username/Email Address is incorrect",
 	"msg_user_incorrectPassword": "Login Failed! Password is incorrect",
-	"msg_user_accountFreeze": "Your account is freezed. Please contact our Service Provider for helps.",
-	"msg_user_locked": "Your account is locked. The system will unlock your account after {{minutes}} minutes.",
-	
+	"msg_user_accountFreeze": "Your account is disabled. Please contact the service provider for helps",
+	"msg_user_locked": "Your account is locked. The system will unlock the account after {{minutes}} minutes",
+
 	"msg_required_field": "{{lang}}: The {{field}} is required.",
 	"msg_invalid_field": "{{lang}}: The {{field}} is invalid.",
 
@@ -105,6 +105,6 @@
 
 	"select_option_actionremove": "Remove",
 	"select_option_actionupdate": "Update",
-	"select_option_actioncreate": "Create",
+	"select_option_actioncreate": "Create"
 
 }

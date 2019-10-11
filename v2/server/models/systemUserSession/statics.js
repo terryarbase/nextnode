@@ -1,9 +1,11 @@
 const _ 						= require('lodash');
 const jwt 						= require('jsonwebtoken');
+const moment 					= require('moment');
 // Configuration
 const {
     userSession: {
         jwtTokens,
+        maxSessionPerUser,
     },
 } = require('./../../config');
 /*
@@ -13,9 +15,9 @@ const {
 */
 const isValidTokenType = type => _.includes(_.keys(jwtTokens), type);
 
-const UserSchemaStatics = UserSchema => {
+const UserSchemaStatics = function(UserSchema) {
 
-	const generatePairToken = () => {
+	const generatePairToken = payload => {
 		const expiresIn = _.get(jwtTokens, 'sessionToken.expiresIn');
 		// create a new sessionToken and corresponding refreshToken
 		const sessionToken = jwt.sign(
@@ -36,22 +38,50 @@ const UserSchemaStatics = UserSchema => {
 		return {
 			refreshToken,
 			sessionToken,
-			expiresIn,
+			expiredAt: moment().add(expiresIn, 'ms').toDate(),
 		};
 	}
 
-	UserSchema.statics.findByTokenType = async({
+	// UserSchema.statics.removeMaximumSession = async function({
+	// 	sysUser,
+	// 	session,
+	// }) {
+	// 	// prepare a session query or not with a lean option
+	// 	let options = {
+	// 		sort: {
+	// 			expiredAt: 1,
+	// 		},
+	// 	};
+	// 	if (session) {
+	// 		options = {
+	// 			...options,
+	// 			session,
+	// 		};
+	// 	}
+
+	// 	const sessions = await this.find({
+	// 		systemUser: sysUser._id,
+	// 	}, {}, options);
+
+	// 	if (sessions.length >= maxSessionPerUser) {
+	// 		// remove all of sessions which are over the maximum
+	// 		const maxOverSession = sessions.slice(0, sessions.length - maxOverSession);
+	// 		await Promise.all(_.map(maxOverSession, s => s.remove()));
+	// 	}
+	// };
+
+	UserSchema.statics.findByTokenType = async function({
 		token,
 		session,
 		lean=true,
 		population=false,
 		type='sessionToken',
-	}) => {
+	}) {
 		if (!isValidTokenType(type)) {
 			// no matching type of token field
 			return null;
 		}
-		const decoded = jwt.verify(token, jwtTokens[type]);
+		const decoded = jwt.verify(token, jwtTokens[type].secret);
 		if (!decoded) {
 			// the given token cannot be varified (possible reason: already exipred, no mathcing jwt secret)
 			return null;
@@ -81,21 +111,37 @@ const UserSchemaStatics = UserSchema => {
 	};
 
 
-	UserSchema.statics.generateTheToken = async({
+	UserSchema.statics.generateTheToken = async function({
 		sessionEntity,
 		payload,
-	}) => {
+		sysUser,
+	}){
 		// create a new sessionToken and corresponding refreshToken
-		const pairToken = generatePairToken();
+		const pairToken = generatePairToken(payload);
 
-		_.forOwn(pairToken, (field, value) => {
+		_.forOwn(pairToken, (value, field) => {
 			sessionEntity.set(field, value);
 		});
-		// sessionEntity.set('sessionToken', sessionToken);
-		// sessionEntity.set('refreshToken', refreshToken);
-		// sessionEntity.set('expiredAt', expiresIn);
+		sessionEntity.set('systemUser', payload._id);
+
+		// find out any maximum session
+		const sessions = await this.find({
+			systemUser: sysUser._id,
+		}, {}, {
+			sort: {
+				expiredAt: 1,	// ascending order, the earlier session will be removed first
+			},
+		});
+
+		if (sessions.length >= maxSessionPerUser) {
+			// remove all of sessions which are over the maximum
+			const maxOverSession = sessions.slice(0, sessions.length - maxSessionPerUser + 1);
+			await Promise.all(_.map(maxOverSession, s => s.remove()));
+		}
+
 		return await sessionEntity.save();
 	};
+
 }
 
 module.exports = UserSchemaStatics;

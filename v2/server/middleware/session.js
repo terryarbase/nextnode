@@ -3,9 +3,40 @@
 ** Terry Chan
 ** 09/10/2019
 */
+const _                         = require('lodash');
 const authHeader                = require('auth-header');
 
-const SystemUserSessionModel 	= require('./../models/systemUserSession');
+const nextnode                  = require('./../../../');
+const SystemUserSession 	    = require('./../models/systemUserSession/model');
+
+const includeRoleList = (req, res, next) => {
+    const {
+        user: {
+            role,
+        },
+    } = req;
+    let roleList = {};
+
+    // single role
+    if (!_.isArray(role)) {
+        roleList = { ...role };
+    } else {
+        // multiple roles
+        const tableList = _.keys(nextnode.lists);
+        const filterRoles = _.map(role, r => _.pick(r, tableList));
+        roleList = _.chain(tableList).reduce((rl, table) => ({
+            ...rl,
+            [table]: _.maxBy(filterRoles, table)[table],
+        }), {}).value();
+        _.map(tableList, table => _.maxBy(filterRoles, table)[table]);
+    }
+
+    req.roleList = roleList;
+
+    if (next) {
+        next();
+    }
+}
 /*
 ** capture the authorization header from loginToken, no error handling will be expected
 ** all of api can have authorization header after login no matter it is public api route
@@ -15,34 +46,48 @@ const SystemUserSessionModel 	= require('./../models/systemUserSession');
 const includeAuthorization = async (req, res, next) => {
     const appToken = req.get('authorization');
     try {
-        // parse decrypted jwt token 
-        const authorization = authHeader.parse(appToken);
-        const {
-	    	scheme,
-	    	token: appToken,
-	    } = authorization;
+        if (appToken) {
+            // parse decrypted jwt token 
+            const authorization = authHeader.parse(appToken);
+            const {
+    	    	scheme,
+    	    	token,
+    	    } = authorization;
 
-	    if (appToken && scheme === 'Bearer') {
-        	const sysUserSession = await SystemUserSessionModel.findByTokenType({
-        		token: appToken,
-        		lean: false,
-        		population: true,
-        	});
+    	    if (token && scheme === 'Bearer') {
+            	const sysUserSession = await SystemUserSession.model.findByTokenType({
+            		token,
+            		lean: false,
+            		population: true,
+            	});
 
-        	if (sysUserSession && sysUserSession.systemUser) {
-        		req.user = sysUserSession.systemUser;
-        	}
-	    }
+            	if (sysUserSession && sysUserSession.systemUser) {
+            		req.user = sysUserSession.systemUser;
+                    req.userSession = sysUserSession;
+            	}
+    	    }
+        }
     } catch (err) {
+        console.log(err);
         // ingore whether the bearer is provided
     }
     next();
 }
 
 const includeSystemUser = async (req, res, next) => {
-    if (!req.user) {
-        return req.apiError(403, req.t.__('msg_user_nosignin'));
+    const {
+        user,
+    } = req
+    if (!user) {
+        return res.apiError(403, req.t.__('msg_user_nosignin'));
     }
+    const {
+        utils: {
+            populateUserRole,
+        },
+    } = nextnode.get('nextnode v2');
+    req.user = await populateUserRole(user);
+
     next();
 };
 
@@ -53,12 +98,13 @@ const includeSystemUser = async (req, res, next) => {
 */
 const excludeSystemUser = async (req, res, next) => {
     if (req.user) {
-        return req.apiError(406, req.t.__('msg_user_signined'));
+        return res.apiError(406, req.t.__('msg_user_signined'));
     }
     next();
 };
 
 module.exports = {
+    includeRoleList,
 	includeAuthorization,
 	includeSystemUser,
     excludeSystemUser,

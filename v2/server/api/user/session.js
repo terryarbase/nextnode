@@ -10,6 +10,11 @@ const profile = async (req, res) => {
     	user,
     } = req;
 	try {
+	    user = await user
+	    			.populate('role', '-name -createdAt -updatedAt -updatedFrom -__v -delegated')
+	    			.populate('identity', '-name -createdAt -updatedAt -enabled -__v')
+	    			.execPopulate();
+	    
 	    data = _.pick(user, [
 			'_id',
 			'email',

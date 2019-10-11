@@ -31,7 +31,7 @@ var Keystone = function () {
 	const rootPath = __dirname;
 	const defaultLang = 'en';
 	const defaultAdminPath = 'webadmin';
-
+	// console.log(`${rootPath}/locales/langs/`);
 	/*
 	** Localization
 	*/
@@ -65,7 +65,7 @@ var Keystone = function () {
 		'localization': false,
 		'logger': ':method :url :status :response-time ms',
 		'auto update': false,
-		'nextnode root': __dirname,
+		'nextnode root': rootPath,
 		'model prefix': null,
 		/*
 		** @Terry Chan 26/10/2018
@@ -100,6 +100,7 @@ var Keystone = function () {
 		** for admin account locking options
 		*/
 		'admin lock minutes': 5,	// 5 minutes
+		'multi admin role': false,
 		'nav style': {
 			fontColor: '#ffffff',
 			fontHover: '#ffe53d'

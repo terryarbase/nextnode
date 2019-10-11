@@ -22,6 +22,7 @@ module.exports = function createDynamicRouter (nextnode) {
 	router.use(bodyParser.json({}));
 	router.use(bodyParser.urlencoded({ extended: true }));
 	router.use(nextnode.get('i18n').init);
+	
 	router.use(multer({ includeEmptyFields: true }));
 
 	// Bind the request to the nextnode instance
@@ -58,13 +59,6 @@ module.exports = function createDynamicRouter (nextnode) {
 
 	// #0 rbac middleware
 	var checkPermission = require('../middleware/checkPermission');
-	/*
-	** [V2 Enhancement]
-	** Get the static locals config using rest api
-	** Terry Chan
-	** 08/10/2019
-	*/
-	router.get('/app/config', checkPermission(0), require('../api/config'));
 
 	// #1: Session API
 	// TODO: this should respect nextnode auth options

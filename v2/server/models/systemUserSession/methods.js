@@ -3,7 +3,7 @@
 ** Terry Chan
 ** 09/10/2019
 */
-const UserSchemaMethod = (nextnode, UserSchema) => {
+const UserSchemaMethod = function(nextnode, UserSchema) {
 
 }
 

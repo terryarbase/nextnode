@@ -1,5 +1,7 @@
-const SystemUserSession 		= require('./systemUserSession');
+const systemUserSession 		= require('./systemUserSession');
+const systemUser 				= require('./systemUser');
 
 module.exports = {
-	SystemUserSession,
+	systemUserSession,
+	systemUser,
 };

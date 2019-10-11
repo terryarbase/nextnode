@@ -1,7 +1,7 @@
-const config 		= require('./config');
+const common 		= require('./common');
 const user 			= require('./user');
 
 module.exports = {
-	config,
+	common,
 	user,
 };

@@ -1,49 +1,45 @@
 const _ 				= require('lodash');
 const moment 			= require('moment');
+
+const APIInterface 		= require('./../interface');
 /*
 ** authorize the user for login as member 
 ** Terry Chan
 ** 10/09/2019
 */
+class SignInHandler extends APIInterface{
 
-class SignInHandler {
-	constuctor(nextnode, req, res) {
-		this.nextnode = nextnode;
-		this.req = req;
-		this.res = res;
+	constructor(config) {
+		super(config);
+		const {
+			nextnode,
+		} = config;
 		this.sysUser = null;
-		this.userModel = nextnode.list('User');
+		const {
+			config: {
+				userSession: {
+					modelName: SystemUserSessionModelName,
+				},
+			},
+		} = nextnode.get('nextnode v2');
+		this.userSessionList = nextnode.list(SystemUserSessionModelName);
 		this.accountStatusOptions = nextnode.Options.status.pure;
-		// const {
-		// 	model: {
-		// 		systemUserSession: userSessionModel,
-		// 	},
-		// } = nextnode.get('nextnode v2');
-		// this.userSessionModel = userSessionModel;
 		// main control flow self binding
-        const funcs = [
-            // 'preMemberEmail',
-            // 'preMemberPassword',
-            // 'preMemberStatus',
-            // 'postMember',
-            // 'brokeMember',
-            'execute',
-        ];
-        _.forEach(funcs, func => this[func] = this[func].bind(this));
+        // const funcs = [
+        // ];
+        // _.forEach(funcs, func => this[func] = this[func].bind(this));
 	}
 
 	// Pre-checking for the System User Session
-	async preSession (userInfo){
-		const {
-			model: {
-				systemUserSession: SystemUserSession,
-			},
-		} = nextnode.get('nextnode v2');
-
-		const sessionEntity = new SystemUserSession();
-		return await SystemUserSession.generateTheToken({
+	async preSession (payload){
+		const sessionEntity = new this.userSessionList.model();
+		// await this.userSessionList.mode.removeMaximumSession({
+		// 	sysUser: this.sysUser,
+		// });
+		return await this.userSessionList.model.generateTheToken({
 			sessionEntity,
-			userInfo,
+			payload,
+			sysUser: this.sysUser,
 		});
 	};
 
@@ -56,13 +52,12 @@ class SignInHandler {
 	    } = this.req;
 	    // case insensitive
 	    email = _.trim(_.toLower(email));
-
 		// step 1: check for the current user
-		this.sysUser = await this.userModel.authorisedEmail({
+		this.sysUser = await this.userList.model.authorisedEmail({
 			email,
 		});
-		if (!currentUser) {
-			return () => this.res.apiError(406, req.t.__('msg_user_invalidMember'));
+		if (!this.sysUser) {
+			return () => this.res.apiError(406, this.req.t.__('msg_user_invalidMember'));
 		}
 
 	    // the system user assume must be found in this phase
@@ -75,14 +70,14 @@ class SignInHandler {
 			body: {
 				password,
 			},
-		} = req;
-		const isCorrectPassword = await this.userModel.authorisedPassword({
+		} = this.req;
+		const isCorrectPassword = await this.userList.model.authorisedPassword({
 			sysUser: this.sysUser,
 			password,
 		});
 
 		if (!isCorrectPassword) {
-			return () => this.res.apiError(406, req.t.__('msg_user_incorrectPassword'));
+			return () => this.res.apiError(406, this.req.t.__('msg_user_incorrectPassword'));
 		}
 
 		return null;
@@ -100,9 +95,10 @@ class SignInHandler {
 		if (this.sysUser) {
 			const lockEnabled = this.nextnode.get('admin lock');
 			const maxLock = this.nextnode.get('admin max lock');
-			this.userModel.authorisedLockState({
+			this.userList.model.authorisedLockState({
 				sysUser: this.sysUser,
 				lockEnabled,
+				maxLock,
 			});
 		}
 	}
@@ -115,20 +111,52 @@ class SignInHandler {
 			},
 		} = this.nextnode;
 		if (this.sysUser.accountStatus === this.accountStatusOptions.disabled.value) {
-			return () => this.res.apiError(406, req.t.__('msg_user_accountFreeze'));
+			return () => this.res.apiError(406, this.req.t.__('msg_user_accountFreeze'));
 		}
 
 		// step 4: check for the account locking status
 		const minutes = this.nextnode.get('admin lock minutes');
-		const lockEnabled = this.nextnode.get('admin lock');
+		const lockEnabled = this.nextnode.get('admin max lock');
 		if (lockEnabled && !this.sysUser.isAdmin) {
-			return () => this.res.apiError(406, req.t.__('msg_user_locked', {
-				minutes: lockEnabled,
+			return () => this.res.apiError(406, this.req.t.__('msg_user_locked', {
+				minutes,
 			}));
 		}
 
 	    // the system user assume must be found in this phase
 	    return null;
+	}
+
+	async getSigninInfo(data) {
+		// get config information
+	    const {
+			api: {
+				common: {
+					info: InfoAPI,
+				},
+			},
+			middleware: {
+				session: {
+					includeRoleList,
+				},
+			},
+			utils: {
+	            populateUserRole,
+	        },
+		} = this.nextnode.get('nextnode v2');
+
+		this.req.user = await populateUserRole(this.sysUser);
+
+		// normalize all of role list for the user who is loged in
+		includeRoleList(this.req);
+
+		// get the common app info after login
+		return new InfoAPI({
+			nextnode: this.nextnode,
+			signinInfo: data,
+			req: this.req,
+			res: this.res,
+		}).getInfo();
 	}
 
 	async execute() {
@@ -142,15 +170,6 @@ class SignInHandler {
 		    	return infoChecker();
 		    }
 
-		    // check for password, if invalid, then log the locking info
-		    infoChecker = await this.preMemberPassword();
-		    // if system user error caught
-		    if (infoChecker) {
-		    	// update locking info
-		    	brokeMember();
-		    	return infoChecker();
-		    }
-
 		    // check for account enabled status or locking status
 		    infoChecker = await this.preMemberStatus();
 		    // if system user error caught
@@ -158,16 +177,26 @@ class SignInHandler {
 		    	return infoChecker();
 		    }
 
-		    nextnode = _.pick(sysUser, [
+		    // check for password, if invalid, then log the locking info
+		    infoChecker = await this.preMemberPassword();
+		    // if system user error caught
+		    if (infoChecker) {
+		    	// update locking info
+		    	this.brokeMember();
+		    	return infoChecker();
+		    }
+
+		    data = _.pick(this.sysUser, [
 				'_id',
 				'email',
 				'name',
 			]);
+
 		    // create the user token session
 		    const sysUserSession = await this.preSession(data);
 
-		    nextnode = {
-		    	...userInfo,
+		    data = {
+		    	...data,
 		    	..._.pick(sysUserSession, [
 		    		'refreshToken',
 		    		'sessionToken',
@@ -179,13 +208,15 @@ class SignInHandler {
 		} catch (err) {
 			// update locking info
 		    this.brokeMember();
-	    	return res.apiError(500, err);
+	    	return this.res.apiError(500, err);
 	    }
 
+	    const response = await this.getSigninInfo(data);
+
 	    return this.res.json({
-	    	data,
+	    	data: response,
 	    });
 	}
 }
 
-module.exports = options => new SignInHandler(options).execute();
+module.exports = SignInHandler;
