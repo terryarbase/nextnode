@@ -46,11 +46,13 @@ const includeAuthorization = async (req, res, next) => {
             		lean: false,
             		population: true,
             	});
-                console.log(sysUserSession);
+
             	if (sysUserSession && sysUserSession.systemUser) {
             		req.user = sysUserSession.systemUser;
                     req.userSession = sysUserSession;
             	}
+
+                req.sessionToken = token;
     	    }
         }
     } catch (err) {

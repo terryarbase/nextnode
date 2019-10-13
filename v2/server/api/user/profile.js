@@ -1,47 +1,39 @@
-const _ 			= require('lodash');
+
+const _                 = require('lodash');
+
+const APIInterface      = require('./../interface');
 /*
 ** Prepare the Member Profile
 ** Terry Chan
-** 10/09/2019
+** 13/09/2019
 */
-const profile = async ({
-	nextnode,
-	req,
-	res,
-}) => {
-    let data = {};
-    let {
-    	user,
-    } = req;
-	try {
-	    data = _.pick(user, [
-			'_id',
-			'email',
-			'name',
-			'role',
-			'language',
-			'contentLanguage',
-			'identity',
-		]);
-
-		const {
-			utils: {
-				readUserRoleList,
-			},
-		} = nextnode.get('nextnode v2');
-	    
-		data = {
-			...data,
-			role: readUserRoleList(data.role),
-		};
-
-	} catch (err) {
-    	return res.apiError(500, err);
+class ProfileHandler extends APIInterface{
+    constructor(config) {
+        super(config);
     }
 
-    return res.json({
-    	data,
-    });
+    async execute() {
+        let data = this.getUserInfo(req.user);
+		try {
+			const {
+				utils: {
+					readUserRoleList,
+				},
+			} = this.nextnode.get('nextnode v2');
+		    
+			data = {
+				...data,
+				role: readUserRoleList(data.role),
+			};
+
+		} catch (err) {
+	    	return res.apiError(500, err);
+	    }
+
+	    return res.json({
+	    	data,
+	    });
+    }
 }
 
-module.exports = profile;
+module.exports = ProfileHandler;

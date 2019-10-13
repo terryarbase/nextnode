@@ -11,6 +11,7 @@
 	"msg_user_incorrectPassword": "Login Failed! Password is incorrect",
 	"msg_user_accountFreeze": "Your account is disabled. Please contact the service provider for helps",
 	"msg_user_locked": "Your account is locked. The system will unlock the account after {{minutes}} minutes",
+	"msg_user_invalidRefreshToken": "The Refresh token does not match to the given Session Token. Please login again",
 
 	"msg_required_field": "{{lang}}: The {{field}} is required.",
 	"msg_invalid_field": "{{lang}}: The {{field}} is invalid.",

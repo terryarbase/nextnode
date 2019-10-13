@@ -61,7 +61,7 @@ const getStaticAppLanguageSectionFile = async () => {
     return data;
 };
 
-const fromRequestLanguage = async (req, name) => {
+const fromRequestLanguage = (req, name) => {
     return req.get(name) || req.body[name] || req.query[name];
     // if (nextnode.get('support locales').indexOf(lang) === -1){
     //     return null;
@@ -70,7 +70,7 @@ const fromRequestLanguage = async (req, name) => {
 }
 
 // is it valid lang in supporting language pack
-const getValidSupports = async (supportLanguages, language) => {
+const getValidSupports = (supportLanguages, language) => {
     return !!supportLanguages[language] ? language : null;
 }
 
@@ -94,7 +94,7 @@ const getCurrentLanguage = async ({
                 contentLanguage = user.language;
             }
             if (!uiLanguage) {
-                uiLanguage = user.language;
+                uiLanguage = user.contentLanguage;
             }
         }
     }

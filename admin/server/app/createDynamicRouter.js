@@ -18,13 +18,13 @@ module.exports = function createDynamicRouter (nextnode) {
 	var IndexRoute = require('../routes/index');
 	var SigninRoute = require('../routes/signin');
 	var SignoutRoute = require('../routes/signout');
+
 	// Use bodyParser and multer to parse request bodies and file uploads
 	router.use(bodyParser.json({}));
 	router.use(bodyParser.urlencoded({ extended: true }));
 	router.use(nextnode.get('i18n').init);
 	
 	router.use(multer({ includeEmptyFields: true }));
-
 	// Bind the request to the nextnode instance
 	router.use(function (req, res, next) {
 		requestMiddleware(req, res, next, nextnode);
@@ -199,11 +199,13 @@ module.exports = function createDynamicRouter (nextnode) {
 	);
 
 	// #6: List Routes
-	router.all('/*', function(req, res) {
-		const render = true;
-		combinePermission(req, res);
-		return IndexRoute(req, res, render);
-	});
+	if (nextnode.get('stage') !== 2) {
+		router.all('/*', function(req, res) {
+			const render = true;
+			combinePermission(req, res);
+			return IndexRoute(req, res, render);
+		});
+	}
 	// router.all('/:list/:item', function(req, res) {
 	// 	const render = true;
 	// 	return IndexRoute(req, res, render);

@@ -17,7 +17,12 @@ const isValidTokenType = type => _.includes(_.keys(jwtTokens), type);
 
 const UserSchemaStatics = function(UserSchema) {
 
-	const generatePairToken = payload => {
+	const generatePairToken = sysUser => {
+		const payload = _.pick(sysUser, [
+			'_id',
+			'email',
+			'name',
+		]);
 		const expiresIn = _.get(jwtTokens, 'sessionToken.expiresIn');
 		// create a new sessionToken and corresponding refreshToken
 		const sessionToken = jwt.sign(
@@ -42,33 +47,18 @@ const UserSchemaStatics = function(UserSchema) {
 		};
 	}
 
-	// UserSchema.statics.removeMaximumSession = async function({
-	// 	sysUser,
-	// 	session,
-	// }) {
-	// 	// prepare a session query or not with a lean option
-	// 	let options = {
-	// 		sort: {
-	// 			expiredAt: 1,
-	// 		},
-	// 	};
-	// 	if (session) {
-	// 		options = {
-	// 			...options,
-	// 			session,
-	// 		};
-	// 	}
+	UserSchema.statics.refreshTheToken = async function({
+		sysUserSession,
+	}) {
+		// create a new sessionToken and corresponding refreshToken
+		const pairToken = generatePairToken(sysUserSession.systemUser);
 
-	// 	const sessions = await this.find({
-	// 		systemUser: sysUser._id,
-	// 	}, {}, options);
+		_.forOwn(pairToken, (value, field) => {
+			sysUserSession.set(field, value);
+		});
 
-	// 	if (sessions.length >= maxSessionPerUser) {
-	// 		// remove all of sessions which are over the maximum
-	// 		const maxOverSession = sessions.slice(0, sessions.length - maxOverSession);
-	// 		await Promise.all(_.map(maxOverSession, s => s.remove()));
-	// 	}
-	// };
+		return await sysUserSession.save();
+	};
 
 	UserSchema.statics.findByTokenType = async function({
 		token,
@@ -110,16 +100,15 @@ const UserSchemaStatics = function(UserSchema) {
 
 	UserSchema.statics.generateTheToken = async function({
 		sessionEntity,
-		payload,
 		sysUser,
 	}){
 		// create a new sessionToken and corresponding refreshToken
-		const pairToken = generatePairToken(payload);
+		const pairToken = generatePairToken(sysUser);
 
 		_.forOwn(pairToken, (value, field) => {
 			sessionEntity.set(field, value);
 		});
-		sessionEntity.set('systemUser', payload._id);
+		sessionEntity.set('systemUser', sysUser._id);
 
 		// find out any maximum session
 		const sessions = await this.find({

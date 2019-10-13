@@ -11,6 +11,8 @@
 	"msg_user_incorrectPassword": "登錄失敗！密碼不正確",
 	"msg_user_accountFreeze": "您的帳戶被禁用！請與我們的服務提供商聯繫以獲取幫助。",
 	"msg_user_locked": "您的帳戶已被鎖定！系統將在{{minutes}}分鐘後解鎖您的帳戶。",
+	"msg_user_invalidRefreshToken": "刷新令牌與給定的會話令牌不匹配！請重新登錄",
+
 	
 	"msg_required_field": "{{lang}}: 欄位{{field}}資料是必須填寫",
 	"msg_invalid_field": "{{lang}}: 欄位{{field}}資料填寫不正確",

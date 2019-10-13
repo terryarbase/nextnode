@@ -15,6 +15,7 @@ module.exports = function createApp (keystone, express) {
 	}
 
 	var app = keystone.app;
+
 	require('./initLetsEncrypt')(keystone, app);
 	require('./initSslRedirect')(keystone, app);
 

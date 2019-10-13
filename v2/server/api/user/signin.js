@@ -31,14 +31,13 @@ class SignInHandler extends APIInterface{
 	}
 
 	// Pre-checking for the System User Session
-	async preSession (payload){
+	async preSession (){
 		const sessionEntity = new this.userSessionList.model();
 		// await this.userSessionList.mode.removeMaximumSession({
 		// 	sysUser: this.sysUser,
 		// });
 		return await this.userSessionList.model.generateTheToken({
 			sessionEntity,
-			payload,
 			sysUser: this.sysUser,
 		});
 	};
@@ -185,18 +184,15 @@ class SignInHandler extends APIInterface{
 		    	this.brokeMember();
 		    	return infoChecker();
 		    }
-
-		    data = _.pick(this.sysUser, [
-				'_id',
-				'email',
-				'name',
-			]);
-
 		    // create the user token session
-		    const sysUserSession = await this.preSession(data);
+		    const sysUserSession = await this.preSession();
 
 		    data = {
-		    	...data,
+		    	..._.pick(this.sysUser, [
+		    		'id',
+		    		'email',
+		    		'name',
+		    	]),
 		    	..._.pick(sysUserSession, [
 		    		'refreshToken',
 		    		'sessionToken',

@@ -4,6 +4,9 @@ const grappling = require('grappling-hook');
 const path = require('path');
 const utils = require('keystone-utils');
 const i18n = require('i18n');
+
+const LocalizationHandler = require('./lib/handler/staticGenerator/localization');
+
 var locales = require('./locales');
 require('extend-error');
 locales = locales.toJS();
@@ -31,6 +34,7 @@ var Keystone = function () {
 	const rootPath = __dirname;
 	const defaultLang = 'en';
 	const defaultAdminPath = 'webadmin';
+	const localePath = 'static/locale.json';
 	// console.log(`${rootPath}/locales/langs/`);
 	/*
 	** Localization
@@ -105,6 +109,8 @@ var Keystone = function () {
 			fontColor: '#ffffff',
 			fontHover: '#ffe53d'
 		},
+
+		'support locales pack': LocalizationHandler.readSupportingLangs(`${__dirname}/${localePath}`),
 
 		'customized error': {
 	        HookCheckError: Error.extend('HookCheckError', 500),
