@@ -1,3 +1,5 @@
+const nextnode  = require('./../../../');
+
 const user 		= require('./user');
 const common 	= require('./common');
 
@@ -7,7 +9,10 @@ const initialRoute = config => {
 	// prvent lost from spreading
 	config.api = api;
 	common(config);
-	user(config);
+	user({
+		...config,
+		apiVersion: `v${nextnode.get('stage')}`,
+	});
 };
 
 module.exports = initialRoute;

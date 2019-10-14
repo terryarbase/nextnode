@@ -38,7 +38,7 @@ class SignInHandler extends APIInterface{
 		// });
 		return await this.userSessionList.model.generateTheToken({
 			sessionEntity,
-			sysUser: this.sysUser,
+			user: this.sysUser,
 		});
 	};
 

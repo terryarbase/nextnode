@@ -1,49 +1,65 @@
-const {
-	session: {
-		includeSystemUser,
-		excludeSystemUser,
-	},
-} = require('./../middleware');
-
+/*
+** Common routing for the basic user account authorization
+** Usage: used to the client to handle the basic login flow, no need to recap the behaviors
+** ===========================================================================================
+** @Parameters
+** 	1. nextnode: The library instance object
+**  2. router: Basic App Router depends on the callee
+** ===========================================================================================
+** Terry Chan
+** 13/10/2019
+*/
 const registerUserRoutes = ({
 	nextnode,
 	router,
-	api,
+	apiVersion,
 }) => {
+	const {
+		middleware: {
+			session: {
+				includeSystemUser,
+				excludeSystemUser,
+			},
+		},
+		api: {
+			user: userAPI,
+		},
+	} = nextnode.get('nextnode v2');
+
 	router.post(
-		'/app/v2/signin', 
+		`/app/${apiVersion}/signin`, 
 		excludeSystemUser, 
-		(req, res) => new api.user.signin({ nextnode, req, res }).execute(),
+		(req, res) => new userAPI.signin({ nextnode, req, res }).execute(),
 	);
 
 	router.post(
-		'/app/v2/refreshSession',
-		(req, res) => api.user.refresh({ nextnode, req, res }),
+		`/app/${apiVersion}/refreshSession`,
+		(req, res) => userAPI.refresh({ nextnode, req, res }),
 	);
 
 	// all of routes under v2/session must carry about authorization
 	router.all([
-		'/app/v2/session*',
+		`/app/${apiVersion}/session*`,
 	], includeSystemUser);
 
 	router.get(
-		'/app/v2/session', 
-		(req, res) => api.user.session({ nextnode, req, res }),
+		`/app/${apiVersion}/session`, 
+		(req, res) => userAPI.session({ nextnode, req, res }),
 	);
 
 	router.post(
-		'/app/v2/session/signout', 
-		api.user.signout,
+		`/app/${apiVersion}/session/signout`, 
+		userAPI.signout,
 	);
 
 	router.get(
-		'/app/v2/session/profile', 
-		(req, res) => new api.user.profile({ nextnode, req, res }).execute(),
+		`/app/${apiVersion}/session/profile`, 
+		(req, res) => new userAPI.profile({ nextnode, req, res }).execute(),
 	);
 
 	router.post(
-		'/app/v2/session/profile', 
-		(req, res) => new api.user.account({ nextnode, req, res }).execute(),
+		`/app/${apiVersion}/session/profile`, 
+		(req, res) => new userAPI.account({ nextnode, req, res }).execute(),
 	);
 
 };

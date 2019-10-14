@@ -60,6 +60,7 @@ module.exports = function (req, res, next) {
 		var data = typeof error === 'string' || (error && detail)
 			? { error: error, detail: detail }
 			: error;
+		res.set('Access-Control-Allow-Origin', '*');
 		res.json(data);
 		return assign({
 			statusCode: statusCode,

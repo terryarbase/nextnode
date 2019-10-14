@@ -32,7 +32,7 @@ const refresh = async ({
             }
 
             UserSession = await UserSessionList.model.refreshTheToken({
-                sysUserSession: UserSession,
+                userSession: UserSession,
             });
 
         } else {

@@ -1,18 +1,19 @@
 const _ 						= require('lodash');
 const jwt 						= require('jsonwebtoken');
 const moment                    = require('moment');
-// Configuration
-const {
-    userSession: {
-        jwtTokens,
-    },
-} = require('./../../config');
 /*
 ** Enhance Schema Statics
 ** Terry Chan
 ** 09/10/2019
 */
-const UserSchemaStatics = function(UserSchema) {
+const UserSchemaStatics = function(UserSchema, config) {
+
+    // Configuration
+    const {
+        userSession: {
+            jwtTokens,
+        },
+    } = config;
 
     UserSchema.statics.authorisedLockState = async({
         sysUser,

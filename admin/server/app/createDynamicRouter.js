@@ -2,6 +2,8 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var multer = require('multer');
 
+const cors = require('cors');
+
 const requestMiddleware = require('../middleware/request');
 const combinePermission = require('../middleware/combinePermission');
 
@@ -23,6 +25,10 @@ module.exports = function createDynamicRouter (nextnode) {
 	router.use(bodyParser.json({}));
 	router.use(bodyParser.urlencoded({ extended: true }));
 	router.use(nextnode.get('i18n').init);
+	if (nextnode.get('stage') === 2) {
+		router.use(cors());
+		router.options('*', cors());
+	}
 	
 	router.use(multer({ includeEmptyFields: true }));
 	// Bind the request to the nextnode instance

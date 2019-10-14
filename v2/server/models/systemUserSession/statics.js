@@ -1,24 +1,24 @@
 const _ 						= require('lodash');
 const jwt 						= require('jsonwebtoken');
 const moment 					= require('moment');
-// Configuration
-const {
-    userSession: {
-        jwtTokens,
-        maxSessionPerUser,
-    },
-} = require('./../../config');
 /*
 ** Enhance Schema Statics
 ** Terry Chan
 ** 09/10/2019
 */
-const isValidTokenType = type => _.includes(_.keys(jwtTokens), type);
+const isValidTokenType = (jwtTokens, type) => _.includes(_.keys(jwtTokens), type);
 
-const UserSchemaStatics = function(UserSchema) {
+const UserSchemaStatics = function(UserSchema, config) {
+	// Configuration
+	const {
+	    userSession: {
+	        jwtTokens,
+	        maxSessionPerUser,
+	    },
+	} = config;
 
-	const generatePairToken = sysUser => {
-		const payload = _.pick(sysUser, [
+	const generatePairToken = user => {
+		const payload = _.pick(user, [
 			'_id',
 			'email',
 			'name',
@@ -48,16 +48,16 @@ const UserSchemaStatics = function(UserSchema) {
 	}
 
 	UserSchema.statics.refreshTheToken = async function({
-		sysUserSession,
+		userSession,
 	}) {
 		// create a new sessionToken and corresponding refreshToken
-		const pairToken = generatePairToken(sysUserSession.systemUser);
+		const pairToken = generatePairToken(userSession.systemUser);
 
 		_.forOwn(pairToken, (value, field) => {
-			sysUserSession.set(field, value);
+			userSession.set(field, value);
 		});
 
-		return await sysUserSession.save();
+		return await userSession.save();
 	};
 
 	UserSchema.statics.findByTokenType = async function({
@@ -67,7 +67,7 @@ const UserSchemaStatics = function(UserSchema) {
 		population=false,
 		type='sessionToken',
 	}) {
-		if (!isValidTokenType(type)) {
+		if (!isValidTokenType(jwtTokens, type)) {
 			// no matching type of token field
 			return null;
 		}
@@ -89,10 +89,10 @@ const UserSchemaStatics = function(UserSchema) {
 		}
 		const condition = {
 			[type]: token,
-			systemUser: _.get(decoded, '_id'),
+			targetUser: _.get(decoded, '_id'),
 		};
 		if (population) {
-			return await this.findOne(condition, {}, options).populate('systemUser');
+			return await this.findOne(condition, {}, options).populate('targetUser');
 		}
 		return await this.findOne(condition, {}, options);
 	};
@@ -100,19 +100,19 @@ const UserSchemaStatics = function(UserSchema) {
 
 	UserSchema.statics.generateTheToken = async function({
 		sessionEntity,
-		sysUser,
+		user,
 	}){
 		// create a new sessionToken and corresponding refreshToken
-		const pairToken = generatePairToken(sysUser);
+		const pairToken = generatePairToken(user);
 
 		_.forOwn(pairToken, (value, field) => {
 			sessionEntity.set(field, value);
 		});
-		sessionEntity.set('systemUser', sysUser._id);
+		sessionEntity.set('targetUser', user._id);
 
 		// find out any maximum session
 		const sessions = await this.find({
-			systemUser: sysUser._id,
+			targetUser: user._id,
 		}, {}, {
 			sort: {
 				expiredAt: 1,	// ascending order, the earlier session will be removed first

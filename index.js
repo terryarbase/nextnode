@@ -105,6 +105,7 @@ var Keystone = function () {
 		*/
 		'admin lock minutes': 5,	// 5 minutes
 		'multi admin role': false,
+		'user model': 'User',
 		'nav style': {
 			fontColor: '#ffffff',
 			fontHover: '#ffe53d'

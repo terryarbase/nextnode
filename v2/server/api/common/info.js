@@ -14,11 +14,47 @@ class ConfigInfoHandler extends APIInterface{
 	}
 
 	getInfo() {
+		/**
+		 * orphanedLists depends on this.nextnode.nav. call it after rbac config
+		 */
+		const orphanedLists = [];
+		const backUrl = this.nextnode.get('back url');
+		if (backUrl) {
+			// backUrl can be falsy, to disable the link altogether
+			// but if it's undefined, default it to "/"
+			backUrl = this.nextnode.get('front url') || '/';
+		}
+		let nextnodeData = {
+			adminPath: '/' + this.nextnode.get('admin path'),
+			appversion: this.nextnode.get('appversion'),
+			logo: this.nextnode.get('signin logo'),
+			backUrl: backUrl || this.nextnode.get('frontendUrl'),
+			brand: this.nextnode.get('brand'),
+		};
+
+		/*
+		** Localization
+		*/
+		if (this.req.locales && this.req.locales.localization) {
+			nextnodeData = {
+				...nextnodeData,
+				...(
+					_.pick(
+						this.req.locales,
+						[
+							'localization',
+							'defaultLanguage',
+						],
+					)
+				),
+				currentLanguage: this.req.locales.langd,
+				currentUILanguage: this.req.locales.langf,
+			};
+		}
+
 		if (!this.req.user) {
 			return {
-				adminPath: '/' + this.nextnode.get('admin path'),
-				brand: this.nextnode.get('brand'),
-				logo: this.nextnode.get('signin logo'),
+				...nextnodeData,
 				redirect: this.nextnode.get('signin redirect'),
 				userCanAccessKeystone: !!(this.req.user && this.req.user.canAccessKeystone),
 			};
@@ -29,14 +65,7 @@ class ConfigInfoHandler extends APIInterface{
 		_.forEach(this.nextnode.lists, function (list, key) {
 			lists[key] = list.getOptions();
 		});
-		
 
-		const backUrl = this.nextnode.get('back url');
-		if (backUrl) {
-			// backUrl can be falsy, to disable the link altogether
-			// but if it's undefined, default it to "/"
-			backUrl = this.nextnode.get('front url') || '/';
-		}
 		if (this.nextnode.get('rbac') && this.req.user) {
 			// console.log(this.nextnode.get('nav'));
 			const newNav = this.nextnode.mergeNavOptionWithReservedCollections();
@@ -66,21 +95,8 @@ class ConfigInfoHandler extends APIInterface{
 			});
 		}
 
-		/**
-		 * orphanedLists depends on this.nextnode.nav. call it after rbac config
-		 */
-		const orphanedLists = [];
-		if (this.req.user) {
-			this.nextnode.getOrphanedLists(this.req.roleList).map(function (list) {
-				return _.pick(list, ['key', 'label', 'path']);
-			});
-		}
-		const nextnodeData = {
-			adminPath: '/' + this.nextnode.get('admin path'),
-			appversion: this.nextnode.get('appversion'),
-			logo: this.nextnode.get('signin logo'),
-			backUrl: backUrl || this.nextnode.get('frontendUrl'),
-			brand: this.nextnode.get('brand'),
+		nextnodeData = {
+			...nextnodeData,
 			lists,
 			nav: this.nextnode.nav,
 			orphanedLists: orphanedLists,
@@ -90,21 +106,29 @@ class ConfigInfoHandler extends APIInterface{
 			},
 			userList: this.userList.key,
 			version: this.nextnode.version,
-			wysiwyg: { options: {
-				enableImages: this.nextnode.get('wysiwyg images') ? true : false,
-				enableCloudinaryUploads: this.nextnode.get('wysiwyg cloudinary images') ? true : false,
-				enableS3Uploads: this.nextnode.get('wysiwyg s3 images') ? true : false,
-				additionalButtons: this.nextnode.get('wysiwyg additional buttons') || '',
-				additionalPlugins: this.nextnode.get('wysiwyg additional plugins') || '',
-				additionalOptions: this.nextnode.get('wysiwyg additional options') || {},
-				overrideToolbar: this.nextnode.get('wysiwyg override toolbar'),
-				skin: this.nextnode.get('wysiwyg skin') || 'keystone',
-				menubar: this.nextnode.get('wysiwyg menubar'),
-				importcss: this.nextnode.get('wysiwyg importcss') || '',
-			} },
+			wysiwyg: {
+				options: {
+					enableImages: this.nextnode.get('wysiwyg images') ? true : false,
+					enableCloudinaryUploads: this.nextnode.get('wysiwyg cloudinary images') ? true : false,
+					enableS3Uploads: this.nextnode.get('wysiwyg s3 images') ? true : false,
+					additionalButtons: this.nextnode.get('wysiwyg additional buttons') || '',
+					additionalPlugins: this.nextnode.get('wysiwyg additional plugins') || '',
+					additionalOptions: this.nextnode.get('wysiwyg additional options') || {},
+					overrideToolbar: this.nextnode.get('wysiwyg override toolbar'),
+					skin: this.nextnode.get('wysiwyg skin') || 'keystone',
+					menubar: this.nextnode.get('wysiwyg menubar'),
+					importcss: this.nextnode.get('wysiwyg importcss') || '',
+				},
+			},
 			appLanguage: this.req.appLanguage,
 			menuLanguage: this.req.menuLanguage,
 		};
+
+		if (this.req.user) {
+			this.nextnode.getOrphanedLists(this.req.roleList).map(function (list) {
+				return _.pick(list, ['key', 'label', 'path']);
+			});
+		}
 
 		const codemirrorPath = this.nextnode.get('codemirror url path')
 			? '/' + this.nextnode.get('codemirror url path')
@@ -148,23 +172,6 @@ class ConfigInfoHandler extends APIInterface{
 				nextnodeData.roleKey = this.req.roleList.roleKey;
 			}
 		};
-		/*
-		** Localization
-		*/
-		if (this.req.locales && this.req.locales.localization) {
-			// for adminUI data language selector
-			nextnodeData.localization = this.req.locales.localization;
-			nextnodeData.defaultLanguage = this.req.locales.defaultLanguage;
-			// nextnodeData.defaultUILanguage = this.req.locales.defaultLanguage;
-			nextnodeData.currentLanguage = this.req.locales.langd;
-			nextnodeData.currentUILanguage = this.req.locales.langf;
-			// language cookie control
-			nextnodeData.currentUILanguageName = this.nextnode.get('cookie frontend locale');
-			nextnodeData.currentLanguageName = this.nextnode.get('cookie data locale');
-			nextnodeData.languageCookieOptions = this.nextnode.get('cookie language options');
-			// for adminUI layout language selector
-			// nextnodeData.frontLang = this.req.locales.localization;
-		}
 		// console.log(nextnodeData);
 		const cloudinaryConfig = this.nextnode.get('cloudinary config');
 		if (cloudinaryConfig) {

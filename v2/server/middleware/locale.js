@@ -20,6 +20,7 @@ const getStaticLanguageFile = async () => {
     try {
         data = JSON.parse(fs.readFileSync(path, 'utf8'));
     } catch (err) { // if the language cannnot be read, then query db
+        console.log(err);
         console.log('> Cannot read the Static Language File, query languages from Database.');
         const langHandler = new localization(nextnode, nextnode.list('Locale').model);
         // export file, and get db languages, if error then ignore localization in the app
@@ -35,6 +36,7 @@ const getStaticNavLanguageSectionFile = async () => {
     try {
         data = JSON.parse(fs.readFileSync(path, 'utf8'));
     } catch (err) { // if the language cannnot be read, then query db
+        console.log(err);
         console.log('> Cannot read the Static Navigation Language Section File, query navigation language sections from Database.');
         const navLangHandler = new navigationLanguage(nextnode, nextnode.list('NavigationLanguage').model);
         // export file, and get db languages, if error then ignore localization in the app
@@ -111,13 +113,13 @@ const getCurrentLanguage = async ({
 const includeLocale = async function (req, res, next) {
     const defaultLanguage = nextnode.get('locale');
     // get all current supported language from locale.json config
-    const supportLanguages = await getStaticLanguageFile();
-    const localization = _.pick(supportLanguages, defaultLanguage);
+    const localization = await getStaticLanguageFile();
+    // const localization = _.pick(supportLanguages, defaultLanguage);
 
     // get request language setting, no matter it is supporting localization
     const { contentLanguage, uiLanguage } = await getCurrentLanguage({
         currentLang: defaultLanguage,
-        supportLanguages,
+        supportLanguages: localization,
         req,
     });
 
