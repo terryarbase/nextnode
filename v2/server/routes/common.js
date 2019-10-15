@@ -1,5 +1,6 @@
 const {
 	session: {
+		includeSessionToken,
 		includeAuthorization,
 	},
 	locale: {
@@ -23,7 +24,8 @@ const registerCommonRoutes = ({
 	], 
 		includeAPIError, 
 		includeLogError,
-		includeAuthorization,	// jwt authorization hookin
+		includeSessionToken,	// jwt authorization hooking
+		includeAuthorization,	// jwt authorization hooking from db
 		includeLocale,	// localiztion hooking
 	);
 

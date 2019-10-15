@@ -29,31 +29,48 @@ const includeRoleList = (req, res, next) => {
 ** Terry Chan
 ** 09/10/2019
 */
-const includeAuthorization = async (req, res, next) => {
+// decode the jwt session token
+const includeSessionToken = (req, res, next) => {
     const appToken = req.get('authorization');
     try {
         if (appToken) {
             // parse decrypted jwt token 
             const authorization = authHeader.parse(appToken);
             const {
-    	    	scheme,
-    	    	token,
-    	    } = authorization;
+                scheme,
+                token,
+            } = authorization;
 
-    	    if (token && scheme === 'Bearer') {
-            	const sysUserSession = await SystemUserSession.model.findByTokenType({
-            		token,
-            		lean: false,
-            		population: true,
-            	});
+            if (token && scheme === 'Bearer') {
+                const sessionTokenInfo = SystemUserSession.model.decyptToken({
+                    token,
+                });
+                if (sessionTokenInfo) {
+                    req.userSessionTokenInfo = sessionTokenInfo;
+                    req.userSessionToken = token;
+                }
+            }
+        }
+    } catch (err) {
+        console.log(err);
+    }
+    next();
+};
+// get system session from the database if the token is valid
+const includeAuthorization = async (req, res, next) => {
+    try {
+        if (req.userSessionToken) {
+            const sysUserSession = await SystemUserSession.model.findByTokenType({
+                token: req.userSessionToken,
+                tokenInfo: req.userSessionTokenInfo,
+                lean: false,
+                population: true,
+            });
 
-            	if (sysUserSession && sysUserSession.systemUser) {
-            		req.user = sysUserSession.systemUser;
-                    req.userSession = sysUserSession;
-            	}
-
-                req.sessionToken = token;
-    	    }
+            if (sysUserSession && sysUserSession.targetUser) {
+                req.user = sysUserSession.targetUser;
+                req.userSession = sysUserSession;
+            }
         }
     } catch (err) {
         console.log(err);
@@ -65,10 +82,43 @@ const includeAuthorization = async (req, res, next) => {
 const includeSystemUser = async (req, res, next) => {
     const {
         user,
-    } = req
+    } = req;
     if (!user) {
         return res.apiError(403, req.t.__('msg_user_nosignin'));
     }
+
+    // const {
+    //     userSessionTokenInfo,
+    // } = req;
+    // // the session token user id must be equals to the user id of the userSession from db
+    // if (!user._id.equals(userSessionTokenInfo._id)) {
+    //     return res.apiError(403, req.t.__('msg_user_nosignin'));
+    // }
+
+    const {
+        utils: {
+            populateUserRole,
+        },
+    } = nextnode.get('nextnode v2');
+    req.user = await populateUserRole(user);
+
+    return includeRoleList(req, res, next);
+};
+
+const includeSystemUserAndSession = async (req, res, next) => {
+
+    if (!req.userSessionToken) {
+        // can refesh the token by using refreshToken
+        return res.apiError(404, req.t.__('msg_user_sessionTokenInvalid'));
+    }
+    if (!req.user) {
+        // must login again
+        return res.apiError(403, req.t.__('msg_user_nosignin'));
+    }
+    const {
+        user,
+    } = req;
+
     const {
         utils: {
             populateUserRole,
@@ -93,7 +143,9 @@ const excludeSystemUser = async (req, res, next) => {
 
 module.exports = {
     includeRoleList,
+    includeSessionToken,
 	includeAuthorization,
 	includeSystemUser,
+    includeSystemUserAndSession,
     excludeSystemUser,
 };

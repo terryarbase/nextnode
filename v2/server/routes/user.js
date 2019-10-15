@@ -19,6 +19,7 @@ const registerUserRoutes = ({
 			session: {
 				includeSystemUser,
 				excludeSystemUser,
+				includeSystemUserAndSession,
 			},
 		},
 		api: {
@@ -33,19 +34,22 @@ const registerUserRoutes = ({
 	);
 
 	router.post(
-		`/app/${apiVersion}/refreshSession`,
+		`/app/${apiVersion}/getSession`,
 		(req, res) => userAPI.refresh({ nextnode, req, res }),
 	);
+
+	router.get(
+		`/app/${apiVersion}/getSession`, 
+		includeSystemUserAndSession,
+		(req, res) => userAPI.session({ nextnode, req, res }),
+	);
+
 
 	// all of routes under v2/session must carry about authorization
 	router.all([
 		`/app/${apiVersion}/session*`,
 	], includeSystemUser);
 
-	router.get(
-		`/app/${apiVersion}/session`, 
-		(req, res) => userAPI.session({ nextnode, req, res }),
-	);
 
 	router.post(
 		`/app/${apiVersion}/session/signout`, 

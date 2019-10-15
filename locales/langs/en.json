@@ -6,6 +6,7 @@
 	"msg_request_filed_invalid": "The requested fields must be undefined, a string, or an array.",
 
 	"msg_user_nosignin": "Please signin your system account.",
+	"msg_user_sessionTokenInvalid": "Invalid Session Token",
 	"msg_user_signined": "You are already signed in.",
 	"msg_user_invalidMember": "Login Failed! Username/Email Address is incorrect",
 	"msg_user_incorrectPassword": "Login Failed! Password is incorrect",

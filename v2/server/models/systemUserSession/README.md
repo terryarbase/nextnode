@@ -5,9 +5,15 @@ Next-NodeCMS Beta v2
 
 
 #System User Session Statics
-##findByTokenType({ token, session, type, lean, population })
+##validToken({ token, type })
+### Return Decoded JWT Object
+- token: Token to be validated
+- type: Type to be matched to the given token
+
+##findByTokenType({ token, tokenInfo, session, type, lean, population })
 ### Return Mongoose Document Object or Object
 - token: Token to be validated
+- tokenInfo: Decoded JQT SessionToken to be Object
 - session: Mongoose session object
 - type: Type to be matched to the given token
 - lean: Return the plain object to the callee instead of giving a Mongoose Document Object

@@ -17,6 +17,19 @@ const UserSchemaStatics = function(UserSchema, config) {
 	    },
 	} = config;
 
+	const verifyJWTToken = ({
+		type,
+		token,
+	}) => {
+		let decoded = null;
+		try {
+			decoded = jwt.verify(token, jwtTokens[type].secret);
+		} catch (err) {
+			console.log(err);
+		}
+		return decoded;
+	}
+
 	const generatePairToken = user => {
 		const payload = _.pick(user, [
 			'_id',
@@ -51,7 +64,7 @@ const UserSchemaStatics = function(UserSchema, config) {
 		userSession,
 	}) {
 		// create a new sessionToken and corresponding refreshToken
-		const pairToken = generatePairToken(userSession.systemUser);
+		const pairToken = generatePairToken(userSession.targetUser);
 
 		_.forOwn(pairToken, (value, field) => {
 			userSession.set(field, value);
@@ -60,8 +73,24 @@ const UserSchemaStatics = function(UserSchema, config) {
 		return await userSession.save();
 	};
 
+	UserSchema.statics.decyptToken = function({
+		token,
+		type='sessionToken',
+	}) {
+		if (!isValidTokenType(jwtTokens, type)) {
+			// no matching type of token field
+			return null;
+		}
+		
+		return verifyJWTToken({
+			type,
+			token,
+		});
+	};
+
 	UserSchema.statics.findByTokenType = async function({
 		token,
+		tokenInfo,
 		session,
 		lean=true,
 		population=false,
@@ -71,10 +100,20 @@ const UserSchemaStatics = function(UserSchema, config) {
 			// no matching type of token field
 			return null;
 		}
-		const decoded = jwt.verify(token, jwtTokens[type].secret);
-		if (!decoded) {
-			// the given token cannot be varified (possible reason: already exipred, no mathcing jwt secret)
-			return null;
+		let targetUser = _.get(tokenInfo, '_id');
+		// if the token info is not executed at middleware
+		if (!tokenInfo) {
+			const decoded = verifyJWTToken({
+				token, 
+				type,
+			});
+
+			if (!decoded) {
+				// the given token cannot be varified (possible reason: already exipred, no mathcing jwt secret)
+				return null;
+			} else {
+				targetUser = _.get(decoded, '_id');
+			}
 		}
 
 		// prepare a session query or not with a lean option
@@ -89,14 +128,13 @@ const UserSchemaStatics = function(UserSchema, config) {
 		}
 		const condition = {
 			[type]: token,
-			targetUser: _.get(decoded, '_id'),
+			targetUser,
 		};
 		if (population) {
 			return await this.findOne(condition, {}, options).populate('targetUser');
 		}
 		return await this.findOne(condition, {}, options);
 	};
-
 
 	UserSchema.statics.generateTheToken = async function({
 		sessionEntity,

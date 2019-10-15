@@ -126,36 +126,25 @@ class SignInHandler extends APIInterface{
 	    return null;
 	}
 
-	async getSigninInfo(data) {
+	async getSigninInfo(signinInfo) {
 		// get config information
 	    const {
 			api: {
-				common: {
-					info: InfoAPI,
+				user: {
+					session: SessionAPI,
 				},
 			},
-			middleware: {
-				session: {
-					includeRoleList,
-				},
-			},
-			utils: {
-	            populateUserRole,
-	        },
 		} = this.nextnode.get('nextnode v2');
 
-		this.req.user = await populateUserRole(this.sysUser);
-
-		// normalize all of role list for the user who is loged in
-		includeRoleList(this.req);
+		this.req.user = this.sysUser;
 
 		// get the common app info after login
-		return new InfoAPI({
+		return SessionAPI({
 			nextnode: this.nextnode,
-			signinInfo: data,
 			req: this.req,
 			res: this.res,
-		}).getInfo();
+			signinInfo,
+		});
 	}
 
 	async execute() {
@@ -207,11 +196,10 @@ class SignInHandler extends APIInterface{
 	    	return this.res.apiError(500, err);
 	    }
 
-	    const response = await this.getSigninInfo(data);
+	    // const response = await this.getSigninInfo(data);
 
-	    return this.res.json({
-	    	data: response,
-	    });
+	    // use common user session api to feed the response
+	    return this.getSigninInfo(data);
 	}
 }
 

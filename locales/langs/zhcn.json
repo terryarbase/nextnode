@@ -5,6 +5,7 @@
 	"msg_user_notfound": "找不到用户",
 	"msg_request_filed_invalid": "请求的字段必须是undefined, string, 或array.",
 
+	"msg_user_sessionTokenInvalid": "无效的会话令牌",
 	"msg_user_nosignin": "请先登录系统用户帐号",
 	"msg_user_signined": "您已登录系统用户帐户",
 	"msg_user_invalidMember": "登录失败！电子邮件地址或用户名不正确",
