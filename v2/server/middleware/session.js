@@ -100,7 +100,7 @@ const includeSystemUser = async (req, res, next) => {
             populateUserRole,
         },
     } = nextnode.get('nextnode v2');
-    req.user = await populateUserRole(user);
+    req.user = await populateUserRole(user, req.locales);
 
     return includeRoleList(req, res, next);
 };

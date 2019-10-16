@@ -158,6 +158,8 @@ class ConfigInfoHandler extends APIInterface{
 						'lastLoginAt',
 						'language',
 						'contentLanguage',
+						'delegated',
+						'role',
 					])
 				),
 				...(

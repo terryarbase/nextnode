@@ -35,10 +35,9 @@ const getSessionInfo = async ({
 
 	const {
 		user,
+		locales,
 	} = req;
-
-	req.user = await populateUserRole(user);
-
+	req.user = await populateUserRole(user, locales);
 	// normalize all of role list for the user who is loged in
 	includeRoleList(req);
 
