@@ -10,13 +10,21 @@ class AccountHandler extends APIInterface{
     constructor(config) {
         super(config);
         this.extractFields = [
-            'email',
+            'name',
             'password',
             'password_confirm',
             // no matter whether it is well multilingual supported
             'language',
             'contentLanguage',
         ];
+    }
+
+    // remove any secret field
+    getUserInfo(data) {
+        return _.omit(data, [
+            'password',
+            'password_confirm',
+        ]);
     }
 
     extractFieldsToBeUpdated() {
@@ -27,8 +35,8 @@ class AccountHandler extends APIInterface{
         let {
             user,
         } = this.req;
+        const data = this.extractFieldsToBeUpdated();
         try {
-            const data = this.extractFieldsToBeUpdated();
             const execution = await this.executeByNative({
                 list: this.userList,
                 model: user,
@@ -46,7 +54,7 @@ class AccountHandler extends APIInterface{
         }
 
         return this.res.json({
-            data: this.getUserInfo(user),
+            data: this.getUserInfo(data),
         });
     }
 }
