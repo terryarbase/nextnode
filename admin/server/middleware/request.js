@@ -90,6 +90,8 @@ const getCurrentLanguage = (nextNode, req, res) => {
 
 module.exports = async function (req, res, next, nextNode) {
 	req.keystone = nextNode;
+	// v2
+	req.nextnode = nextNode;
 	// use default initial project language
 	let defaultLanguage = nextNode.get('locale');
 	// get all current supported language from locale.json config

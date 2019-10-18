@@ -70,7 +70,7 @@ const preparePermissionQueries = (user, nextnode) => {
 module.exports = initDataPermission = (req, res, next) => {
 	const nextnode = req.keystone;
 	// individual route
-	if (!!req.params.list) {
+	if (!!req.params.listId) {
 		req.permissionQuery = preparePermissionQuery(req.user, req.list, nextnode);
 	} else {
 		req.permissionQuery = preparePermissionQueries(req.user, nextnode)

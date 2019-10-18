@@ -111,6 +111,8 @@ const getCurrentLanguage = async ({
 };
 
 const includeLocale = async function (req, res, next) {
+    req.nextnode = nextnode;
+    req.keystone = nextnode;
     const defaultLanguage = nextnode.get('locale');
     // get all current supported language from locale.json config
     const localization = await getStaticLanguageFile();

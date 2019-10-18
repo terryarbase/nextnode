@@ -21,18 +21,22 @@ const registerListRoutes = ({
 	const checkPermission = require(`${v1ServerMiddlewarePath}/checkPermission`);
 	const initDataPermission = require(`${v1ServerMiddlewarePath}/initDataPermission`);
 	
-	router.all([
-		'/app/v2/list*'
-	], includeList, initDataPermission);
+	// router.all([
+	// 	'/app/v2/content/*'
+	// ], includeList, initDataPermission);
 
 	router.get(
-		'/app/v2/list/:list',
+		'/app/v2/session/content/:listId',
+		includeList,
 		checkPermission(1, { allowBasic: true }),
+		initDataPermission,
 		require(`${v1ServerPath}/api/list/get`),
 	);
 	router.get(
-		'/app/v2/list/:list/:format(export.excel|export.json|export.txt)',
+		'/app/v2/content/:listId/:format(export.excel|export.json|export.txt)',
+		includeList,
 		checkPermission(1),
+		initDataPermission,
 		require(`${v1ServerPath}/api/list/download`),
 	);
 };

@@ -1,8 +1,7 @@
 const nextnode                  = require('./../../../');
 
 const includeList = (req, res, next) => {
-	req.list = nextnode.list(req.params.list);
-
+	req.list = nextnode.list(req.params.listId);
 	if (!req.list) {
 		return res.apiError(404, req.t.__('msg_list_notfound'));
 	}
