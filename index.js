@@ -59,7 +59,7 @@ var Keystone = function () {
 		** Terry Chan
 		** 09/10/2019
 		*/
-		'stage': 2,
+		'stage': 1,
 		'name': 'Keystone',
 		'brand': 'Keystone',
 		'admin path': defaultAdminPath,

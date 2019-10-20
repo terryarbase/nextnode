@@ -88,7 +88,11 @@ module.exports = function createDynamicRouter (nextnode) {
 		}
 		router.all('/signin', SigninRoute);
 		router.all('/signout', SignoutRoute);
-		router.all('/api*', nextnode.session.keystoneAuth);
+		if (nextnode.get('stage') !== 2) {
+			router.use(nextnode.session.keystoneAuth);
+		} else {
+			router.all('/api*', nextnode.session.keystoneAuth);
+		}
 	} else if (typeof nextnode.get('auth') === 'function') {
 		router.use(nextnode.get('auth'));
 	}

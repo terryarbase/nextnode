@@ -47,7 +47,7 @@ module.exports = function (req, res) {
 		...where,
 		...req.permissionQuery,
 	};
-
+	console.log(req.list, where);
 	var query = req.list.model.find(where);
 	if (req.query.populate) {
 		query.populate(req.query.populate);

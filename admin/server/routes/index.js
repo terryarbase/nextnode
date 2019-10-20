@@ -138,8 +138,8 @@ module.exports = function IndexRoute (req, res, isRender) {
 		** Terry Chan
 		** 02/10/2019
 		*/
-		bundleFiles: readBundleFiles(),
-		bundleCSS: readBundleCSS(),
+		// bundleFiles: readBundleFiles(),
+		// bundleCSS: readBundleCSS(),
 		keystone: keystoneData,
 		title: keystone.get('name') || 'NextNode',
 	};
