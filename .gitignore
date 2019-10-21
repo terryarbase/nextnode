@@ -25,7 +25,6 @@ coverage.html
 admin/bundles*
 static/locale.json*
 lib-cov
-src*
 build*
 
 docs/_dist

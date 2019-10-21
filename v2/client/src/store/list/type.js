@@ -1,0 +1,5 @@
+export const LOADLIST = 'LOADLIST';
+export const LOADLIST_SUCCESS = 'LOADLIST_SUCCESS';
+export const LOADLIST_FAILURE = 'LOADLIST_FAILURE';
+
+export const SELECTLIST = 'SELECTLIST';

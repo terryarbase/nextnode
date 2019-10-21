@@ -1,0 +1,36 @@
+{
+  "endpoint": "http://0.0.0.0:3020/",
+  "apiVersionV2": "webadmin/app/v2/",
+  "name": "IoT Broker Message Server",
+  "logo": "images/iot_logo.png",
+  "barLogo": "images/menubar_logo.png",
+  "copyright": "2019-2022",
+  "defaultLang": "en",
+  "company": "Four Directions Limited",
+  "main": "/next/dashboard",
+  "notFoundPrefix": "/next/404",
+  "prefix": "/next",
+  "listPrefix": "/next/content",
+  "signin": "/sign",
+  "storageName": {
+  	"sessionToken": "session_token",
+  	"refreshToken": "refresh_token" ,
+    "uiLanguage": "ui_language",
+    "dataLanguage": "data_language",
+    "email": "user_email",
+    "forwardUrl": "forward_url"
+  },
+  "api": {
+  	"signin": "signin",
+  	"userSession": "getSession",
+  	"signout": "session/signout",
+  	"refreshSession": "getSession",
+  	"userInfo": "session/profile",
+  	"appInfo": "info",
+    "listContent": "session/content"
+  },
+  "table": {
+    "size": 10,
+    "paging": [50, 100, 500, 1000, 1500]
+  }
+}
