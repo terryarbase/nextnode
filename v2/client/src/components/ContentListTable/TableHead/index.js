@@ -30,8 +30,6 @@ const TableHeader = props => {
       sort: {
         paths=[],
       },
-      // noedit,
-      // nodelete,
     },
     numSelected,
     rowCount,
@@ -40,8 +38,8 @@ const TableHeader = props => {
     listName,
     // tableLabel,
   } = props;
-  const createSortHandler = property => event => {
-    onRequestSort(event, property);
+  const createSortHandler = (property, direction) => event => {
+    onRequestSort(event, property, direction);
   };
   const onSelectAll = ({ target: { checked } }) => {
     setSelectAll(checked);
@@ -68,8 +66,11 @@ const TableHeader = props => {
             id,
             label
           }) => {
-            const activeSort = _.find(paths, ({ path }) => path === colPath);
-            const order = !!activeSort && activeSort.invert ? 'desc' : 'asc';
+            // only concern on the first sorting
+            const activeSort = paths[0];
+            // const activeSort = _.find(paths, ({ path }) => path === colPath);
+            const order = !!_.get(activeSort, 'invert') ? 'desc' : 'asc';
+
             return (
               <TableCell
                 key={colPath}
@@ -79,9 +80,9 @@ const TableHeader = props => {
                 className={classes.tableHeadCell}
               >
                 <TableSortLabel
-                  active={!!activeSort}
+                  active={_.get(activeSort, 'path') === colPath}
                   direction={order}
-                  onClick={createSortHandler(colPath)}
+                  onClick={createSortHandler(colPath, order)}
                 >
                   {translateListField(listName, colPath) || label}
                   {!!activeSort ? (

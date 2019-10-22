@@ -53,15 +53,28 @@ class List {
     let columnsQuery = columns && decodeURIComponent(columns);
     const expandedDefaultColumns = this.expandColumns(columnsQuery || this.defaultColumns);
     // is not given, then use the default value
-    const newParams = {
+    let newParams = {
       expandedDefaultColumns,
       defaultColumnPaths: _.map(this.expandedDefaultColumns, ({ path }) => path).join(','),
       sort: this.expandSort(sortQuery || this.defaultSort),
-      filters: filters || this.defaultCriteria.filters,
+      filters: this.defaultCriteria.filters,
       page: !isNaN(page) ? +page : this.defaultCriteria.page,
       limit: !isNaN(limit) ? +limit : this.defaultCriteria.limit,
       search: search || this.defaultCriteria.search,
     };
+
+    if (filters) {
+      // push to object and decode it
+      try {
+        const filtersQuery = JSON.parse(decodeURIComponent(filters));
+        newParams = {
+          ...newParams,
+          filters: filtersQuery,
+        };
+      } catch (err) {
+        // TODO: dont push to the curretn filters
+      }
+    }
 
     _.assign(this, newParams);
   }

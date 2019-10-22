@@ -4,6 +4,7 @@ import _ from 'lodash';
 import {
   Tooltip,
   IconButton,
+  Badge,
 } from '@material-ui/core';
 import {
   ViewColumn as ViewColumnIcon,
@@ -44,7 +45,7 @@ const ColumnTool = props => {
     },
   } = props;
   const label = i18n.t('filter.column', { name: tableLabel });
-  console.log(expandedDefaultColumns);
+  // console.log(expandedDefaultColumns);
   // const columnsToBeShown = _.
 
   return (
@@ -54,7 +55,9 @@ const ColumnTool = props => {
           aria-label={label}
           onClick={onOpen}
         >
-          <ViewColumnIcon />
+          <Badge badgeContent={expandedDefaultColumns.length} color="primary">
+            <ViewColumnIcon />
+          </Badge>
         </IconButton>
       </Tooltip>
       <ColumnSelection

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 // import _ from 'lodash';
 import {
@@ -52,16 +52,21 @@ const TableSearch = props => {
   }
 
   const placeholder = i18n.t('list.searchPlaceholder', { name: tableLabel });
+
+  const keywordInput = useMemo(() => (
+    <InputBase
+      className={classes.input}
+      placeholder={placeholder}
+      defaultValue={search}
+      onKeyPress={onKeyPress}
+      onChange={changeKeyword}
+      inputProps={{ 'aria-label': placeholder }}
+    />
+  ), [ search ]);
+
   return (
     <Paper className={classes.root}>
-      <InputBase
-        className={classes.input}
-        placeholder={placeholder}
-        defaultValue={search}
-        onKeyPress={onKeyPress}
-        onChange={changeKeyword}
-        inputProps={{ 'aria-label': placeholder }}
-      />
+      { keywordInput }
       {
         !!search.length && <IconButton
           className={classes.iconButton}

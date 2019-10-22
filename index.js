@@ -111,8 +111,6 @@ var Keystone = function () {
 			fontHover: '#ffe53d'
 		},
 
-		'support locales pack': LocalizationHandler.readSupportingLangs(`${__dirname}/${localePath}`),
-
 		'customized error': {
 	        HookCheckError: Error.extend('HookCheckError', 500),
 	    },

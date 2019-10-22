@@ -6,6 +6,9 @@ import {
   LOADLIST_SUCCESS,
   LOADLIST_FAILURE,
   SELECTLIST,
+  // REALTIME_SAVING,
+  // REALTIME_SAVED,
+  // REALTIME_SAVE_ERROR,
 } from './type';
 
 import request from './../../utils/request';

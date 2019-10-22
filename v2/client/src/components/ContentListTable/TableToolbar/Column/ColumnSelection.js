@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {
@@ -21,7 +21,7 @@ import {
 } from '@material-ui/icons';
 
 // styles
-// import useStyles from "./styles";
+import useStyles from "./styles";
 
 // locales
 import i18n from "./../../../../i18n";
@@ -78,7 +78,7 @@ const ColumnSelectionItem = props => {
 
 const ColumnSelection = props => {
   const [values, setValues] = useState(props.items);
-  // const classes = useStyles();
+  const classes = useStyles();
   const {
     tableLabel='',
     listName,
@@ -88,6 +88,10 @@ const ColumnSelection = props => {
     options,
     updateFieldRef,
   } = props;
+
+  useMemo(() => {
+    setValues(items);
+  }, [ items ]);
 
   // update when click the options 
   const updateItems = ({ target: { checked } }, id) => {
@@ -159,7 +163,7 @@ const ColumnSelection = props => {
           <Button onClick={handleCancel} color="primary">
             {i18n.t('filter.cancel')}
           </Button>
-          <Button onClick={handleOk} color="primary">
+          <Button onClick={handleOk} color="primary" className={classes.submitBtn}>
             {i18n.t('filter.apply')}
           </Button>
         </DialogActions>

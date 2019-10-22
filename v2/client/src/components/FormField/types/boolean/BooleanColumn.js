@@ -38,7 +38,7 @@ var BooleanColumn = createClass({
 			<Switch
 				disabled={noedit || !realedit}
 		        checked={!!currentValue}
-		        onChange={onChange}
+		        onChange={({ target: { checked } }) => onChange(checked)}
 		    />
 		);
 		// return <Checkbox 

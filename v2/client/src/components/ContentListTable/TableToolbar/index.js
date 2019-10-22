@@ -11,6 +11,7 @@ import {
 import {
   // ViewColumn as ViewColumnIcon,
   Delete as DeleteIcon,
+  // Save as SaveIcon,
   // FilterList as FilterListIcon,
 } from '@material-ui/icons';
 
@@ -24,6 +25,7 @@ import i18n from "./../../../i18n";
 import FilterTool from "./Filter";
 import ColumnTool from "./Column";
 import SearchBar from "./Search";
+import FilteringList from "./Filter/FilteringList";
 
 const NormalToolbar = props => {
   // const classes = useStyles();
@@ -37,7 +39,7 @@ const NormalToolbar = props => {
       {
         !!searchable && <React.Fragment>
           <SearchBar {...props} keyword={keyword} tableLabel={tableLabel} />
-          <FilterTool tableLabel={tableLabel} />
+          <FilterTool {...props} tableLabel={tableLabel} />
         </React.Fragment>
       }
       <ColumnTool {...props} tableLabel={tableLabel} />
@@ -100,6 +102,7 @@ const ContentListTableToolbar = props => {
           searchable={!currentList.noSeacrh}
         />
       }
+      <FilteringList {...props} />
     </Toolbar>
   );
 };

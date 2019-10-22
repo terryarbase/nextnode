@@ -53,14 +53,6 @@ const TableCeller = props => {
         columns.map((col, i) => {
           const { type, path, field } = col;
           const ColumnType = NextFieldColumns[type] || NextFieldColumns.unrecognised;
-          // let linkTo = '';
-          // // only first column can be details link
-          // if (!i) {
-          //   linkTo = `${listPrefix}/${item.id}`;
-          //   if (listName) {
-          //     linkTo = `${listPrefix}/${listName}/${item.id}`;
-          //   }
-          // }
           // use original data value instead of realtime value
           const value = item.fields[path];
           let currentValue = value;
@@ -91,21 +83,21 @@ const TableCeller = props => {
               noedit={!selectable || restrictDelegated}
               currentValue={currentValue}
               // linkTo={linkTo}
-              onChange={v => {
-                // let newValue = v;
-                // if (isMultilingual) {
-                //   newValue = {
-                //     ...value,
-                //     [currentLang]: v,
-                //   };
-                // }
+              // onChange={v => {
+              //   let newValue = v;
+              //   if (isMultilingual) {
+              //     newValue = {
+              //       ...value,
+              //       [currentLang]: v,
+              //     };
+              //   }
 
-                // onChange({
-                //   key: item.id,
-                //   path: path,
-                //   value: newValue,
-                // });
-              }}
+              //   onChange({
+              //     key: item.id,
+              //     path: path,
+              //     value: newValue,
+              //   });
+              // }}
             />
           );
         })

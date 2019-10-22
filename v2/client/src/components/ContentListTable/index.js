@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {
@@ -40,6 +40,13 @@ import {
 } from "./../../utils/v1/queryParams";
 
 const ContentListTable = props => {
+  // const [realInfo, setRealInfo] = useState(null);
+  const [selected, setSelected] = useState([]);
+  // get the first sorting field
+  // const [orderBy, setOrderBy] = useState(
+  //   _.get(props, 'currentList.sort.paths[0].path')
+  // );
+
   const classes = useStyles();
 
   const {
@@ -61,15 +68,16 @@ const ContentListTable = props => {
 
   console.log(currentList);
 
-  // const [order, setOrder] = useState('asc');
-  // const [orderBy, setOrderBy] = useState('calories');
-  const [selected, setSelected] = useState([]);
-  // const [page, setPage] = useState(currentList.page);
-  // const [rowsPerPage, setRowsPerPage] = useState(currentList.limit);
-
-  const handleRequestSort = (event, property) => {
-    // const isDesc = orderBy === property && order === 'desc';
-    // setOrder(isDesc ? 'asc' : 'desc');
+  const handleRequestSort = (event, property, direction) => {
+    let sort = property;
+    if (direction === 'asc') {
+      // invert the direction
+      sort = `-${property}`;
+    }
+    // console.log(direction, sort);
+    replaceQueryParams({
+      sort,
+    }, history);
     // setOrderBy(property);
   };
 
@@ -95,6 +103,25 @@ const ContentListTable = props => {
     limit: value,
   }, history);
 
+  // const onRealEdit = ({
+  //   path,
+  //   key,
+  //   value,
+  // }) => {
+  //   const current = realInfo || {};
+  //   const info = {
+  //     ...current,
+  //     [path]: {
+  //       ...current[path],
+  //       [key]: value,
+  //     }
+  //   };
+
+  //   setRealInfo(info);
+  // }
+
+  // const onClearRealEdit = () => setRealInfo(null);
+
   const tableLabel = translateListName(currentList.key);
 
   const {
@@ -102,7 +129,7 @@ const ContentListTable = props => {
     nodelete,
     key: listName,
     page,
-    rowsPerPage,
+    limit,
     expandedDefaultColumns: columns,
   } = currentList;
 
@@ -110,13 +137,23 @@ const ContentListTable = props => {
   // invoke what can be selected and remove
   const selectable = !noedit && !nodelete;
 
-  const limitPerPage = _.includes(paging, rowsPerPage) ? 
-        rowsPerPage : paging[0];
+  const limitPerPage = _.includes(paging, limit) ? limit : paging[0];
 
   let currentPage = Number(page);
   currentPage = currentPage < 0 ? 0 : currentPage;
 
-  const pagination = (
+  /*
+  **
+  ** =========
+  */
+  const pageTitle = useMemo(() => (
+    <Typography variant="h1" className={classes.tableTitle}>
+        <Badge badgeContent={count} color="primary">
+          {tableLabel}
+        </Badge>
+      </Typography>
+  ), [ tableLabel, count ]);
+  const pagination = useMemo(() => (
     <TablePagination
         rowsPerPageOptions={paging}
         component="div"
@@ -135,7 +172,7 @@ const ContentListTable = props => {
         labelRowsPerPage={i18n.t('paging.perPage', { name: tableLabel })}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
-  );
+  ), [ currentPage, count, limitPerPage ]);
 
   let initialMessage = i18n.t('filter.loadingRecord', { name: tableLabel });
   if (!loading) {
@@ -148,11 +185,7 @@ const ContentListTable = props => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <Typography variant="h1" className={classes.tableTitle}>
-          <Badge badgeContent={count} color="primary">
-            {tableLabel}
-          </Badge>
-        </Typography>
+        {pageTitle}
         <TableToolbar
           {...props}
           numSelected={selected.length}
@@ -160,6 +193,9 @@ const ContentListTable = props => {
           searchable={currentList.nofilter}
           tableLabel={tableLabel}
           listName={listName}
+          // realInfo={realInfo}
+          // onRealEdit={onRealEdit}
+          // onClearRealEdit={onClearRealEdit}
         />
         {
           !mangeMode && <Grid

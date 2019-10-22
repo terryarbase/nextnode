@@ -1,5 +1,4 @@
-import React from 'react';
-// , { useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Tooltip,
@@ -13,11 +12,19 @@ import {
 // import useStyles from "./styles";
 
 // locales
-import i18n from "./../../../i18n";
+import i18n from "./../../../../i18n";
 
 const FilterTool = props => {
+  const [open, setOpen] = useState(false);
+  const onClose = c => {
+    
+    setOpen(false);
+  }
+  const onOpen = () => setOpen(true);
   const {
-    // currentList,
+    currentList:{
+      filters=[],
+    },
     tableLabel='',
   } = props;
   const filterLabel = i18n.t('filter.label', { name: tableLabel });
@@ -34,7 +41,7 @@ const FilterTool = props => {
 
 FilterTool.propTypes = {
   tableLabel: PropTypes.string,
-  // currentList: PropTypes.object,
+  currentList: PropTypes.object,
 };
 
 export default FilterTool;
