@@ -23,7 +23,7 @@ module.exports = Field.create({
 				name={this.getInputName(this.props.path)}
 				onChange={this.valueChanged}
 				ref="focusTarget"
-				value={this.props.value}
+				value={this.props.value === 0 ? '0' : this.props.value}
 			/>
 		);
 	},
