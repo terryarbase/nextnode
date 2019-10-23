@@ -1,6 +1,0 @@
-export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR';
-
-// export const READYUI = 'READYUI';
-export const READYUI_SUCCESS = 'READYUI_SUCCESS';
-
-export const GLOBAL_LOADING = 'GLOBAL_LOADING';
