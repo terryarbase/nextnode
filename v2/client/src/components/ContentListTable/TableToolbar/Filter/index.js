@@ -20,11 +20,11 @@ import {
 } from "./../../../../store/user/context";
 
 // components
-import ListFiltersAdd from "./ListFilter/ListFiltersAdd";
+import ListFilter from "./ListFilter";
 
 import {
   replaceQueryParams,
-  parametizeFilters,
+  // parametizeFilters,
 } from "./../../../../utils/v1/queryParams";
 
 const FilterTool = props => {
@@ -60,7 +60,7 @@ const FilterTool = props => {
   } = useUserState();
   const filterLabel = i18n.t('filter.label', { name: tableLabel });
   const listFiltersAdder = useMemo(() => (
-    <ListFiltersAdd
+    <ListFilter
       {...props}
       activeFilters={filters}
       columns={columns}

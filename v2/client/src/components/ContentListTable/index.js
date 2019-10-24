@@ -67,7 +67,7 @@ const ContentListTable = props => {
     paging,
   } = table;
 
-  console.log(currentList);
+  // console.log(currentList);
 
   const handleRequestSort = (event, property, direction) => {
     let sort = property;

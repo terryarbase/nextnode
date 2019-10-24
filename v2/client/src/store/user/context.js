@@ -15,7 +15,9 @@ import {
   INITIAL_LIST,
 } from './type';
 
-import request from './../../utils/request';
+import {
+  request,
+} from './../../utils/request';
 
 import {
   uiAlready,

@@ -22,19 +22,33 @@ import {
 const FilteringList = props => {
 	const classes = useStyles();
 	const {
+		currentList,
 		currentList: {
 			filters=[],
 		},
+		history,
 	} = props;
 	const clearAll = () => replaceQueryParams({
 		filters: [],
-	}, props.history);
+	}, history);
+	const updateFilter = (value, remove) => {
+		if (!remove) {
+			currentList.updateFilter(value);
+		} else {
+			currentList.removeFilter(value);
+		}
+		// console.log(currentList.filters);
+		replaceQueryParams({
+	      filters: currentList.filters,
+	    }, history);
+	};
 	// Generate the list of filter pills
 	const currentFilters = useMemo(() => {
 		let chips = filters.map((filter, i) => (
 			<FilterItem
 				{...props}
 				key={i}
+				onUpdate={updateFilter}
 				filter={filter}
 			/>
 		));
@@ -43,6 +57,7 @@ const FilteringList = props => {
 			chips = [
 				...chips,
 				<Chip
+					key='removeall'
 					label={i18n.t('filter.clearAll')}
         			onDelete={clearAll}
 					color="secondary"
@@ -51,8 +66,6 @@ const FilteringList = props => {
 		}
 		return chips;
 	}, [ filters ]);
-
-
 
 	if (!filters.length) return null;
 

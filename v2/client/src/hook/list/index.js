@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useMemo } from 'react';
 import qs from "query-string";
 // utils
 // import ContentList from '../../utils/v1/lists';
@@ -46,13 +46,13 @@ const useContentList = ({ match, history }) => {
 	
 	const targetList = listsByPath[list];
 	let isInvalidList = !targetList;
-
+	// console.log(search);
 	// loading the list
-	useEffect(() => {
+	useMemo(() => {
+		// console.log('> loading with search query: ', search);
 		const fetchTheList = (list, search) => {
 			if (list) {
 				if (search) {
-					// console.log('> loading with search query: ', search);
 					const query = qs.parse(search);
 					list.updateQueryField(query);
 				}
@@ -62,7 +62,7 @@ const useContentList = ({ match, history }) => {
 
 		fetchTheList(targetList, search);
 	// dependency on target List
-	}, [listDispatch, layoutDispatch, targetList, search]);
+	}, [search, targetList]);
 	return {
 		loading,
 		items,

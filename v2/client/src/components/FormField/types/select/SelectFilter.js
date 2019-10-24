@@ -10,9 +10,9 @@ import {
 	SegmentedControl,
 } from '../../elemental';
 
-import PopoutList from '../../shared/Popout/PopoutList';
+import PopoutListItem from '../../shared/Popout/PopoutListItem';
 import Kbd from '../../shared/Kbd';
-import bindFunctions from '../../utils/bindFunctions';
+// import bindFunctions from '../../utils/bindFunctions';
 
 // locales
 import i18n from '../../../../i18n';
@@ -33,9 +33,7 @@ class FilterOption extends Component {
 	constructor () {
 		super();
 
-		bindFunctions.call(this, [
-			'handleClick',
-		]);
+		this.handleClick = this.handleClick.bind(this);
 	}
 	handleClick () {
 		const { option, selected } = this.props;
@@ -43,8 +41,9 @@ class FilterOption extends Component {
 	}
 	render () {
 		const { option, selected } = this.props;
+		// console.log(option);
 		return (
-			<PopoutList.Item
+			<PopoutListItem
 				icon={selected ? 'check' : 'dash'}
 				isSelected={selected}
 				label={option.label}
@@ -58,7 +57,7 @@ class SelectFilter extends Component {
 	constructor () {
 		super();
 
-		bindFunctions.call(this, [
+		_.forEach([
 			'detectOS',
 			'handleClick',
 			'handleKeyDown',
@@ -68,7 +67,22 @@ class SelectFilter extends Component {
 			'toggleAllOptions',
 			'toggleInverted',
 			'updateFilter',
-		]);
+		], func => {
+			if (this.func) {
+				this.func = this.func.bind(this);
+			}
+		});
+		// bindFunctions.call(this, [
+		// 	'detectOS',
+		// 	'handleClick',
+		// 	'handleKeyDown',
+		// 	'handleKeyUp',
+		// 	'removeOption',
+		// 	'selectOption',
+		// 	'toggleAllOptions',
+		// 	'toggleInverted',
+		// 	'updateFilter',
+		// ]);
 
 		this.state = { metaDown: false };
 	}
@@ -147,11 +161,10 @@ class SelectFilter extends Component {
 	// ==============================
 
 	renderOptions () {
-		const { field: { assign } } = this.props;
 		return this.props.field.ops.map((option, i) => {
-			var { label } = option;
+			let { label } = option;
 			// special for assigned delegated value and multilingual structure
-			if (assign && typeof label === 'object') {
+			if (typeof label === 'object') {
 				label = label[i18n.locale];
 			}
 
@@ -161,9 +174,7 @@ class SelectFilter extends Component {
 					key={`item-${i}-${option.value}`}
 					option={{
 						...option,
-						...{
-							label,
-						},
+						label,
 					}}
 					selected={selected}
 					onClick={this.handleClick}

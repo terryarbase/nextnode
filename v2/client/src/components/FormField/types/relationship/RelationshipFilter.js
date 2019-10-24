@@ -4,9 +4,20 @@ import React from 'react';
 // replace all of function component before fully mirgation to v2, use this package instead of using the native
 // React.createClass function
 import createClass from 'create-react-class';
-import { findDOMNode } from 'react-dom';
+// import { findDOMNode } from 'react-dom';
 import xhr from 'xhr';
 import PropTypes from 'prop-types';
+import {
+	List,
+	ListItem,
+	ListItemText,
+	IconButton,
+	ListItemSecondaryAction,
+	Typography,
+} from '@material-ui/core';
+import {
+	Check as CheckIcon,
+} from '@material-ui/icons';
 
 import {
 	FormField,
@@ -14,7 +25,10 @@ import {
 	SegmentedControl,
 } from '../../elemental';
 
-import PopoutList from '../../shared/Popout/PopoutList';
+// import PopoutList from '../../shared/Popout/PopoutList';
+// import PopoutListHeading from '../../shared/Popout/PopoutListHeading';
+// import PopoutListItem from '../../shared/Popout/PopoutListItem';
+
 
 // locales
 import i18n from '../../../../i18n';
@@ -75,14 +89,16 @@ var RelationshipFilter = createClass({
 		return this.state.searchIsLoading || this.state.valueIsLoading;
 	},
 	populateValue (value) {
+		const {
+			url,
+			requestHeader,
+		} = this.props;
 		async.map(value, (id, next) => {
 			if (this._itemsCache[id]) return next(null, this._itemsCache[id]);
-			const {
-				url,
-			} = this.props;
 			xhr({
-				url: url + this.props.field.refList.path + '/' + id + '?basic',
+				url: url + '/' + this.props.field.refList.path + '/' + id + '?basic',
 				responseType: 'json',
+				headers: requestHeader,
 			}, (err, resp, data) => {
 				if (err || !data) return next(err);
 				this.cacheItem(data);
@@ -98,8 +114,6 @@ var RelationshipFilter = createClass({
 			this.setState({
 				valueIsLoading: false,
 				selectedItems: items || [],
-			}, () => {
-				findDOMNode(this.refs.focusTarget).focus();
 			});
 		});
 	},
@@ -132,17 +146,21 @@ var RelationshipFilter = createClass({
 		const filters = this.buildFilters();
 		const {
 			url,
+			requestHeader,
 		} = this.props;
+
 		xhr({
-			url: url + this.props.field.refList.path + '?basic&search=' + searchString + '&' + filters,
+			url: url + '/' + this.props.field.refList.path + '?basic&search=' + searchString + '&' + filters,
 			responseType: 'json',
+			headers: requestHeader,
 		}, (err, resp, data) => {
-			if (err) {
+			if (err || resp.statusCode === 403) {
 				// TODO: Handle errors better
-				console.error('Error loading items:', err);
+				// console.error('Error loading items:', err);
 				this.setState({
 					searchIsLoading: false,
 				});
+				// window.location.reload();
 				return;
 			}
 			//handle unexpected JSON string not parsed
@@ -155,13 +173,8 @@ var RelationshipFilter = createClass({
 			this.setState({
 				searchIsLoading: false,
 				searchResults: data.results,
-			}, this.updateHeight);
+			});
 		});
-	},
-	updateHeight () {
-		if (this.props.onHeightChange) {
-			this.props.onHeightChange(this.refs.container.offsetHeight);
-		}
 	},
 	toggleInverted (inverted) {
 		this.updateFilter({ inverted });
@@ -181,20 +194,29 @@ var RelationshipFilter = createClass({
 		this.props.onChange({ ...this.props.filter, ...value });
 	},
 	renderItems (items, selected) {
-		const itemIconHover = selected ? i18n.t('filter.cross') : i18n.t('filter.check');
+		// const itemIconHover = selected ? i18n.t('filter.cross') : i18n.t('filter.check');
 
 		return items.map((item, i) => {
 			return (
-				<PopoutList.Item
+				<ListItem
+					button divider selected={selected} dense
 					key={`item-${i}-${item.id}`}
-					icon="dash"
-					iconHover={itemIconHover}
-					label={item.name}
 					onClick={() => {
 						if (selected) this.removeItem(item);
 						else this.selectItem(item);
 					}}
-				/>
+				>
+                  <ListItemText
+                    primary={item.name}
+                  />
+                  {
+                  	selected && <ListItemSecondaryAction>
+	                    <IconButton edge="end" aria-label={item.name}>
+	                      <CheckIcon />
+	                    </IconButton>
+	                  </ListItemSecondaryAction>
+	              }
+                </ListItem>
 			);
 		});
 	},
@@ -207,7 +229,7 @@ var RelationshipFilter = createClass({
 		const invertedOptions = _.map(INVERTED_OPTIONS, option => (
 			{
 				...option,
-				label: i18n.t(`filter${_.camelCase(option.label)}`),
+				label: i18n.t(`filter.${_.camelCase(option.label)}`),
 			}
 		));
 		const placeholder = this.isLoading() ? `${i18n.t('filter.loading')}...` : `${i18n.t('filter.finding', { listName: translateListName(listName) })}...`;
@@ -219,20 +241,30 @@ var RelationshipFilter = createClass({
 				<FormField style={{ borderBottom: '1px dashed rgba(0,0,0,0.1)', paddingBottom: '1em' }}>
 					<FormInput autoFocus ref="focusTarget" value={this.state.searchString} onChange={this.updateSearch} placeholder={placeholder} />
 				</FormField>
-				{selectedItems.length ? (
-					<PopoutList>
-						<PopoutList.Heading>{i18n.t('filter.selected')}</PopoutList.Heading>
-						{this.renderItems(selectedItems, true)}
-					</PopoutList>
-				) : null}
-				{searchResults.length ? (
-					<PopoutList>
-						<PopoutList.Heading style={selectedItems.length ? { marginTop: '2em' } : null}>
-							{i18n.t('filter.items')}
-						</PopoutList.Heading>
-						{this.renderItems(searchResults)}
-					</PopoutList>
-				) : null}
+				{
+					selectedItems.length ? (
+						<List component="nav">
+							<React.Fragment>
+								<Typography variant="h4">
+									{i18n.t('filter.selected')}
+								</Typography>
+								{this.renderItems(selectedItems, true)}
+							</React.Fragment>
+						</List>
+					) : null
+				}
+				{
+					searchResults.length ? (
+						<List component="nav">
+							<React.Fragment>
+								<Typography variant="h4">
+									{i18n.t('filter.items')}
+								</Typography>
+								{this.renderItems(searchResults)}
+							</React.Fragment>
+						</List>
+					) : null
+				}
 			</div>
 		);
 	},

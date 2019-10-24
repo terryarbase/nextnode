@@ -1,6 +1,7 @@
 {
   "endpoint": "http://0.0.0.0:3020/",
   "apiVersionV2": "webadmin/app/v2/",
+  "apiVersionV2Session": "webadmin/app/v2/session/content",
   "name": "IoT Broker Message Server",
   "logo": "images/iot_logo.png",
   "barLogo": "images/menubar_logo.png",

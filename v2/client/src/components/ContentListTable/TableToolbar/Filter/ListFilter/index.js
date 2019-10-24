@@ -34,20 +34,25 @@ import {
 } from './styles';
 
 // components
-// import ListFiltersAddForm from './ListFiltersAddForm';
-// import Popout from '../../../../FormField/shared/Popout';
-// import PopoutHeader from '../../../../FormField/shared/Popout/PopoutHeader';
-// import PopoutListItem from '../../../../FormField/shared/Popout/PopoutListItem';
-// import { FormInput } from '../../../../FormField/elemental';
 import Filters from './../../../../FormField/types/filters';
-// import ListHeaderButton from './ListHeaderButton';
+
+// configurations
+import {
+	main,
+	endpoint,
+	apiVersionV2Session,
+} from '../../../../../config/constants.json';
 
 // utils
 import {
 	translateListField,
 	translateListHeading,
 } from '../../../../../utils/multilingual';
+import {
+	requestHeader,
+} from '../../../../../utils/request';
 
+// locale
 import i18n from '../../../../../i18n';
 
 
@@ -270,6 +275,9 @@ const ListFiltersAdd = props => {
 							localePacks={localization[i18n.locale]}
 							list={list}
 							onChange={onFilterChange}
+							adminPath={main}
+							url={`${endpoint}${apiVersionV2Session}`}
+							requestHeader={requestHeader({ isAuth: true })}
 						/> : (
 							<div>{i18n.t('filter.errorMessage')}</div>
 						)

@@ -11,7 +11,9 @@ import {
   // REALTIME_SAVE_ERROR,
 } from './type';
 
-import request from './../../utils/request';
+import {
+  request,
+} from './../../utils/request';
 
 // import List from './../../utils/v1/List';
 
@@ -138,7 +140,7 @@ const loadList = async(dispatch, layoutDispatch, list) => {
   try {
     // get the current query string
     const query = list.buildQueryString();
-    console.log(list, query);
+    // console.log(list, query);
     const result = await request({
       url: `${api.listContent}/${list.path}${query}`,
       method: 'get',

@@ -43,7 +43,7 @@ var PasswordFilter = createClass({
 		const existsOptions = _.map(EXISTS_OPTIONS, option => (
 			{
 				...option,
-				label: i18n.t(`filter${_.camelCase(option.label)}`),
+				label: i18n.t(`filter.${_.camelCase(option.label)}`),
 			}
 		));
 		return (

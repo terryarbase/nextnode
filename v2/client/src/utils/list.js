@@ -62,18 +62,17 @@ class List {
       limit: !isNaN(limit) ? +limit : this.defaultCriteria.limit,
       search: search || this.defaultCriteria.search,
     };
-
-    if (filters) {
-
+    // console.log(this.defaultCriteria.filters);
+    if (filters && filters.length) {
       // push to object and decode it
       try {
         let filtersQuery = JSON.parse(decodeURIComponent(filters));
         filtersQuery = _.isArray(filtersQuery) ? filtersQuery : [ filtersQuery ];
-        console.log();
         newParams = {
           ...newParams,
-          filters: _.reduce(filtersQuery, (v, filter) => {
+          filters: _.chain(filtersQuery).reduce((v, filter) => {
             const f = _.find(this.columns, c => c.path === filter.path);
+            // console.log(f);
             if (f) {
               v = [
                 ...v,
@@ -84,7 +83,7 @@ class List {
               ];
             }
             return v;
-          }, []),
+          }, []).uniqBy('path').value(),
         };
       } catch (err) {
         // TODO: dont push to the curretn filters
@@ -114,9 +113,10 @@ class List {
    */
   getFilters (filterArray) {
     // console.log(filterArray);
-    return _.map(filterArray, filter => ({
-      ..._.omit(filter, ['field']),
-    }));
+    return _.chain(filterArray).uniqBy('path').reduce((v, filter) => ({
+      ...v,
+      [filter.path]: _.omit(filter, ['field', 'path']),
+    }), {}).value();
   };
 
   addFilter(filter) {
@@ -124,6 +124,25 @@ class List {
       filters,
     } = this;
     this.filters = _.unionBy([filter], filters, 'path');
+  }
+
+  removeFilter(filter) {
+    const path = _.get(filter, 'field.path') || _.get(filter, 'path');
+    _.remove(this.filters, f => f.path === path);
+  }
+
+  updateFilter(filter) {
+    const {
+      filters,
+    } = this;
+    const path = _.get(filter, 'field.path') || _.get(filter, 'path');
+    let target = _.findIndex(filters, f => f.path === path);
+    if (target !== -1) {
+      this.filters[target] = {
+        ...this.filters[target],
+        ...filter,
+      };
+    }
   }
 
   /**

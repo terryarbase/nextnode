@@ -15,7 +15,10 @@ import {
   pretendSignout,
 } from "./../store/user/context";
 
-const getHeaders = header => {
+const requestHeader = ({
+  header={},
+  isAuth=false,
+}) => {
   let headers = {
     ...header,
   };
@@ -26,11 +29,18 @@ const getHeaders = header => {
       'Authorization': `Bearer ${sessionToken}`,
     };
   }
+  if (!isAuth) {
+    const uiLanguage = reactLocalStorage.get(storageName.uiLanguage);
+    headers = { 
+      ...headers,
+      language: uiLanguage || defaultLang,
+    };
+  }
 
   return headers;
 }
 
-const commonRequest = ({
+const request = ({
   url,
   method='get',
   data=new FormData(),
@@ -40,12 +50,12 @@ const commonRequest = ({
   history,
   // dispatch,
 }) => {
-  const uiLanguage = reactLocalStorage.get(storageName.uiLanguage);
+  
   return new Promise((done, reject) => {
-    const headers = isAuth ? getHeaders(header) : { 
-      ...header,
-      language: uiLanguage || defaultLang,
-    };
+    const headers = requestHeader({
+      header,
+      isAuth,
+    });
     xhr({
       url: `${endpoint}${apiVersionV2}${url}`,
       responseType: 'json',
@@ -73,4 +83,7 @@ const commonRequest = ({
   });
 }
 
-export default commonRequest;
+export {
+  request,
+  requestHeader,
+};

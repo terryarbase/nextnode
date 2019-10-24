@@ -20,10 +20,14 @@ import FilterLabeler from './../../../../../utils/filter';
 import {
 	translateListField,
 } from './../../../../../utils/multilingual';
+import {
+	requestHeader,
+} from './../../../../../utils/request';
 // configuration
 import {
-	listPrefix,
+	apiVersionV2Session,
 	main,
+	endpoint,
 } from './../../../../../config/constants.json';
 
 const FilterItem = props => {
@@ -36,6 +40,7 @@ const FilterItem = props => {
 			},
 		},
 		listName,
+		onUpdate,
 	} = props;
 
 	const [isOpen, setOpen] = useState(false);
@@ -51,9 +56,11 @@ const FilterItem = props => {
 
 	const close = () => setOpen(false);
 	const updateFilter = () => {
+		onUpdate(filterInfo);
 		close();
 	}
 	const removeFilter = () => {
+		onUpdate(filterInfo, true);
 		close();
 	}
 
@@ -62,20 +69,13 @@ const FilterItem = props => {
 	return (
 		<React.Fragment>
 			<Chip
-				label={
-					FilterLabeler(
-						listName,
-						filter,
-					)
-				}
+				label={fieldName}
 				onClick={open}
 				onDelete={removeFilter}
 				color="primary"
 				id={path}
 			/>
 			<Dialog
-		        disableBackdropClick
-		        disableEscapeKeyDown
 		        maxWidth="lg"
 		        aria-labelledby="confirmation-dialog-title"
 		        open={isOpen}
@@ -88,8 +88,9 @@ const FilterItem = props => {
 						field={field}
 						filter={filterInfo}
 						adminPath={main}
-						url={listPrefix}
+						url={`${endpoint}${apiVersionV2Session}`}
 						onChange={setFilterInfo}
+						requestHeader={requestHeader({ isAuth: true })}
 					/>
 		        </DialogContent>
 		        <DialogActions>
@@ -105,114 +106,9 @@ const FilterItem = props => {
 	);
 }
 
-// class Filter extends Component {
-// 	constructor () {
-// 		super();
-
-
-/*<Dialog
-		        disableBackdropClick
-		        disableEscapeKeyDown
-		        maxWidth="lg"
-		        aria-labelledby="confirmation-dialog-title"
-		        open={isOpen}
-		      >
-		        <DialogTitle id="confirmation-dialog-title">
-		          {i18n.t('filter.editFilter')}
-		        </DialogTitle>
-		        <DialogContent dividers>
-		        	<FilterComponent
-						field={field}
-						filter={filterInfo}
-						adminPath={main}
-						url={listPrefix}
-						onChange={setFilterInfo}
-					/>
-		        </DialogContent>
-		        <DialogActions>
-		          <Button onClick={close} variant="contained">
-		            {i18n.t('filter.cancel')}
-		          </Button>
-		          <Button onClick={updateFilter} color="primary" variant="contained">
-		            {i18n.t('filter.apply')}
-		          </Button>
-		        </DialogActions>
-		    </Dialog>*/
-
-// 		this.open = this.open.bind(this);
-// 		this.close = this.close.bind(this);
-// 		this.updateValue = this.updateValue.bind(this);
-// 		this.updateFilter = this.updateFilter.bind(this);
-// 		this.removeFilter = this.removeFilter.bind(this);
-
-// 		this.state = {
-// 			isOpen: false,
-// 		};
-// 	}
-// 	open () {
-// 		this.setState({
-// 			isOpen: true,
-// 			filterValue: this.props.filter.value,
-// 		});
-// 	}
-// 	close () {
-// 		this.setState({
-// 			isOpen: false,
-// 		});
-// 	}
-// 	updateValue (filterValue) {
-// 		this.setState({
-// 			filterValue: filterValue,
-// 		});
-// 	}
-// 	updateFilter (e) {
-// 		const { dispatch, filter } = this.props;
-// 		dispatch(setFilter(filter.field.path, this.state.filterValue));
-// 		this.close();
-// 		e.preventDefault();
-// 	}
-// 	removeFilter () {
-// 		this.props.dispatch(clearFilter(this.props.filter.field.path));
-// 	}
-// 	render () {
-// 		const { filter, t, list, currentUILang } = this.props;
-// 		const filterId = `activeFilter__${filter.field.path}`;
-// 		const FilterComponent = Filters[filter.field.type];
-
-// 		return (
-// 			<span>
-// 				<Chip
-// 					label={getFilterLabel(list, t, currentUILang, filter)}
-// 					onClick={this.open}
-// 					onClear={this.removeFilter}
-// 					color="primary"
-// 					id={filterId}
-// 				/>
-// 				<Popout isOpen={this.state.isOpen} onCancel={this.close} relativeToID={filterId}>
-// 					<form onSubmit={this.updateFilter}>
-// 						<Popout.Header title={t('editFilter')} />
-// 						<Popout.Body>
-// 							<FilterComponent
-// 								field={filter.field}
-// 								filter={this.state.filterValue}
-// 								onChange={this.updateValue}
-// 							/>
-// 						</Popout.Body>
-// 						<Popout.Footer
-// 							ref="footer"
-// 							primaryButtonIsSubmit
-// 							primaryButtonLabel={t('apply')}
-// 							secondaryButtonAction={this.close}
-// 							secondaryButtonLabel={t('cancel')} />
-// 					</form>
-// 				</Popout>
-// 			</span>
-// 		);
-// 	}
-// };
-
 FilterItem.propTypes = {
 	listName: PropTypes.string.isRequired,
+	onUpdate: PropTypes.func.isRequired,
 	filter: PropTypes.shape({
 		field: PropTypes.object.isRequired,
 		// value: PropTypes.string.isRequired,
