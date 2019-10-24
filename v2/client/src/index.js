@@ -9,6 +9,9 @@ import App from "./components/App";
 import { LayoutProvider } from "./store/layout/context";
 import { UserProvider } from "./store/user/context";
 import { ListProvider } from './store/list/context';
+
+// global styles
+import 'react-day-picker/lib/style.css';
 // import i18n from './i18n';
 
 ReactDOM.render(

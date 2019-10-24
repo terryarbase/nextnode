@@ -12,12 +12,15 @@ import i18n from './../i18n';
 const DATE_FORMAT = 'MMM D YYYY';
 const DATETIME_FORMAT = 'MMM D YYYY h:mm:ss';
 
-const FilterLabeler = (listKey, field, value) => {
-  const label = translateListField([
-      listKey,
-      field.path,
-  ]);
-
+const FilterLabeler = (listKey, value) => {
+  const {
+    field,
+  } = value;
+  const label = translateListField(
+    listKey,
+    field.path,
+  );
+  
   switch (field.type) {
     // BOOLEAN
     case 'boolean': {
@@ -134,7 +137,7 @@ const FilterLabeler = (listKey, field, value) => {
       } else if (value.mode === 'contains') {
         mode = value.inverted ? i18n.t('filter.doesNotContains') : i18n.t('filter.contains');
       }
-
+      
       return `${label} ${mode} "${value.value}"`;
     }
 

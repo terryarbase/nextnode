@@ -64,18 +64,32 @@ class List {
     };
 
     if (filters) {
+
       // push to object and decode it
       try {
-        const filtersQuery = JSON.parse(decodeURIComponent(filters));
+        let filtersQuery = JSON.parse(decodeURIComponent(filters));
+        filtersQuery = _.isArray(filtersQuery) ? filtersQuery : [ filtersQuery ];
+        console.log();
         newParams = {
           ...newParams,
-          filters: filtersQuery,
+          filters: _.reduce(filtersQuery, (v, filter) => {
+            const f = _.find(this.columns, c => c.path === filter.path);
+            if (f) {
+              v = [
+                ...v,
+                {
+                  ...filter,
+                  field: f.field,
+                },
+              ];
+            }
+            return v;
+          }, []),
         };
       } catch (err) {
         // TODO: dont push to the curretn filters
       }
     }
-
     _.assign(this, newParams);
   }
 
@@ -99,10 +113,18 @@ class List {
    * @return {Object}            The corrected filters, keyed by path
    */
   getFilters (filterArray) {
-    return _.map(filterArray, ({ field, value }) => ({
-      [field.path]: value,
+    // console.log(filterArray);
+    return _.map(filterArray, filter => ({
+      ..._.omit(filter, ['field']),
     }));
   };
+
+  addFilter(filter) {
+    const {
+      filters,
+    } = this;
+    this.filters = _.unionBy([filter], filters, 'path');
+  }
 
   /**
    * Get the columns of a list, structured by fields and headings
