@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 // , { useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from "classnames";
@@ -7,6 +7,7 @@ import {
   Typography,
   Tooltip,
   IconButton,
+  DialogContentText,
 } from '@material-ui/core';
 import {
   // ViewColumn as ViewColumnIcon,
@@ -25,6 +26,12 @@ import i18n from "./../../../i18n";
 import FilterTool from "./Filter";
 import ColumnTool from "./Column";
 import SearchBar from "./Search";
+import MessageBox from './../../Shared/MessageBox';
+
+// hooks,
+import {
+  useToggle,
+} from './../../../hook/list';
 
 const NormalToolbar = props => {
   // const classes = useStyles();
@@ -52,6 +59,7 @@ const SelectionToolbar = props => {
   const {
     tableLabel,
     numSelected,
+    onRemove,
   } = props;
   
   const langs = {
@@ -64,7 +72,10 @@ const SelectionToolbar = props => {
           {numSelected} {langs.selected}
       </Typography>
       <Tooltip title={langs.deleteSelected}>
-        <IconButton aria-label={langs.deleteSelected}>
+        <IconButton
+          aria-label={langs.deleteSelected}
+          onClick={onRemove}
+        >
           <DeleteIcon />
         </IconButton>
       </Tooltip>
@@ -73,43 +84,60 @@ const SelectionToolbar = props => {
 }
 
 const ContentListTableToolbar = props => {
+  const [isAsk, openConfirmBox] = useToggle(false);
   const classes = useStyles();
+
   const {
     numSelected,
     currentList,
     tableLabel,
+    onRemove,
   } = props;
-
   const keyword = currentList.search;
-
+  const deleteMessage = `${i18n.t('list.deleteAskMsg', { num: numSelected })}, ${i18n.t('list.cannotUndo')}`;
   return (
-    <Toolbar
-      className={classNames(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
-    >
-      {
-        !!numSelected ? 
-        <SelectionToolbar
+    <React.Fragment>
+        <MessageBox
           {...props}
-          tableLabel={tableLabel}
-          numSelected={numSelected}
-        /> : 
-        <NormalToolbar
-          {...props}
-          tableLabel={tableLabel}
-          keyword={keyword}
-          searchable={!currentList.noSeacrh}
-        />
-      }
-      
-    </Toolbar>
+          isOpen={isAsk}
+          title={i18n.t('list.deleteAskTitle')}
+          onCancel={openConfirmBox}
+          onOK={onRemove}
+        >
+        <DialogContentText>
+          {deleteMessage}
+        </DialogContentText>
+       </MessageBox>
+      <Toolbar
+        className={classNames(classes.root, {
+          [classes.highlight]: numSelected > 0,
+        })}
+      >
+        {
+          !!numSelected ? 
+          <SelectionToolbar
+            {...props}
+            tableLabel={tableLabel}
+            onRemove={openConfirmBox}
+            numSelected={numSelected}
+          /> : 
+          <NormalToolbar
+            {...props}
+            tableLabel={tableLabel}
+            keyword={keyword}
+            searchable={!currentList.noSeacrh}
+          />
+        }
+        
+      </Toolbar>
+    </React.Fragment>
   );
 };
 
 ContentListTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   tableLabel: PropTypes.string,
+  onRemove: PropTypes.func,
   currentList: PropTypes.object,
 };
 

@@ -164,7 +164,7 @@ const ColumnSelection = props => {
           <Button onClick={handleCancel} color="primary">
             {i18n.t('filter.cancel')}
           </Button>
-          <Button onClick={handleOk} color="primary" variant="contained" className={classes.submitBtn}>
+          <Button onClick={handleOk} color="primary" variant="contained">
             {i18n.t('filter.apply')}
           </Button>
         </DialogActions>

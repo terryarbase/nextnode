@@ -28,7 +28,8 @@
   	"refreshSession": "getSession",
   	"userInfo": "session/profile",
   	"appInfo": "info",
-    "listContent": "session/content"
+    "listContent": "session/content",
+    "listDelete": "session/content/:listId/delete"
   },
   "table": {
     "size": 10,

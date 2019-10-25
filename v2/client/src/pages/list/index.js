@@ -5,7 +5,9 @@ import {
 } from "react-router-dom";
 
 // hooks
-import HookList from './../../hook/list';
+import {
+	useContentList,
+} from './../../hook/list';
 
 // components
 import ContentListTable from './../../components/ContentListTable';
@@ -16,12 +18,12 @@ import {
 } from '../../config/constants.json';
 
 const ListPage = props => {
-	const {
-		items,
+	const [
 		loading,
-		isInvalidList,
+		items,
 		currentList,
-	} = HookList.useContentList(props);
+		isInvalidList,
+	] = useContentList(props);
 
 	// redirect to 404 where the list is incorrect from the <List>
 	if (isInvalidList) {

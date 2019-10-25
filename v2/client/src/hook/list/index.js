@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import qs from "query-string";
 // utils
 // import ContentList from '../../utils/v1/lists';
@@ -63,15 +63,27 @@ const useContentList = ({ match, history }) => {
 		fetchTheList(targetList, search);
 	// dependency on target List
 	}, [search, targetList]);
-	return {
+
+	return [
 		loading,
 		items,
 		currentList,
 		isInvalidList,		// indicates the targetList is invalid to get from the List
-	};
+	];
 }
 
-export default {
+const useToggle = initialValue => {
+  const [value, setValue] = useState(initialValue);
+
+  const toggleValue = () => {
+  	setValue(!value);
+  }
+
+  return [value, toggleValue];
+}
+
+export {
 	useContentList,
+	useToggle,
 }
 // const use

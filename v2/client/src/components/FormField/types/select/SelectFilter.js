@@ -9,6 +9,17 @@ import {
 	FormNote,
 	SegmentedControl,
 } from '../../elemental';
+import {
+	List,
+	ListItem,
+	ListItemText,
+	IconButton,
+	ListItemSecondaryAction,
+	Typography,
+} from '@material-ui/core';
+import {
+	Check as CheckIcon,
+} from '@material-ui/icons';
 
 import PopoutListItem from '../../shared/Popout/PopoutListItem';
 import Kbd from '../../shared/Kbd';
@@ -43,12 +54,21 @@ class FilterOption extends Component {
 		const { option, selected } = this.props;
 		// console.log(option);
 		return (
-			<PopoutListItem
-				icon={selected ? 'check' : 'dash'}
-				isSelected={selected}
-				label={option.label}
+			<ListItem
+				button divider selected={selected} dense
 				onClick={this.handleClick}
-			/>
+			>
+              <ListItemText
+                primary={option.label}
+              />
+              {
+              	selected && <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label={option.label}>
+                      <CheckIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+              }
+            </ListItem>
 		);
 	}
 }
@@ -67,11 +87,7 @@ class SelectFilter extends Component {
 			'toggleAllOptions',
 			'toggleInverted',
 			'updateFilter',
-		], func => {
-			if (this.func) {
-				this.func = this.func.bind(this);
-			}
-		});
+		], func => this[func] = this[func].bind(this));
 		// bindFunctions.call(this, [
 		// 	'detectOS',
 		// 	'handleClick',
@@ -150,6 +166,7 @@ class SelectFilter extends Component {
 		this.updateFilter({ value });
 	}
 	handleClick (option, selected) {
+		console.log(this);
 		selected ? this.removeOption(option) : this.selectOption(option);
 	}
 	updateFilter (value) {
@@ -222,7 +239,9 @@ class SelectFilter extends Component {
 						{i18n.t('sort.hold')} <Kbd>{metaKeyLabel}</Kbd> {i18n.t('sort.multiMsg')}
 					</FormNote>
 				</div>
-				{this.renderOptions()}
+				<List component="nav">
+					{this.renderOptions()}
+				</List>
 			</div>
 		);
 	}

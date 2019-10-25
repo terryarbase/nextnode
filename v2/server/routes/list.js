@@ -32,12 +32,19 @@ const registerListRoutes = ({
 		initDataPermission,
 		require(`${v1ServerPath}/api/list/get`),
 	);
-	router.get(
-		'/app/v2/content/:listId/:format(export.excel|export.json|export.txt)',
-		includeList,
-		checkPermission(1),
+	// router.get(
+	// 	'/app/v2/content/:listId/:format(export.excel|export.json|export.txt)',
+	// 	includeList,
+	// 	checkPermission(1),
+	// 	initDataPermission,
+	// 	require(`${v1ServerPath}/api/list/download`),
+	// );
+	router.delete(
+		'/app/v2/content/:listId/delete',
+		includeList, 
+		checkPermission(2),
 		initDataPermission,
-		require(`${v1ServerPath}/api/list/download`),
+		require(`${v1ServerPath}/api/list/delete`),
 	);
 };
 

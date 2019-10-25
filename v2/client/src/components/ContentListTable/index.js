@@ -24,6 +24,7 @@ import TableToolbar from './TableToolbar';
 import TableHeader from './TableHead';
 import TableRower from './TableRow';
 import FilteringList from "./TableToolbar/Filter/FilteringList";
+// import MessageBox from './../Shared/MessageBox';
 // import NextFieldColumns from './../FormField/types/columns';
 
 // styles
@@ -40,9 +41,15 @@ import {
   replaceQueryParams,
 } from "./../../utils/v1/queryParams";
 
+// hooks,
+// import {
+//   useToggle,
+// } from './../../hook/list';
+
 const ContentListTable = props => {
   // const [realInfo, setRealInfo] = useState(null);
   const [selected, setSelected] = useState([]);
+  // const [confirmBox, openConfirmBox] = useToggle(false);
   // get the first sorting field
   // const [orderBy, setOrderBy] = useState(
   //   _.get(props, 'currentList.sort.paths[0].path')
@@ -104,6 +111,10 @@ const ContentListTable = props => {
     limit: value,
   }, history);
 
+  const handleDeleteRows = () => {
+    console.log(selected);
+  }
+
   // const onRealEdit = ({
   //   path,
   //   key,
@@ -154,6 +165,7 @@ const ContentListTable = props => {
         </Badge>
       </Typography>
   ), [ tableLabel, count ]);
+ 
   const pagination = useMemo(() => (
     <TablePagination
         rowsPerPageOptions={paging}
@@ -195,6 +207,7 @@ const ContentListTable = props => {
           searchable={currentList.nofilter}
           tableLabel={tableLabel}
           listName={listName}
+          onRemove={handleDeleteRows}
           // realInfo={realInfo}
           // onRealEdit={onRealEdit}
           // onClearRealEdit={onClearRealEdit}
