@@ -41,6 +41,14 @@ import {
   replaceQueryParams,
 } from "./../../utils/v1/queryParams";
 
+// context
+import {
+  useListDispatch,
+  deleteListRows,
+} from '../../store/list/context';
+import {
+  useLayoutDispatch,
+} from "../../store/layout/context";
 // hooks,
 // import {
 //   useToggle,
@@ -49,6 +57,8 @@ import {
 const ContentListTable = props => {
   // const [realInfo, setRealInfo] = useState(null);
   const [selected, setSelected] = useState([]);
+  const listDispatch = useListDispatch();
+  const layoutDispatch = useLayoutDispatch();
   // const [confirmBox, openConfirmBox] = useToggle(false);
   // get the first sorting field
   // const [orderBy, setOrderBy] = useState(
@@ -90,6 +100,7 @@ const ContentListTable = props => {
   };
 
   const handleSelectAllClick = checked => {
+    // console.log(checked);
     if (checked) {
       // delegated record would not be selected
       const newSelecteds = _.chain(results)
@@ -112,7 +123,9 @@ const ContentListTable = props => {
   }, history);
 
   const handleDeleteRows = () => {
-    console.log(selected);
+    // console.log(selected);
+    deleteListRows(listDispatch, layoutDispatch, currentList, selected);
+    setSelected([]);
   }
 
   // const onRealEdit = ({
@@ -164,7 +177,7 @@ const ContentListTable = props => {
           {tableLabel}
         </Badge>
       </Typography>
-  ), [ tableLabel, count ]);
+  ), [ classes, tableLabel, count ]);
  
   const pagination = useMemo(() => (
     <TablePagination
@@ -185,7 +198,7 @@ const ContentListTable = props => {
         labelRowsPerPage={i18n.t('paging.perPage', { name: tableLabel })}
         onChangeRowsPerPage={handleChangeRowsPerPage}
       />
-  ), [ currentPage, count, limitPerPage ]);
+  ), [ classes, paging, tableLabel, currentPage, count, limitPerPage ]);
 
   let initialMessage = i18n.t('filter.loadingRecord', { name: tableLabel });
   if (!loading) {

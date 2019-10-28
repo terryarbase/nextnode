@@ -15,7 +15,10 @@ import {
 	Button,
 	InlineGroup as Group,
 	InlineGroupSection as Section,
-} from '../../elemental';
+} from '../elemental';
+
+// lcoales
+import i18n from '../../../../i18n';
 
 let lastId = 0;
 
@@ -121,7 +124,8 @@ export default createClass({
 	},
 	// special for chinese only, otherwise use english by default
 	localizeLang() {
-		const { currentLang } = this.props;
+		// const { currentLang } = this.props;
+		const currentLang = i18n.locale;
 		switch(currentLang) {
 			case 'zhtw':
 				return localeZHTW;
@@ -180,7 +184,7 @@ export default createClass({
 						/>
 					</Section>
 					<Section>
-						<Button onClick={this.reset}>{this.props.t('reset')}</Button>
+						<Button onClick={this.reset}>{i18n.t('list.reset')}</Button>
 					</Section>
 				</Group>
 				<Popout

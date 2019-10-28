@@ -7,7 +7,7 @@ import date from './date/DateFilter';
 import datearray from './datearray/DateArrayFilter';
 import datetime from './datetime/DatetimeFilter';
 import email from './email/EmailFilter';
-import embedly from './embedly/EmbedlyFilter';
+// import embedly from './embedly/EmbedlyFilter';
 import file from './file/FileFilter';
 import geopoint from './geopoint/GeoPointFilter';
 import html from './html/HtmlFilter';
@@ -60,7 +60,7 @@ export default {
 	datearray,
 	datetime,
 	email,
-	embedly,
+	// embedly,
 	file,
 	geopoint,
 	html,

@@ -32,36 +32,36 @@ export const translateListName = listName => getTranslation('list', [
 ** 21/10/2019
 */
 export const translateListField = (listName, field, title='') => {
+	const ops = [
+		'field',
+		_.camelCase(field),
+	];
 	let keyWithListName = getTranslation('list', [
 		listName,
-		'field',
-		field,
+		...ops,
 	], otherDelimiter);
 	// console.log(i18n.translations);
 	// special handle for the delegated field name (e.g. field-updateAt, field-createdBy etc)
 	if (!keyWithListName) {
 		// remove the List name prefix
-		keyWithListName = getTranslation('list', [
-			'field',
-			field,
-		], otherDelimiter);
+		keyWithListName = getTranslation('list', ops, otherDelimiter);
 
 	}
 	return keyWithListName || title;
 };
-
-/*
-** Get the heading translation value for the type of heading
-** Terry Chan
-** 21/10/2019
-*/
-export const translateListHeading = (listName, content) => {
+const translateListCommon = (listName, type, content) => {
 	const value = getTranslation('list', [
-		'heading',
+		type,
 		_.camelCase(content),
 	], otherDelimiter);
 
 	// if the translation cannot be found and return the original content
 	return value || content;
 }
-
+/*
+** Get the heading translation value for the type of heading
+** Terry Chan
+** 21/10/2019
+*/
+export const translateListHeading = (listName, content) => translateListCommon(listName, 'heading', content);
+export const translateListNote = (listName, content) => translateListCommon(listName, 'note', content);

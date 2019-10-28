@@ -15,13 +15,13 @@ import {
 	ListItemText,
 	IconButton,
 	ListItemSecondaryAction,
-	Typography,
+	// Typography,
 } from '@material-ui/core';
 import {
 	Check as CheckIcon,
 } from '@material-ui/icons';
 
-import PopoutListItem from '../../shared/Popout/PopoutListItem';
+// import PopoutListItem from '../../shared/Popout/PopoutListItem';
 import Kbd from '../../shared/Kbd';
 // import bindFunctions from '../../utils/bindFunctions';
 

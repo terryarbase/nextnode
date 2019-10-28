@@ -1,9 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Button } from '../../elemental';
+import {
+	Button,
+} from '@material-ui/core';
 import downloadImage from '../../../../utils/v1/downloadImage';
 import ImageThumbnail from '../../components/ImageThumbnail';
+
+// locales
+import i18n from '../../../../i18n';
 
 function CloudinaryImagesThumbnail ({
 	isDeleted,
@@ -24,17 +28,17 @@ function CloudinaryImagesThumbnail ({
 
 	// action button
 	const actionButton = (shouldRenderActionButton && !isQueued) ? (
-		<Button variant="link" color={isDeleted ? 'default' : 'cancel'} block onClick={toggleDelete}>
-			{isDeleted ? 'Undo' : 'Remove'}
+		<Button color={isDeleted ? 'default' : 'secondary'} onClick={toggleDelete}>
+			{isDeleted ? i18n.t('list.undo') : i18n.t('list.remove')}
 		</Button>
 	) : null;
 
 	const downloadButton = value && value.public_id ? (
-		<Button variant="link" onClick={() => {
+		<Button onClick={() => {
 			const { signature, format, secure_url } = value;
 			downloadImage(secure_url, `${signature}.${format}`);
 		}}>
-			Download
+			{i18n.t('list.downloadPicture')}
 		</Button>
 	) : null;
 

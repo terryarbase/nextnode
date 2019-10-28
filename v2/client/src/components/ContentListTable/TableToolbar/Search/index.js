@@ -62,7 +62,7 @@ const TableSearch = props => {
       onChange={changeKeyword}
       inputProps={{ 'aria-label': placeholder }}
     />
-  ), [ search ]);
+  ), [ classes, placeholder, search ]);
 
   return (
     <Paper className={classes.root}>

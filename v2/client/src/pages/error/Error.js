@@ -6,50 +6,53 @@ import classnames from "classnames";
 // styles
 import useStyles from "./styles";
 
-// logo
-import logo from "./logo.svg";
+// configurations
+import {
+  name,
+  endpoint,
+  logo,
+  main,
+} from './../../config/constants.json';
 
-export default function Error() {
-  var classes = useStyles();
+// locales
+import i18n from './../../i18n';
 
+const ErrorPage = props => {
+  const classes = useStyles();
+  const {
+    innerPage,
+  } = props
   return (
     <Grid container className={classes.container}>
-      <div className={classes.logotype}>
-        <img className={classes.logotypeIcon} src={logo} alt="logo" />
-        <Typography variant="h3" color="white" className={classes.logotypeText}>
-          Material Admin
-        </Typography>
-      </div>
+      {
+        !innerPage && <div className={classes.logotype}>
+          <img src={`${endpoint}${logo}`} alt={name} />
+        </div>
+      }
       <Paper classes={{ root: classes.paperRoot }}>
         <Typography
           variant="h1"
-          color="primary"
           className={classnames(classes.textRow, classes.errorCode)}
         >
-          404
+          {i18n.t('common.error404')}
         </Typography>
         <Typography variant="h5" color="primary" className={classes.textRow}>
-          Oops. Looks like the page you're looking for no longer exists
-        </Typography>
-        <Typography
-          variant="h6"
-          color="text"
-          colorBrightness="secondary"
-          className={classnames(classes.textRow, classes.safetyText)}
-        >
-          But we're here to bring you back to safety
+          {i18n.t('message.error404')}
         </Typography>
         <Button
           variant="contained"
           color="primary"
           component={Link}
-          to="/"
+          to={main}
           size="large"
           className={classes.backButton}
         >
-          Back to Home
+          {i18n.t('message.goBackHome')}
         </Button>
       </Paper>
     </Grid>
   );
 }
+
+
+export default ErrorPage;

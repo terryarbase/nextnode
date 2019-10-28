@@ -9,14 +9,14 @@ import {
 	useListDispatch,
 	loadList,
 } from '../../store/list/context';
-import {
-	useUserState,
-} from '../../store/user/context';
+// import {
+// 	useUserState,
+// } from '../../store/user/context';
 import {
   	useLayoutDispatch,
 } from "../../store/layout/context";
 
-const useContentList = ({ match, history }) => {
+const useContentList = ({ match, history, listsByPath={} }) => {
 	// global
 	const listDispatch = useListDispatch();
 	const layoutDispatch = useLayoutDispatch();
@@ -25,9 +25,9 @@ const useContentList = ({ match, history }) => {
 		items,
 		currentList,
 	} = useListState();
-	const {
-		listsByPath={},
-	} = useUserState();
+	// const {
+	// 	listsByPath={},
+	// } = useUserState();
 
 	// props
 	const {
@@ -45,11 +45,10 @@ const useContentList = ({ match, history }) => {
 	// const loadTargetList = list => loadList(listDispatch, layoutDispatch, list);
 	
 	const targetList = listsByPath[list];
-	let isInvalidList = !targetList;
+	const isInvalidList = !targetList;
 	// console.log(search);
 	// loading the list
 	useMemo(() => {
-		// console.log('> loading with search query: ', search);
 		const fetchTheList = (list, search) => {
 			if (list) {
 				if (search) {
@@ -59,10 +58,9 @@ const useContentList = ({ match, history }) => {
 				loadList(listDispatch, layoutDispatch, list);
 			}
 		};
-
 		fetchTheList(targetList, search);
 	// dependency on target List
-	}, [search, targetList]);
+	}, [listDispatch, layoutDispatch, search, targetList]);
 
 	return [
 		loading,
@@ -82,8 +80,24 @@ const useToggle = initialValue => {
   return [value, toggleValue];
 }
 
+const useErrorDidChange = () => {
+	const {
+    	error,
+	} = useListState();
+	// const showError = useErrorDidChange(error);
+	const [show, showError] = useState(!!error);
+	// console.log(error, didChanged);
+	useMemo(() => {
+	  showError(!!error);
+	}, [ error ]);
+	// console.log(error);
+	const closeError = () => showError(false);
+	return [show, error, closeError];
+}
+
 export {
 	useContentList,
 	useToggle,
+	useErrorDidChange,
 }
 // const use

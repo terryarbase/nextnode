@@ -85,18 +85,18 @@ const getCurrentLanguage = async ({
     let uiLanguage = currentLang;
     if (nextnode.get('localization')) {
         // get the language prefered from the request info
-        contentLanguage = fromRequestLanguage(req, 'content-language');
-        uiLanguage = fromRequestLanguage(req, 'content-language');
+        contentLanguage = fromRequestLanguage(req, 'dataLanguage');
+        uiLanguage = fromRequestLanguage(req, 'language');
         if (req.user) {
             const {
                 user,
             } = req;
             // use system user preference by default, if no given language from the request
             if (!contentLanguage) {
-                contentLanguage = user.language;
+                contentLanguage = user.contentLanguage;
             }
             if (!uiLanguage) {
-                uiLanguage = user.contentLanguage;
+                uiLanguage = user.language;
             }
         }
     }
@@ -126,6 +126,7 @@ const includeLocale = async function (req, res, next) {
     });
 
     req.t = nextnode.get('i18n');
+    // console.log(uiLanguage);
     // all of message handling should use the ui-language by default
     req.t.setLocale(uiLanguage);
     req.locales = {

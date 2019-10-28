@@ -8,7 +8,7 @@ export default makeStyles(theme => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: "white",
     position: "absolute",
     top: 0,
     left: 0,
@@ -24,29 +24,30 @@ export default makeStyles(theme => ({
   logotypeText: {
     fontWeight: 500,
     color: "white",
+    textTransform: "uppercase",
     marginLeft: theme.spacing(2),
   },
-  logotypeIcon: {
-    width: 70,
-    marginRight: theme.spacing(2),
-  },
+  // logotypeIcon: {
+  //   marginRight: theme.spacing(2),
+  // },
   paperRoot: {
-    boxShadow: theme.customShadows.widgetDark,
     display: "flex",
+    backgroundColor: theme.palette.primary.main,
     flexDirection: "column",
     alignItems: "center",
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
     paddingLeft: theme.spacing(6),
     paddingRight: theme.spacing(6),
-    maxWidth: 404,
   },
   textRow: {
-    marginBottom: theme.spacing(10),
+    color: 'white',
+    marginBottom: theme.spacing(5),
     textAlign: "center",
   },
   errorCode: {
-    fontSize: 148,
+    fontSize: 50,
+    marginTop: theme.spacing(5),
     fontWeight: 600,
   },
   safetyText: {
@@ -54,7 +55,7 @@ export default makeStyles(theme => ({
     color: theme.palette.text.hint,
   },
   backButton: {
-    boxShadow: theme.customShadows.widget,
+    backgroundColor: theme.palette.secondary.main,
     textTransform: "none",
     fontSize: 22,
   },

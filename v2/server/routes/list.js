@@ -40,7 +40,7 @@ const registerListRoutes = ({
 	// 	require(`${v1ServerPath}/api/list/download`),
 	// );
 	router.delete(
-		'/app/v2/content/:listId/delete',
+		'/app/v2/session/content/:listId',
 		includeList, 
 		checkPermission(2),
 		initDataPermission,

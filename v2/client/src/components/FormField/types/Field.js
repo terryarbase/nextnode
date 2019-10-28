@@ -10,15 +10,18 @@ import classnames from 'classnames';
 import { css } from 'glamor';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import blacklist from 'blacklist';
+import {
+  Button,
+} from '@material-ui/core';
 
 import evalDependsOn from '../utils/evalDependsOn.js';
 
 import { FormField, FormInput, FormNote } from '../elemental';
 
 import CollapsedFieldLabel from '../components/CollapsedFieldLabel';
-import {
-	Button,
-} from 'elemental';
+// import {
+// 	Button,
+// } from 'elemental';
 
 // locales
 import i18n from '../../../i18n';
@@ -26,14 +29,6 @@ import i18n from '../../../i18n';
 function isObject (arg) {
 	return Object.prototype.toString.call(arg) === '[object Object]';
 }
-
-// function isBase64 (str) {
-// 	try {
-//         return btoa(atob(str)) == str;
-//     } catch (err) {
-//         return false;
-//     }
-// }
 
 function validateSpec (spec) { 
 	if (!spec) spec = {};
@@ -46,7 +41,7 @@ function validateSpec (spec) {
 	return spec;
 }
 
-var Base = module.exports.Base = {
+let Base = module.exports.Base = {
 	getInitialState () {
 		return {
 			copied: false,
@@ -231,16 +226,11 @@ var Base = module.exports.Base = {
 			"image/jpg",
 			"image/gif",
 		];
-		for(var i = 0; i < imageMimeType.length; i++){
-			if(value.mimetype === imageMimeType[i]){
-				return true;
-			}
-		}
-		return false;
+		return !!_.includes(imageMimeType, mimetype);
 	},
 	renderUI () {
 		const { required } = this.props;
-		var wrapperClassName = classnames(
+		let wrapperClassName = classnames(
 			'field-type-' + this.props.type,
 			this.props.className,
 			{ 'field-monospace': this.props.monospace }
@@ -290,7 +280,7 @@ function create (spec) {
 
 	spec = validateSpec(spec);
 
-	var field = {
+	let field = {
 		spec: spec,
 		displayName: spec.displayName,
 		mixins: [Mixins.Collapse],
@@ -314,7 +304,7 @@ function create (spec) {
 		Object.assign(field.statics, spec.statics);
 	}
 
-	var excludeBaseMethods = {};
+	let excludeBaseMethods = {};
 	if (spec.mixins) {
 		spec.mixins.forEach(function (mixin) {
 			Object.keys(mixin).forEach(function (name) {
@@ -336,5 +326,7 @@ function create (spec) {
 
 };
 
-export Mixins;
-export create;
+export {
+	Mixins,
+	create,
+};

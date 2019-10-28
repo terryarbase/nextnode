@@ -7,7 +7,7 @@ import date from './date/DateColumn';
 import datearray from './datearray/DateArrayColumn';
 import datetime from './datetime/DatetimeColumn';
 import email from './email/EmailColumn';
-import embedly from './embedly/EmbedlyColumn';
+// import embedly from './embedly/EmbedlyColumn';
 import file from './file/FileColumn';
 import geopoint from './geopoint/GeoPointColumn';
 import html from './html/HtmlColumn';
@@ -64,7 +64,7 @@ export default {
 	datearray,
 	datetime,
 	email,
-	embedly,
+	// embedly,
 	file,
 	geopoint,
 	html,

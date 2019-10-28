@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 // , { useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from "classnames";
@@ -93,6 +93,10 @@ const ContentListTableToolbar = props => {
     tableLabel,
     onRemove,
   } = props;
+  const onDelete = () => {
+    openConfirmBox();
+    onRemove();
+  }
   const keyword = currentList.search;
   const deleteMessage = `${i18n.t('list.deleteAskMsg', { num: numSelected })}, ${i18n.t('list.cannotUndo')}`;
   return (
@@ -102,7 +106,7 @@ const ContentListTableToolbar = props => {
           isOpen={isAsk}
           title={i18n.t('list.deleteAskTitle')}
           onCancel={openConfirmBox}
-          onOK={onRemove}
+          onOK={onDelete}
         >
         <DialogContentText>
           {deleteMessage}

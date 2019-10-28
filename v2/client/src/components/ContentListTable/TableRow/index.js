@@ -133,7 +133,7 @@ const TableRower = ({
   }
 
   const onClickEdit = id => {
-    history.push(`${listPrefix}${listName}${id}`);
+    history.push(`${listPrefix}/${listName}${id}`);
   }
 
   const {
@@ -176,7 +176,7 @@ const TableRower = ({
                 <IconButton
                   disabled={mangeMode}
                   aria-label={noedit ? i18n.t('list.edit') : i18n.t('list.view')}
-                  onClick={onClickEdit}
+                  onClick={() => onClickEdit(id)}
                 >
                   {
                     !noedit ? <EditIcon /> : <SearchIcon />

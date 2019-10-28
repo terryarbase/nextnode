@@ -16,8 +16,8 @@ import AutoForward from "./Login/AutoForward";
 import Main from "./Main";
 
 // pages
-import Error from "../pages/error";
-import Login from "../pages/login";
+import ErrorPage from "../pages/error";
+import LoginPage from "../pages/login";
 
 // context
 import { useUserState } from "../store/user/context";
@@ -96,8 +96,8 @@ export default function App(props) {
             <Route exact path="/" render={props => <AutoForward {...props} />} />
             <Route exact path={prefix} render={props => <AutoForward {...props} />} />
             <PrivateRoute path={prefix} component={Layout} />
-            <PublicRoute path={signin} component={Login} />
-            <Route component={Error} />
+            <PublicRoute path={signin} component={LoginPage} />
+            <Route component={ErrorPage} />
           </Switch>
         </BrowserRouter>
       </Main>

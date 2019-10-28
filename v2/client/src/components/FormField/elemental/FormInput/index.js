@@ -1,9 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 // import { css } from 'glamor';
 import {
 	TextField,
 } from '@material-ui/core';
+
+// styles
+import {
+	useInputStyles,
+} from './../../../ContentListTable/TableToolbar/Filter/ListFilter/styles';
 
 // import classes from './styles';
 // import concatClassnames from '../../../../utils/v1/concatClassnames';
@@ -11,71 +16,100 @@ import InputNoedit from './noedit';
 
 // NOTE must NOT be functional component to allow `refs`
 
-class FormInput extends Component {
-	blur () {
-		this.target.blur();
-	}
-	focus () {
-		this.target.focus();
-	}
-	render () {
-		const {
-			cssStyles,
-			// className,
-			disabled,
-			id,
-			multiline,
-			noedit,
-			size,
-			...props
-		} = this.props;
+const FormInput = props => {
+	const {
+		multiline,
+		disabled,
+		value,
+		ref,
+		fullWidth=false,
+	} = props;
+	const classes = useInputStyles();
+	if (this.props.noedit) return (
+		<InputNoedit {...this.props} />
+	);
+  	return (
+  		<TextField
+  			InputProps={{
+  				classes,
+  				disableUnderline: true
+  			}}
+  			inputRef={ref}
+  			value={value || ''}
+  			disabled={disabled}
+  			fullWidth={!!fullWidth}
+  			multiline={!!multiline}
+  			{...props}
+  		/>
+  	);
+}
 
-		// NOTE return a different component for `noedit`
-		if (noedit) return <InputNoedit {...this.props} />;
+// class FormInput extends Component {
+// 	blur () {
+// 		this.target.blur();
+// 	}
+// 	focus () {
+// 		this.target.focus();
+// 	}
+// 	render () {
+// 		const {
+// 			cssStyles,
+// 			// className,
+// 			disabled,
+// 			id,
+// 			multiline,
+// 			noedit,
+// 			size,
+// 			...props
+// 		} = this.props;
 
-		const { formFieldId } = this.context;
+// 		// NOTE return a different component for `noedit`
+// 		if (noedit) return <InputNoedit {...this.props} />;
 
-		// , formLayout } = this.context;
+// 		const { formFieldId } = this.context;
 
-		props.id = id || formFieldId;
-		// props.className = css(
-		// 	classes.FormInput,
-		// 	classes['FormInput__size--' + size],
-		// 	disabled ? classes['FormInput--disabled'] : null,
-		// 	formLayout ? classes['FormInput--form-layout-' + formLayout] : null,
-		// 	...concatClassnames(cssStyles)
-		// );
-		// if (className) {
-		// 	props.className += (' ' + className);
-		// }
+// 		// , formLayout } = this.context;
 
-		const setRef = (n) => (this.target = n);
-		// const Tag = multiline ? 'textarea' : 'input';
-		// console.log(props.id, props.value);
-		return (
-			<TextField
-				multiline={!!multiline}
-				ref={setRef}
-				disabled={props.disabled}
-				{...props}
-				value={props.value || ''}
-			/>
-		);
-	}
-};
+// 		props.id = id || formFieldId;
+// 		// props.className = css(
+// 		// 	classes.FormInput,
+// 		// 	classes['FormInput__size--' + size],
+// 		// 	disabled ? classes['FormInput--disabled'] : null,
+// 		// 	formLayout ? classes['FormInput--form-layout-' + formLayout] : null,
+// 		// 	...concatClassnames(cssStyles)
+// 		// );
+// 		// if (className) {
+// 		// 	props.className += (' ' + className);
+// 		// }
 
-const stylesShape = {
-	_definition: PropTypes.object,
-	_name: PropTypes.string,
-};
+// 		const setRef = (n) => (this.target = n);
+// 		// const Tag = multiline ? 'textarea' : 'input';
+// 		// console.log(props.id, props.value);
+// 		return (
+// 			<TextField
+// 				multiline={!!multiline}
+// 				ref={setRef}
+// 				disabled={props.disabled}
+// 				{...props}
+// 				value={props.value || ''}
+// 			/>
+// 		);
+// 	}
+// };
+
+// const stylesShape = {
+// 	_definition: PropTypes.object,
+// 	_name: PropTypes.string,
+// };
 
 FormInput.propTypes = {
-	cssStyles: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.shape(stylesShape)),
-		PropTypes.shape(stylesShape),
-	]),
+	// cssStyles: PropTypes.oneOfType([
+	// 	PropTypes.arrayOf(PropTypes.shape(stylesShape)),
+	// 	PropTypes.shape(stylesShape),
+	// ]),
 	multiline: PropTypes.bool,
-	size: PropTypes.oneOf(['default', 'small', 'large']),
+	fullWidth: PropTypes.bool,
+	// size: PropTypes.oneOf(['default', 'small', 'large']),
 	type: PropTypes.string,
 };
 FormInput.defaultProps = {

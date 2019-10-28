@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+// , { useState } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {
@@ -18,7 +19,7 @@ import {
 } from "./../../../utils/multilingual";
 
 const TableHeader = props => {
-  const [selectAllChecked, setSelectAll] = useState(false);
+  // const [selectAllChecked, setSelectAll] = useState(false);
   const {
     classes,
     onSelectAllClick,
@@ -42,9 +43,14 @@ const TableHeader = props => {
     onRequestSort(event, property, direction);
   };
   const onSelectAll = ({ target: { checked } }) => {
-    setSelectAll(checked);
+    // setSelectAll(checked);
     onSelectAllClick(checked);
   }
+  // useMemo(() => {
+  //   if (!numSelected) {
+  //     setSelectAll(false);
+  //   }
+  // }, [ numSelected ]);
   return (
     <TableHead>
       <TableRow>
@@ -52,7 +58,7 @@ const TableHeader = props => {
           !!selectable && <TableCell padding="checkbox">
             <Checkbox
               indeterminate={numSelected > 0 && numSelected < rowCount}
-              checked={selectAllChecked || numSelected > 0}
+              checked={numSelected > 0}
               disabled={!selectable}
               onChange={onSelectAll}
               inputProps={{ 'aria-label': i18n.t('form.selectAll') }}

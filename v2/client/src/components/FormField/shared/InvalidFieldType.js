@@ -5,10 +5,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const InvalidFieldType = function (props) {
+//locales
+import i18n from './../../../i18n';
+
+const InvalidFieldType = function ({ type, path }) {
 	return (
 		<div className="alert alert-danger">
-			Invalid field type <strong>{props.type}</strong> at path <strong>{props.path}</strong>
+			{i18n.t('list.invalidType', { type, path })}
 		</div>
 	);
 };

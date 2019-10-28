@@ -63,7 +63,11 @@
     "build:dist": "NODE_ENV=production webpack --progress"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "rules": {
+      "no-useless-escape": "0",
+      "no-mixed-operators": "0"
+    }
   },
   "browserslist": {
     "production": [

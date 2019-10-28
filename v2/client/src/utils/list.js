@@ -22,6 +22,28 @@ class List {
   }
 
   /*
+  ** Shared function for obtaining the value from changing or current values of state
+  ** Support Multlingual
+  ** Terry Chan
+  ** 12/11/2018
+  */
+  getFieldValue ({ field, values, isLocale, currentLang }) {
+    // console.log(field.path, values);
+    let current = values[field.path];
+    // prevent set multilingual from true to false
+    if (isLocale && field && field.multilingual) {
+      if (typeof current !== 'string') {
+        current = current[currentLang] || '';
+      } else if (current){
+        current = {
+          [currentLang]: current,
+        };
+      }
+    }
+    return current;
+  };
+
+  /*
   ** Reset all of query related fields for this List
   ** Terry Chan
   ** 20/10/2019

@@ -18,6 +18,9 @@ import {
 
 let lastId = 0;
 
+// lcoales
+import i18n from '../../../../i18n';
+
 export default createClass({
 	displayName: 'DateTimeRangeInput',
 	propTypes: {
@@ -64,7 +67,8 @@ export default createClass({
 	},
 	// special for chinese only, otherwise use english by default
 	localizeLang() {
-		const { currentLang } = this.props;
+		// const { currentLang } = this.props;
+		const currentLang = i18n.locale;
 		switch(currentLang) {
 			case 'zhtw':
 				return 'zh-tw';
@@ -110,7 +114,7 @@ export default createClass({
 					</Section>
 					<Section>
 						<span />
-						<Button onClick={this.reset}>{this.props.t('reset')}</Button>
+						<Button onClick={this.reset}>{i18n.t('list.reset')}</Button>
 					</Section>
 				</Group>
 				
