@@ -13,7 +13,7 @@ import geopoint from './geopoint/GeoPointFilter';
 import html from './html/HtmlFilter';
 import key from './key/KeyFilter';
 import location from './location/LocationFilter';
-import markdown from './markdown/MarkdownFilter';
+// import markdown from './markdown/MarkdownFilter';
 import money from './money/MoneyFilter';
 import name from './name/NameFilter';
 import number from './number/NumberFilter';
@@ -42,7 +42,7 @@ export default {
 	list,
 	object,
 	location,
-	markdown,
+	// markdown,
 	money,
 	name,
 	number,

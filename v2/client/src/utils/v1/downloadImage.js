@@ -16,4 +16,4 @@ const downloadImage = (url, filename) => {
 	});
 }
 
-export defualt downloadImage;
+export default downloadImage;

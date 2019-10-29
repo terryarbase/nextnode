@@ -22,19 +22,19 @@ TODO: Implement yearRange Prop, or deprecate for max / min values (better)
 const DEFAULT_INPUT_FORMAT = 'YYYY-MM-DD';
 const DEFAULT_FORMAT_STRING = 'Do MMM YYYY';
 
-module.exports = Field.create({
+export default Field.create({
 	displayName: 'DateField',
 	statics: {
 		type: 'Date',
 	},
 	propTypes: {
-		formatString: PropTypesstring,
-		inputFormat: PropTypesstring,
-		label: PropTypesstring,
-		note: PropTypesstring,
-		onChange: PropTypesfunc,
-		path: PropTypesstring,
-		value: PropTypesstring,
+		formatString: PropTypes.string,
+		inputFormat: PropTypes.string,
+		label: PropTypes.string,
+		note: PropTypes.string,
+		onChange: PropTypes.func,
+		path: PropTypes.string,
+		value: PropTypes.string,
 	},
 
 	getDefaultProps () {

@@ -2,7 +2,7 @@ import Field from '../Field';
 import React from 'react';
 import { FormInput } from '../../elemental';
 
-module.exports = Field.create({
+export default Field.create({
 	displayName: 'TextareaField',
 	statics: {
 		type: 'Textarea',

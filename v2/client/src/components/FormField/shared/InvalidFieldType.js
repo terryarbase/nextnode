@@ -21,4 +21,4 @@ InvalidFieldType.propTypes = {
 	type: PropTypes.string,
 };
 
-export defaultInvalidFieldType;
+export default InvalidFieldType;

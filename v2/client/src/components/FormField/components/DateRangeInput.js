@@ -18,7 +18,7 @@ import {
 } from '../elemental';
 
 // lcoales
-import i18n from '../../../../i18n';
+import i18n from '../../../i18n';
 
 let lastId = 0;
 

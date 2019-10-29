@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import { FormInput } from '../../elemental';
 import Field from '../Field';
-import React, { PropTypes } from 'react';
+import React from 'react';
 
-module.exports = Field.create({
+export default Field.create({
 	displayName: 'MoneyField',
 	propTypes: {
 		onChange: PropTypes.func.isRequired,

@@ -12,8 +12,12 @@ import {
   Typography,
   TableRow,
   TableCell,
+  // Button,
+  Fab,
 } from '@material-ui/core';
-
+import {
+  Create as CreateIcon,
+} from '@material-ui/icons';
 // configurations
 import {
   table,
@@ -24,6 +28,7 @@ import TableToolbar from './TableToolbar';
 import TableHeader from './TableHead';
 import TableRower from './TableRow';
 import FilteringList from "./TableToolbar/Filter/FilteringList";
+import CreateForm from './../ContentListForm/CreateForm';
 // import MessageBox from './../Shared/MessageBox';
 // import NextFieldColumns from './../FormField/types/columns';
 
@@ -49,17 +54,18 @@ import {
 import {
   useLayoutDispatch,
 } from "../../store/layout/context";
+
 // hooks,
-// import {
-//   useToggle,
-// } from './../../hook/list';
+import {
+  useToggle,
+} from './../../hook/list';
 
 const ContentListTable = props => {
   // const [realInfo, setRealInfo] = useState(null);
   const [selected, setSelected] = useState([]);
   const listDispatch = useListDispatch();
   const layoutDispatch = useLayoutDispatch();
-  // const [confirmBox, openConfirmBox] = useToggle(false);
+  const [startCreate, openCreateBox] = useToggle(false);
   // get the first sorting field
   // const [orderBy, setOrderBy] = useState(
   //   _.get(props, 'currentList.sort.paths[0].path')
@@ -151,6 +157,7 @@ const ContentListTable = props => {
 
   const {
     noedit,
+    nocreate,
     nodelete,
     key: listName,
     page,
@@ -178,6 +185,13 @@ const ContentListTable = props => {
         </Badge>
       </Typography>
   ), [ classes, tableLabel, count ]);
+
+  // const createButton = useMemo(() => (
+  //   nocreate && <Fab variant="extended" color="primary">
+  //     <CreateIcon className={classes.extendedIcon} />
+  //     {i18.t('list.createANew', { listName: tableLabel })}
+  //   </Fab>
+  // ), [ classes, nocreate, tableLabel ]);
  
   const pagination = useMemo(() => (
     <TablePagination
@@ -212,7 +226,28 @@ const ContentListTable = props => {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        {pageTitle}
+        <Grid container
+          direction="row"
+          justify="center"
+          alignItems="center"
+        >
+          <Grid item xs>
+            {pageTitle}
+          </Grid>
+          <Grid item>
+            {
+              !nocreate && <Fab
+                variant="extended"
+                color="primary"
+                className={classes.fabButton}
+                onClick={openCreateBox}
+              >
+                <CreateIcon className={classes.extendedIcon} />
+                {i18n.t('list.createANew', { listName: tableLabel })}
+              </Fab>
+            }
+          </Grid>
+        </Grid>
         <TableToolbar
           {...props}
           numSelected={selected.length}
@@ -296,6 +331,12 @@ const ContentListTable = props => {
           </Grid>
         }
       </Paper>
+      <CreateForm
+        {...props}
+        title={listName}
+        handleClose={openCreateBox}
+        open={startCreate}
+      />
     </div>
   );
 };
@@ -306,6 +347,5 @@ ContentListTable.propTypes = {
   currentList: PropTypes.object.isRequired,
   loading: PropTypes.bool.isRequired,
 };
-
 
 export default ContentListTable;

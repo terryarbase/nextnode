@@ -10,9 +10,9 @@ import {
   Button,
 } from '@material-ui/core';
 
-import { Fields } from 'FieldTypes';
-import { Button, GlyphButton } from '../../elemental';
-import InvalidFieldType from '../../elemental/shared/InvalidFieldType';
+import Fields from './../fields';
+import { GlyphButton } from '../../elemental';
+import InvalidFieldType from '../../shared/InvalidFieldType';
 
 // locales
 import i18n from '../../../../i18n';
@@ -45,17 +45,17 @@ const ItemDom = ({  name, id, onRemove, children, t }) => (
 	</div>
 );
 
-module.exports = Field.create({
+export default Field.create({
 	displayName: 'ListField',
 	statics: {
 		type: 'List',
 	},
 	propTypes: {
-		fields: PropTypesobject.isRequired,
-		label: PropTypesstring,
-		onChange: PropTypesfunc.isRequired,
-		path: PropTypesstring.isRequired,
-		value: PropTypesarray,
+		fields: PropTypes.object.isRequired,
+		label: PropTypes.string,
+		onChange: PropTypes.func.isRequired,
+		path: PropTypes.string.isRequired,
+		value: PropTypes.array,
 	},
 	addItem () {
 		const { path, value, onChange } = this.props;

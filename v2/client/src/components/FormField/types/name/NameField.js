@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import Field from '../Field';
-import React, { PropTypes } from 'react';
+import React from 'react';
 import {
 	FormInput,
 	Grid,
@@ -14,7 +14,7 @@ const NAME_SHAPE = {
 	last: PropTypes.string,
 };
 
-module.exports = Field.create({
+export default Field.create({
 	displayName: 'NameField',
 	statics: {
 		type: 'Name',
@@ -73,7 +73,7 @@ module.exports = Field.create({
 	renderField () {
 		// name={this.getInputName(paths.first)}
 		// name={this.getInputName(paths.last)}
-		const { value = {}, path, paths, autoFocus } = this.props;
+		const { value = {}, path, autoFocus } = this.props;
 		return (
 			<Grid.Row small="one-half" gutter={10}>
 				<Grid.Col>

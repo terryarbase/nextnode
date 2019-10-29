@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import React from 'react';
 import Field from '../Field';
 import { FormInput } from '../../elemental';
 
-module.exports = Field.create({
+export default Field.create({
 	displayName: 'NumberField',
 	statics: {
 		type: 'Number',

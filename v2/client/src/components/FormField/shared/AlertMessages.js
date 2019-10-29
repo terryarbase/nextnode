@@ -140,4 +140,4 @@ var AlertMessages = createClass({
 	},
 });
 
-export defaultAlertMessages;
+export default AlertMessages;

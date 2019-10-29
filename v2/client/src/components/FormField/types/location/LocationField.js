@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import _ from 'lodash';
 import React from 'react';
 import Field from '../Field';
@@ -22,7 +22,7 @@ import i18n from '../../../../i18n';
  * - Custom path support
  */
 
-module.exports = Field.create({
+export default Field.create({
 
 	displayName: 'LocationField',
 	statics: {
@@ -130,7 +130,7 @@ module.exports = Field.create({
 	},
 
 	renderSuburbState () {
-		const { value = {}, path, t } = this.props;
+		const { value = {}, path } = this.props;
 		// name={this.getInputName(path + '.suburb')}
 		// name={this.getInputName(path + '.state')}
 		return (
@@ -156,7 +156,7 @@ module.exports = Field.create({
 	},
 
 	renderPostcodeCountry () {
-		const { value = {}, path, t } = this.props;
+		const { value = {}, path } = this.props;
 		// name={this.getInputName(path + '.postcode')}
 		// name={this.getInputName(path + '.country')}
 		return (
@@ -185,7 +185,7 @@ module.exports = Field.create({
 		if (this.state.collapsedFields.geo) {
 			return null;
 		}
-		const { value = {}, path, paths } = this.props;
+		const { value = {}, path } = this.props;
 		const geo = value.geo || [];
 		// name={this.getInputName(paths.geo + '[1]')}
 		// name={this.getInputName(paths.geo + '[0]')}
@@ -223,7 +223,7 @@ module.exports = Field.create({
 
 
 	renderGoogleOptions () {
-		const { paths, enableMapsAPI, t } = this.props;
+		const { enableMapsAPI } = this.props;
 		if (!enableMapsAPI) return null;
 		// name={this.getInputName(paths.overwrite)}
 		var replace = this.state.improve ? (
@@ -274,7 +274,7 @@ module.exports = Field.create({
 			: null;
 		/* eslint-enable */
 
-		const { path, t, required, noAddress } = this.props;
+		const { path, required, noAddress } = this.props;
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		return (
 			<div data-field-name={path} data-field-type="location">

@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import ArrayFieldMixin from '../../mixins/ArrayField';
 import Field from '../Field';
 
-module.exports = Field.create({
+export default Field.create({
 
 	displayName: 'NumberArrayField',
 	statics: {

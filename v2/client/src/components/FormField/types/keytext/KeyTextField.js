@@ -37,12 +37,12 @@ const initialKeyItem = () => ({
 // convert key and text as a string
 const getStringKeyText = value => _.map(value, ({ key, value }) => `${key}${value}`).join('|');
 
-module.exports = Field.create({
+export default Field.create({
 	propTypes: {
-		path: PropTypesstring.isRequired,
-		value: PropTypesoneOfType([
-			PropTypesarray,
-			PropTypesstring,
+		path: PropTypes.string.isRequired,
+		value: PropTypes.oneOfType([
+			PropTypes.array,
+			PropTypes.string,
 		]),
 	},
 	displayName: 'KeyTextField',
@@ -109,7 +109,7 @@ module.exports = Field.create({
 		this.valueChanged(values);
 	},
 	renderInputNote() {
-		const { max = -1, min = -1, t, listKey } = this.props;
+		const { max = -1, min = -1, listKey } = this.props;
 		var note = null;
 		if (max !== -1 || min !== -1) {
 			const listName = translateListName(listKey);
@@ -135,7 +135,7 @@ module.exports = Field.create({
 		return note;
 	},
 	renderField () {
-		const { max, t, isCore } = this.props;
+		const { max, isCore, noeditkey } = this.props;
 		const { values = [] } = this.state;
 		return (
 			<div>
@@ -155,12 +155,12 @@ module.exports = Field.create({
 			</div>
 		);
 	},
-	addItemOnEnter (event) {
-		if (event.keyCode === ENTER_KEYCODE) {
-			this.addItem();
-			event.preventDefault();
-		}
-	},
+	// addItemOnEnter (event) {
+	// 	if (event.keyCode === ENTER_KEYCODE) {
+	// 		this.addItem();
+	// 		event.preventDefault();
+	// 	}
+	// },
 	addItemOnEnter (event) {
 		if (event.keyCode === ENTER_KEYCODE) {
 			this.addItem(initialKeyItem());
@@ -168,7 +168,7 @@ module.exports = Field.create({
 		}
 	},
 	renderItem ({ id, key, value }, index) {
-		const { noeditkey, mode, t } = this.props;
+		const { noeditkey, mode } = this.props;
 		const Input = this.getInputComponent ? this.getInputComponent() : FormInput;
  		return (
 			<FormField key={id} style={{ marginBottom: '1.5em' }}>

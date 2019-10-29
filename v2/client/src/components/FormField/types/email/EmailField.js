@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import Field from '../Field';
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { FormInput } from '../../elemental';
 
 /*
@@ -9,7 +9,7 @@ import { FormInput } from '../../elemental';
 	- validate email address
  */
 
-module.exports = Field.create({
+export default Field.create({
 	displayName: 'EmailField',
 	propTypes: {
 		path: PropTypes.string.isRequired,

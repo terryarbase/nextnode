@@ -20,20 +20,20 @@ const DEFAULT_INPUT_TIME_FORMAT = 'HH:mm';
 const DEFAULT_FORMAT_STRING = 'DD/MM/YYYY HH:mm';
 // const DEFAULT_FORMAT_TIME_STRING = 'HH:mm'
 
-module.exports = Field.create({
+export default Field.create({
 	displayName: 'DateTimeRangeField',
 	statics: {
 		type: 'Date',
 	},
 	propTypes: {
-		formatString: PropTypesstring,
-		inputDateFormat: PropTypesstring,
-		inputTimeFormat: PropTypesstring,
-		label: PropTypesstring,
-		note: PropTypesstring,
-		onChange: PropTypesfunc,
-		path: PropTypesstring,
-		value: PropTypesstring,
+		formatString: PropTypes.string,
+		inputDateFormat: PropTypes.string,
+		inputTimeFormat: PropTypes.string,
+		label: PropTypes.string,
+		note: PropTypes.string,
+		onChange: PropTypes.func,
+		path: PropTypes.string,
+		value: PropTypes.string,
 	},
 
 	getDefaultProps () {

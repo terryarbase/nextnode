@@ -12,7 +12,7 @@ import i18n from '../../../../i18n';
  * - Custom path support
  */
 
-module.exports = Field.create({
+export default Field.create({
 
 	displayName: 'SelectField',
 	statics: {
@@ -56,7 +56,7 @@ module.exports = Field.create({
 	},
 
 	renderField () {
-		const { numeric, ops, path, value: val } = this.props;
+		const { ops, path, value: val } = this.props;
 
 		// TODO: This should be natively handled by the Select component
 		let value = String(val);

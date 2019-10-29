@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 // import _ from 'lodash';
 import {
@@ -29,7 +29,13 @@ const TableSearch = props => {
   const {
     tableLabel,
     history,
+    // keyword,
   } = props;
+
+  // useEffect(() => {
+  //   console.log('>>>>>>', keyword);
+  //   setKeyword(keyword);
+  // }, [ keyword ]);
 
   const changeKeyword = ({ target: { value } }) => setKeyword(value);
 
@@ -38,6 +44,8 @@ const TableSearch = props => {
   }, history);
 
   const clearKeyword = () => {
+    setKeyword('');
+    // inputEl.current.value = '';
     searchIt('');
   };
 
@@ -53,20 +61,26 @@ const TableSearch = props => {
 
   const placeholder = i18n.t('list.searchPlaceholder', { name: tableLabel });
 
-  const keywordInput = useMemo(() => (
-    <InputBase
-      className={classes.input}
-      placeholder={placeholder}
-      defaultValue={search}
-      onKeyPress={onKeyPress}
-      onChange={changeKeyword}
-      inputProps={{ 'aria-label': placeholder }}
-    />
-  ), [ classes, placeholder, search ]);
-
+  // const keywordInput = useMemo(() => {
+  //   return <InputBase
+  //     className={classes.input}
+  //     placeholder={placeholder}
+  //     defaultValue={search}
+  //     onKeyPress={onKeyPress}
+  //     inputProps={{ 'aria-label': placeholder }}
+  //   />
+  // }, [ classes, placeholder, search ]);
+  // console.log(inputEl.current);
   return (
     <Paper className={classes.root}>
-      { keywordInput }
+      <InputBase
+        className={classes.input}
+        placeholder={placeholder}
+        value={search}
+        onChange={changeKeyword}
+        onKeyPress={onKeyPress}
+        inputProps={{ 'aria-label': placeholder }}
+      />
       {
         !!search.length && <IconButton
           className={classes.iconButton}

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import CodeMirror from 'codemirror';
 import Field from '../Field';
 import {
@@ -23,7 +23,7 @@ import i18n from '../../../../i18n';
 // See CodeMirror docs for API:
 // http://codemirror.net/doc/manual.html
 
-module.exports = Field.create({
+export default Field.create({
 	displayName: 'CodeField',
 	statics: {
 		type: 'Code',
@@ -95,7 +95,6 @@ module.exports = Field.create({
 	},
 	renderCodemirror () {
 		const {
-			t,
 			download,
 		} = this.props;
 		const className = classnames('CodeMirror-container', {

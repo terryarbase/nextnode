@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import React from 'react';
 import Field from '../Field';
 import {
@@ -11,7 +11,7 @@ import {
 // locales
 import i18n from '../../../../i18n';
 
-module.exports = Field.create({
+export default Field.create({
 
 	displayName: 'PasswordField',
 	statics: {
@@ -46,7 +46,6 @@ module.exports = Field.create({
 	},
 
 	renderValue () {
-		const { t } = this.props;
 		return <FormInput noedit>{this.props.value ? i18n.t('list.passwordSet') : ''}</FormInput>;
 	},
 
@@ -55,7 +54,6 @@ module.exports = Field.create({
 	},
 
 	renderFields () {
-		const { t } = this.props;
 		return (
 			<Group block>
 				<Section grow>
@@ -90,7 +88,6 @@ module.exports = Field.create({
 	},
 
 	renderChangeButton () {
-		const { t } = this.props;
 		var label = this.state.passwordIsSet
 			? i18n.t('list.changePwd')
 			: i18n.t('list.setPassword');

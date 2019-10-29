@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import Field from '../Field';
 import React from 'react';
 import tinymce from 'tinymce';
@@ -25,7 +25,7 @@ function removeTinyMCEInstance (editor) {
 	}
 }
 
-module.exports = Field.create({
+export default Field.create({
 
 	displayName: 'HtmlField',
 	statics: {

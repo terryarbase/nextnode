@@ -22,9 +22,9 @@ const ColorField = Field.create({
 		type: 'Color',
 	},
 	propTypes: {
-		onChange: PropTypesfunc,
-		path: PropTypesstring,
-		value: PropTypesstring,
+		onChange: PropTypes.func,
+		path: PropTypes.string,
+		value: PropTypes.string,
 	},
 
 	getInitialState () {
@@ -153,4 +153,4 @@ const classes = {
 	},
 };
 
-module.exports = ColorField;
+export default ColorField;

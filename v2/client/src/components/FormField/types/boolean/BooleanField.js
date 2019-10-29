@@ -10,7 +10,7 @@ import { FormField } from '../../elemental';
 
 const NOOP = () => {};
 
-module.exports = Field.create({
+export default Field.create({
 	displayName: 'BooleanField',
 	statics: {
 		type: 'Boolean',
@@ -48,9 +48,9 @@ module.exports = Field.create({
 		        disabled={!this.shouldRenderField()}
 		    />
 		);
-	}
+	},
 	renderUI () {
-		const { indent, value, label, path } = this.props;
+		const { indent, label, path } = this.props;
 		return (
 			<div data-field-name={path} data-field-type="boolean">
 				<FormField offsetAbsentLabel={indent}>

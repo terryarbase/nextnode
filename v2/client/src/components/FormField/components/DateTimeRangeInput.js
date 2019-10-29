@@ -1,4 +1,4 @@
-import moment from 'moment';
+// import moment from 'moment';
 import React from 'react';
 import PropTypes from 'prop-types';
 // replace all of function component before fully mirgation to v2, use this package instead of using the native
@@ -6,9 +6,11 @@ import PropTypes from 'prop-types';
 import createClass from 'create-react-class';
 // import Popout from '../../admin/client/App/shared/Popout';
 import DatetimeRangePicker from './libs/DatetimeRangePicker';
-import localeZHTW from 'date-fns/locale/zh-TW';
-import localeZHCN from 'date-fns/locale/zh-CN';
-import localeEN from 'date-fns/locale/en-US';
+// import localeZHTW from 'date-fns/locale/zh-TW';
+// import localeZHCN from 'date-fns/locale/zh-CN';
+// import localeEN from 'date-fns/locale/en-US';
+
+import i18n from '../../../i18n';
 import {
 	FormInput,
 	Button,
@@ -19,7 +21,7 @@ import {
 let lastId = 0;
 
 // lcoales
-import i18n from '../../../../i18n';
+
 
 export default createClass({
 	displayName: 'DateTimeRangeInput',

@@ -58,4 +58,4 @@ const FlashMessage = createClass({
 	},
 });
 
-export defaultFlashMessage;
+export default FlashMessage;

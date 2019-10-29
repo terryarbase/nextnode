@@ -3,12 +3,12 @@
  * wrapped with the List helper (./List.js)
  */
 import _ from 'lodash';
-import List from './List';
+import List from './../list';
 
 // context
 import {
   useUserState,
-} from "./../../../store/user/context";
+} from "./../../store/user/context";
 
 const NormalizeContentList = () => {
 	const {
@@ -22,7 +22,7 @@ const NormalizeContentList = () => {
 	let listsByKey = {};
 	let listsByPath = {};
 
-	_.forOwn(lists, l => {
+	_.forOwn(lists, (l, key) => {
 		const list = new List(l);
 		listsByKey = {
 			...listsByKey,

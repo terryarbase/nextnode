@@ -6,8 +6,7 @@ import React from 'react';
 import Field from '../Field';
 import _map from 'lodash/map';
 
-import { Fields } from 'FieldTypes';
-import InvalidFieldType from '../../elemental/shared/InvalidFieldType';
+import InvalidFieldType from '../../shared/InvalidFieldType';
 
 const ObjectField = ({ name, id, children, t }) => (
 	<div style={{
@@ -26,27 +25,31 @@ const ObjectField = ({ name, id, children, t }) => (
 	</div>
 );
 
-module.exports = Field.create({
+export default Field.create({
 	displayName: 'ObjectField',
 	statics: {
 		type: 'Object',
 	},
 	propTypes: {
-		fields: PropTypesobject.isRequired,
-		label: PropTypesstring,
-		onChange: PropTypesfunc.isRequired,
-		path: PropTypesstring.isRequired,
-		value: PropTypesobject,
+		fields: PropTypes.object.isRequired,
+		label: PropTypes.string,
+		onChange: PropTypes.func.isRequired,
+		path: PropTypes.string.isRequired,
+		value: PropTypes.object,
 	},
-	handleFieldChange (fieldInfo) {
-		const { value, path, onChange } = this.props;
-		value[fieldInfo.path] = fieldInfo.value,
+	handleFieldChange ({ path: infoPath, value: infoValue }) {
+		let { value } = this.props;
+		const { path, onChange } = this.props;
+		value = {
+			...value,
+			[infoPath]: infoValue,
+		}
 		onChange({ path, value });
 	},
 	renderSubFields (value) {
 		return _map(Object.keys(this.props.fields), path => {
 			const field = this.props.fields[path];
-			if (typeof Fields[field.type] !== 'function') {
+			if (typeof Field[field.type] !== 'function') {
 				return React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path });
 			}
 
@@ -67,7 +70,7 @@ module.exports = Field.create({
 			// 		props.currentDependencies[dep] = this.state.values[dep];
 			// 	});
 			// }
-			return React.createElement(Fields[field.type], props);
+			return React.createElement(Field[field.type], props);
 		});
 	},
 	renderField () {

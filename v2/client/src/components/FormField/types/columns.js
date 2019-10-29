@@ -13,7 +13,7 @@ import geopoint from './geopoint/GeoPointColumn';
 import html from './html/HtmlColumn';
 import key from './key/KeyColumn';
 import location from './location/LocationColumn';
-import markdown from './markdown/MarkdownColumn';
+// import markdown from './markdown/MarkdownColumn';
 import money from './money/MoneyColumn';
 import name from './name/NameColumn';
 import number from './number/NumberColumn';
@@ -46,7 +46,7 @@ export default {
 	list,
 	object,
 	location,
-	markdown,
+	// markdown,
 	money,
 	name,
 	number,

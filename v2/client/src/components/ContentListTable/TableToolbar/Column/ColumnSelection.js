@@ -79,7 +79,7 @@ const ColumnSelectionItem = props => {
 
 const ColumnSelection = props => {
   const [values, setValues] = useState(props.items);
-  const classes = useStyles();
+  // const classes = useStyles();
   const {
     tableLabel='',
     listName,

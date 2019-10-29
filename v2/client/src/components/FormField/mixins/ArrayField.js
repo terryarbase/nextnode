@@ -6,7 +6,7 @@ import {
 	Button,
 	FormField,
 	FormInput,
-} from './elemental';
+} from './../elemental';
 
 
 var lastId = 0;

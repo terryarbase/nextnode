@@ -6,7 +6,7 @@ import _ from 'lodash';
 import i18n from './../../i18n';
 
 // FieldTypes
-import Fields from './../FormField/types';
+import Fields from './../FormField/types/fields';
 
 // components
 import InvalidFieldType from './../FormField/shared/InvalidFieldType';
@@ -26,7 +26,12 @@ import {
   translateListNote,
 } from './../../utils/multilingual';
 
-const getFormFieldProps = props => {
+// context
+import {
+  useUserState,
+} from '../../store/user/context'
+
+const getFormFieldProps = options => {
   const {
     currentList: {
       isCore,
@@ -39,10 +44,11 @@ const getFormFieldProps = props => {
     },
     currentLang,
     currentList,
+    cloudinary,
     onChange,
     values,
     mode,
-  } = props;
+  } = options;
 
   const url = `${endpoint}${apiVersionV2}`;
 
@@ -59,6 +65,7 @@ const getFormFieldProps = props => {
     adminPath: main,
     key: `${path}-${currentLang}`,
     url,
+    cloudinary,
     uploadUrl: url,
     onChange,
     mode,
@@ -84,17 +91,13 @@ const getFormHeadingProps = ({
   };
 }
 
-FormFieldProps.propTypes = {
-  currentList: PropTypes.object.isRequired,
-  onChange: PropTypes.func.isRequired,
-  values: PropTypes.object.isRequired,
-  mode: PropTypes.string,
-};
-
-const useFormElemental = props => {
+const FormElemental = props => {
   // state
   // const [statelessUI, setStatelessUI] = useState({});
   // const statelessUIRef = useRef();
+  const {
+    info={},
+  } = useUserState();
   const currentLang = i18n.locale;
 
   // const updateStateLessUI = (el, path) => {
@@ -110,27 +113,24 @@ const useFormElemental = props => {
   //   setStatelessUI(newStateLessUI);
   // }
   // helper checker
-  const isStateless = ({
-    stateless,
-    cloneable,
-    multilingual,
-  }) => (stateless, || cloneable) && multilingual;
+  // const isStateless = ({
+  //   stateless,
+  //   cloneable,
+  //   multilingual,
+  // }) => (stateless || cloneable) && multilingual;
 
-  const isMultilingalStateLess = ({
-    path
-  }) => _.get(statelessUI, `${path}.${currentLang}`);
-
-  
-  let {
-    fields=[],
-  } = props;
+  // const isMultilingalStateLess = ({
+  //   path
+  // }) => _.get(statelessUI, `${path}.${currentLang}`);
   const {
+    requiredFields=[],
     currentList: {
       fields,
       uiElements,
       nameField,
       nameFieldIsFormHeader,
     },
+    currentList,
     onChange,
     mode='edit',
     form,
@@ -138,12 +138,10 @@ const useFormElemental = props => {
 
   let elements = [];
   // callee specifies the field to be shown
-  if (fields.length) {
+  if (requiredFields.length) {
     elements = _.filter(uiElements, ({ field }) => _.indexOf(fields, field) !== -1);
-    // console.log(elements);
-    elements = FormElement(elements);
   } else {
-    elements = FormElement(uiElements);
+    elements = [ ...uiElements ];
   }
 
   // create a corresponding field element
@@ -154,9 +152,10 @@ const useFormElemental = props => {
     values: form,
     currentLang,
     mode,
+    cloudinary: _.get(info, 'cloudinary'),
   };
   // create all of elements from uiElements
-  elements = _.reduce(el, ({ field, type, content }, index) => {
+  elements = _.reduce(elements, (el, { field, type, content }, index) => {
     if (
       nameField
       && field === nameField.path
@@ -165,7 +164,7 @@ const useFormElemental = props => {
       return el;
     // heading type
     } else if (type === 'heading') {
-      prevHeader = content,
+      prevHeader = content;
       const heading = React.createElement(FormHeading, getFormHeadingProps({
         ...elementProps,
         content,
@@ -176,7 +175,7 @@ const useFormElemental = props => {
     // field type 
     } else if (type === 'field') {
       const f = fields[field];
-      const fieldProps = this.getFieldProps({
+      const fieldProps = this.getFormFieldProps({
         ...elementProps,
         field: f,
         onChange,
@@ -185,9 +184,10 @@ const useFormElemental = props => {
       let element = null;
       const {
         path,
+        type,
         cloneable,
       } = f;
-      if (typeof f.type] !== 'function') {
+      if (typeof type !== 'function') {
         // push to the current heading or default heading
         element = React.createElement(InvalidFieldType, {
           type,
@@ -219,23 +219,25 @@ const useFormElemental = props => {
 
         // }
       }
-      el = [
+      el = {
         ...el,
         [prevHeader]: [
           ...el[prevHeader],
           element,
         ],
-      ];
+      };
     }
 
     return el;
 
   }, { __default: [] });
+
+  return elements;
 };
 
 FormElemental.propTypes = {
   currentList: PropTypes.object.isRequired,
-  fields: PropTypes.array,
+  requiredFields: PropTypes.array,
   mode: PropTypes.string,
   form: PropTypes.object,
 };

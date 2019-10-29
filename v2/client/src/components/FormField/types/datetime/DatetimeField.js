@@ -1,5 +1,5 @@
 import DateInput from '../../components/DateInput';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import Field from '../Field';
 import moment from 'moment';
 import React from 'react';
@@ -12,7 +12,7 @@ import {
 	InlineGroupSection as Section,
 } from '../../elemental';
 
-module.exports = Field.create({
+export default Field.create({
 
 	displayName: 'DatetimeField',
 	statics: {

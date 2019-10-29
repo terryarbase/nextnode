@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import Field from '../Field';
 import React from 'react';
 import {
@@ -9,7 +9,7 @@ import {
 // locales
 import i18n from '../../../../i18n';
 
-module.exports = Field.create({
+export default Field.create({
 
 	displayName: 'GeopointField',
 	statics: {

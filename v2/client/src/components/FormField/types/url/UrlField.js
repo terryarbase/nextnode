@@ -2,7 +2,7 @@ import React from 'react';
 import Field from '../Field';
 import { GlyphButton, FormInput } from '../../elemental';
 
-module.exports = Field.create({
+export default Field.create({
 	displayName: 'URLField',
 	statics: {
 		type: 'Url',

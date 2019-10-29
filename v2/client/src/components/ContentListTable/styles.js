@@ -8,6 +8,14 @@ export default makeStyles(theme => ({
   paper: {
     width: '100%',
   },
+  fabButton: {
+    marginRight: theme.spacing(1),
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1),
+  },
   tableTitle: {
     paddingBottom: theme.spacing(2),
     paddingTop: theme.spacing(2),

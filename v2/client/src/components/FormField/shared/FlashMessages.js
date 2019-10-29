@@ -60,4 +60,4 @@ var FlashMessages = createClass({
 	},
 });
 
-export defaultFlashMessages;
+export default FlashMessages;

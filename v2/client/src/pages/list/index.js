@@ -3,9 +3,9 @@ import {
 	withRouter,
 	Redirect,
 } from "react-router-dom";
-import {
-  DialogContentText,
-} from '@material-ui/core';
+// import {
+//   DialogContentText,
+// } from '@material-ui/core';
 
 // hooks
 import {
@@ -22,12 +22,12 @@ import {
 } from '../../config/constants.json';
 
 // locales
-import i18n from '../../i18n';
+// import i18n from '../../i18n';
 
 // context
-import {
-  	useListState,
-} from '../../store/list/context';
+// import {
+//   	useListState,
+// } from '../../store/list/context';
 import {
 	useUserState,
 } from '../../store/user/context';

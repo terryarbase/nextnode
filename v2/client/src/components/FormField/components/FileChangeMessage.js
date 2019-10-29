@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormInput } from '../elemental';
-import { fade } from '../../../../utils/v1/color';
+import { fade } from '../../../utils/v1/color';
 import theme from '../theme';
 
 function FileChangeMessage ({ style, color, ...props }) {

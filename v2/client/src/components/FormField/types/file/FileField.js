@@ -5,7 +5,7 @@ TODO:
 */
 import PropTypes from 'prop-types';
 import Field from '../Field';
-import React, { PropTypes } from 'react';
+import React from 'react';
 import {
 	Button,
 	FormField,
@@ -30,7 +30,7 @@ const buildInitialState = (props, forceInit) => ({
 		// prevent update model with uploaded object info 
 });
 
-module.exports = Field.create({
+export default Field.create({
 	propTypes: {
 		autoCleanup: PropTypes.bool,
 		collapse: PropTypes.bool,
@@ -252,7 +252,8 @@ module.exports = Field.create({
 				target="__blank"
 				style={{ float: 'left', marginRight: '1em' }}
 			>
-				<img src={imageSrc} style={{ height: 'auto', maxWidth: '100%', maxHeight: '90px' }} />
+				<img src={imageSrc} alt={imageSrc}
+				style={{ height: 'auto', maxWidth: '100%', maxHeight: '90px' }} />
 			</ImageThumbnail>
 		);
 	},

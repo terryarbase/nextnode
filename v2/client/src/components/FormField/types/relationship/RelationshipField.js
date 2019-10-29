@@ -1,15 +1,15 @@
-import async from 'async';
+// import async from 'async';
 import Field from '../Field';
-import { listsByKey } from './../../../../utils/v1/lists';
+// import { listsByKey } from './../../../../utils/v1/lists';
 import React from 'react';
-import Select, { components } from 'react-select';
-import AsyncSelect from 'react-select/lib/Async';
+import { components } from 'react-select';
+import AsyncSelect from 'react-select/async';
 import xhr from 'xhr';
 import {
-	Button,
-	FormInput,
-	InlineGroup as Group,
-	InlineGroupSection as Section,
+	// Button,
+	// FormInput,
+	// InlineGroup as Group,
+	// InlineGroupSection as Section,
 } from '../../elemental';
 import _ from 'lodash';
 
@@ -39,7 +39,7 @@ const optionsStyle = {
 	height: 'auto'
 };
 
-module.exports = Field.create({
+export default Field.create({
 
 	displayName: 'RelationshipField',
 	statics: {
@@ -63,7 +63,7 @@ module.exports = Field.create({
 	componentWillReceiveProps (nextProps) {
 	
 		if ((nextProps.value !== this.props.value || 
-			nextProps.many && !compareValues(this.props.value, nextProps.value))) {
+			nextProps.many) && !compareValues(this.props.value, nextProps.value)) {
 			this.afterLoadOptions(this.state.options, nextProps.value);
 		}
 		
@@ -98,8 +98,8 @@ module.exports = Field.create({
 				}
 
 				// check if filtering by id and item was already saved
-				if (fieldName === '_id' && Keystone.item) {
-					filters[key] = Keystone.item.id;
+				if (fieldName === '_id' && newProps.id) {
+					filters[key] = newProps.id;
 					return;
 				}
 			} else {
@@ -118,7 +118,10 @@ module.exports = Field.create({
 
 	cacheItem (item) {
 		if (item && item.id) {
-			item.href = Keystone.adminPath + '/' + this.props.refList.path + '/' + (item.id || item.value);
+			const {
+				url,
+			} = this.props;
+			item.href = url + '/session/content/' + this.props.refList.path + '/' + (item.id || item.value);
 			this._itemsCache[(item.id || item.value)] = item;
 		}
 	},
@@ -214,7 +217,7 @@ module.exports = Field.create({
 		// callback(selections);
 	},
 	loadOptions (input, callback, props) {
-		const { many, value } = this.props;
+		const { value, url } = this.props;
 		// console.log(this.props.display);
 		// NOTE: this seems like the wrong way to add options to the Select
 		this.loadOptionsCallback = callback;
@@ -223,7 +226,7 @@ module.exports = Field.create({
 			loading: true,
 		});
 		xhr({
-			url: Keystone.adminPath + '/api/' + this.props.refList.path + `?ts=${Math.random()}&basic&search=` + input + '&' + filters,
+			url: url + '/session/content/' + this.props.refList.path + `?ts=${Math.random()}&basic&search=` + input + '&' + filters,
 			responseType: 'json',
 		}, (err, resp, data) => {
 			if (err) {
@@ -291,8 +294,8 @@ module.exports = Field.create({
 		this.closeCreate();
 	},
 	customizedOptions(props) {
-		const { data: { label, value, name, image } } = props;
-		const { mode, noedit, t } = this.props;
+		const { data: { label, image } } = props;
+		const { mode, noedit } = this.props;
 		if (mode === 'edit' && noedit) return null;
 		return (
 			<components.Option {...props}>
@@ -307,11 +310,11 @@ module.exports = Field.create({
 		);
 	},
 	customizedSelections(props) {
-		const { data: { label, value, image } } = props;
-		const url = `${Keystone.adminPath}/${this.props.refList.path}/${value}`;
+		const { data: { label, value, image }, url } = props;
+		const target = `${url}/session/content/${this.props.refList.path}/${value}`;
 		return (
 			<components.MultiValueLabel {...props}>
-				<a href={url} target="_blank">
+				<a href={target} rel="noopener noreferrer" target="_blank">
 				{
 					image ? 
 					<img src={label} alt={label} style={{
@@ -324,7 +327,7 @@ module.exports = Field.create({
 		);
 	},
 	customizedRemove(props) {
-		const { mode, noedit, image } = this.props;
+		const { mode, noedit } = this.props;
 		// console.log(this.props.refList.path, this.props.item);
 		if (mode === 'edit' && noedit) return null;
 		return (
@@ -334,7 +337,7 @@ module.exports = Field.create({
 		);
 	},
 	customizedDropdownIndicator(props) {
-		const { mode, noedit, t, image } = this.props;
+		const { mode, noedit } = this.props;
 		// console.log(this.props.refList.path, this.props.item);
 		if (mode === 'edit' && noedit) return null;
 		return (
@@ -344,7 +347,7 @@ module.exports = Field.create({
 		);
 	},
 	renderSelect (noedit, isMulti) {
-		const { t, refList, many, value, mode, display, noedit: disabled } = this.props;
+		const { refList, many } = this.props;
 		// let value =  
 		return (
 			<div>
@@ -358,7 +361,9 @@ module.exports = Field.create({
 					openMenuOnClick={false}
 					loadOptions={this.loadOptions}
 					defaultOptions={true}
-					placeholder={ !noedit ? i18n.t('list.selectWithListname', { listName: translateListName(refList.key)) }) : '---'}
+					placeholder={ !noedit ? i18n.t('list.selectWithListname', {
+						listName: translateListName(refList.key)
+					}) : '---' }
 					name={this.getInputName(this.props.path)}
 					onChange={this.valueChanged}
 					isLoading={this.state.isLoading}
@@ -437,14 +442,14 @@ module.exports = Field.create({
 
 	renderValue () {
 		// const { many } = this.props;
-		const { value } = this.state;
-		// console.log(this.state.value);
-		const props = {
-			children: value ? value.name : null,
-			component: value ? 'a' : 'span',
-			href: value ? value.href : null,
-			noedit: true,
-		};
+		// const { value } = this.state;
+		// // console.log(this.state.value);
+		// const props = {
+		// 	children: value ? value.name : null,
+		// 	component: value ? 'a' : 'span',
+		// 	href: value ? value.href : null,
+		// 	noedit: true,
+		// };
 		return this.renderSelect(true);
 		// return many ? this.renderSelect(true) : <FormInput {...props} />;
 	},

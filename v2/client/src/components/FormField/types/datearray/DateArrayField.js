@@ -2,13 +2,13 @@ import ArrayFieldMixin from '../../mixins/ArrayField';
 import PropTypes from 'prop-types';
 import DateInput from '../../components/DateInput';
 import Field from '../Field';
-import React from 'react';
+// import React from 'react';
 import moment from 'moment';
 
 const DEFAULT_INPUT_FORMAT = 'YYYY-MM-DD';
 const DEFAULT_FORMAT_STRING = 'Do MMM YYYY';
 
-module.exports = Field.create({
+export default Field.create({
 
 	displayName: 'DateArrayField',
 	statics: {
@@ -17,8 +17,8 @@ module.exports = Field.create({
 	mixins: [ArrayFieldMixin],
 
 	propTypes: {
-		formatString: PropTypesstring,
-		inputFormat: PropTypesstring,
+		formatString: PropTypes.string,
+		inputFormat: PropTypes.string,
 	},
 
 	getDefaultProps () {

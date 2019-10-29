@@ -11,7 +11,7 @@ import evalDependsOn from '../utils/evalDependsOn';
 // locales
 import i18n from '../../../i18n';
 
-module.exports = createClass({
+export default createClass({
 	displayName: 'FormHeading',
 	propTypes: {
 		options: React.PropTypes.object,

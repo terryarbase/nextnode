@@ -64,7 +64,7 @@ function CloudinaryImagesThumbnail ({
 					mask={mask}
 					target={!!imageSourceLarge && '__blank'}
 				>
-					<img src={imageSourceSmall} style={{ height: 90 }} />
+					<img src={imageSourceSmall} alt={mask} style={{ height: 90 }} />
 				</ImageThumbnail>
 				{actionButton}
 				{downloadButton}

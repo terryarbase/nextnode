@@ -7,7 +7,7 @@ to props.onChange correctly as the user interacts with it)
 
 import _ from 'lodash';
 import async from 'async';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import React, { cloneElement } from 'react';
 import {
 	Button,
@@ -33,7 +33,7 @@ const RESIZE_DEFAULTS = {
 
 let uploadInc = 1000;
 
-module.exports = Field.create({
+export default Field.create({
 	displayName: 'CloudinaryImagesField',
 	statics: {
 		type: 'CloudinaryImages',
@@ -62,15 +62,19 @@ module.exports = Field.create({
 		if (!Array.isArray(value)) value = [];
 		// special for uploaded image object only
 		value = value && value.filter(v => typeof v !== 'string');
+		let {
+			cloudinary,
+		} = this.props;
+		cloudinary = _.get(cloudinary, 'cloud_name');
 		var thumbnails = value.map((img, index) => {
 			return this.getThumbnail({
 				value: img,
-				imageSourceSmall: cloudinaryResize(img.public_id, {
+				imageSourceSmall: cloudinaryResize(cloudinary, img.public_id, {
 					...RESIZE_DEFAULTS,
 					height: 90,
 					secure: props.secure,
 				}),
-				imageSourceLarge: cloudinaryResize(img.public_id, {
+				imageSourceLarge: cloudinaryResize(cloudinary, img.public_id, {
 					...RESIZE_DEFAULTS,
 					height: 600,
 					width: 900,
@@ -82,7 +86,6 @@ module.exports = Field.create({
 		return { thumbnails, uploadFieldPath };
 	},
 	getThumbnail (props, index) {
-		const { value } = props;
 		return (
 			<Thumbnail
 				key={`thumbnail-${index}`}

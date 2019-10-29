@@ -2,6 +2,7 @@ import React from 'react';
 // replace all of function component before fully mirgation to v2, use this package instead of using the native
 // React.createClass function
 import createClass from 'create-react-class';
+import _ from 'lodash';
 import _forEach from 'lodash/forEach';
 import _concat from 'lodash/concat';
 import { findDOMNode } from 'react-dom';
@@ -41,7 +42,7 @@ function validateSpec (spec) {
 	return spec;
 }
 
-let Base = module.exports.Base = {
+const Base = {
 	getInitialState () {
 		return {
 			copied: false,
@@ -49,7 +50,6 @@ let Base = module.exports.Base = {
 	},
 	getDefaultProps () {
 		return {
-			adminPath: this.props.adminPath,
 			inputProps: {},
 			labelProps: {},
 			valueProps: {},
@@ -127,11 +127,11 @@ let Base = module.exports.Base = {
 			fullPath = path;
 		}
 		return (
-			<a target="_blank" className="_base64_image_preview" onClick={() => {
+			<a target="_blank" name="preview" className="_base64_image_preview" onClick={() => {
 				const win = window.open('');
 				win.document.write(`<img src='${fullPath}' />`);
 			}}>
-				<img src={fullPath} width="100px" />
+				<img src={fullPath} alt="fullPath"  width="100px" />
 			</a>
 		);
 	},
@@ -226,7 +226,7 @@ let Base = module.exports.Base = {
 			"image/jpg",
 			"image/gif",
 		];
-		return !!_.includes(imageMimeType, mimetype);
+		return !!_.includes(imageMimeType, value);
 	},
 	renderUI () {
 		const { required } = this.props;
@@ -326,7 +326,8 @@ function create (spec) {
 
 };
 
-export {
+export default {
 	Mixins,
+	Base,
 	create,
 };

@@ -34,7 +34,7 @@ const buildInitialState = (props) => ({
 	userSelectedFile: null,
 });
 
-module.exports = Field.create({
+export default Field.create({
 	propTypes: {
 		collapse: PropTypes.bool,
 		label: PropTypes.string,
@@ -104,7 +104,10 @@ module.exports = Field.create({
 			src = this.state.dataUri;
 		} else if (this.hasExisting()) {
 			if (resizable) {
-				src = cloudinaryResize(this.props.value.public_id, {
+				const {
+					cloudinary,
+				} = this.props;
+				src = cloudinaryResize(cloudinary.cloud_name, this.props.value.public_id, {
 					crop: 'fit',
 					height: height,
 					format: 'jpg',
@@ -248,7 +251,7 @@ module.exports = Field.create({
 				target="__blank"
 				style={{ float: 'left', marginRight: '1em' }}
 			>
-				<img src={this.getImageSource()} style={{ height: 90 }} />
+				<img src={this.getImageSource()} alt={mask} style={{ height: 90 }} />
 			</ImageThumbnail>
 		);
 	},
@@ -284,7 +287,7 @@ module.exports = Field.create({
 
 	// Output [cancel/remove/undo] button
 	renderClearButton () {
-		const clearText = this.hasLocal() ? t('cancel') : t('removeImage');
+		const clearText = this.hasLocal() ? i18n.t('list.cancel') : i18n.t('list.removeImage');
 		
 		return this.state.removeExisting ? (
 			<Button onClick={this.undoRemove}>
@@ -298,8 +301,7 @@ module.exports = Field.create({
 	},
 
 	renderImageToolbar () {
-		const { value: { signature, format } } = this.props;
-		const filename = `${signature}.${format}`;
+		// const filename = `${signature}.${format}`;
 		return (
 			<div key={this.props.path + '_toolbar'} className="image-toolbar">
 				{
