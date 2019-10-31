@@ -2,10 +2,15 @@ import _ from 'lodash';
 import listToArray from 'list-to-array';
 import qs from 'query-string';
 
+// FieldTypes
+import Fields from '../components/FormField/types/fields';
+
 class List {
   constructor(list) {
     _.assign(this, list);
     this.options = list;
+
+    this.isLocale = !!list.multilingual;
 
     // reset to the initial use
     this.defaultCriteria = {
@@ -30,10 +35,11 @@ class List {
   getFieldValue ({ field, values, isLocale, currentLang }) {
     // console.log(field.path, values);
     let current = values[field.path];
+    const shouldMultilingual = this.isLocale && _.get(field, 'multilingual');
     // prevent set multilingual from true to false
-    if (isLocale && field && field.multilingual) {
+    if (shouldMultilingual) {
       if (typeof current !== 'string') {
-        current = current[currentLang] || '';
+        current = _.get(current, currentLang);
       } else if (current){
         current = {
           [currentLang]: current,
@@ -41,6 +47,98 @@ class List {
       }
     }
     return current;
+  };
+
+  /*
+  ** Grab the value once the value is being changed
+  ** Terry Chan
+  ** 29/10/2019
+  */
+  getProperlyChangedValue ({ currentValue, path, value, currentLang }) {
+    const fields = this.fields;
+    let values = { ...currentValue };
+    const shouldMultilingual = this.isLocale && _.get(fields, `${path}.multilingual`);
+    if (shouldMultilingual) {
+      values = {
+        ...values,
+        [path]: {
+          ...values[path],
+          [currentLang]: value,
+        },
+      };
+    } else {
+      values = {
+        ...values,
+        [path]: value,
+      };
+    }
+    return values;
+  };
+
+  /*
+  ** Get the default value for the list initialization (e.g. create form)
+  ** Terry Chan
+  ** 29/10/2019
+  */
+  getDefaultValue({ currentLang }) {
+    let currentValue = {};
+    _.forEach(this.fields, f => {
+      const { type, path } = f;
+      const FieldComponent = Fields[type];
+      if (FieldComponent) {
+        const value = FieldComponent.getDefaultValue(f);
+        // use self member to grab the value to corresponding field and value
+        currentValue = this.getProperlyChangedValue({
+          currentValue,
+          value,
+          path,
+          currentLang,
+        });
+      }
+    });
+
+    return currentValue;
+  } 
+
+  /*
+  ** turn any missing multilingual format value to form data
+  ** Terry Chan
+  ** 12/11/2018
+  */
+  getFormData = function({ formData, values }) {
+    const fields = this.fields;
+    try {
+      for (const pair of formData.entries()) {
+        const key = pair[0];
+        const shouldMultilingual = this.isLocale && _.get(fields, `${key}.multilingual`);
+        if (shouldMultilingual) {
+          if (typeof values[key] === 'object') {
+            const keys = _.keys(values[key]);
+            if (keys.length) {
+              formData.set(key, JSON.stringify(values[key]));
+            }
+          }
+        } else if (Array.isArray(values[key])) {
+          formData.delete(key);
+          formData.set(key, JSON.stringify(values[key]));
+        } else if (typeof values[key] === 'object') {
+          const keys = _.keys(values[key]);
+          if (keys.length) {
+            // delete orginal formdata attr
+            formData.delete(key);
+            // use object declarion instead
+            keys.forEach(function(k) {
+              formData.set(`${key}.${k}`, values[key][k]);
+            });
+          }
+        }
+      }
+    } catch (err) {
+      console.log('Error to parse formdata: ', err);
+    }
+    //  finally {
+    //   return formData;
+    // }
   };
 
   /*

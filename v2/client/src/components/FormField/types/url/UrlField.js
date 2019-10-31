@@ -34,8 +34,9 @@ export default Field.create({
 				autoComplete="off"
 				name={this.getInputName(this.props.path)}
 				onChange={this.valueChanged}
-				ref="focusTarget"
 				type="url"
+				label={this.props.label}
+				size="large"
 				value={this.props.value}
 			/>
 		);

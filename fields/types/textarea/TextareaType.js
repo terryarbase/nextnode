@@ -12,7 +12,12 @@ var utils = require('keystone-utils');
 function textarea (list, path, options) {
 	this._nativeType = String;
 	this._underscoreMethods = ['format', 'crop'];
-	this.height = options.height || 90;
+	/*
+	** Using the total number of the rows 
+	** Terry Chan
+	** 31/04/2019
+	*/
+	this.height = options.height || 5;
 	this.multiline = true;
 	this._properties = ['height', 'multiline', 'copy'];
 	textarea.super_.call(this, list, path, options);

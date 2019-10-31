@@ -22,7 +22,7 @@ export default Field.create({
 		return (
 			<FormInput
 				name={this.getInputName(this.props.path)}
-				ref="focusTarget"
+				label={this.props.label}
 				value={this.props.value}
 				onChange={this.valueChanged}
 				autoComplete="off"

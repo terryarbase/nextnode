@@ -2,6 +2,13 @@ import React from 'react';
 // replace all of function component before fully mirgation to v2, use this package instead of using the native
 // React.createClass function
 import createClass from 'create-react-class';
+import {
+	// Tooltip,
+	Grid,
+} from '@material-ui/core';
+// import {
+// 	Help as HelpIcon,
+// } from '@material-ui/icons';
 import _ from 'lodash';
 import _forEach from 'lodash/forEach';
 import _concat from 'lodash/concat';
@@ -15,9 +22,12 @@ import {
   Button,
 } from '@material-ui/core';
 
+
+import Note from './../shared/Note';
+
 import evalDependsOn from '../utils/evalDependsOn.js';
 
-import { FormField, FormInput, FormNote } from '../elemental';
+import { FormField, FormInput } from '../elemental';
 
 import CollapsedFieldLabel from '../components/CollapsedFieldLabel';
 // import {
@@ -82,31 +92,35 @@ const Base = {
 		if (!this.refs[this.spec.focusTargetRef]) return;
 		findDOMNode(this.refs[this.spec.focusTargetRef]).focus();
 	},
-	renderNote () {
-		if (!this.props.note) return null;
+	// renderNote () {
+	// 	if (!this.props.note) return null;
 
-		return <FormNote html={this.props.note} />;
-	},
+	// 	return <FormNote html={this.props.note} />;
+	// },
 	renderField () {
-		const { autoFocus, value, inputProps, disabled } = this.props;
-		// console.log('1>>> ', this.props.path, value);
+		const { autoFocus, value, inputProps, disabled, required, path, label } = this.props;
+		// console.log(this.props);
 		return (
-			<FormInput {...{
-				...inputProps,
-				autoFocus,
-				disabled,
-				autoComplete: 'off',
-				name: this.getInputName(this.props.path),
-				onChange: this.valueChanged,
-				ref: 'focusTarget',
-				value,
-			}} />
+			<FormInput 
+				{...{
+					...inputProps,
+					autoFocus,
+					disabled,
+					path,
+					required,
+					label,
+					autoComplete: 'off',
+					name: this.getInputName(path),
+					onChange: this.valueChanged,
+					value,
+				}}
+			/>
 		);
 	},
 	downloadQrCode() {
 		// use hook to solve the lib no ref problem
 		const canvas = document.getElementById(`${this.props.path}-qrcode`);
-		console.log(canvas);
+		// console.log(canvas);
 		if (canvas) {
 			const anchorEl = document.createElement('a');
             anchorEl.href = canvas.toDataURL();
@@ -154,38 +168,58 @@ const Base = {
 		return images;
 	},
 	renderQRCodeImages() {
-		const { value } = this.props;
-		if (!value) return (<div />);
-		return (
-			<div>
-				<div><QRCode
-					value={value}
-					id={`${this.props.path}-qrcode`}
-				/></div>
+		// const { value } = this.props;
+		if (!this.props.value) return (<div />);
+		const { value, copy, download, label, path } = this.props;
+		const qrcode = (
+			<Grid
+				container
+				direction="row"
+				justify="flex-start"
+		  		alignItems="center"
+			>
+				<div>
+					<QRCode
+						value={value}
+						id={`${path}-qrcode`}
+					/>
+				</div>
 				{
-					this.props.download && <Button ref="button" onClick={this.downloadQrCode}>
+					download && <Button ref="button" onClick={this.downloadQrCode}>
 						{i18n.t('list.downloadqrCode')}
 					</Button>
 				}
 				{
-					this.props.copy && <FormNote html={value} />
+					this.props.copy && <Note note={value} placement="top-end" />
 				}
 				{
-					this.props.copy && <CopyToClipboard text={value}
-			        onCopy={() => alert(i18n.t('message.copySuccess'))}>
-			        <span className={
-			        	css({
-			        		float: 'right',
-			        		margin: '5px',
-			        		fontWeight: 'bolder',
-			        		cursor: 'pointer',
-			        		color: '#666',
-			        	})
-			        }>{i18n.t('list.copy', { target: this.props.label })}</span>
-			    </CopyToClipboard>
+					copy && <CopyToClipboard text={value}
+			        	onCopy={() => alert(i18n.t('message.copySuccess'))}
+			        >
+				        <span className={
+				        	css({
+				        		float: 'right',
+				        		margin: '5px',
+				        		fontWeight: 'bolder',
+				        		cursor: 'pointer',
+				        		color: '#666',
+				        	})
+				        }>
+				        	{i18n.t('list.copy', { target: label })}
+				        </span>
+			    	</CopyToClipboard>
 				}
-			</div>
+			</Grid>
 		);
+
+		// if (!!note) {
+		// 	return (
+		// 		<Tooltip title={note} placement="top-start" aria-label={note}>
+		// 			{qrcode}
+		// 		</Tooltip>
+		// 	);
+		// }
+		return qrcode;
 	},
 	renderValue () {
 		/*
@@ -228,21 +262,19 @@ const Base = {
 		];
 		return !!_.includes(imageMimeType, value);
 	},
+	getRequired () {
+		const {
+			label,
+			required,
+		} = this.props;
+		return label ? `${label}${required ? ' *' : ''}` : null;
+	},
 	renderUI () {
-		const { required } = this.props;
-		let wrapperClassName = classnames(
-			'field-type-' + this.props.type,
-			this.props.className,
-			{ 'field-monospace': this.props.monospace }
-		);
-		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
-		// console.log('>>>> ', this.props.path, this.props.value);
+		const { note, path } = this.props;
+		const label = this.getRequired();
 		return (
-			<FormField htmlFor={this.props.path} label={label} className={wrapperClassName} cropLabel>
-				<div className={'FormField__inner field-size-' + this.props.size}>
-					{this.shouldRenderField() ? this.renderField() : this.renderValue()}
-				</div>
-				{this.renderNote()}
+			<FormField label={label} note={note}>
+				{this.shouldRenderField() ? this.renderField() : this.renderValue()}
 			</FormField>
 		);
 	},
@@ -296,7 +328,7 @@ function create (spec) {
 			if (this.state.isCollapsed) {
 				return this.renderCollapse();
 			}
-			return this.renderUI(...this.props);
+			return this.renderUI(Object.assign({}, this.props));
 		},
 	};
 
@@ -317,11 +349,9 @@ function create (spec) {
 
 	Object.assign(field, blacklist(Base, excludeBaseMethods));
 	Object.assign(field, blacklist(spec, 'mixins', 'statics'));
-
 	if (Array.isArray(spec.mixins)) {
 		field.mixins = field.mixins.concat(spec.mixins);
 	}
-
 	return createClass(field);
 
 };

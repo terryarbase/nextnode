@@ -1,16 +1,23 @@
 // import PropTypes from 'prop-types';
 import _ from 'lodash';
 import React from 'react';
+import {
+	Grid,
+	Typography,
+	// FormControl,
+	// InputLabel,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import grey from '@material-ui/core/colors/grey';
+
 import Field from '../Field';
 import CollapsedFieldLabel from '../../components/CollapsedFieldLabel';
-import NestedFormField from '../../components/NestedFormField';
-
+// import NestedFormField from '../../components/NestedFormField';
 import {
 	FormField,
 	FormInput,
-	FormNote,
-	Grid,
-	LabelledControl,
+	// FormNote,
+	// LabelledControl,
 } from '../../elemental';
 
 // locales
@@ -21,6 +28,63 @@ import i18n from '../../../../i18n';
  * - Remove dependency on underscore
  * - Custom path support
  */
+const useStyles = makeStyles(theme => ({
+  label: {
+  	color: grey[600],
+  }
+}));
+const GridForm = props => {
+	const classes = useStyles();
+	const {
+		items,
+		onChange,
+		values,
+	} = props;
+	const container = {
+		container: true,
+		direction: "row",
+		justify: "flex-start",
+  		alignItems: "center",
+  		spacing: 3,
+	};
+	return (
+		<Grid
+			{...container}
+		>
+			{
+				items.map(({ path, label, target=-1 }, index) => {
+					let t = path;
+					let value = values[t];
+					if (target !== -1) {
+						t = target;
+						value = _.get(values, `${path}.${t}`);
+					}
+					
+					return (
+						<Grid container item xs key={index}>
+							<Grid
+								{...container}
+							>
+								<Grid item xs={2}>
+									<Typography variant="subtitle1" className={classes.label}>
+										{label}
+									</Typography>
+								</Grid>
+								<Grid item xs>
+									<FormInput
+										onChange={onChange(t)}
+										placeholder={label}
+										value={value || ''}
+									/>
+								</Grid>
+							</Grid>
+					</Grid>
+					);
+				})
+			}
+		</Grid>
+	);
+}
 
 export default Field.create({
 
@@ -111,73 +175,54 @@ export default Field.create({
 		return <FormInput noedit>{this.formatValue() || ''}</FormInput>;
 	},
 
-	renderField (fieldPath, label, collapse, autoFocus) {
+	renderField (fieldPath, label) {
 		if (this.state.collapsedFields[fieldPath]) {
 			return null;
 		}
-		const { value = {}, path } = this.props;
+		const { value = {} } = this.props;
 		//name={this.getInputName(path + '.' + fieldPath)}
+		const items = [
+			{
+				label,
+				path: fieldPath,
+			}
+		];
 		return (
-			<NestedFormField label={label} data-field-location-path={path + '.' + fieldPath}>
-				<FormInput
-					autoFocus={autoFocus}
-					onChange={this.makeChanger(fieldPath)}
-					placeholder={label}
-					value={value[fieldPath] || ''}
-				/>
-			</NestedFormField>
+			<GridForm values={value} items={items} onChange={this.makeChanger} />
 		);
 	},
 
 	renderSuburbState () {
-		const { value = {}, path } = this.props;
-		// name={this.getInputName(path + '.suburb')}
-		// name={this.getInputName(path + '.state')}
+		const { value = {} } = this.props;
+		const items = [
+			{
+				label: i18n.t('list.suburb'),
+				path: 'suburb',
+			},
+			{
+				label: i18n.t('list.state'),
+				path: 'state',
+			}
+		];
 		return (
-			<NestedFormField label={`${i18n.t('list.suburb')}/${i18n.t('list.state')}`} data-field-location-path={path + '.suburb_state'}>
-				<Grid.Row gutter={10}>
-					<Grid.Col small="two-thirds" data-field-location-path={path + '.suburb'}>
-						<FormInput
-							onChange={this.makeChanger('suburb')}
-							placeholder={i18n.t('list.suburb')}
-							value={value.suburb || ''}
-						/>
-					</Grid.Col>
-					<Grid.Col small="one-third" data-field-location-path={path + '.state'}>
-						<FormInput
-							onChange={this.makeChanger('state')}
-							placeholder={i18n.t('list.state')}
-							value={value.state || ''}
-						/>
-					</Grid.Col>
-				</Grid.Row>
-			</NestedFormField>
+			<GridForm values={value} items={items} onChange={this.makeChanger} />
 		);
 	},
 
 	renderPostcodeCountry () {
-		const { value = {}, path } = this.props;
-		// name={this.getInputName(path + '.postcode')}
-		// name={this.getInputName(path + '.country')}
+		const { value = {} } = this.props;
+		const items = [
+			{
+				label: i18n.t('list.postCode'),
+				path: 'postcode',
+			},
+			{
+				label: i18n.t('list.country'),
+				path: 'country',
+			}
+		];
 		return (
-			<NestedFormField label={`${i18n.t('list.postCode')}/${i18n.t('list.country')}`} data-field-location-path={path + '.postcode_country'}>
-				<Grid.Row gutter={10}>
-					<Grid.Col small="one-third" data-field-location-path={path + '.postcode'}>
-						<FormInput
-							onChange={this.makeChanger('postcode')}
-							placeholder={i18n.t('list.postCode')}
-							value={value.postcode || ''}
-						/>
-					</Grid.Col>
-					<Grid.Col small="two-thirds" data-field-location-path={path + '.country'}>
-						<FormInput
-							onChange={this.makeChanger('country')}
-							placeholder={i18n.t('list.country')}
-							value={value.country || ''}
-						/>
-					</Grid.Col>
-				</Grid.Row>
-			</NestedFormField>
+			<GridForm values={value} items={items} onChange={this.makeChanger} />
 		);
 	},
 
@@ -185,29 +230,22 @@ export default Field.create({
 		if (this.state.collapsedFields.geo) {
 			return null;
 		}
-		const { value = {}, path } = this.props;
-		const geo = value.geo || [];
-		// name={this.getInputName(paths.geo + '[1]')}
-		// name={this.getInputName(paths.geo + '[0]')}
+		const { value = {} } = this.props;
+		// const geo = value.geo || [];
+		const items = [
+			{
+				label: i18n.t('list.latitude'),
+				path: 'geo',
+				target: 1,
+			},
+			{
+				label: i18n.t('list.longitude'),
+				path: 'geo',
+				target: 0,
+			}
+		];
 		return (
-			<NestedFormField label="Lat / Lng" data-field-location-path={path + '.geo'}>
-				<Grid.Row gutter={10}>
-					<Grid.Col small="one-half" data-field-location-path="latitude">
-						<FormInput
-							onChange={this.makeGeoChanger(1)}
-							placeholder={i18n.t('list.latitude')}
-							value={geo[1] || ''}
-						/>
-					</Grid.Col>
-					<Grid.Col small="one-half" data-field-location-path="longitude">
-						<FormInput
-							onChange={this.makeGeoChanger(0)}
-							placeholder={i18n.t('list.longitude')}
-							value={geo[0] || ''}
-						/>
-					</Grid.Col>
-				</Grid.Row>
-			</NestedFormField>
+			<GridForm values={value} items={items} onChange={this.makeGeoChanger} />
 		);
 	},
 
@@ -226,39 +264,28 @@ export default Field.create({
 		const { enableMapsAPI } = this.props;
 		if (!enableMapsAPI) return null;
 		// name={this.getInputName(paths.overwrite)}
-		var replace = this.state.improve ? (
-			<LabelledControl
-				checked={this.state.overwrite}
-				label={i18n.t('list.replaceExistingData')}
-				onChange={this.makeGoogler('overwrite')}
-				type="checkbox"
-			/>
-		) : null;
+		let items = [
+			{
+				label: i18n.t('list.autoAndImprove'),
+				path: 'improve',
+			},
+		];
+		if (this.state.improve) {
+			items = [
+				...items,
+				{
+					label: i18n.t('list.replaceExistingData'),
+					path: 'overwrite',
+				}
+			];
+		}
+
 		// name={this.getInputName(paths.improve)}
 		return (
-			<FormField offsetAbsentLabel>
-				<LabelledControl
-					checked={this.state.improve}
-					label={i18n.t('list.autoAndImprove')}
-					onChange={this.makeGoogler('improve')}
-					title={i18n.t('list.locationCheck')}
-					type="checkbox"
-				/>
-				{replace}
-			</FormField>
+			<GridForm values={this.props.value || {}} items={items} onChange={this.makeGoogler} />
 		);
 	},
 
-	renderNote () {
-		const { note } = this.props;
-		if (!note) return null;
-		// <FormNote note={note} />
-		return (
-			<FormField offsetAbsentLabel>
-				<FormNote html={note} />
-			</FormField>
-		);
-	},
 
 	renderUI () {
 
@@ -274,20 +301,11 @@ export default Field.create({
 			: null;
 		/* eslint-enable */
 
-		const { path, required, noAddress } = this.props;
+		const { path, required, noAddress, note } = this.props;
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		return (
-			<div data-field-name={path} data-field-type="location">
+			<FormField label={label} note={note}>
 				{this.renderGeo()}
-				{
-					!noAddress && <FormField label={label} htmlFor={path}>
-						{showMore}
-						<FormInput
-							type="hidden"
-							name={path}
-						/>
-					</FormField> 
-				}
 				{this.renderField('number', i18n.t('list.poBoxShop'), true, true)}
 				{this.renderField('name', i18n.t('list.buildingName'), true)}
 				{this.renderField('street1', i18n.t('list.streetAddress1'))}
@@ -295,8 +313,16 @@ export default Field.create({
 				{this.renderSuburbState()}
 				{this.renderPostcodeCountry()}
 				{this.renderGoogleOptions()}
-				{this.renderNote()}
-			</div>
+				{
+					!noAddress && <React.Fragment>
+						{showMore}
+						<input
+							type="hidden"
+							name={path}
+						/>
+					</React.Fragment>
+				}
+			</FormField>
 		);
 	},
 

@@ -5,7 +5,7 @@ const secondary = "#48616d";
 const warning = "#FFC260";
 const success = "#11a06f";
 const info = "#56168e";
-
+// #f7f7f7
 const lightenRate = 7.5;
 const darkenRate = 15;
 
@@ -63,7 +63,7 @@ export default {
       hint: "#B9B9B9",
     },
     background: {
-      default: "#F6F7FF",
+      default: "#f7f7f7",
       light: "#F3F5FF",
     },
   },

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Typography,
 } from '@material-ui/core';
@@ -14,7 +15,7 @@ import i18n from '../../../i18n';
 export default createClass({
 	displayName: 'FormHeading',
 	propTypes: {
-		options: React.PropTypes.object,
+		options: PropTypes.object,
 	},
 	render () {
 		if (!evalDependsOn(this.props.options.dependsOn, this.props.options.values)) {

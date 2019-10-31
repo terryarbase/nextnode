@@ -10,11 +10,11 @@ export default Field.create({
 	renderValue () {
 		const { height } = this.props;
 
-		const styles = {
-			height: height,
-			whiteSpace: 'pre-wrap',
-			overflowY: 'auto',
-		};
+		// const styles = {
+		// 	height: height,
+		// 	whiteSpace: 'pre-wrap',
+		// 	overflowY: 'auto',
+		// };
 
 		var { value = '' } = this.props;
 		// @Terry Chan 04/08/2018
@@ -26,29 +26,24 @@ export default Field.create({
 		return (
 			<FormInput
 				multiline
-				newline={newlineValue.length}
 				noedit
-				style={styles}
+				rows={height}
 			>
 				{value}
 			</FormInput>
 		);
 	},
 	renderField () {
-		const { height, path, style, value } = this.props;
+		const { height, path, value, label } = this.props;
 
-		const styles = {
-			height,
-			...style,
-		};
 		return (
 			<FormInput
 				autoComplete="off"
 				multiline
+				label={label}
+				rows={height}
 				name={this.getInputName(path)}
 				onChange={this.valueChanged}
-				ref="focusTarget"
-				style={styles}
 				value={value}
 			/>
 		);

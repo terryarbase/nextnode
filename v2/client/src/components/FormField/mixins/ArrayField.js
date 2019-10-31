@@ -1,12 +1,22 @@
 import React from 'react';
 import _ from 'lodash';
-import { findDOMNode } from 'react-dom';
-
+// import { findDOMNode } from 'react-dom';
 import {
-	Button,
+  Button,
+  IconButton,
+  Fab,
+} from '@material-ui/core';
+import {
+	Remove as RemoveIcon,
+	Add as AddIcon,
+} from '@material-ui/icons';
+import {
+	// Button,
 	FormField,
 	FormInput,
 } from './../elemental';
+
+import i18n from './../../../i18n';
 
 
 var lastId = 0;
@@ -43,10 +53,11 @@ export default {
 		var newValues = this.state.values.concat(newItem(''));
 		this.setState({
 			values: newValues,
-		}, () => {
-			if (!this.state.values.length) return;
-			findDOMNode(this.refs['item_' + this.state.values.length]).focus();
 		});
+		// , () => {
+		// 	if (!this.state.values.length) return;
+		// 	this.refs['item_' + this.state.values.length].focus();
+		// });
 		this.valueChanged(reduceValues(newValues));
 	},
 
@@ -54,9 +65,10 @@ export default {
 		var newValues = _.without(this.state.values, i);
 		this.setState({
 			values: newValues,
-		}, function () {
-			findDOMNode(this.refs.button).focus();
 		});
+		// , function () {
+		// 	this.refs.button.focus();
+		// });
 		this.valueChanged(reduceValues(newValues));
 	},
 
@@ -82,12 +94,14 @@ export default {
 	},
 
 	renderField: function () {
-		const { t } = this.props;
 		return (
 			<div>
 				{this.state.values.map(this.renderItem)}
-				<FormInput type="hidden" name={this.getInputName(this.props.path)} />
-				<Button ref="button" onClick={this.addItem}>{t('addItem')}</Button>
+				<input type="hidden" name={this.getInputName(this.props.path)} />
+				<Fab variant="extended" color="primary" onClick={this.addItem} aria-label={i18n.t('list.addItem')}>
+					<AddIcon />
+					{i18n.t('list.addItem')}
+				</Fab>
 			</div>
 		);
 	},
@@ -96,11 +110,17 @@ export default {
 		const Input = this.getInputComponent ? this.getInputComponent() : FormInput;
 		const value = this.processInputValue ? this.processInputValue(item.value) : item.value;
 		return (
-			<FormField key={item.key}>
-				<Input ref={'item_' + (index + 1)} value={value} onChange={this.updateItem.bind(this, item)} onKeyDown={this.addItemOnEnter} autoComplete="off" />
-				<Button type="link-cancel" onClick={this.removeItem.bind(this, item)} className="keystone-relational-button">
-					<span className="octicon octicon-x" />
-				</Button>
+			<FormField key={index}>
+				<FormInput
+					path={this.props.path}
+					value={value}
+					label={this.props.label}
+					onChange={this.updateItem.bind(this, item)}
+					onKeyDown={this.addItemOnEnter} autoComplete="off"
+				/>
+				<IconButton onClick={this.removeItem.bind(this, item)}>
+					<RemoveIcon />
+				</IconButton>
 			</FormField>
 		);
 	},

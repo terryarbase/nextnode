@@ -51,6 +51,7 @@ export const translateListField = (listName, field, title='') => {
 };
 const translateListCommon = (listName, type, content) => {
 	const value = getTranslation('list', [
+		listName,
 		type,
 		_.camelCase(content),
 	], otherDelimiter);
@@ -64,4 +65,13 @@ const translateListCommon = (listName, type, content) => {
 ** 21/10/2019
 */
 export const translateListHeading = (listName, content) => translateListCommon(listName, 'heading', content);
-export const translateListNote = (listName, content) => translateListCommon(listName, 'note', content);
+export const translateListNote = (listName, content) => {
+	const value = getTranslation('list', [
+		listName,
+		'note',
+		content,
+	], otherDelimiter);
+
+	// if the translation cannot be found and return the original content
+	return value || content;
+}

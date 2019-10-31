@@ -58,6 +58,7 @@ import {
 // hooks,
 import {
   useToggle,
+  useHistory,
 } from './../../hook/list';
 
 const ContentListTable = props => {
@@ -65,7 +66,9 @@ const ContentListTable = props => {
   const [selected, setSelected] = useState([]);
   const listDispatch = useListDispatch();
   const layoutDispatch = useLayoutDispatch();
-  const [startCreate, openCreateBox] = useToggle(false);
+  const [startCreate, openCreateBox] = useToggle(
+    _.get(props, 'match.params.action') === 'create', // create action for directly popup the create form panel
+  );
   // get the first sorting field
   // const [orderBy, setOrderBy] = useState(
   //   _.get(props, 'currentList.sort.paths[0].path')
@@ -228,7 +231,7 @@ const ContentListTable = props => {
       <Paper className={classes.paper}>
         <Grid container
           direction="row"
-          justify="center"
+          justify="space-between"
           alignItems="center"
         >
           <Grid item xs>

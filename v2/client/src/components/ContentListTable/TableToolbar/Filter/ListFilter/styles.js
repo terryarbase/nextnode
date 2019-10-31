@@ -9,6 +9,9 @@ const useInputStyles = makeStyles(theme => ({
     border: '1px solid #e2e2e1',
     overflow: 'hidden',
     borderRadius: 4,
+    minHeight: '48px',
+    paddingLeft: theme.spacing(1),
+    paddingRight: theme.spacing(1),
     backgroundColor: '#fcfcfb',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
     '&:hover': {
@@ -17,7 +20,7 @@ const useInputStyles = makeStyles(theme => ({
     '&$focused': {
       backgroundColor: '#fff',
       boxShadow: `${fade(theme.palette.primary.main, 0.25)} 0 0 0 2px`,
-      borderColor: theme.palette.primary.main,
+      outline: 'none',
     },
   },
   focused: {},

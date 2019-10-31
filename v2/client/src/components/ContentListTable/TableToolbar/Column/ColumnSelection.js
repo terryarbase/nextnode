@@ -22,7 +22,7 @@ import {
 } from '@material-ui/icons';
 
 // styles
-import useStyles from "./styles";
+// import useStyles from "./styles";
 
 // locales
 import i18n from "./../../../../i18n";

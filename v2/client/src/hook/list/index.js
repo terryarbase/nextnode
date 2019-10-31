@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback } from 'react';
 import qs from "query-string";
+// import _ from "lodash";
 // utils
 // import ContentList from '../../utils/v1/lists';
 
@@ -8,13 +9,17 @@ import {
 	useListState,
 	useListDispatch,
 	loadList,
+	createListItem,
 } from '../../store/list/context';
 // import {
-// 	useUserState,
+// 	createListItem,
 // } from '../../store/user/context';
 import {
   	useLayoutDispatch,
 } from "../../store/layout/context";
+
+// locales
+import i18n from '../../i18n';
 
 const useContentList = ({ match, history, listsByPath={} }) => {
 	// global
@@ -95,9 +100,58 @@ const useErrorDidChange = () => {
 	return [show, error, closeError];
 }
 
+// form value changed
+const useFormValues = (list, initial) => {
+	const initialValues = { ...initial };
+	const currentLang = i18n.locale;
+	// if no given initial values, and the behavior is an item creation
+	// get the default value for each of field
+	// if (!initial) {
+	// 	initialValues = list.getDefaultValue({ currentLang });
+	// 	console.log('>>>>>>> ', initialValues);
+	// }
+	// stateful content
+	const [values, setValues] = useState(initialValues);
+	// when the values changed
+	const handleChanged = ({ path, value }) => {
+		// grab the values with the multilingual factor
+		setValues(list.getProperlyChangedValue({
+			currentLang,
+			path,
+			value,
+			currentValue: values,
+		}));
+	}
+
+	return [ values, handleChanged ];
+}
+
+const useSubmitForm = list => {
+	const [values, whenChanged] = useFormValues(list);
+	// global
+	const listDispatch = useListDispatch();
+	const layoutDispatch = useLayoutDispatch();
+
+	const handleSubmit = useCallback(e => {
+		e.preventDefault();
+		const formData = new FormData(e.target);
+		// adjust formData
+		list.getFormData({
+			formData,
+			values,
+		});
+
+		createListItem(listDispatch, layoutDispatch, formData, list);
+	});
+
+	return [values, whenChanged, handleSubmit];
+}
+
 export {
 	useContentList,
 	useToggle,
 	useErrorDidChange,
+	useFormValues,
+	useSubmitForm,
 }
 // const use

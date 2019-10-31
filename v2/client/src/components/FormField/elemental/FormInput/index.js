@@ -3,43 +3,91 @@ import PropTypes from 'prop-types';
 // import { css } from 'glamor';
 import {
 	TextField,
+	InputBase,
 } from '@material-ui/core';
+import {
+	makeStyles,
+} from '@material-ui/core/styles';
 
 // styles
 import {
 	useInputStyles,
 } from './../../../ContentListTable/TableToolbar/Filter/ListFilter/styles';
 
+import i18n from './../../../../i18n';
+
 // import classes from './styles';
 // import concatClassnames from '../../../../utils/v1/concatClassnames';
 import InputNoedit from './noedit';
 
+const useStyles = makeStyles(theme => ({
+  large: {
+    width: '75%',
+  },
+  medium: {
+    width: '60%',
+  },
+  default: {
+    width: '40%',
+  },
+}));
+
 // NOTE must NOT be functional component to allow `refs`
 
 const FormInput = props => {
+	const classes = useInputStyles();
+	const rootClasses = useStyles();
+	if (props.noedit) {
+		return (
+			<InputNoedit {...props} />
+		);
+	}
 	const {
 		multiline,
 		disabled,
 		value,
-		ref,
 		fullWidth=false,
+		onChange,
+		required,
+		// autoFocus,
+		path,
+		noedit,
+		rows=2,
+		label,
+		inputProps,
+		placeholder,
+		inline,
+		type='text',
 	} = props;
-	const classes = useInputStyles();
-	if (this.props.noedit) return (
-		<InputNoedit {...this.props} />
-	);
+
+	const options = {
+		InputProps:{
+			classes,
+			disableUnderline: true,
+			...inputProps,
+		},
+		type,
+		className: rootClasses[props.size],
+		value: value || '',
+		placeholder: placeholder || i18n.t('list.placeholder', { field: label || '' }),
+		// autoFocus={currentTarget && currentTarget === path}
+		required,
+		rows,
+		disabled: noedit,
+		fullWidth: !!fullWidth,
+		multiline: !!multiline,
+		onChange,
+	};
+
+	if (inline) {
+		return (
+			<InputBase { ...options } />
+		);
+	}
+
   	return (
   		<TextField
-  			InputProps={{
-  				classes,
-  				disableUnderline: true
-  			}}
-  			inputRef={ref}
-  			value={value || ''}
-  			disabled={disabled}
-  			fullWidth={!!fullWidth}
-  			multiline={!!multiline}
-  			{...props}
+  			{ ...options }
   		/>
   	);
 }

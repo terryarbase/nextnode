@@ -17,10 +17,9 @@ export default Field.create({
 	valueChanged (event) {
 		var newValue = event.target.value.replace(/[^\d\s\,\.\$€£¥]/g, '');
 		if (newValue === this.props.value) return;
-
 		this.props.onChange({
 			path: this.props.path,
-			value: newValue,
+			value: Number(newValue),
 		});
 	},
 	renderField () {
@@ -29,8 +28,8 @@ export default Field.create({
 				autoComplete="off"
 				name={this.getInputName(this.props.path)}
 				onChange={this.valueChanged}
-				ref="focusTarget"
 				value={this.props.value}
+				type="number"
 			/>
 		);
 	},

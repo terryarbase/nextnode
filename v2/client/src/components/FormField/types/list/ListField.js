@@ -4,7 +4,7 @@ import assign from 'object-assign';
 import { css, StyleSheet } from 'aphrodite/no-important';
 import React from 'react';
 import Field from '../Field';
-import Domify from 'react-domify';
+
 import _cloneDeep from 'lodash/cloneDeep';
 import {
   Button,
@@ -12,7 +12,9 @@ import {
 
 import Fields from './../fields';
 import { GlyphButton } from '../../elemental';
+
 import InvalidFieldType from '../../shared/InvalidFieldType';
+import Domify from '../../shared/Domify';
 
 // locales
 import i18n from '../../../../i18n';

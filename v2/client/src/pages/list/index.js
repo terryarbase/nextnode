@@ -3,9 +3,9 @@ import {
 	withRouter,
 	Redirect,
 } from "react-router-dom";
-// import {
-//   DialogContentText,
-// } from '@material-ui/core';
+import {
+  Grid,
+} from '@material-ui/core';
 
 // hooks
 import {
@@ -19,10 +19,13 @@ import ListMessage from './../../components/ContentListTable/Message';
 // configurations
 import {
 	notFoundPrefix,
+	logo,
+	endpoint,
+	name,
 } from '../../config/constants.json';
 
-// locales
-// import i18n from '../../i18n';
+// styles
+import useStyles from './styles';
 
 // context
 // import {
@@ -33,6 +36,7 @@ import {
 } from '../../store/user/context';
 
 const ListPage = props => {
+	const classes = useStyles();
 	/*
 	** Pass List list to the useContentList hooking
 	** Flexible list definition for the callee
@@ -58,7 +62,17 @@ const ListPage = props => {
 	if (isInvalidList) {
 		return (<Redirect to={notFoundPrefix} />);
 	} else if (!currentList) {
-		return null;
+		return (
+			<Grid
+				container
+				direction="row"
+      			justify="center"
+      			alignItems="center"
+      			className={classes.loadingContainer}
+      		>
+				<img src={`${endpoint}${logo}`} alt={name} />
+			</Grid>
+		);
 	}
 	return (
 		<React.Fragment>

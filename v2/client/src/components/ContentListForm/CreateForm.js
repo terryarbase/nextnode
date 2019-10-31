@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react';
+// import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
+
 import {
   Dialog,
   AppBar,
@@ -8,14 +9,27 @@ import {
   Slide,
   Typography,
   Toolbar,
+  DialogContent,
   Button,
+  // Grid,
 } from '@material-ui/core';
 import {
   Close as CloseIcon,
 } from '@material-ui/icons';
 
 // styles
-import useStyles from './styles';
+import {
+  // ExpansionPanel,
+  // ExpansionPanelDetails,
+  // ExpansionPanelSummary,
+  useRootStyle,
+} from './styles';
+
+// hook
+import {
+  // useFormValues, 
+  useSubmitForm,
+} from './../../hook/list';
 
 // locales
 import i18n from './../../i18n';
@@ -23,36 +37,59 @@ import i18n from './../../i18n';
 // components
 import FormElemental from './FormElement';
 
-const Transition = forwardRef((props, ref) => (<Slide direction="up" ref={ref} {...props} />));
+const Transition = forwardRef(function(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const CreateForm = props => {
+  // state
+  const [formValues, whenChanged, submitForm] = useSubmitForm(props.currentList);
   const {
     open,
     handleClose,
     title,
+    currentList: {
+      initialFields,
+    },
   } = props;
-  const classes = useStyles();
-
+  const classes = useRootStyle();
   return (
-    <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+    <Dialog
+      fullScreen open={open}
+      className={classes.root}
+      onClose={handleClose}
+      TransitionComponent={Transition}
+    >
       <AppBar className={classes.appBar}>
         <Toolbar>
           <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            {title}
+            {i18n.t('list.createANew', { listName: title })}
           </Typography>
           <Button autoFocus color="inherit" onClick={handleClose}>
             {i18n.t('list.create')}
           </Button>
         </Toolbar>
       </AppBar>
+      <DialogContent className={classes.contentContainer}>
+        <form onSubmit={submitForm}>
+          <FormElemental
+            {...props}
+            mode='create'
+            onChange={whenChanged}
+            form={formValues}
+            requiredFields={initialFields}
+          />
+        </form>
+      </DialogContent>
     </Dialog>
   );
 }
 
 CreateForm.propTypes = {
+  currentList: PropTypes.object.isRequired,
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,

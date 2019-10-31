@@ -41,7 +41,7 @@ function Layout(props) {
 
   // global
   var layoutState = useLayoutState();
-
+    // <Route exact path={`${listPrefix}/:list/:id`} component={ListForm} />
   return (
     <div className={classes.root}>
         <React.Fragment>
@@ -56,7 +56,8 @@ function Layout(props) {
             <Switch>
               <Route path={main} component={Dashboard} />
               <Route exact path={`${listPrefix}/:list`} component={List} />
-              <Route exact path={`${listPrefix}/:list/:id`} component={ListForm} />
+              <Route exact path={`${listPrefix}/:list/:action`} component={List} />
+        
               <Route exact path={notFoundPrefix} render={() => <ErrorPage innerPage />} />
               <Route render={() => <ErrorPage innerPage />} />
             </Switch>

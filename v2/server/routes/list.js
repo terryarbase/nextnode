@@ -39,6 +39,19 @@ const registerListRoutes = ({
 	// 	initDataPermission,
 	// 	require(`${v1ServerPath}/api/list/download`),
 	// );
+	router.post(
+		'/app/v2/session/content/:listId',
+		includeList,
+		checkPermission(2),
+		require(`${v1ServerPath}/api/list/create`),
+	);
+	router.put(
+		'/app/v2/session/content/:listId',
+		includeList,
+		checkPermission(2),
+		initDataPermission,
+		require(`${v1ServerPath}/api/list/update`),
+	);
 	router.delete(
 		'/app/v2/session/content/:listId',
 		includeList, 

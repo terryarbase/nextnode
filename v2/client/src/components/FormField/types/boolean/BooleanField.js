@@ -6,6 +6,8 @@ import {
 	FormControlLabel,
 } from '@material-ui/core';
 
+import Note from './../../shared/Note';
+
 import { FormField } from '../../elemental';
 
 const NOOP = () => {};
@@ -22,10 +24,10 @@ export default Field.create({
 		path: PropTypes.string.isRequired,
 		value: PropTypes.bool,
 	},
-	valueChanged ({ target: { value } }) {
+	valueChanged ({ target: { checked } }) {
 		this.props.onChange({
 			path: this.props.path,
-			value: value,
+			value: checked,
 		});
 	},
 	renderFormInput () {
@@ -39,23 +41,24 @@ export default Field.create({
 			/>
 		);
 	},
-	renderSwitch() {
-		const { value } = this.props;
-		return (
-			<Checkbox
-		        checked={value}
-		        onChange={(this.shouldRenderField() && this.valueChanged) || NOOP}
-		        disabled={!this.shouldRenderField()}
-		    />
-		);
-	},
 	renderUI () {
-		const { indent, label, path } = this.props;
+		const { indent, label, path, note, value } = this.props;
 		return (
 			<div data-field-name={path} data-field-type="boolean">
-				<FormField offsetAbsentLabel={indent}>
-					<FormControlLabel control={this.renderSwitch} label={label} />
-					{this.renderNote()}
+				<FormField>
+					<FormControlLabel
+						control={
+							<Checkbox
+						        checked={!!value}
+						        onChange={(this.shouldRenderField() && this.valueChanged) || NOOP}
+						        disabled={!this.shouldRenderField()}
+						    />
+						}
+						label={this.getRequired()}
+					/>
+					{
+						!!note && <Note note={label} placement="top-end" />
+					}
 				</FormField>
 			</div>
 		);

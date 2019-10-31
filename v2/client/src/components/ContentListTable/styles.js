@@ -23,6 +23,7 @@ export default makeStyles(theme => ({
     textTransform: 'uppercase',
     color: 'black',
     fontSize: 25,
+    textAlign: 'left',
     [theme.breakpoints.down("md")]: {
       textAlign: 'center',
       paddingLeft: 0,

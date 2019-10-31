@@ -12,6 +12,9 @@ import {
   LOADLISTDETAILS,
   LOADLISTDETAILS_SUCCESS,
   LOADLISTDETAILS_FAILURE,
+  CREATELISTITEM,
+  CREATELISTITEM_SUCCESS,
+  CREATELISTITEM_FAILURE,
 } from './type';
 
 import {
@@ -84,6 +87,7 @@ const listReducer = (state=initialState, action) => {
         currentList: action.data,
       };
     case DELETE_ROWS: 
+
       return {
         ...state,
         loading: true,
@@ -101,6 +105,7 @@ const listReducer = (state=initialState, action) => {
         error: action.err,
       };
     case LOADLISTDETAILS: 
+    case CREATELISTITEM:
       return {
         ...state,
         loading: true,
@@ -108,12 +113,14 @@ const listReducer = (state=initialState, action) => {
         form: null,
       };
     case LOADLISTDETAILS_SUCCESS:
+    case CREATELISTITEM_SUCCESS:
       return {
         ...state,
         form: action.data,
         loading: false,
       };
     case LOADLISTDETAILS_FAILURE: 
+    case CREATELISTITEM_FAILURE:
       return {
         ...state,
         loading: false,
@@ -229,6 +236,36 @@ const loadList = async(dispatch, layoutDispatch, list) => {
   }
 }
 
+const createListItem = async(dispatch, layoutDispatch, data, list) => {
+  dispatch({
+    type: CREATELISTITEM,
+  });
+
+  // turn on the global loader
+  changeCoreLoading(layoutDispatch, true);
+
+  try {
+    const result = await request({
+      url: `${api.listContent}/${list.path}`,
+      method: 'post',
+      data,
+    });
+    dispatch({
+      type: CREATELISTITEM_SUCCESS,
+      data: result,
+    });
+
+  } catch (err) {
+    dispatch({
+      type: CREATELISTITEM_FAILURE,
+      err: err.error,
+    });
+  } finally {
+    // turn on the global loader
+    changeCoreLoading(layoutDispatch, false);
+  }
+}
+
 const loadListDetails = async(dispatch, layoutDispatch, id, list) => {
   dispatch({
     type: LOADLISTDETAILS,
@@ -266,4 +303,5 @@ export {
   loadListDetails,
   selectList,
   deleteListRows,
+  createListItem,
 };

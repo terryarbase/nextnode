@@ -37,6 +37,7 @@ export default {
 	textarea,
 	url,
 	keytext,
+	KeyText: keytext,
 	daterange,
 	datetimerange,
 	list,

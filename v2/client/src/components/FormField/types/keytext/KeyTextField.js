@@ -4,9 +4,18 @@ import React from 'react';
 import _ from 'lodash';
 import { findDOMNode } from 'react-dom';
 import {
+  Button,
+  IconButton,
+  Fab,
+} from '@material-ui/core';
+import {
+	Remove as RemoveIcon,
+	Add as AddIcon,
+} from '@material-ui/icons';
+import {
 	FormInput,
 	FormNote,
-	Button,
+	// Button,
 	FormField,
 } from '../../elemental';
 
@@ -83,9 +92,6 @@ export default Field.create({
 		var newValues = values.concat(newItem(initialKeyItem()));
 		this.setState({
 			values: newValues,
-		}, () => {
-			if (!values.length) return;
-			findDOMNode(this.refs['item_' + values.length]).focus();
 		});
 		this.valueChanged(newValues);
 	},
@@ -95,8 +101,6 @@ export default Field.create({
 		values.splice(index, 1);
 		this.setState({
 			values,
-		}, () => {
-			findDOMNode(this.refs.button).focus();
 		});
 		this.valueChanged(values);
 	},
@@ -135,19 +139,22 @@ export default Field.create({
 		return note;
 	},
 	renderField () {
-		const { max, isCore, noeditkey } = this.props;
+		const { max=-1, isCore, noeditkey } = this.props;
 		const { values = [] } = this.state;
 		return (
 			<div>
 				{_.map(values, this.renderItem)}
 				{
-					<FormInput
+					<input
 						type="hidden"
 						name={this.getInputName(this.props.path)} />
 				}
 				{
-					!isCore && ((max && values.length < max) || !max || !noeditkey)
-					&& <Button ref="button" onClick={this.addItem}>{i18n.t('list.addItem')}</Button>
+					!isCore && !noeditkey && !(values.length >= max || max === -1)
+					&& <Fab variant="extended" color="primary" onClick={this.addItem} aria-label={i18n.t('list.addItem')}>
+						<AddIcon />
+						{i18n.t('list.addItem')}
+					</Fab>
 				}
 				{
 					this.renderInputNote()
@@ -173,7 +180,6 @@ export default Field.create({
  		return (
 			<FormField key={id} style={{ marginBottom: '1.5em' }}>
 				<Input
-					ref={'item_' + (index + 1)}
 					value={key}
 					placeholder={i18n.t('list.keyPlaceholder')}
 					// the key should be disabled if it is edit mode and the noeditkey is true
@@ -181,21 +187,19 @@ export default Field.create({
 					disabled={mode === 'edit' && !!key && noeditkey}
 					onChange={e => this.updateItem(index, 'key', e)}
 					autoComplete="off" />
+
 				<Input
 					value={value}
-					style={{ marginTop: '5px' }}
 					onChange={e => this.updateItem(index, 'value', e)}
 					onKeyDown={this.addItemOnEnter}
 					placeholder={i18n.t('list.text')}
 					autoComplete="off" />
-				<Button
-					type="link-cancel"
+				<IconButton
 					disabled={mode === 'edit' && !!key && noeditkey}
-					onClick={() => this.removeItem(index)}
-					className="keystone-relational-button"
+					onClick={this.removeItem.bind(this, index)}
 				>
-					<span className="octicon octicon-x" />
-				</Button>
+					<RemoveIcon />
+				</IconButton>
 			</FormField>
 		);
 	},
