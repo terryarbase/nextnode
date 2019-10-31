@@ -4,9 +4,12 @@ import React from 'react';
 import {
 	Grid,
 	Typography,
+	Button,
+	Fab,
 	// FormControl,
 	// InputLabel,
 } from '@material-ui/core';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { makeStyles } from '@material-ui/core/styles';
 import grey from '@material-ui/core/colors/grey';
 
@@ -65,7 +68,7 @@ const GridForm = props => {
 							<Grid
 								{...container}
 							>
-								<Grid item xs={2}>
+								<Grid item xs={3}>
 									<Typography variant="subtitle1" className={classes.label}>
 										{label}
 									</Typography>
@@ -297,7 +300,10 @@ export default Field.create({
 
 		/* eslint-disable no-script-url */
 		var showMore = !_.isEmpty(this.state.collapsedFields)
-			? <CollapsedFieldLabel onClick={this.uncollapseFields}>{i18n.t('list.showMoreFields')}</CollapsedFieldLabel>
+			? <Fab variant="extended" color="primary" onClick={this.uncollapseFields} aria-label={i18n.t('list.showMoreFields')}>
+				<MoreHorizIcon />
+				{i18n.t('list.showMoreFields')}
+			</Fab>
 			: null;
 		/* eslint-enable */
 
@@ -314,13 +320,13 @@ export default Field.create({
 				{this.renderPostcodeCountry()}
 				{this.renderGoogleOptions()}
 				{
-					!noAddress && <React.Fragment>
+					!noAddress && <div style={{ marginTop: '10px' }}>
 						{showMore}
 						<input
 							type="hidden"
 							name={path}
 						/>
-					</React.Fragment>
+					</div>
 				}
 			</FormField>
 		);

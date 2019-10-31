@@ -1,16 +1,18 @@
 import { SketchPicker } from 'react-color';
 import PropTypes from 'prop-types';
-import { css } from 'glamor';
+// import { css } from 'glamor';
 import Field from '../Field';
 import React from 'react';
-// import {
-// 	Button,
-// } from '@material-ui/core';
 import {
 	Button,
+	Grid,
+	Dialog,
+} from '@material-ui/core';
+import {
+	// Button,
 	FormInput,
-	InlineGroup as Group,
-	InlineGroupSection as Section,
+	// InlineGroup as Group,
+	// InlineGroupSection as Section,
 } from '../../elemental';
 import transparentSwatch from './transparent-swatch';
 import coloredSwatch from './colored-swatch';
@@ -61,17 +63,13 @@ const ColorField = Field.create({
 		this.updateValue(newValue);
 	},
 	renderSwatch () {
-		const className = `${css(classes.swatch)} e2e-type-color__swatch`;
-
 		return (this.props.value) ? (
 			<span
-				className={className}
 				style={{ color: this.props.value }}
 				dangerouslySetInnerHTML={{ __html: coloredSwatch }}
 			/>
 		) : (
 			<span
-				className={className}
 				dangerouslySetInnerHTML={{ __html: transparentSwatch }}
 			/>
 		);
@@ -80,40 +78,38 @@ const ColorField = Field.create({
 		const { displayColorPicker } = this.state;
 
 		return (
-			<div className="e2e-type-color__wrapper" style={{ position: 'relative' }}>
-				<Group>
-					<Section grow>
+			<React.Fragment>
+				<Grid
+					container
+					direction="row"
+					justify="flex-start"
+			  		alignItems="center"
+			  		spacing={3}
+				>
+					<Grid item>
 						<FormInput
+							size="full"
 							autoComplete="off"
+							label={this.props.path}
 							name={this.getInputName(this.props.path)}
 							onChange={this.valueChanged}
-							ref="field"
 							value={this.props.value}
 						/>
-					</Section>
-					<Section>
-						<Button onClick={this.handleClick} cssStyles={classes.button} data-e2e-type-color__button>
+					</Grid>
+					<Grid item xs>
+						<Button onClick={this.handleClick}>
 							{this.renderSwatch()}
 						</Button>
-					</Section>
-				</Group>
-				{displayColorPicker && (
-					<div>
-						<div
-							className={css(classes.blockout)}
-							data-e2e-type-color__blockout
-							onClick={this.handleClose}
-						/>
-						<div className={css(classes.popover)} onClick={e => e.stopPropagation()} data-e2e-type-color__popover>
-							<SketchPicker
-								color={this.props.value}
-								onChangeComplete={this.handlePickerChange}
-								onClose={this.handleClose}
-							/>
-						</div>
-					</div>
-				)}
-			</div>
+					</Grid>
+				</Grid>
+				<Dialog open={displayColorPicker} onClose={this.handleClose}>
+					<SketchPicker
+						color={this.props.value}
+						onChangeComplete={this.handlePickerChange}
+						onClose={this.handleClose}
+					/>
+				</Dialog>
+			</React.Fragment>
 		);
 	},
 });

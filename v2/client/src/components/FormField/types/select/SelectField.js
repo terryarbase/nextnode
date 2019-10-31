@@ -1,7 +1,7 @@
 import Field from '../Field';
 import React from 'react';
 import _ from 'lodash';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import { FormInput } from '../../elemental';
 
 // locales
@@ -54,7 +54,16 @@ export default Field.create({
 			</FormInput>
 		);
 	},
-
+	// customizedSingleValue(props) {
+	// 	const {
+	// 		children,
+	// 	} = props;
+	// 	return (
+	// 		<components.SingleValue {...props} onClick={ e => { console.log(e); } }>
+	// 			>>>> {children}
+	// 		</components.SingleValue>
+	// 	);
+	// },
 	renderField () {
 		const { ops, path, value: val } = this.props;
 
@@ -92,8 +101,35 @@ export default Field.create({
 					defaultValue={value || ''}
 					value={value || ''}
 					options={options}
-					placeholder={this.props.t('select')}
+					// openMenuOnClick={false}
+					placeholder={i18n.t('list.select')}
 					onChange={this.valueChanged}
+					// components={{
+					// 	SingleValue: this.customizedSingleValue,
+					// }}
+					styles={{
+						singleValue: base => ({ ...base, fontSize: '1rem', }),
+						placeholder: base => ({
+							...base,
+							fontSize: '1rem',
+							color: 'hsl(0, 1%, 67%)',
+						}),
+						control: base => ({
+							...base,
+							padding: '4px',
+							backgroundColor: '#fcfcfb',
+							border: '1px solid #e2e2e1',
+						}),
+						option: (base, { isDisabled, isFocused, isSelected }) => ({
+							...base,
+							fontSize: '1rem',
+							backgroundColor: isDisabled ? null : (
+								isSelected || isFocused ? '#f5f5f5' : null
+							),
+							color: 'hsl(0,0%,20%)',
+							fontWeight: isSelected ? 'bold' : 'normal',
+						}),
+					}}
 				/>
 			</div>
 		);

@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   	fontSize: 15,
   },
   content: {
-  	overflow: 'auto',
+  	// overflow: 'auto',
 
   },
 }));

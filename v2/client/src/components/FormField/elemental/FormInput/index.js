@@ -30,6 +30,9 @@ const useStyles = makeStyles(theme => ({
   default: {
     width: '40%',
   },
+  full: {
+  	width: '97%',
+  }
 }));
 
 // NOTE must NOT be functional component to allow `refs`
@@ -57,10 +60,11 @@ const FormInput = props => {
 		inputProps,
 		placeholder,
 		inline,
+		variant,
 		type='text',
 	} = props;
 
-	const options = {
+	let options = {
 		InputProps:{
 			classes,
 			disableUnderline: true,
@@ -78,6 +82,13 @@ const FormInput = props => {
 		multiline: !!multiline,
 		onChange,
 	};
+
+	if (variant) {
+		options = {
+			...options,
+			variant,
+		};
+	}
 
 	if (inline) {
 		return (

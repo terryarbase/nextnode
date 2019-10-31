@@ -21,6 +21,7 @@ import FormHeading from './../FormField/shared/FormHeading';
 import {
   main,
   endpoint,
+  listPrefix,
   apiVersionV2,
 } from './../../config/constants.json';
 
@@ -30,6 +31,9 @@ import {
   translateListHeading,
   translateListNote,
 } from './../../utils/multilingual';
+import {
+  requestHeader,
+} from './../../utils/request';
 
 // styles
 import {
@@ -67,6 +71,7 @@ const getFormFieldProps = options => {
     values,
     // currentTarget,
     mode,
+    requestHeader,
   } = options;
 
   const url = `${endpoint}${apiVersionV2}`;
@@ -77,12 +82,14 @@ const getFormFieldProps = options => {
       values,
       currentLang,
     }),
+    requestHeader,
     restrictDelegated: field.restrictDelegated,
     values,
     currentLang,
     label: translateListField(key, path) || '',
     note: !!note ? translateListNote(key, path) : '',
     adminPath: main,
+    listPath: listPrefix,
     uploadPath: `${url}session`,
     // key: path,
     url,
@@ -177,18 +184,19 @@ const FormElemental = props => {
 
   const defaultSectionName = '__default__';
   // create a corresponding field element
-  let prevHeader = defaultSectionName
+  let prevHeader = defaultSectionName;
   // basic props
   const elementProps = {
     // currentTarget,
+    requestHeader: requestHeader({ isAuth: true }),
     currentList,
     values: form,
     currentLang,
     mode,
     cloudinary: _.get(info, 'cloudinary'),
   };
-
-  elements = elements.slice(0, 12);
+  elements = elements.slice(0, 21);
+  
   // create all of elements from uiElements
   elements = _.reduce(elements, (el, { field, type, content }, index) => {
     // if (

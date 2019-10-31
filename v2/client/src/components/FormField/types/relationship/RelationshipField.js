@@ -1,8 +1,26 @@
 // import async from 'async';
+// import { Redirect } from 'react-router-dom';
 import Field from '../Field';
+import { makeStyles } from '@material-ui/core/styles';
+import blueGrey from '@material-ui/core/colors/blueGrey';
 // import { listsByKey } from './../../../../utils/v1/lists';
 import React from 'react';
+
+import {
+	Button,
+	Card,
+	CardActions,
+	// CardActionArea,
+	CardMedia,
+	CardContent,
+	Typography,
+	IconButton,
+} from '@material-ui/core';
 import { components } from 'react-select';
+import {
+	ExpandMore as ExpandMoreIcon,
+	Close as CloseIcon,
+} from '@material-ui/icons';
 import AsyncSelect from 'react-select/async';
 import xhr from 'xhr';
 import {
@@ -21,9 +39,9 @@ import {
 	translateListName,
 } from '../../../../utils/multilingual';
 
-function compareValues (current=[], next=[]) {
-	const currentValue = !Array.isArray(current) ? current.split(',') : current;
-	const nextValue = !Array.isArray(next) ? next.split(',') : next;
+const compareValues = (current=[], next=[]) => {
+	const currentValue = current && !Array.isArray(current) ? current.split(',') : current;
+	const nextValue = next && !Array.isArray(next) ? next.split(',') : next;
 	const currentLength = currentValue ? currentValue.length : 0;
 	const nextLength = nextValue ? nextValue.length : 0;
 	if (currentLength !== nextLength) return false;
@@ -38,6 +56,55 @@ const optionsStyle = {
 	maxHeight: '100px',
 	height: 'auto'
 };
+
+const useStyles = makeStyles({
+	root: {
+		marginRight: '10px',
+	},
+  media: {
+    height: 140,
+  },
+  title: {
+  	textAlign: 'center',
+  },
+  link: {
+  	textDecoration: 'none',
+  	color: blueGrey[600],
+  	textAlign: 'center',
+  	margin: '0 auto',
+  }
+});
+
+const SelectedCard = ({ image, label, url }) => {
+  	const classes = useStyles();
+  	const ImageBlock = !!image && (
+  		<CardMedia
+          className={classes.media}
+          image={label}
+          title={label}
+        />
+   	);
+	return (
+		<Card className={classes.root}>
+	    {
+	    	!!image ? <CardMedia
+	          className={classes.media}
+	          image={label}
+	          title={label}
+	        /> : <CardContent>
+				<Typography className={classes.title} variant="body2" color="textSecondary" component="p">
+					{label}
+				</Typography>
+			</CardContent>
+		}
+		  <CardActions>
+			  	<a href={url} target="_blank" className={classes.link}>
+			     	{i18n.t('list.view')}
+			    </a>
+		  </CardActions>
+		</Card>
+	);
+}
 
 export default Field.create({
 
@@ -121,7 +188,7 @@ export default Field.create({
 			const {
 				url,
 			} = this.props;
-			item.href = url + '/session/content/' + this.props.refList.path + '/' + (item.id || item.value);
+			item.href = url + 'session/content/' + this.props.refList.path + '/' + (item.id || item.value);
 			this._itemsCache[(item.id || item.value)] = item;
 		}
 	},
@@ -147,10 +214,14 @@ export default Field.create({
 	// 		loading: true,
 	// 		// value: null,
 	// 	});
+		// const {
+		// 	requestHeader,
+		// } = this.props;
 	// 	async.map(values, (value, done) => {
 	// 		xhr({
 	// 			url: Keystone.adminPath + '/api/' + this.props.refList.path + '/' + value + `?ts=${Math.random()}&basic&alangd=${this.props.currentLang}`,
 	// 			responseType: 'json',
+	//			headers: requestHeader,
 	// 		}, (err, resp, data) => {
 	// 			if (err || !data) return done(err);
 	// 			// this.cacheItem(data);
@@ -217,7 +288,7 @@ export default Field.create({
 		// callback(selections);
 	},
 	loadOptions (input, callback, props) {
-		const { value, url } = this.props;
+		const { value, url, requestHeader } = this.props;
 		// console.log(this.props.display);
 		// NOTE: this seems like the wrong way to add options to the Select
 		this.loadOptionsCallback = callback;
@@ -226,8 +297,9 @@ export default Field.create({
 			loading: true,
 		});
 		xhr({
-			url: url + '/session/content/' + this.props.refList.path + `?ts=${Math.random()}&basic&search=` + input + '&' + filters,
+			url: url + 'session/content/' + this.props.refList.path + `?ts=${Math.random()}&basic&search=` + input + '&' + filters,
 			responseType: 'json',
+			headers: requestHeader,
 		}, (err, resp, data) => {
 			if (err) {
 				console.error('Error loading items:', err);
@@ -293,6 +365,9 @@ export default Field.create({
 		});
 		this.closeCreate();
 	},
+	// onSelectedClick({ data }) {
+	// 	console.log(data);
+	// },
 	customizedOptions(props) {
 		const { data: { label, image } } = props;
 		const { mode, noedit } = this.props;
@@ -310,19 +385,16 @@ export default Field.create({
 		);
 	},
 	customizedSelections(props) {
-		const { data: { label, value, image }, url } = props;
-		const target = `${url}/session/content/${this.props.refList.path}/${value}`;
+		const { data: { label, value, image } } = props;
+		const { listPath, refList } = this.props;
+		const target = `${listPath}/${refList.path}/${value}`;
 		return (
 			<components.MultiValueLabel {...props}>
-				<a href={target} rel="noopener noreferrer" target="_blank">
-				{
-					image ? 
-					<img src={label} alt={label} style={{
-						...optionsStyle,
-					}} />
-					: label
-				}
-				</a>
+				<SelectedCard
+					label={label}
+					image={image}
+					url={target}
+				/>
 			</components.MultiValueLabel>
 		);
 	},
@@ -332,7 +404,7 @@ export default Field.create({
 		if (mode === 'edit' && noedit) return null;
 		return (
 			<components.MultiValueRemove {...props}>
-				x
+	          <CloseIcon />
 			</components.MultiValueRemove>
 		);
 	},
@@ -342,7 +414,7 @@ export default Field.create({
 		if (mode === 'edit' && noedit) return null;
 		return (
 			<components.DropdownIndicator {...props}>
-				{i18n.t('list.dropdown')}
+				<ExpandMoreIcon />
 			</components.DropdownIndicator>
 		);
 	},
@@ -358,7 +430,6 @@ export default Field.create({
 					isClearable={!noedit}
 					isSearchable={!noedit}
 					openMenuOnFocus={false}
-					openMenuOnClick={false}
 					loadOptions={this.loadOptions}
 					defaultOptions={true}
 					placeholder={ !noedit ? i18n.t('list.selectWithListname', {
@@ -366,16 +437,42 @@ export default Field.create({
 					}) : '---' }
 					name={this.getInputName(this.props.path)}
 					onChange={this.valueChanged}
+					openMenuOnClick={false}
 					isLoading={this.state.isLoading}
 					styles={{
-						option: base => ({
+						option: (base, { isDisabled, isFocused, isSelected }) => ({
 							...base,
-							border: `1px disabled #ccc`,
-							height: '100%',
+							fontSize: '1rem',
+							backgroundColor: isDisabled ? null : (
+								isSelected || isFocused ? '#f5f5f5' : null
+							),
+							color: 'hsl(0,0%,20%)',
+							fontWeight: isSelected ? 'bold' : 'normal',
+
 						}),
 						indicatorSeparator: base => ({
 						    ...base,
 						    visibility: (noedit ? 'hidden' : 'visibility'),
+						}),
+						multiValue: base => ({
+							...base,
+							fontSize: '1rem',
+							backgroundColor: 'transparent',
+							// cursor: 'default',
+							// ':hover': {
+							// 	backgroundColor: 'transparent',
+							// },
+						}),
+						// multiValueLabel: base => ({
+						// 	...base,
+						// 	cursor: 'default',
+						// }),
+						placeholder: base => ({ ...base, fontSize: '1rem', color: 'hsl(0, 1%, 67%)' }),
+						control: base => ({
+							...base,
+							padding: '4px',
+							backgroundColor: '#fcfcfb',
+							border: '1px solid #e2e2e1',
 						}),
 						container: base => {
 							let style = { ...base };

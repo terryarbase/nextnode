@@ -21,9 +21,9 @@ export default Field.create({
 		return (
 			<FormInput
 				autoComplete="off"
+				label={this.props.path}
 				name={this.getInputName(this.props.path)}
 				onChange={this.valueChanged}
-				ref="focusTarget"
 				value={this.props.value}
 			/>
 		);

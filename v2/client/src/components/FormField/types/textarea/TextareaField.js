@@ -42,6 +42,7 @@ export default Field.create({
 				multiline
 				label={label}
 				rows={height}
+				size="large"
 				name={this.getInputName(path)}
 				onChange={this.valueChanged}
 				value={value}

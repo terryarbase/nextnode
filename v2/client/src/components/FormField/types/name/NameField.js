@@ -2,8 +2,11 @@ import PropTypes from 'prop-types';
 import Field from '../Field';
 import React from 'react';
 import {
-	FormInput,
 	Grid,
+} from '@material-ui/core';
+import {
+	FormInput,
+	// Grid,
 } from '../../elemental';
 
 // locales
@@ -56,18 +59,24 @@ export default Field.create({
 		const { value = {} } = this.props;
 
 		return (
-			<Grid.Row small="one-half" gutter={10}>
-				<Grid.Col>
-					<FormInput noedit style={inputStyle}>
+			<Grid
+				container
+				direction="row"
+				justify="flex-start"
+		  		alignItems="center"
+		  		spacing={3}
+			>
+				<Grid item xs>
+					<FormInput noedit>
 						{value.first}
 					</FormInput>
-				</Grid.Col>
-				<Grid.Col>
-					<FormInput noedit style={inputStyle}>
+				</Grid>
+				<Grid item xs>
+					<FormInput noedit>
 						{value.last}
 					</FormInput>
-				</Grid.Col>
-			</Grid.Row>
+				</Grid>
+			</Grid>
 		);
 	},
 	renderField () {
@@ -75,26 +84,34 @@ export default Field.create({
 		// name={this.getInputName(paths.last)}
 		const { value = {}, path, autoFocus } = this.props;
 		return (
-			<Grid.Row small="one-half" gutter={10}>
-				<Grid.Col>
+			<Grid
+				container
+				direction="row"
+				justify="flex-start"
+		  		alignItems="center"
+		  		spacing={3}
+			>
+				<Grid item xs>
 					<FormInput
 						autoFocus={autoFocus}
 						autoComplete="off"
+						size="full"
 						name={this.getInputName(path)}
 						onChange={this.changeFirst}
 						placeholder={i18n.t('list.firstName')}
 						value={value.first || ''}
 					/>
-				</Grid.Col>
-				<Grid.Col>
+				</Grid>
+				<Grid item xs>
 					<FormInput
 						autoComplete="off"
+						size="full"
 						onChange={this.changeLast}
 						placeholder={i18n.t("list.lastName")}
 						value={value.last || ''}
 					/>
-				</Grid.Col>
-			</Grid.Row>
+				</Grid>
+			</Grid>
 		);
 	},
 });

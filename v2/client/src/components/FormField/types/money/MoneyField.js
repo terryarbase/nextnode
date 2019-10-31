@@ -19,13 +19,14 @@ export default Field.create({
 		if (newValue === this.props.value) return;
 		this.props.onChange({
 			path: this.props.path,
-			value: Number(newValue),
+			value: +newValue,
 		});
 	},
 	renderField () {
 		return (
 			<FormInput
 				autoComplete="off"
+				label={this.props.path}
 				name={this.getInputName(this.props.path)}
 				onChange={this.valueChanged}
 				value={this.props.value}
