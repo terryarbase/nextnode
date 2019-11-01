@@ -27,6 +27,40 @@ class List {
   }
 
   /*
+  ** Format the filters option for the field with self colun mapping for the self value
+  ** e.g. :_id
+  ** Terry Chan
+  ** 11/06/2019
+  */
+  getRelatedFilter (field, initFilters={}, currentLang, values) {
+    // let mapping = null;
+    if (field.filters) {
+      let { filters={} } = field;
+      filters = {
+        ...filters,
+        ...initFilters,
+      };
+      let targetField = null;
+      return _.chain(filters).reduce((accum, value, field) => {
+        // while the filter value is mapping field being with colun
+        if (/^:/i.test(value)) {
+          targetField = value.replace(/^:/, '');
+          return {
+            ...accum,
+            [field]: this.getFieldValue({
+              field: this.fields[targetField],
+              isLocale: this.isLocale,
+              currentLang,
+              values,
+            }),
+          };
+        }
+        return accum;
+      }, filters).value();
+    }
+    return null;
+  }
+  /*
   ** Shared function for obtaining the value from changing or current values of state
   ** Support Multlingual
   ** Terry Chan
@@ -34,7 +68,7 @@ class List {
   */
   getFieldValue ({ field, values, isLocale, currentLang }) {
     // console.log(field.path, values);
-    let current = values[field.path];
+    let current = _.get(values, `${field.path}`);
     const shouldMultilingual = this.isLocale && _.get(field, 'multilingual');
     // prevent set multilingual from true to false
     if (shouldMultilingual) {

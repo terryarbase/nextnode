@@ -141,7 +141,6 @@ module.exports = Field.create({
 					const { id, _isNew } = value;
 
 					const name = !_isNew && `${path}[${index}][id]`;
-					console.log(name, value);
 					const onRemove = e => this.removeItem(index);
 
 					return (

@@ -1,16 +1,22 @@
-import DateInput from '../../components/DateInput';
-// import PropTypes from 'prop-types';
-import Field from '../Field';
 import moment from 'moment';
 import React from 'react';
 import {
+	Grid,
 	Button,
+} from '@material-ui/core';
+import {
+	// Button,
 	FormField,
 	FormInput,
-	FormNote,
-	InlineGroup as Group,
-	InlineGroupSection as Section,
+	// FormNote,
+	// InlineGroup as Group,
+	// InlineGroupSection as Section,
 } from '../../elemental';
+import DateInput from '../../components/DateInput';
+import Field from '../Field';
+
+// locales
+import i18n from '../../../../i18n';
 
 export default Field.create({
 
@@ -19,25 +25,25 @@ export default Field.create({
 		type: 'Datetime',
 	},
 
-	focusTargetRef: 'dateInput',
+	// focusTargetRef: 'dateInput',
 
-	// default input formats
-	dateInputFormat: 'YYYY-MM-DD',
-	timeInputFormat: 'HH:mm:ss',
+	// // default input formats
+	// dateInputFormat: 'YYYY-MM-DD',
+	// timeInputFormat: 'HH:mm:ss',
 	tzOffsetInputFormat: 'Z',
 
-	// parse formats (duplicated from lib/fieldTypes/datetime.js)
-	parseFormats: ['YYYY-MM-DD', 'YYYY-MM-DD h:m:s a', 'YYYY-MM-DD h:m a', 'YYYY-MM-DD H:m:s', 'YYYY-MM-DD H:m'],
+	// // parse formats (duplicated from lib/fieldTypes/datetime.js)
+	// parseFormats: ['YYYY-MM-DD', 'YYYY-MM-DD h:m:s a', 'YYYY-MM-DD h:m a', 'YYYY-MM-DD H:m:s', 'YYYY-MM-DD H:m'],
 
 	getInitialState () {
 		return this.setValue(this.props);
 	},
 
-	getDefaultProps () {
-		return {
-			formatString: 'YYYY-MM-DD HH:mm:ss',
-		};
-	},
+	// getDefaultProps () {
+	// 	return {
+	// 		formatString: 'YYYY-MM-DD HH:mm:ss',
+	// 	};
+	// },
 
 	componentWillReceiveProps (nextProps) {
 		if (this.props.value !== nextProps.value) {
@@ -46,10 +52,19 @@ export default Field.create({
 	},
 
 	setValue(props) {
+		const {
+			dateFormat='YYYY-MM-DD',
+			timeFormat='HH:mm:ss',
+			value,
+		} = props;
 		return {
-			dateValue: props.value && this.moment(props.value).format(this.dateInputFormat),
-			timeValue: props.value && this.moment(props.value).format(this.timeInputFormat),
-			tzOffsetValue: props.value ? this.moment(props.value).format(this.tzOffsetInputFormat) : this.moment().format(this.tzOffsetInputFormat),
+			fullFormat: `${dateFormat} ${timeFormat}`,
+			// ${this.tzOffsetInputFormat}`,
+			dateFormat,
+			timeFormat,
+			dateValue: value && this.moment(value).format(dateFormat),
+			timeValue: value && this.moment(value).format(timeFormat),
+			// tzOffsetValue: value ? this.moment(value).format(this.tzOffsetInputFormat) : this.moment().format(this.tzOffsetInputFormat),
 		};
 	},
 
@@ -60,28 +75,23 @@ export default Field.create({
 
 	// TODO: Move isValid() so we can share with server-side code
 	isValid (value) {
-		return this.moment(value, this.parseFormats).isValid();
+		return this.moment(value, this.state.fullFormat).isValid();
 	},
 
 	// TODO: Move format() so we can share with server-side code
 	format (value, format) {
-		format = format || this.dateInputFormat + ' ' + this.timeInputFormat;
+		format = format || this.state.fullFormat;
 		return value ? this.moment(value).format(format) : '';
 	},
 
-	handleChange (dateValue, timeValue, tzOffsetValue) {
-		var value = dateValue + ' ' + timeValue;
-		var datetimeFormat = this.dateInputFormat + ' ' + this.timeInputFormat;
+	handleChange (dateValue, timeValue) {
+		const value = dateValue + ' ' + timeValue;
+		const datetimeFormat = this.state.fullFormat;
 
 		// if the change included a timezone offset, include that in the calculation (so NOW works correctly during DST changes)
-		if (typeof tzOffsetValue !== 'undefined') {
-			value += ' ' + tzOffsetValue;
-			datetimeFormat += ' ' + this.tzOffsetInputFormat;
-		}
-		// if not, calculate the timezone offset based on the date (respect different DST values)
-		else {
-			this.setState({ tzOffsetValue: this.moment(value, datetimeFormat).format(this.tzOffsetInputFormat) });
-		}
+		// this.setState({
+		// 	tzOffsetValue: this.moment(value, datetimeFormat).format(this.tzOffsetInputFormat),
+		// });
 
 		this.props.onChange({
 			path: this.props.path,
@@ -90,86 +100,86 @@ export default Field.create({
 	},
 
 	dateChanged ({ value }) {
-		this.setState({ dateValue: value });
-		this.handleChange(value, this.state.timeValue);
+		const dateValue = this.moment(value).format(this.state.dateFormat);
+		const timeValue = this.moment(value).format(this.state.timeFormat);
+		// const tzOffsetValue = this.moment().format(this.tzOffsetInputFormat); 
+		this.setState({ dateValue, timeValue });
+			// , tzOffsetValue });
+		this.props.onChange({
+			path: this.props.path,
+			value: value,
+		});
 	},
 
-	timeChanged (evt) {
-		this.setState({ timeValue: evt.target.value });
-		this.handleChange(this.state.dateValue, evt.target.value);
-	},
+	// timeChanged (evt) {
+	// 	this.setState({ timeValue: evt.target.value });
+	// 	this.handleChange(this.state.dateValue, evt.target.value);
+	// },
 
 	setNow () {
-		var dateValue = this.moment().format(this.dateInputFormat);
-		var timeValue = this.moment().format(this.timeInputFormat);
-		var tzOffsetValue = this.moment().format(this.tzOffsetInputFormat);
-		this.setState({
-			dateValue: dateValue,
-			timeValue: timeValue,
-			tzOffsetValue: tzOffsetValue,
-		});
-		this.handleChange(dateValue, timeValue, tzOffsetValue);
-	},
-
-	renderNote () {
-		if (!this.props.note) return null;
-		// return <FormNote note={this.props.note} />;
-		return <FormNote html={this.props.note} />;
+		this.dateChanged({
+			value: moment().format(this.state.fullFormat),
+		})
 	},
 
 	renderUI () {
-		const { maxDate, minDate } = this.props;
-		var input;
+		let input;
 		if (this.shouldRenderField()) {
+			const {
+				showToday,
+			} = this.props;
 			input = (
-				<div>
-					<Group>
-						<Section grow>
-							<DateInput
-								maxDate={maxDate}
-								minDate={minDate}
-								format={this.dateInputFormat}
-								name={this.getInputName(this.props.paths.date)}
-								onChange={this.dateChanged}
-								ref="dateInput"
-								value={this.state.dateValue}
-							/>
-						</Section>
-						<Section grow>
-							<FormInput
-								autoComplete="off"
-								name={this.getInputName(this.props.paths.time)}
-								onChange={this.timeChanged}
-								placeholder="HH:MM:SS am/pm"
-								value={this.state.timeValue}
-							/>
-						</Section>
-						<Section>
-							<Button onClick={this.setNow}>{this.props.t('nowLabel')}</Button>
-						</Section>
-					</Group>
-					<input
-						name={this.getInputName(this.props.paths.tzOffset)}
-						type="hidden"
-						value={this.state.tzOffsetValue}
-					/>
-				</div>
+				<Grid
+					container
+					direction="row"
+					justify="flex-start"
+			  		alignItems="center"
+			  		spacing={3}
+				>
+					<Grid item xs={3}>
+						<DateInput
+							{...this.props}
+							onChange={this.dateChanged}
+							fullFormat={this.state.fullFormat}
+							value={this.props.value}
+						/>
+						<input
+							type="hidden"
+							name={this.getInputName(this.props.paths.date)}
+							defaultValue={this.state.dateValue}
+						/>
+						<input
+							type="hidden"
+							autoComplete="off"
+							name={this.getInputName(this.props.paths.time)}
+							defaultValue={this.state.timeValue}
+						/>
+					</Grid>
+					{
+						!!showToday && <Grid item xs={3}>
+							<Button
+								variant="contained"
+								color="primary"
+								onClick={this.setNow}>
+								{i18n.t('list.today')}
+							</Button>
+						</Grid>
+					}
+				</Grid>
 			);
 		} else {
 			input = (
 				<FormInput noedit>
-					{this.format(this.props.value, this.props.formatString)}
+					{this.format(this.props.value, this.state.fullFormat)}
 				</FormInput>
 			);
 		}
 		return (
 			<FormField
-				label={this.props.label}
-				className="field-type-datetime"
-				htmlFor={this.getInputName(this.props.path)}
+				note={this.props.notenote}
+				label={this.getRequired()}
 			>
 				{input}
-				{this.renderNote()}
 			</FormField>
 		);
 	},

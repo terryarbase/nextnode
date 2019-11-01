@@ -1,6 +1,9 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
+  reactLocalStorage,
+} from 'reactjs-localstorage';
+import {
   Typography,
   Grid,
 } from '@material-ui/core';
@@ -23,6 +26,7 @@ import {
   endpoint,
   listPrefix,
   apiVersionV2,
+  storageName,
 } from './../../config/constants.json';
 
 // utils
@@ -72,11 +76,13 @@ const getFormFieldProps = options => {
     // currentTarget,
     mode,
     requestHeader,
+    calendarLang,
   } = options;
 
   const url = `${endpoint}${apiVersionV2}`;
-  return {
+  let fieldProps = {
     ...field,
+    currentList,
     value: currentList.getFieldValue({
       field,
       values,
@@ -86,6 +92,7 @@ const getFormFieldProps = options => {
     restrictDelegated: field.restrictDelegated,
     values,
     currentLang,
+    calendarLang,
     label: translateListField(key, path) || '',
     note: !!note ? translateListNote(key, path) : '',
     adminPath: main,
@@ -101,6 +108,15 @@ const getFormFieldProps = options => {
     // currentTarget,
     listKey: key,
   };
+  const filters = currentList.getRelatedFilter(field, field.filters, currentLang, values);
+  if (filters) {
+    fieldProps = {
+      ...fieldProps,
+      filters,
+    };
+  }
+
+  return fieldProps;
 }
 
 const getFormHeadingProps = ({
@@ -124,9 +140,10 @@ const FormElemental = props => {
   // state
   // const [currentTarget, onFocus] = useState(null);
 
-  const statelessUIRef = useRef({});
+  // const statelessUIRef = useRef({});
   const {
     info={},
+    // listsByPath={},
   } = useUserState();
   const currentLang = i18n.locale;
 
@@ -152,34 +169,26 @@ const FormElemental = props => {
   // const isMultilingalStateLess = ({
   //   path
   // }) => _.get(statelessUI, `${path}.${currentLang}`);
+  let {
+    // Required Fields
+    elements=[],
+    fields,
+  } = props;
   const {
-    requiredFields=[],
-    currentList: {
-      fields,
-      uiElements,
-      nameField,
-      nameFieldIsFormHeader,
-    },
     currentList,
+    inline,
+    currentList: {
+      fields: listFields,
+    },
     onChange,
     mode='edit',
     form,
   } = props;
 
-
-  // const handleChange = target => {
-  //   onFocus(target.path);
-  //   // callback the regular onChange event
-  //   onChange(target);
-  // }
-
-
-  let elements = [];
-  // callee specifies the field to be shown
-  if (requiredFields.length) {
-    elements = _.filter(uiElements, ({ field }) => _.indexOf(requiredFields, field) !== -1);
+  if (!inline) {
+    fields = listFields;
   } else {
-    elements = [ ...uiElements ];
+    elements = _.values(fields);
   }
 
   const defaultSectionName = '__default__';
@@ -188,17 +197,21 @@ const FormElemental = props => {
   // basic props
   const elementProps = {
     // currentTarget,
+    calendarLang: reactLocalStorage.get(storageName.calendarLang),
     requestHeader: requestHeader({ isAuth: true }),
     currentList,
+    // lists: listsByPath,
     values: form,
     currentLang,
     mode,
     cloudinary: _.get(info, 'cloudinary'),
   };
-  elements = elements.slice(0, 21);
-  
+
+  // console.log(elements, fields);
+  elements = elements.slice(0, 28);
   // create all of elements from uiElements
-  elements = _.reduce(elements, (el, { field, type, content }, index) => {
+  const fieldDoms = _.reduce(elements, (accum, element, index) => {
+    const { field, type, content } = element;
     // if (
     //   nameField
     //   && field === nameField.path
@@ -215,30 +228,24 @@ const FormElemental = props => {
         index,
       }));
       // push to the sub section for the heading
-      el[prevHeader] = [ heading ];
+      accum[prevHeader] = [ heading ];
     // field type 
-    } else if (type === 'field') {
-      const f = fields[field];
-      let element = null;
+    } else {
+      const f = fields[field] || element;
       const {
         path,
-        type,
-        // cloneable,
+        type: fieldType,
       } = f;
       const key = `${prevHeader}-${path}`;
-      const fieldProps = getFormFieldProps({
-        ...elementProps,
-        field: f,
-        onChange,
-      });
-      const Component = Fields[type];
+      const Component = Fields[fieldType];
+      let ele = null;
       if (typeof Component !== 'function') {
         // push to the current heading or default heading
-        element = (
+        ele = (
           <InvalidFieldType
             {
               ...{
-                type,
+                type: fieldType,
                 path,
                 key,
               }
@@ -246,9 +253,12 @@ const FormElemental = props => {
           />
         )
       } else {
-        element = (
-          <Component { ...fieldProps } key={key} />
-        ); 
+        const fieldProps = getFormFieldProps({
+          ...elementProps,
+          field: f,
+          onChange,
+        });
+        ele = (<Component { ...fieldProps } key={key} />);
         // if (!statelessUIRef.current[path]) {
         // // console.log(type, fieldProps);
         //   element = React.createElement(Fields[type], { ...fieldProps });
@@ -283,24 +293,24 @@ const FormElemental = props => {
 
         // }
       }
-      el = {
-        ...el,
+      accum = {
+        ...accum,
         [prevHeader]: [
-          ...el[prevHeader],
-          element,
+          ...accum[prevHeader],
+          ele,
         ],
       };
-      statelessUIRef.current = {
-        ...statelessUIRef.current,
-        [path]: element,
-      };
+      // statelessUIRef.current = {
+      //   ...statelessUIRef.current,
+      //   [path]: element,
+      // };
     }
 
-    return el;
+    return accum;
 
   }, { [defaultSectionName]: [] });
 
-  const sections = _.keys(elements);
+  const sections = _.keys(fieldDoms);
   // only have _default_ as the elements section key
   const noSection = sections.length === 1;
   // initialize by all of element sections (key-of-array)
@@ -318,19 +328,36 @@ const FormElemental = props => {
     }
   };
 
+  const containerProps = {
+    container: true,
+    direction: "row",
+    justify: "space-between",
+    alignItems: "center",
+    spacing: 3,
+  };
+
+  if (inline) {
+      return (
+        <Grid {...containerProps} item xs={12}>
+          {
+            _.keys(fieldDoms).map(section => (
+              <div style={{ width: '100%' }} key={_.camelCase(section)}>
+                {fieldDoms[section]}
+              </div>
+            ))
+          }
+        </Grid>
+      );
+    }
+
   return (
-    <Grid container
-      direction="row"
-      justify="space-between"
-      alignItems="center" 
-      spacing={3}
-    >
+    <Grid {...containerProps}>
       <Grid item xs={10}>
         {
-          _.keys(elements).map(section => {
-            const isExpanded = _.includes(expanded, section);
+          _.keys(fieldDoms).map(section => {
             // cut-off spacing
             const sectionName = _.camelCase(section);
+            const isExpanded = _.includes(expanded, section);
             return (
               <div key={sectionName}>
                 <ExpansionPanel
@@ -355,7 +382,7 @@ const FormElemental = props => {
                       direction="row"
                       justify="flex-start"
                     >
-                      {elements[section]}
+                      {fieldDoms[section]}
                     </Grid>
                   </ExpansionPanelDetails>
                 </ExpansionPanel>
@@ -373,7 +400,7 @@ const FormElemental = props => {
 
 FormElemental.propTypes = {
   currentList: PropTypes.object.isRequired,
-  requiredFields: PropTypes.array,
+  elements: PropTypes.array,
   mode: PropTypes.string,
   form: PropTypes.object,
 };

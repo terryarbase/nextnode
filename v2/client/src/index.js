@@ -11,7 +11,6 @@ import { UserProvider } from "./store/user/context";
 import { ListProvider } from './store/list/context';
 
 // global styles
-import 'react-day-picker/lib/style.css';
 import 'codemirror/lib/codemirror.css';
 // import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 // import i18n from './i18n';

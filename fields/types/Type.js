@@ -129,6 +129,7 @@ function Field (list, path, options) {
 	});
 
 }
+
 /**
  * Sets the dynamic option in runtime
  * Usually used for API requests
@@ -420,6 +421,45 @@ Field.prototype.updateItem = function (item, data, callback) {
  */
 Field.prototype.getValueFromData = function (data, subpath) {
 	return this._path.get(data, subpath);
+};
+
+Field.prototype.getCommonDateOptions = function () {
+	return [
+		'formatString',
+		'isUTC',
+		'dateFormat',
+		'timeFormat',
+		'maxToday',
+		'showToday',
+		'minDate',
+		'maxDate',
+		'range',
+	];
+};
+
+Field.prototype.setCommonDateOptions = function () {
+	const common = {
+		'formatString': 'YYYY-MM-DD',
+		'isUTC': false,
+		'dateFormat': 'YYYY-MM-DD',
+		'maxToday': false,
+		'showToday': true,
+		'minDate': null,
+		'maxDate': null,
+		'range': [],
+	};
+	let options = {};
+	_.forOwn(common, (defaultValue, field) => {
+		options = {
+			...options,
+			[field]: defaultValue,
+		};
+	});
+	this.options = {
+		...options,
+		...this.options,
+	};
+	// return options;
 };
 
 /*

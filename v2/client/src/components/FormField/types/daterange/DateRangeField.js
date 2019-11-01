@@ -1,22 +1,26 @@
-import DateRangeInput from '../../components/DateRangeInput';
+// import DateRangeInput from '../../components/DateRangeInput';
 import PropTypes from 'prop-types';
 import Field from '../Field';
 import moment from 'moment';
+import {
+	Grid,
+	Button
+} from '@material-ui/core';
 // import DayPicker, { DateUtils } from 'react-day-picker';
 import React from 'react';
 import {
 	// Button,
 	FormInput,
-	InlineGroup as Group,
-	InlineGroupSection as Section,
+	// InlineGroup as Group,
+	// InlineGroupSection as Section,
 } from '../../elemental';
+import DateInput from '../../components/DateInput';
 
+import i18n from './../../../../i18n';
 /*
 TODO: Implement yearRange Prop, or deprecate for max / min values (better)
 */
 
-const DEFAULT_INPUT_FORMAT = 'YYYY-MM-DD';
-const DEFAULT_FORMAT_STRING = 'YYYY-MM-DD';
 
 export default Field.create({
 	displayName: 'DateRangeField',
@@ -30,21 +34,34 @@ export default Field.create({
 		note: PropTypes.string,
 		onChange: PropTypes.func,
 		path: PropTypes.string,
-		value: PropTypes.string,
+		value: PropTypes.object,
 	},
 
-	getDefaultProps () {
-		return {
-			formatString: DEFAULT_FORMAT_STRING,
-			inputFormat: DEFAULT_INPUT_FORMAT,
-		};
-	},
 
-	valueChanged ({ value }) {
+	valueStartChanged ({ value: startDate }) {
+		const {
+			value={},
+		} = this.props;
 		// console.log('> valueChanged: ', value, this.props.path);
 		this.props.onChange({
 			path: this.props.path,
-			value: value,
+			value: {
+				...value,
+				startDate,
+			},
+		});
+	},
+	valueEndChanged ({ value: endDate }) {
+		const {
+			value={},
+		} = this.props;
+		// console.log('> valueChanged: ', value, this.props.path);
+		this.props.onChange({
+			path: this.props.path,
+			value: {
+				...value,
+				endDate,
+			},
 		});
 	},
 	toMoment (value) {
@@ -55,14 +72,19 @@ export default Field.create({
 		}
 	},
 	isValid (value) {
-		return this.toMoment(value, this.inputFormat).isValid();
+		return this.toMoment(value, this.props.dateFormat).isValid();
 	},
 	format (value) {
-		return value ? this.toMoment(value).format(this.props.formatString) : '';
+		return value ? this.toMoment(value).format(this.props.dateFormat) : '';
 	},
 	setToday () {
-		this.valueChanged({
-			value: this.toMoment(new Date()).format(this.props.inputFormat),
+		const date =  moment().format(this.props.dateFormat);
+		this.props.onChange({
+			path: this.props.path,
+			value: {
+				startDate: date,
+				endDate: date,
+			},
 		});
 	},
 	renderValue () {
@@ -73,30 +95,52 @@ export default Field.create({
 		);
 	},
 	renderField () {
-		/*
-		** Add picker options supports (e.g. disabled days)
-		** Terry Chan
-		** 14/12/2018
-		*/
-		// const { value } = this.props;
+		const {
+			value={},
+			showToday,
+			dateFormat,
+		} = this.props;
+		const {
+			startDate,
+			endDate,
+		} = value;
 
-		// var dateAsMoment = this.toMoment(this.props.value);
-		// var value = this.props.value && dateAsMoment.isValid()
-		// 	? dateAsMoment.format(this.props.inputFormat)
-		// 	: this.props.value;
 		return (
-			<Group>
-				<Section grow>
-					<DateRangeInput
+			<Grid
+				container
+				direction="row"
+				justify="flex-start"
+		  		alignItems="center"
+		  		spacing={3}
+			>
+				<Grid item xs={3}>
+					<DateInput
 						{...this.props}
-						format={this.props.inputFormat}
-						name={this.getInputName(this.props.path)}
-						onChange={this.valueChanged}
-						ref="dateRangeInput"
-						currentLang={this.props.currentLang}
+						fullFormat={dateFormat}
+						name={`${this.props.path}[startDate]`}
+						onChange={this.valueStartChanged}
+						placeholder={dateFormat}
+						maxDate={endDate}
+						value={startDate}
 					/>
-				</Section>
-			</Group>
+				</Grid>
+				<Grid item xs={3}>
+					<DateInput
+						{...this.props}
+						fullFormat={dateFormat}
+						name={`${this.props.path}[endDate]`}
+						onChange={this.valueEndChanged}
+						placeholder={dateFormat}
+						minDate={startDate}
+						value={endDate}
+					/>
+				</Grid>
+				{
+					!!showToday && <Grid item xs={3}>
+						<Button variant="contained" color="primary" onClick={this.setToday}>{i18n.t('list.today')}</Button>
+					</Grid>
+				}
+			</Grid>
 		);
 	},
 

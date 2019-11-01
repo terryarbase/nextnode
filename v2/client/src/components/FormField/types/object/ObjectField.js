@@ -1,29 +1,127 @@
 /* eslint-disable react/jsx-no-bind */
 import PropTypes from 'prop-types';
-import assign from 'object-assign';
-import { css, StyleSheet } from 'aphrodite/no-important';
+import _ from 'lodash';
+// import { css, StyleSheet } from 'aphrodite/no-important';
 import React from 'react';
 import Field from '../Field';
-import _map from 'lodash/map';
 
-import InvalidFieldType from '../../shared/InvalidFieldType';
+// import _cloneDeep from 'lodash/cloneDeep';
+import {
+  // Button,
+  Grid,
+} from '@material-ui/core';
 
-const ObjectField = ({ name, id, children, t }) => (
-	<div style={{
-		// borderLeft: '2px solid #eee',
-		// paddingLeft: 15,
-		// marginLeft: 10,
-	}}>
-		{name && <input type="hidden" name={name} value={id}/>}
+// import Fields from './../fields';
+// import { GlyphButton } from '../../elemental';
+
+// import InvalidFieldType from '../../shared/InvalidFieldType';
+import Domify from '../../shared/Domify';
+import {
+	FormField,
+} from '../../elemental';
+
+// locales
+// import i18n from '../../../../i18n';
+
+// components
+import FormElemental from './../../../ContentListForm/FormElement';
+
+// let i = 0;
+// const generateId = () => {
+// 	return i++;
+// };
+
+// const ItemDom = props => {
+// 	const { name, id, path, onRemove, children } = props;
+// 	return (
+// 		<FormField>
+// 			<Grid
+// 				container
+// 				direction="row"
+// 				justify="flex-start"
+// 		  		alignItems="center"
+// 		  		spacing={3}
+// 			>
+// 				<Grid item xs={10}>
+// 					{
+// 						name && <input type="hidden" name={name} value={id} />
+// 					}
+// 					{
+// 						Children.map(
+// 							children, 
+// 							child => cloneElement(child, props)
+// 						)
+// 					}
+// 				</Grid>
+// 				<Grid item xs={2}>
+// 					<Button variant="contained" color="secondary" onClick={onRemove}>
+// 						{i18n.t('list.remove')}
+// 					</Button>
+// 				</Grid>
+// 			</Grid>
+// 		</FormField>
+// 	);
+// };
+
+const ListField = props => {
+	const {
+		value={},
+		path,
+		fields,
+		onChange,
+	} = props;
+
+	const handleFieldChanged = ({ path: subPath, value: current }) => {
+		const item = {
+			...value,
+			[subPath]: current,
+		};
+		onChange({ path, value: item });
+	};
+	const { id, _isNew } = value;
+	const name = !_isNew && id;
 		
-		{React.Children.map(children, child => {
-			return React.cloneElement(child, {
-				name,
-				id,
-			});
-		})}
-	</div>
-);
+	return (
+		<FormField key={id}>
+			<Grid
+				container
+				direction="row"
+				justify="flex-start"
+		  		alignItems="center"
+		  		spacing={3}
+			>
+				<Grid item xs={11}>
+					{
+						name && <input type="hidden" name={name} value={id} />
+					}
+					<FormElemental
+						{...props}
+						onChange={handleFieldChanged}
+			        	form={value}
+			        	fields={fields}
+			        	inline
+			        />
+				</Grid>
+			</Grid>
+		</FormField>
+	);
+
+	return (
+		<Grid
+			container
+			direction="column"
+			justify="flex-start"
+	  		alignItems="flex-start"
+	  		spacing={3}
+		>
+			{
+				<Grid item container>
+					{item}
+				</Grid>
+			}
+		</Grid>
+	);
+}
 
 export default Field.create({
 	displayName: 'ObjectField',
@@ -37,73 +135,19 @@ export default Field.create({
 		path: PropTypes.string.isRequired,
 		value: PropTypes.object,
 	},
-	handleFieldChange ({ path: infoPath, value: infoValue }) {
-		let { value } = this.props;
-		const { path, onChange } = this.props;
-		value = {
-			...value,
-			[infoPath]: infoValue,
-		}
-		onChange({ path, value });
-	},
-	renderSubFields (value) {
-		return _map(Object.keys(this.props.fields), path => {
-			const field = this.props.fields[path];
-			if (typeof Field[field.type] !== 'function') {
-				return React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path });
-			}
-
-			const props = assign({}, field);
-			props.value = value[field.path];
-			props.values = value;
-			props.values.delegated = !!this.props.values.delegated;
-			props.onChange = this.handleFieldChange;
-			props.mode = 'edit';
-			props.currentLang = this.props.currentLang;
-			props.inputNamePrefix = `${this.props.path}`;
-			props.key = field.path;
-
-			// TODO ?
-			// if (props.dependsOn) {
-			// 	props.currentDependencies = {};
-			// 	Object.keys(props.dependsOn).forEach(dep => {
-			// 		props.currentDependencies[dep] = this.state.values[dep];
-			// 	});
-			// }
-			return React.createElement(Field[field.type], props);
-		});
-	},
-	renderField () {
-		const { value, path, t } = this.props;
-		// console.log('>>> value', value, path);
-		const { id } = value;
-		const name = `${path}[id]`;
-
-		return (
-			<ObjectField key={id} {...{ id, name, t }}>
-				{this.renderSubFields(value)}
-			</ObjectField>
-		);
-	},
 	renderUI () {
-		// console.log('>>> Object Types this.props', this.props);
-		const { required } = this.props;
-		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
+		const {
+			value,
+		} = this.props;
+		const label = this.getRequired();
 		return (
-			<div className={css(classes.container)}>
-				<h3 data-things="whatever">{label}</h3>
-				{this.renderField()}
-				{this.renderNote()}
-			</div>
+			<FormField label={label} note={this.props.note}>
+				{
+					this.shouldRenderField() ? 
+					<ListField {...this.props} /> : 
+					<Domify value={value} />
+				}
+			</FormField>
 		);
-	},
-});
-
-const classes = StyleSheet.create({
-	container: {
-		marginTop: '2em',
-		background: '#f8f8f8',
-	    padding: 10,
-    	boxShadow: '0px 1px 3px 0px rgba(0, 0, 0, 0.1)',
 	},
 });

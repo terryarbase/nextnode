@@ -91,7 +91,7 @@ const normalizeContentList = info => {
   };
 }
 
-const postLoginUserLanguageInfo = info => {
+const postLoginUserLanguageInfo = (info, localization) => {
   const {
     language,
     contentLanguage,
@@ -103,6 +103,10 @@ const postLoginUserLanguageInfo = info => {
   }
   if (contentLanguage) {
     reactLocalStorage.set(storageName.dataLanguage, contentLanguage);
+  }
+  const calendarLanguage = _.get(localization, `${language}.altIdentify`) || 'en-au';
+  if (calendarLanguage) {
+    reactLocalStorage.set(storageName.calendarLang, calendarLanguage);
   }
 }
 
@@ -143,6 +147,7 @@ const postLoginUserInfo = info => {
         refreshToken,
         // email,
       },
+      localization,
       user,
       appLanguage,  // list fields language pack
       menuLanguage,   // menu section language pack
@@ -157,7 +162,7 @@ const postLoginUserInfo = info => {
     reactLocalStorage.set(storageName.refreshToken, refreshToken);
   }
 
-  postLoginUserLanguageInfo(user);
+  postLoginUserLanguageInfo(user, localization);
 
   // normalize all of language pack from the server-side to i18n translations
   // const {

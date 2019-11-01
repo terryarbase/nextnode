@@ -1,6 +1,9 @@
 import React, { forwardRef } from 'react';
-// import _ from 'lodash';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
+// import {
+//   reactLocalStorage,
+// } from 'reactjs-localstorage';
 
 import {
   Dialog,
@@ -31,6 +34,11 @@ import {
   useSubmitForm,
 } from './../../hook/list';
 
+// configs
+// import {
+//   storageName,
+// } from './../../config/constants.json';
+
 // locales
 import i18n from './../../i18n';
 
@@ -50,9 +58,13 @@ const CreateForm = props => {
     title,
     currentList: {
       initialFields,
+      uiElements,
     },
   } = props;
   const classes = useRootStyle();
+
+  const elements = _.filter(uiElements, ({ field }) => _.indexOf(initialFields, field) !== -1);
+
   return (
     <Dialog
       fullScreen open={open}
@@ -80,7 +92,7 @@ const CreateForm = props => {
             mode='create'
             onChange={whenChanged}
             form={formValues}
-            requiredFields={initialFields}
+            elements={elements}
           />
         </form>
       </DialogContent>

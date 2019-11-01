@@ -22,7 +22,7 @@ import InputNoedit from './noedit';
 
 const useStyles = makeStyles(theme => ({
   large: {
-    width: '75%',
+    width: '87%',
   },
   medium: {
     width: '60%',
@@ -52,6 +52,9 @@ const FormInput = props => {
 		fullWidth=false,
 		onChange,
 		required,
+		onKeyPress,
+		onFocus,
+		onBlur,
 		// autoFocus,
 		path,
 		noedit,
@@ -62,6 +65,7 @@ const FormInput = props => {
 		inline,
 		variant,
 		type='text',
+		onClick,
 	} = props;
 
 	let options = {
@@ -87,6 +91,30 @@ const FormInput = props => {
 		options = {
 			...options,
 			variant,
+		};
+	}
+	if (onClick) {
+		options = {
+			...options,
+			onClick,
+		};
+	}
+	if (onKeyPress) {
+		options = {
+			...options,
+			onKeyPress,
+		};
+	}
+	if (onFocus) {
+		options = {
+			...options,
+			onFocus,
+		};
+	}
+	if (onBlur) {
+		options = {
+			...options,
+			onBlur,
 		};
 	}
 

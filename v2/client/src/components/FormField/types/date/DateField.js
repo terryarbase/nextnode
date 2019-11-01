@@ -1,16 +1,18 @@
-import DateInput from '../../components/DateInput';
 import PropTypes from 'prop-types';
+import {
+	Grid,
+	Button,
+} from '@material-ui/core';
 import Field from '../Field';
 import moment from 'moment';
 import React from 'react';
-import {
-	Button,
-} from '@material-ui/core';
+
+import DateInput from '../../components/DateInput';
 import {
 	// Button,
 	FormInput,
-	InlineGroup as Group,
-	InlineGroupSection as Section,
+	// InlineGroup as Group,
+	// InlineGroupSection as Section,
 } from '../../elemental';
 
 // locales
@@ -36,11 +38,12 @@ export default Field.create({
 		path: PropTypes.string,
 		value: PropTypes.string,
 	},
-
-	getDefaultProps () {
+	getInitialState () {
+		const {
+			dateFormat='YYYY-MM-DD',
+		} = this.props;
 		return {
-			formatString: DEFAULT_FORMAT_STRING,
-			inputFormat: DEFAULT_INPUT_FORMAT,
+			fullFormat: dateFormat,
 		};
 	},
 	valueChanged ({ value }) {
@@ -57,14 +60,14 @@ export default Field.create({
 		}
 	},
 	isValid (value) {
-		return this.toMoment(value, this.inputFormat).isValid();
+		return this.toMoment(value, this.state.fullFormat).isValid();
 	},
 	format (value) {
-		return value ? this.toMoment(value).format(this.props.formatString) : '';
+		return value ? this.toMoment(value).format(this.state.fullFormat) : '';
 	},
 	setToday () {
 		this.valueChanged({
-			value: this.toMoment(new Date()).format(this.props.inputFormat),
+			value: this.toMoment(moment()).format(this.state.fullFormat),
 		});
 	},
 	renderValue () {
@@ -75,35 +78,36 @@ export default Field.create({
 		);
 	},
 	renderField () {
-		/*
-		** Add picker options supports (e.g. disabled days)
-		** Terry Chan
-		** 14/12/2018
-		*/
-		const { maxDate, minDate } = this.props;
 
-		var dateAsMoment = this.toMoment(this.props.value);
-		var value = this.props.value && dateAsMoment.isValid()
-			? dateAsMoment.format(this.props.inputFormat)
+		const { showToday } = this.props;
+
+		const dateAsMoment = this.toMoment(this.props.value);
+		const value = this.props.value && dateAsMoment.isValid()
+			? dateAsMoment.format(this.state.fullFormat)
 			: this.props.value;
-
 		return (
-			<Group>
-				<Section grow>
+			<Grid
+				container
+				direction="row"
+				justify="flex-start"
+		  		alignItems="center"
+		  		spacing={3}
+			>
+				<Grid item xs={3}>
 					<DateInput
-						maxDate={maxDate}
-						minDate={minDate}
-						format={this.props.inputFormat}
+						{...this.props}
+						fullFormat={this.state.fullFormat}
 						name={this.getInputName(this.props.path)}
 						onChange={this.valueChanged}
-						ref="dateInput"
 						value={value}
 					/>
-				</Section>
-				<Section>
-					<Button variant="contained" onClick={this.setToday}>{i18n.t('list.today')}</Button>
-				</Section>
-			</Group>
+				</Grid>
+				{
+					!!showToday && <Grid item xs={3}>
+						<Button variant="contained" color="primary" onClick={this.setToday}>{i18n.t('list.today')}</Button>
+					</Grid>
+				}
+			</Grid>
 		);
 	},
 

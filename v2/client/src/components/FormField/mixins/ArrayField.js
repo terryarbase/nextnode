@@ -4,6 +4,7 @@ import _ from 'lodash';
 import {
   Button,
   IconButton,
+  Grid,
   Fab,
 } from '@material-ui/core';
 import {
@@ -111,16 +112,30 @@ export default {
 		const value = this.processInputValue ? this.processInputValue(item.value) : item.value;
 		return (
 			<FormField key={index}>
-				<FormInput
-					path={this.props.path}
-					value={value}
-					label={this.props.label}
-					onChange={this.updateItem.bind(this, item)}
-					onKeyDown={this.addItemOnEnter} autoComplete="off"
-				/>
-				<IconButton onClick={this.removeItem.bind(this, item)}>
-					<RemoveIcon />
-				</IconButton>
+				<Grid
+					container
+					direction="row"
+					justify="flex-start"
+			  		alignItems="center"
+			  		spacing={3}
+				>
+					<Grid item xs={3}>
+						<Input
+							{...this.props}
+							path={this.props.path}
+							value={value}
+							label={this.props.label}
+							onChange={this.updateItem.bind(this, item)}
+							onKeyDown={this.addItemOnEnter}
+							autoComplete="off"
+						/>
+					</Grid>
+					<Grid item xs={3}>
+						<IconButton onClick={this.removeItem.bind(this, item)}>
+							<RemoveIcon />
+						</IconButton>
+					</Grid>
+				</Grid>
 			</FormField>
 		);
 	},

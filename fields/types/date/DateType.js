@@ -13,11 +13,13 @@ function date (list, path, options) {
 	this._nativeType = Date;
 	this._underscoreMethods = ['format', 'moment', 'parse'];
 	this._fixedSize = 'medium';
-	this._properties = ['formatString', 'yearRange', 'isUTC', 'inputFormat', 'maxDate', 'minDate', 'range'];
-	this.parseFormatString = options.inputFormat || 'YYYY-MM-DD';
-	this.formatString = (options.format === false) ? false : (options.format || 'Do MMM YYYY');
+	// maxToday = selected date must be less than the current date
+	// dateFormat = full date format with year, month and day
+	//
+	this._properties = this.getCommonDateOptions();
+	this.parseFormatString = options.dateFormat || 'YYYY-MM-DD';
+	this.formatString = (options.format === false) ? false : (options.format || 'YYYY-MM-DD');
 
-	this.yearRange = options.yearRange;
 	this.isUTC = options.utc || false;
 
 	// representive the placeholder elements
@@ -39,6 +41,8 @@ function date (list, path, options) {
 		throw new Error('FieldType.Date: options.format must be a string.');
 	}
 	date.super_.call(this, list, path, options);
+	
+	this.setCommonDateOptions();
 }
 date.properName = 'Date';
 util.inherits(date, FieldType);

@@ -16,7 +16,7 @@ function daterange (list, path, options) {
 	};
 	this._underscoreMethods = ['format', 'moment', 'parse'];
 	this._fixedSize = 'medium';
-	this._properties = ['formatString', 'yearRange', 'isUTC', 'inputFormat', 'maxDate', 'minDate'];
+	this._properties = this.getCommonDateOptions();
 	this.parseFormatString = options.inputFormat || 'YYYY-MM-DD';
 	this.formatString = (options.format === false) ? false : (options.format || 'Do MMM YYYY');
 
@@ -42,6 +42,7 @@ function daterange (list, path, options) {
 		throw new Error('FieldType.DateRange: options.format must be a string.');
 	}
 	daterange.super_.call(this, list, path, options);
+	this.setCommonDateOptions();
 }
 daterange.properName = 'DateRange';
 util.inherits(daterange, FieldType);

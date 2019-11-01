@@ -14,7 +14,7 @@ function datearray (list, path, options) {
 	this._nativeType = [Date];
 	this._defaultSize = 'medium';
 	this._underscoreMethods = ['format'];
-	this._properties = ['formatString', 'maxDate', 'minDate', 'range'];
+	this._properties = this.getCommonDateOptions();
 	this.parseFormatString = options.parseFormat || 'YYYY-MM-DD';
 	this.formatString = (options.format === false) ? false : (options.format || 'Do MMM YYYY');
 
@@ -30,6 +30,8 @@ function datearray (list, path, options) {
 	}
 	this.separator = options.separator || ' | ';
 	datearray.super_.call(this, list, path, options);
+	
+	this.setCommonDateOptions();
 }
 datearray.properName = 'DateArray';
 util.inherits(datearray, FieldType);

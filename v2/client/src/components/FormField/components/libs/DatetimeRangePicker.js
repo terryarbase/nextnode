@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import Datetime from 'react-datetime';
+import DateTime from "react-datetime";
 
 class DatetimeRangePicker extends Component {
   constructor(props) {
@@ -179,13 +179,13 @@ class DatetimeRangePicker extends Component {
         className={this.props.className}
         onFocus={this.onFocus.bind(this)}
         onBlur={this.onBlur.bind(this)}>
-        <Datetime
+        <DateTime
           {...startProps}
           isValidDate={this.props.isValidStartDate}
           onChange={this.onStartDateChange.bind(this)}
           renderDay={this.renderDay.bind(this)} />
 
-        <Datetime
+        <DateTime
           {...endProps}
           isValidDate={this.isValidEndDate.bind(this)}
           onChange={this.onEndDateChange.bind(this)}

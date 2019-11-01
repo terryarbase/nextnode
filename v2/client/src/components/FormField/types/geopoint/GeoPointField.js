@@ -2,8 +2,12 @@
 import Field from '../Field';
 import React from 'react';
 import {
-	FormInput,
 	Grid,
+} from '@material-ui/core';
+
+import {
+	FormInput,
+	// Grid,
 } from '../../elemental';
 
 // locales
@@ -47,28 +51,34 @@ export default Field.create({
 	renderField () {
 		const { value = [], path } = this.props;
 		return (
-			<Grid.Row xsmall="one-half" gutter={10}>
-				<Grid.Col>
+			<Grid
+				container
+				direction="row"
+				justify="flex-start"
+		  		alignItems="center"
+		  		spacing={3}
+			>
+				<Grid item xs={3}>
 					<FormInput
 						autoComplete="off"
+						size="full"
 						name={this.getInputName(path + '[1]')}
 						onChange={this.handleLat}
 						placeholder={i18n.t('list.latitude')}
-						ref="lat"
 						value={value[1]}
 					/>
-				</Grid.Col>
-				<Grid.Col width="one-half">
+				</Grid>
+				<Grid item xs={3}>
 					<FormInput
 						autoComplete="off"
 						name={this.getInputName(path + '[0]')}
 						onChange={this.handleLong}
+						size="full"
 						placeholder={i18n.t('list.longitude')}
-						ref="lng"
 						value={value[0]}
 					/>
-				</Grid.Col>
-			</Grid.Row>
+				</Grid>
+			</Grid>
 		);
 	},
 

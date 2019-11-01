@@ -12,10 +12,21 @@ var parseFormats = ['YYYY-MM-DD', 'YYYY-MM-DD h:m:s a', 'YYYY-MM-DD h:m a', 'YYY
  * @api public
  */
 function datetime (list, path, options) {
+	const {
+		inputDateFormat='YYYY-MM-DD',
+		inputTimeFormat='HH:mm:ss',
+		dateFormat='YYYY-MM-DD',
+		timeFormat='HH:mm:ss',
+		formatString,
+	} = options;
 	this._nativeType = Date;
 	this._underscoreMethods = ['format', 'moment', 'parse'];
 	this._fixedSize = 'full';
-	this._properties = ['formatString', 'isUTC', 'maxDate', 'minDate', 'range'];
+	this._properties = [
+		...this.getCommonDateOptions(),
+		'formatString',
+		'timeFormat',
+	];
 	this.typeDescription = 'date and time';
 	this.parseFormatString = options.parseFormat || parseFormats;
 	this.formatString = (options.format === false) ? false : (options.format || 'YYYY-MM-DD h:mm:ss a');
@@ -29,7 +40,13 @@ function datetime (list, path, options) {
 	if (this.formatString && typeof this.formatString !== 'string') {
 		throw new Error('FieldType.DateTime: options.format must be a string.');
 	}
-	datetime.super_.call(this, list, path, options);
+	const commonOptions = {
+		...options,
+		formatString: 'YYYY-MM-DD HH:mm:ss',
+		timeFormat: 'HH:mm:ss',
+	}
+	datetime.super_.call(this, list, path, commonOptions);
+	this.setCommonDateOptions();
 	this.paths = {
 		date: this.path + '_date',
 		time: this.path + '_time',

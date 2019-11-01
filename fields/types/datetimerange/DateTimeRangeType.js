@@ -11,10 +11,10 @@ var DateRangeType = require('../daterange/DateRangeType');
  */
 function datetimerange (list, path, options) {
 	const {
-		inputDateFormat='DD/MM/YYYY',
-		inputTimeFormat='HH:mm',
-		dateFormat='DD/MM/YYYY',
-		timeFormat='HH:mm',
+		inputDateFormat='YYYY-MM-DD',
+		inputTimeFormat='HH:mm:ss',
+		dateFormat='YYYY-MM-DD',
+		timeFormat='HH:mm:ss',
 		formatString,
 	} = options;
 	this._nativeType = {
@@ -22,8 +22,12 @@ function datetimerange (list, path, options) {
 		endDate: Date,
 	};
 	this._underscoreMethods = ['format', 'moment', 'parse'];
-	this._fixedSize = 'medium';
-	this._properties = ['formatString', 'inputDateFormat', 'inputTimeFormat', 'yearRange', 'isUTC', 'dateFormat', 'timeFormat', 'maxDate', 'minDate'];
+	this._fixedSize = 'full';
+	this._properties = [
+		'formatString',
+		'timeFormat',
+		...this.getCommonDateOptions(),
+	];
 	this.parseFormatString = `${inputDateFormat} ${inputTimeFormat}`;
 	this.formatString = formatString ? formatString : `${dateFormat} ${timeFormat}`;
 
@@ -48,7 +52,13 @@ function datetimerange (list, path, options) {
 	if (this.formatString && typeof this.formatString !== 'string') {
 		throw new Error('FieldType.DateRange: options.format must be a string.');
 	}
-	datetimerange.super_.call(this, list, path, options);
+	const commonOptions = {
+		...options,
+		formatString: 'YYYY-MM-DD HH:mm:ss',
+		timeFormat: 'HH:mm:ss',
+	}
+	datetimerange.super_.call(this, list, path, commonOptions);
+	this.setCommonDateOptions();
 }
 datetimerange.properName = 'DateTimeRange';
 util.inherits(datetimerange, FieldType);

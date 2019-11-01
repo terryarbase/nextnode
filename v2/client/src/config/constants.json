@@ -18,6 +18,7 @@
   	"refreshToken": "refresh_token" ,
     "uiLanguage": "ui_language",
     "dataLanguage": "data_language",
+    "calendarLang": "ca_language",
     "email": "user_email",
     "forwardUrl": "forward_url"
   },
