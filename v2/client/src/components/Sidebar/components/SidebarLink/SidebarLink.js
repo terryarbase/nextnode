@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import _ from 'lodash';
 import {
   Collapse,
   Divider,
@@ -39,18 +40,22 @@ export default function SidebarLink({
   location,
   isSidebarOpened,
   nested,
+  keyword,
   type,
   setParentIsOpen,
   isActive,
 }) {
   const classes = useStyles();
   // local
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(isSidebarOpened);
   const isLinkActive = isActiveLink(link, location.pathname);
   // console.log(isLinkActive, nested, setParentIsOpen);
   // if (isLinkActive && nested && setParentIsOpen) {
   //   setParentIsOpen(true);
   // }
+  const isParentMatch = !keyword || (
+    keyword && new RegExp(_.toLower(keyword)).test(_.toLower(label))
+  );
   if (type === "title")
     return (
       <Typography
@@ -64,7 +69,7 @@ export default function SidebarLink({
 
   if (type === "divider") return <Divider className={classes.divider} />;
 
-  if (!children)
+  if (!children) {
     return (
       <ListItem
         button
@@ -75,6 +80,7 @@ export default function SidebarLink({
           root: classnames(classes.linkRoot, {
             [classes.linkActive]: isLinkActive && !nested,
             [classes.linkNested]: nested,
+            [classes.misMatchKeyword]: !isParentMatch,
           }),
         }}
         disableRipple
@@ -97,7 +103,14 @@ export default function SidebarLink({
         />
       </ListItem>
     );
+  }
 
+  const isAllSubMisMatch = _.reduce(children, (a, { label }) => {
+    if (a && (!keyword || keyword && new RegExp(_.toLower(keyword)).test(_.toLower(label)))) {
+      return false;
+    }
+    return a;
+  }, true);
   return (
     <>
       <ListItem
@@ -105,6 +118,9 @@ export default function SidebarLink({
         component={link && Link}
         onClick={toggleCollapse}
         className={classes.link}
+        className={
+          !isParentMatch && isAllSubMisMatch ? classes.misMatchKeyword : null
+        }
         to={link}
         disableRipple
       >
@@ -124,11 +140,11 @@ export default function SidebarLink({
           }}
           primary={label}
         />
-        {!isSidebarOpened ? null : (isOpen && isSidebarOpened ? <ExpandLess /> : <ExpandMore />)}
+        {!isSidebarOpened ? null : (isOpen && isSidebarOpened  ? <ExpandLess /> : <ExpandMore />)}
       </ListItem>
       {children && (
         <Collapse
-          in={isOpen && isSidebarOpened}
+          in={(isOpen && isSidebarOpened) || !isAllSubMisMatch || isParentMatch}
           timeout="auto"
           unmountOnExit
           className={classes.nestedList}
@@ -143,6 +159,8 @@ export default function SidebarLink({
                 nested
                 setParentIsOpen={setIsOpen}
                 {...childrenLink}
+                // if the parent item not matched, should be pass keyword to filter later on
+                keyword={!isParentMatch ? keyword : null}
               />
             ))}
           </List>

@@ -8,6 +8,7 @@ function FileChangeMessage ({ style, color, ...props }) {
 	const styles = {
 		marginRight: 10,
 		minWidth: 0,
+		padding: '10px',
 		...style,
 	};
 

@@ -206,6 +206,7 @@ export default {
 		clickToUpload:'点击并上传',
 		suburb:'市',
 		state:'省',
+		searchMenuItem: '搜索菜單關鍵字',
 		postCode:'邮政编码',
 		country:'国家',
 		downloadPicture: '下载图片',

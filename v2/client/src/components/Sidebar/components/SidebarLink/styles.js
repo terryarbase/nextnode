@@ -16,6 +16,9 @@ export default makeStyles(theme => ({
       backgroundColor: "#FFFFFF",
     },
   },
+  misMatchKeyword: {
+    display: 'none',
+  },
   linkIcon: {
     marginRight: theme.spacing(1),
     color: theme.palette.text.secondary + "99",

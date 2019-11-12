@@ -80,14 +80,19 @@ const getFormFieldProps = options => {
   } = options;
 
   const url = `${endpoint}${apiVersionV2}`;
+  const value = currentList.getFieldValue({
+    field,
+    values,
+    currentLang,
+  });
+  if (field.path === 'filetype') {
+    console.log(values);
+  }
   let fieldProps = {
     ...field,
+    ...currentList.bindAttachment({ values, value }),
     currentList,
-    value: currentList.getFieldValue({
-      field,
-      values,
-      currentLang,
-    }),
+    value,
     requestHeader,
     restrictDelegated: field.restrictDelegated,
     values,
@@ -208,7 +213,7 @@ const FormElemental = props => {
   };
 
   // console.log(elements, fields);
-  elements = elements.slice(0, 28);
+  elements = elements.slice(0, 29);
   // create all of elements from uiElements
   const fieldDoms = _.reduce(elements, (accum, element, index) => {
     const { field, type, content } = element;

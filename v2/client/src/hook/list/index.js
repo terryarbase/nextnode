@@ -113,12 +113,14 @@ const useFormValues = (list, initial) => {
 	// stateful content
 	const [values, setValues] = useState(initialValues);
 	// when the values changed
-	const handleChanged = ({ path, value }) => {
+	const handleChanged = ({ path, value, attachment }) => {
+			// console.log('>>>>>> ', path, value, attachment);
 		// grab the values with the multilingual factor
 		setValues(list.getProperlyChangedValue({
 			currentLang,
 			path,
 			value,
+			attachment,
 			currentValue: values,
 		}));
 	}

@@ -99,7 +99,7 @@ const ListField = props => {
 	};
 	const items = value.map((v, index) => {
 		const { id, _isNew } = v;
-		const name = !_isNew && _.get(path, `${index}.id`);
+		const name = !_isNew && `${path}[${index}][id]`;
 		const onRemove = e => removeItem(index);
 		
 		return (
@@ -107,11 +107,11 @@ const ListField = props => {
 				<Grid
 					container
 					direction="row"
-					justify="flex-start"
+					justify="center"
 			  		alignItems="center"
 			  		spacing={3}
 				>
-					<Grid item xs={10}>
+					<Grid container item spacing={3} xs={10}>
 						{
 							name && <input type="hidden" name={name} value={id} />
 						}

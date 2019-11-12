@@ -252,6 +252,7 @@ export default {
 		resetTo:'重置更改的內容至',
 		deleteAskMsg:'你確定要刪除{{num}}個已選的內容',
 		deleteAskTitle: '刪除内容',
+		searchMenuItem: '搜尋選單關鍵字',
 		cencelAskMsg:'你確定要取消',
 		cannotUndo:'這不能被撤消更改',
 		copy: '複製{{target}}',

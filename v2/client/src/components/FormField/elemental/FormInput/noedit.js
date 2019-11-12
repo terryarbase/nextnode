@@ -76,7 +76,6 @@ const classes = {
 		display: 'inline-block',
 		height: theme.input.height,
 		wordWrap: 'break-word',
-		width: '100%',
 		lineHeight: theme.input.lineHeight,
 		padding: `0 ${theme.input.paddingHorizontal}`,
 		transition: 'border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s',

@@ -13,6 +13,7 @@ import useStyles from "./styles";
 
 // components
 import SidebarLink from "./components/SidebarLink/SidebarLink";
+import SearchBox from "./../Shared/SearchBox";
 // import Dot from "./components/Dot";
 
 // context
@@ -47,6 +48,7 @@ const SidebarItems = ({
   menuSection,
   location,
   isSidebarOpened,
+  keyword,
 }) => {
   const items = menuSection.map(s => {
     let {
@@ -64,6 +66,7 @@ const SidebarItems = ({
         id: key,
         label: translateListName(key),
         link,
+        keyword,
         icon: (
           <MaterialIcons>
             {!icon ? 'tab' : icon}
@@ -75,6 +78,7 @@ const SidebarItems = ({
       <SidebarLink
         id={s.key}
         key={s.key}
+        keyword={keyword}
         label={translateSection(s.key)}
         location={location}
         isSidebarOpened={isSidebarOpened}
@@ -105,7 +109,7 @@ function Sidebar(props) {
   const classes = useStyles();
   const theme = useTheme();
   // global
-  const { isSidebarOpened } = useLayoutState();
+  // const { isSidebarOpened } = useLayoutState();
   const layoutDispatch = useLayoutDispatch();
   const {
     info: {
@@ -114,9 +118,11 @@ function Sidebar(props) {
       },
     },
   } = useUserState();
+  const isSidebarOpened = true; // always open
   const menuSection = _.get(nav, 'sections', []);
   // local
   const [isPermanent, setPermanent] = useState(true);
+  const [keyword, setKeyword] = useState('');
 
   useEffect(function() {
     window.addEventListener("resize", handleWindowWidthChange);
@@ -152,13 +158,17 @@ function Sidebar(props) {
           </MaterialIcons>
         </IconButton>
       </div>
-      <List className={classes.sidebarList}>
-        <SidebarItems
-          isSidebarOpened={isSidebarOpened}
-          menuSection={menuSection}
-          {...props}
-        />
-      </List>
+      <div>
+        <SearchBox placeholder={i18n.t('list.searchMenuItem')} onChange={setKeyword} />
+        <List className={classes.sidebarList}>
+          <SidebarItems
+            isSidebarOpened={isSidebarOpened}
+            menuSection={menuSection}
+            keyword={keyword}
+            {...props}
+          />
+        </List>
+      </div>
     </Drawer>
   );
         

@@ -6,12 +6,21 @@ TODO:
 import PropTypes from 'prop-types';
 import Field from '../Field';
 import React from 'react';
+import _ from 'lodash';
 import {
-	Button,
+	// Button,
 	FormField,
 	FormInput,
-	FormNote,
+	// FormNote,
 } from '../../elemental';
+import {
+	Fab,
+} from '@material-ui/core';
+import {
+	Attachment as AttachmentIcon,
+	Delete as DeleteIcon,
+	ClearAll as ClearAllIcon,
+} from '@material-ui/icons';
 import FileChangeMessage from '../../components/FileChangeMessage';
 import HiddenFileInput from '../../components/HiddenFileInput';
 import ImageThumbnail from '../../components/ImageThumbnail';
@@ -25,7 +34,7 @@ const buildInitialState = (props, forceInit) => ({
 	action: props.value === 'reset' ? props.value : null,
 	removeExisting: false,
 	uploadFieldPath: `File-${props.path}-${++uploadInc}`,
-	userSelectedFile: null,
+	// userSelectedFile: null,
 		// ((typeof props.value === 'object') ? null : props.value),
 		// prevent update model with uploaded object info 
 });
@@ -37,15 +46,15 @@ export default Field.create({
 		label: PropTypes.string,
 		note: PropTypes.string,
 		path: PropTypes.string.isRequired,
-		value: PropTypes.shape({
-			filename: PropTypes.string,
-			// TODO: these are present but not used in the UI,
-			//       should we start using them?
-			// filetype: PropTypes.string,
-			// originalname: PropTypes.string,
-			// path: PropTypes.string,
-			// size: PropTypes.number,
-		}),
+		// value: PropTypes.shape({
+		// 	// filename: PropTypes.string,
+		// 	// TODO: these are present but not used in the UI,
+		// 	//       should we start using them?
+		// 	// filetype: PropTypes.string,
+		// 	// originalname: PropTypes.string,
+		// 	// path: PropTypes.string,
+		// 	// size: PropTypes.number,
+		// }),
 	},
 	statics: {
 		type: 'File',
@@ -61,12 +70,12 @@ export default Field.create({
 		// Show the new filename when it's finished uploading
 		// console.log('old: ', this.props.value);
 		// console.log('new: ', nextProps.value);
-		if ((this.props.value && !nextProps.value) || 
-			this.props.value.filename !== nextProps.value.filename ||
-			this.props.value.name !== nextProps.value.name) {
-			const state = buildInitialState(nextProps);
-			this.setState(state);
-		}
+		// if ((this.props.value && !nextProps.value) || 
+		// 	this.props.value.filename !== nextProps.value.filename ||
+		// 	this.props.value.name !== nextProps.value.name) {
+		// 	const state = buildInitialState(nextProps);
+		// 	this.setState(state);
+		// }
 
 		// if ((this.props.value && !nextProps.value)) {
 		// 	this.setState(buildInitialState(nextProps));
@@ -82,7 +91,7 @@ export default Field.create({
 	// ==============================
 
 	hasFile () {
-		return this.hasExisting() || !!this.state.userSelectedFile;
+		return this.hasExisting() || !!this.props.userSelectedFile;
 	},
 	hasExisting () {
 		// console.log('hasFile ', this.props.value);
@@ -90,8 +99,8 @@ export default Field.create({
 	},
 	getFilename () {
 		// console.log(this.state.userSelectedFile);
-		return this.state.userSelectedFile
-			? this.state.userSelectedFile.name
+		return this.props.userSelectedFile
+			? this.props.userSelectedFile.name
 			: this.props.value.filename;
 	},
 
@@ -104,19 +113,38 @@ export default Field.create({
 	},
 	handleFileChange (event) {
 		const userSelectedFile = event.target.files[0];
-		this.setState({
-			userSelectedFile: userSelectedFile,
-		});
-		// console.log(userSelectedFile ? `upload:${this.state.uploadFieldPath}` : null);
-		this.props.onChange({
-			path: this.props.path,
-			value: userSelectedFile ? `upload:${this.state.uploadFieldPath}` : null,
-		});
+		// this.setState({
+		// 	userSelectedFile,
+		// });
+		// let payload = {
+		// 	path: this.props.path,
+		// 	value: null,
+		// 	attachment: {
+		// 		[uploadFieldPath]: null,
+		// 	},
+		// };
+		// console.log(uploadFieldPath);
+		if (!!userSelectedFile) {
+			const {
+				uploadFieldPath,
+			} = this.state;
+			const payload = {
+				path: this.props.path,
+				value: `upload:${uploadFieldPath}`,
+				attachment: {
+					[uploadFieldPath]: userSelectedFile,
+				},
+			};
+			this.props.onChange(payload);
+		}
 	},
 	handleRemove (e) {
 		var state = {};
 		let action = '';
-		if (this.state.userSelectedFile) {
+		const {
+			uploadFieldPath,
+		} = this.state;
+		if (this.props.userSelectedFile) {
 			state = buildInitialState(this.props, true);
 		} else if (this.hasExisting()) {
 			state.removeExisting = true;
@@ -140,14 +168,24 @@ export default Field.create({
 		this.props.onChange({
 			path: this.props.path,
 			value: action,
+			attachment: {
+				// remove the target file blob
+				[uploadFieldPath]: undefined,
+			},
 		});
 	},
 	undoRemove () {
 		const rollbackState = buildInitialState(this.props);
+		const {
+			userSelectedFile,
+			uploadFieldPath,
+			path,
+			onChange,
+		} = this.props;
 		this.setState(rollbackState);
-		this.props.onChange({
-			path: this.props.path,
-			value: rollbackState.userSelectedFile ? `upload:${rollbackState.uploadFieldPath}` : null,
+		onChange({
+			path,
+			value: userSelectedFile ? `upload:${uploadFieldPath}` : null,
 		});
 	},
 
@@ -157,64 +195,64 @@ export default Field.create({
 
 	renderFileNameAndChangeMessage () {
 		const href = this.props.value ? this.props.value.url : undefined;
-		return (
-			<div>
-				{(this.hasFile() && !this.state.removeExisting) ? (
-					<FileChangeMessage href={href} target="_blank">
-						{this.getFilename()}
-					</FileChangeMessage>
-				) : null}
-				{this.renderChangeMessage()}
-			</div>
+		return this.hasFile() && !this.state.removeExisting && ( 
+			<FileChangeMessage href={href} target="_blank">
+				{this.getFilename()}
+			</FileChangeMessage>
 		);
 	},
-	renderChangeMessage () {
-		if (this.state.userSelectedFile) {
-			return (
-				<FileChangeMessage color="success">
-					{i18n.t('list.saveToUpload')}
-				</FileChangeMessage>
-			);
-		} else if (this.state.removeExisting) {
-			return (
-				<FileChangeMessage color="danger">
-					{
-						this.props.autoCleanup ? 
-						`${i18n.t('list.deleteFile')} - ${i18n.t('list.saveToConfirm')}` : 
-						`${i18n.t('list.removeFile')} - ${i18n.t('list.saveToConfirm')}`
-					}
-				</FileChangeMessage>
-			);
-		} else {
-			return null;
-		}
-	},
+	// renderChangeMessage () {
+	// 	if (this.props.userSelectedFile) {
+	// 		return (
+	// 			<FileChangeMessage color="success">
+	// 				{i18n.t('list.saveToUpload')}
+	// 			</FileChangeMessage>
+	// 		);
+	// 	} else if (this.state.removeExisting) {
+	// 		return (
+	// 			<FileChangeMessage color="danger">
+	// 				{
+	// 					this.props.autoCleanup ? 
+	// 					`${i18n.t('list.deleteFile')} - ${i18n.t('list.saveToConfirm')}` : 
+	// 					`${i18n.t('list.removeFile')} - ${i18n.t('list.saveToConfirm')}`
+	// 				}
+	// 			</FileChangeMessage>
+	// 		);
+	// 	} else {
+	// 		return null;
+	// 	}
+	// },
 	renderClearButton () {
 		if (this.state.removeExisting) {
 			return (
-				<Button variant="link" onClick={this.undoRemove}>
+				<Fab color="secondary" variant="extended"
+					aria-label={i18n.t('list.undoRemove')}
+					onClick={this.undoRemove}
+				>
+					<DeleteIcon />
 					{i18n.t('list.undoRemove')}
-				</Button>
+				</Fab>
 			);
 		} else {
 			var clearText;
-			if (this.state.userSelectedFile) {
+			if (this.props.userSelectedFile) {
 				clearText = i18n.t('list.cancelUpload');
 			} else {
 				clearText = (this.props.autoCleanup ? i18n.t('list.deleteFile') : i18n.t('list.removeFile'));
 			}
 			return (
-				<Button variant="link" color="cancel" onClick={this.handleRemove}>
+				<Fab color="secondary" variant="extended" aria-label={clearText} onClick={this.handleRemove}>
+					<ClearAllIcon />
 					{clearText}
-				</Button>
+				</Fab>
 			);
 		}
 	},
 	renderActionInput () {
 		// If the user has selected a file for uploading, we need to point at
 		// the upload field. If the file is being deleted, we submit that.
-		if (this.state.userSelectedFile || this.state.action) {
-			const value = this.state.userSelectedFile
+		if (this.props.userSelectedFile || this.state.action) {
+			const value = this.props.userSelectedFile
 				? `upload:${this.state.uploadFieldPath}`
 				: (this.state.action === 'delete' || this.state.action === 'reset' ? 'remove' : '');
 			return (
@@ -235,12 +273,14 @@ export default Field.create({
 			"image/jpg",
 			"image/gif",
 		];
-		for(var i = 0; i < imageMimeType.length; i++){
-			if(this.props.value && this.props.value.mimetype === imageMimeType[i]){
-				return true;
-			}
-		}
-		return false;
+		const mimeType = _.get(this, 'props.value.mimetype', '');
+		return _.includes(imageMimeType, mimeType);
+		// for(var i = 0; i < imageMimeType.length; i++){
+		// 	if(this.props.value && this.props.value.mimetype === imageMimeType[i]){
+		// 		return true;
+		// 	}
+		// }
+		// return false;
 	},
 	renderImagePreview () {
 		const { value: { publicPath, filename, url } } = this.props;
@@ -258,42 +298,48 @@ export default Field.create({
 		);
 	},
 	renderUI () {
-		const { note, path, required } = this.props;
+		const { note, path, required, userSelectedFile } = this.props;
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
+		const text = this.hasFile() ? i18n.t('list.change') : i18n.t('list.upload');
 		const buttons = (
-			<div style={this.hasFile() ? { marginTop: '1em' } : null}>
-				<Button onClick={this.triggerFileBrowser}>
-					{this.hasFile() ? i18n.t('list.change') : i18n.t('list.upload')}
-				</Button>
+			<React.Fragment>
+				<span style={{marginRight: '10px'}}>
+					<Fab
+						variant="extended"
+						onClick={this.triggerFileBrowser}
+						color="primary"
+						aria-label={text}
+					>
+				        <AttachmentIcon />
+				        {text}
+				    </Fab>
+			    </span>
 				{this.hasFile() && this.renderClearButton()}
-			</div>
+			</React.Fragment>
 		);
 		return (
-			<div data-field-name={path} data-field-type="file">
-				<FormField label={label} htmlFor={path}>
-					{this.shouldRenderField() ? (
-						<div>
-							{this.hasFile() && this.isImage() && this.renderImagePreview()}
-							{this.hasFile() && this.renderFileNameAndChangeMessage()}
-							{buttons}
-							<HiddenFileInput
-								key={this.state.uploadFieldPath}
-								name={this.state.uploadFieldPath}
-								onChange={this.handleFileChange}
-								ref="fileInput"
-							/>
-							{this.renderActionInput()}
-						</div>
-					) : (
-						<div>
-							{this.hasFile()
-								? this.renderFileNameAndChangeMessage()
-								: <FormInput noedit>{i18n.t('list.noFile')}</FormInput>}
-						</div>
-					)}
-					{!!note && <FormNote html={note} />}
-				</FormField>
-			</div>
+			<FormField label={label} htmlFor={path} note={note}>
+				{this.shouldRenderField() ? (
+					<React.Fragment>
+						{this.hasFile() && this.isImage() && this.renderImagePreview()}
+						{this.hasFile() && this.renderFileNameAndChangeMessage()}
+						{buttons}
+						<HiddenFileInput
+							key={this.state.uploadFieldPath}
+							name={this.state.uploadFieldPath}
+							onChange={this.handleFileChange}
+							ref="fileInput"
+						/>
+						{this.renderActionInput()}
+					</React.Fragment>
+				) : (
+					<React.Fragment>
+						{this.hasFile()
+							? this.renderFileNameAndChangeMessage()
+							: <FormInput noedit>{i18n.t('list.noFile')}</FormInput>}
+					</React.Fragment>
+				)}
+			</FormField>
 		);
 	},
 

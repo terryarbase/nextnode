@@ -145,6 +145,7 @@ export default {
 		selectAll: 'Select All',
 		descending: 'Sorted Descending',
 		ascending: 'Sorted Ascending',
+		searchMenuItem: 'Search for Menu Keyword',
 		'day-picker-weekshort': ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
 		'day-picker-weeklong': ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
 		'day-picker-labels': {

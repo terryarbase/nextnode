@@ -184,6 +184,10 @@ var EditForm = React.createClass({
 			loading: true,
 		});
 
+		// File-full-1002: (binary)
+		// full: {"zhtw":"upload:File-full-1002","zhcn":"upload:File-full-1003"}
+		// File-full-1003: (binary)
+
 		list.updateItem(data.id, formData, (err, data) => {
 			smoothScrollTop();
 			if (err) {

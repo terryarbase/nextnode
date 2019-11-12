@@ -78,47 +78,22 @@ const ListField = props => {
 		};
 		onChange({ path, value: item });
 	};
-	const { id, _isNew } = value;
-	const name = !_isNew && id;
-		
-	return (
-		<FormField key={id}>
-			<Grid
-				container
-				direction="row"
-				justify="flex-start"
-		  		alignItems="center"
-		  		spacing={3}
-			>
-				<Grid item xs={11}>
-					{
-						name && <input type="hidden" name={name} value={id} />
-					}
-					<FormElemental
-						{...props}
-						onChange={handleFieldChanged}
-			        	form={value}
-			        	fields={fields}
-			        	inline
-			        />
-				</Grid>
-			</Grid>
-		</FormField>
-	);
 
 	return (
 		<Grid
 			container
 			direction="column"
-			justify="flex-start"
-	  		alignItems="flex-start"
+			justify="center"
+	  		alignItems="center"
 	  		spacing={3}
 		>
-			{
-				<Grid item container>
-					{item}
-				</Grid>
-			}
+			<FormElemental
+				{...props}
+				onChange={handleFieldChanged}
+	        	form={value}
+	        	fields={fields}
+	        	inline
+	        />
 		</Grid>
 	);
 }

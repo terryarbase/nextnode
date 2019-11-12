@@ -88,16 +88,47 @@ class List {
   ** Terry Chan
   ** 29/10/2019
   */
-  getProperlyChangedValue ({ currentValue, path, value, currentLang }) {
+  // special for handling attachment upload
+  bindAttachment({ values, value }) {
+    // console.log(value, attachment);
+    if (typeof value === 'string') {
+      const blobs = (value || '').split('upload:');
+      // split upload:File-filetype-1001 into File-filetype-1001
+      if (blobs.length >= 2) {
+        // console.log(blobs, values);
+        const blobFieldName = blobs[1];
+        return {
+          userSelectedFile: _.get(values, blobFieldName),
+        }
+      }
+    }
+
+    return {};
+  }
+  // unbind the attachment blob from current values
+  rebindAttachment({ values, attachment }) {
+    if (attachment) {
+      _.forOwn(attachment, (blob, blobField) => {
+        if (!blob) {
+          _.unset(values, blobField);
+        } else {
+          _.set(values, blobField, blob);
+        }
+      });
+    }
+    return values;
+  }
+  getProperlyChangedValue ({ currentValue, path, value, currentLang, attachment={} }) {
     const fields = this.fields;
     let values = { ...currentValue };
     const shouldMultilingual = this.isLocale && _.get(fields, `${path}.multilingual`);
+    // const attachmentBind = this.bindAttachment({ currentValue, value, attachment });
     if (shouldMultilingual) {
       values = {
         ...values,
         [path]: {
           ...values[path],
-          [currentLang]: value,
+          [currentLang]: value, 
         },
       };
     } else {
@@ -106,7 +137,7 @@ class List {
         [path]: value,
       };
     }
-    return values;
+    return this.rebindAttachment({ attachment, values });
   };
 
   /*

@@ -113,7 +113,7 @@ export default Field.create({
 		  		alignItems="center"
 		  		spacing={3}
 			>
-				<Grid item xs={3}>
+				<Grid item xs={5}>
 					<DateInput
 						{...this.props}
 						fullFormat={dateFormat}
@@ -124,7 +124,7 @@ export default Field.create({
 						value={startDate}
 					/>
 				</Grid>
-				<Grid item xs={3}>
+				<Grid item xs={5}>
 					<DateInput
 						{...this.props}
 						fullFormat={dateFormat}
@@ -136,7 +136,7 @@ export default Field.create({
 					/>
 				</Grid>
 				{
-					!!showToday && <Grid item xs={3}>
+					!!showToday && <Grid item xs={2}>
 						<Button variant="contained" color="primary" onClick={this.setToday}>{i18n.t('list.today')}</Button>
 					</Grid>
 				}
