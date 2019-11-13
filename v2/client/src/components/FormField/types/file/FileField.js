@@ -185,7 +185,11 @@ export default Field.create({
 		this.setState(rollbackState);
 		onChange({
 			path,
-			value: userSelectedFile ? `upload:${uploadFieldPath}` : null,
+			value: `upload:${uploadFieldPath}`,
+			attachment: {
+				// remove the target file blob
+				[uploadFieldPath]: userSelectedFile,
+			},
 		});
 	},
 

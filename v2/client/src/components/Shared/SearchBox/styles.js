@@ -2,16 +2,18 @@ import { makeStyles } from "@material-ui/styles";
 
 export default makeStyles(theme => ({
   root: {
-    padding: '2px 4px',
+    // padding: '2px 4px',
     display: 'flex',
     alignItems: 'center',
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 10,
+    // marginLeft: 10,
+    // marginRight: 10,
   },
   input: {
-    marginLeft: theme.spacing(1),
+    padding: 10,
+    paddingTop: 20,
+    paddingBottom: 7,
     flex: 1,
+    width: '100%',
   },
   iconButton: {
     margin: 10,

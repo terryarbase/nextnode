@@ -3,6 +3,7 @@ export default {
 		greeding: 'Welcome You',
 		dashboard: 'Dashboard',
 		changeUILanguageLabel: 'Switch the screen language',
+		changeContentLanguageLabel: 'Content Version',
 		error404: "Not Found",
 	},
 	paging: {

@@ -38,6 +38,10 @@ import useStyles from "./styles";
 // locales
 import i18n from "./../../i18n";
 
+import {
+  listPrefix,
+} from "./../../config/constants.json";
+
 // utils
 import {
   translateListName,
@@ -73,6 +77,25 @@ const ContentListTable = props => {
   // const [orderBy, setOrderBy] = useState(
   //   _.get(props, 'currentList.sort.paths[0].path')
   // );
+  const changeCreateBox = () => {
+    const {
+      match: {
+        params: {
+          list: listRoute,
+          action,
+        },
+      },
+      history,
+    } = props;
+    if (!!action) {
+      // remove list action to replace into the url
+      history.replace(`${listPrefix}/${listRoute}`);
+    }
+    // else if (!startCreate) {
+    //   history.replace(`${listPrefix}/${listRoute}/create`);
+    // }
+    openCreateBox();
+  }
 
   const classes = useStyles();
 
@@ -225,7 +248,7 @@ const ContentListTable = props => {
       initialMessage = null;
     }
   }
-  
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -243,7 +266,7 @@ const ContentListTable = props => {
                 variant="extended"
                 color="primary"
                 className={classes.fabButton}
-                onClick={openCreateBox}
+                onClick={changeCreateBox}
               >
                 <CreateIcon className={classes.extendedIcon} />
                 {i18n.t('list.createANew', { listName: tableLabel })}
@@ -337,7 +360,7 @@ const ContentListTable = props => {
       <CreateForm
         {...props}
         title={listName}
-        handleClose={openCreateBox}
+        handleClose={changeCreateBox}
         open={startCreate}
       />
     </div>

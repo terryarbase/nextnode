@@ -11,40 +11,33 @@ import {
 import useStyles from "./styles";
 
 // components
-import DropdownMenu from "./../Shared/DropdownMenu";
+import DropdownMenu from "./../DropdownMenu";
+import LanguageFlagImg from "./LanguageFlagImg";
 
 // context
 import {
-  useUserState,
   useUserDispatch,
+  useUserState,
   updateProfileLanguage,
-} from "../../store/user/context";
+} from "./../../../store/user/context";
 import {
   useLayoutDispatch,
-} from "../../store/layout/context";
-
-// locales
-import i18n from "../../i18n";
+} from "./../../../store/layout/context";
 
 // utils
 import {
   getCurrentLanguageInfo,
-} from "../../utils/misc";
+} from "../../../utils/misc";
 
-const LanguageFlagImg = ({ info: { icon, label } }) => {
-  const classes = useStyles();
-  return (
-    <img
-      src={`data:image/png;base64,${icon}`}
-      alt={label}
-      className={classes.localizationIconImage}
-    />
-  );
-};
-
-export default function LocalizationSetting(props) {
+export default function LanguageSelection(props) {
   const classes = useStyles();
   // global
+  const {
+    language,
+    title,
+    type,
+  } = props;
+
   const {
     info: {
       nextnode: {
@@ -58,47 +51,42 @@ export default function LocalizationSetting(props) {
   const userDispatch = useUserDispatch();
   const layoutDispatch = useLayoutDispatch();
 
-  const handleChangeLanguage = lang => {
-    if (!profileLoading) {
-      updateProfileLanguage(userDispatch, layoutDispatch, 'language', lang);
-    }
-  }
-
+  const handleChangeLanguage = lang => updateProfileLanguage(userDispatch, layoutDispatch, type, lang);
   // pick the info the chosen UI language, and use the default language if the chosen is not found
   let languageInfo = getCurrentLanguageInfo({
     localization,
     defaultLanguage,
+    language,
   });
 
   if (languageInfo) {
     const info = {
       label: languageInfo.label,
       value: languageInfo.value,
-      title: i18n.t('common.changeUILanguageLabel'),
+      title: title,
       icon: (<LanguageFlagImg info={languageInfo} />),
     };
 
-    const dropdownList = _.keys(localization).map(language => {
+    const dropdownList = _.keys(localization).map(lang => {
       languageInfo = getCurrentLanguageInfo({
-        language,
+        language: lang,
         localization, 
         defaultLanguage,
       });
       const {
         value,
-      } = localization[language];
+      } = localization[lang];
       return (
         <MenuItem
           key={value}
           onClick={e => handleChangeLanguage(value)}
-          className={classes.menuItemIcon}
-          selected={language === i18n.locale}
+          selected={language === lang}
         >
           <ListItemIcon>
             <LanguageFlagImg info={languageInfo} />
           </ListItemIcon>
           <Typography variant="inherit" noWrap>
-            {localization[language].label}
+            {localization[lang].label}
           </Typography>
           <Divider />
         </MenuItem>

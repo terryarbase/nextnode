@@ -14,10 +14,12 @@ import {
   Toolbar,
   DialogContent,
   Button,
+  Fab,
   // Grid,
 } from '@material-ui/core';
 import {
   Close as CloseIcon,
+  Add as AddIcon,
 } from '@material-ui/icons';
 
 // styles
@@ -34,6 +36,13 @@ import {
   useSubmitForm,
 } from './../../hook/list';
 
+// components
+import LanguageSelection from './../../components/Shared/LanguageSelection';
+import LanguageTab from './../../components/Shared/LanguageTab';
+// context
+import {
+  useUserState,
+} from "./../../store/user/context";
 // configs
 // import {
 //   storageName,
@@ -61,10 +70,16 @@ const CreateForm = props => {
       uiElements,
     },
   } = props;
+  // global
+  const {
+    language,
+  } = useUserState();
+
   const classes = useRootStyle();
 
   const elements = _.filter(uiElements, ({ field }) => _.indexOf(initialFields, field) !== -1);
 
+  const createText = i18n.t('list.create');
   return (
     <Dialog
       fullScreen open={open}
@@ -80,13 +95,18 @@ const CreateForm = props => {
           <Typography variant="h6" className={classes.title}>
             {i18n.t('list.createANew', { listName: title })}
           </Typography>
-          <Button autoFocus color="inherit" onClick={handleClose}>
-            {i18n.t('list.create')}
-          </Button>
+          <Fab variant="extended" color="secondary" aria-label={createText}>
+            <AddIcon />
+            {createText}
+          </Fab>
         </Toolbar>
       </AppBar>
       <DialogContent className={classes.contentContainer}>
         <form onSubmit={submitForm}>
+          <LanguageTab
+            title={i18n.t('common.changeContentLanguageLabel')}
+            language={language}
+          />
           <FormElemental
             {...props}
             mode='create'

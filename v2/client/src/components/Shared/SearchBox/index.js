@@ -1,8 +1,12 @@
 import React from 'react';
 import {
-  Paper,
-  InputBase,
-  // Divider,
+  // Paper,
+  // InputBase,
+  FormControl,
+  // InputLabel,
+  Input,
+  InputAdornment,
+
 } from '@material-ui/core';
 import {
   Search as SearchIcon,
@@ -20,15 +24,19 @@ const SearchBox = props => {
 
   const onKeySearch = ({ target: { value } }) => onChange(value);
   return (
-    <Paper className={classes.root}>
-      <SearchIcon className={classes.iconButton} />
-      <InputBase
+    <FormControl className={classes.root}>
+      <Input
         className={classes.input}
-        placeholder={placeholder}
+        id="input-with-icon-adornment"
         onChange={onKeySearch}
-        inputProps={{ 'aria-label': placeholder }}
+        placeholder={placeholder}
+        startAdornment={
+          <InputAdornment position="start">
+            <SearchIcon />
+          </InputAdornment>
+        }
       />
-    </Paper>
+    </FormControl>
   );
 }
 

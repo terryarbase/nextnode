@@ -16,6 +16,14 @@ export default makeStyles(theme => ({
     whiteSpace: "wrap",
     overflowX: 'hidden',
   },
+  listContainer: {
+    position: 'relative',
+    paddingTop: 49,
+  },
+  searchContainer: {
+    postion: 'absolute',
+    top: 0,
+  },
   drawerOpen: {
     width: drawerWidth,
     transition: theme.transitions.create("width", {

@@ -1,6 +1,6 @@
 import boolean from './boolean/BooleanColumn';
 import cloudinaryimage from './cloudinaryimage/CloudinaryImageColumn';
-import cloudinaryimages from './cloudinaryimages/CloudinaryImagesColumn';
+// import cloudinaryimages from './cloudinaryimages/CloudinaryImagesColumn';
 import code from './code/CodeColumn';
 import color from './color/ColorColumn';
 import date from './date/DateColumn';
@@ -57,7 +57,7 @@ export default {
 	key,
 	boolean,
 	cloudinaryimage,
-	cloudinaryimages,
+	// cloudinaryimages,
 	code,
 	color,
 	date,

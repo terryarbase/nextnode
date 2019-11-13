@@ -147,6 +147,8 @@ function Sidebar(props) {
       open={isSidebarOpened}
     >
       <div className={classes.toolbar} />
+    {
+      /*      
       <div className={classes.mobileBackButton}>
         <IconButton onClick={() => toggleSidebar(layoutDispatch)}>
           <MaterialIcons
@@ -157,7 +159,8 @@ function Sidebar(props) {
             ArrowBack
           </MaterialIcons>
         </IconButton>
-      </div>
+      </div>*/
+    }
       <div>
         <SearchBox placeholder={i18n.t('list.searchMenuItem')} onChange={setKeyword} />
         <List className={classes.sidebarList}>

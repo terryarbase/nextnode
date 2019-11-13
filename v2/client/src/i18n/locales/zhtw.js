@@ -3,6 +3,7 @@ export default {
 		greeding: '歡迎您',
 		dashboard: '主控制台',
 		changeUILanguageLabel: '切換屏幕語言',
+		changeContentLanguageLabel: '切換內容語言版本',
 		error404: "找不到網頁",
 	},
 	footer: {

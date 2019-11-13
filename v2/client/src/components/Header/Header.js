@@ -16,7 +16,7 @@ import{
 } from "react-router-dom";
 import classNames from "classnames";
 import {
-  Menu as MenuIcon,
+  // Menu as MenuIcon,
   Grade as DelegatedIcon,
   Person as PersonIcon,
   AccountCircle as AccountIcon,
@@ -31,7 +31,7 @@ import useStyles from "./styles";
 // components
 import { Typography } from "../Wrappers/Wrappers";
 import RoleList from "./RoleList";
-import LocalizationSetting from "./LocalizationSetting";
+import LanguageSelection from './../../components/Shared/LanguageSelection';
 
 import i18n from './../../i18n';
 
@@ -113,34 +113,38 @@ export default function Header(props) {
       <AppBar position="fixed" className={classes.appBar}>
         <LoadingBar {...props} />
         <Toolbar className={classes.toolbar}>
-          <IconButton
-            color="inherit"
-            onClick={() => toggleSidebar(layoutDispatch)}
-            className={classNames(
-              classes.headerMenuButton,
-              classes.headerMenuButtonCollapse,
-            )}
-          >
-            {isSidebarOpened ? (
-              <ArrowBackIcon
-                classes={{
-                  root: classNames(
-                    classes.headerIcon,
-                    classes.headerIconCollapse,
-                  ),
-                }}
-              />
-            ) : (
-              <MenuIcon
-                classes={{
-                  root: classNames(
-                    classes.headerIcon,
-                    classes.headerIconCollapse,
-                  ),
-                }}
-              />
-            )}
-          </IconButton>
+          {
+            /*
+            <IconButton
+              color="inherit"
+              onClick={() => toggleSidebar(layoutDispatch)}
+              className={classNames(
+                classes.headerMenuButton,
+                classes.headerMenuButtonCollapse,
+              )}
+            >
+              {isSidebarOpened ? (
+                <ArrowBackIcon
+                  classes={{
+                    root: classNames(
+                      classes.headerIcon,
+                      classes.headerIconCollapse,
+                    ),
+                  }}
+                />
+              ) : (
+                <MenuIcon
+                  classes={{
+                    root: classNames(
+                      classes.headerIcon,
+                      classes.headerIconCollapse,
+                    ),
+                  }}
+                />
+              )}
+            </IconButton>
+            */
+          }
           <Grid container justify="flex-start" alignItems="center">
             <Grid item>
               <Link to={main} className={classes.logoLink}>
@@ -156,7 +160,11 @@ export default function Header(props) {
             </Grid>
           </Grid>
           <div className={classes.grow} />
-          <LocalizationSetting />
+          <LanguageSelection
+            title={i18n.t('common.changeUILanguageLabel')}
+            language={i18n.locale}
+            type='language'
+          />
           <IconButton
             aria-haspopup="true"
             color="inherit"

@@ -16,7 +16,7 @@ const ICON_MAP = {
 
 function ImageThumbnail ({ children, className, component, mask, ...props }) {
 	const maskUI = mask ? (
-		<div className={css(classes.mask) + ` ${ICON_MAP[mask]}`}>
+		<div key="mask" className={css(classes.mask) + ` ${ICON_MAP[mask]}`}>
 			{mask === 'loading'
 				? <Spinner color="inverted" />
 				: null}

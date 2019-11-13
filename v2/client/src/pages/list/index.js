@@ -1,4 +1,5 @@
 import React from "react";
+// import _ from "lodash";
 import {
 	withRouter,
 	Redirect,
@@ -57,7 +58,6 @@ const ListPage = props => {
 		currentList,
 		isInvalidList,
 	] = useContentList(props);
-
 	// redirect to 404 where the list is incorrect from the <List>
 	if (isInvalidList) {
 		return (<Redirect to={notFoundPrefix} />);
@@ -81,6 +81,8 @@ const ListPage = props => {
 				{...props}
 				loading={loading}
 				info={items}
+				// for cloudinary field use
+				// cloudinary={_.get(nextnode, 'cloudinary')}
 				currentList={currentList}
 			/>
 		</React.Fragment>

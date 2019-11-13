@@ -85,9 +85,6 @@ const getFormFieldProps = options => {
     values,
     currentLang,
   });
-  if (field.path === 'filetype') {
-    console.log(values);
-  }
   let fieldProps = {
     ...field,
     ...currentList.bindAttachment({ values, value }),
@@ -142,38 +139,11 @@ const getFormHeadingProps = ({
 }
 
 const FormElemental = props => {
-  // state
-  // const [currentTarget, onFocus] = useState(null);
-
-  // const statelessUIRef = useRef({});
   const {
     info={},
-    // listsByPath={},
   } = useUserState();
   const currentLang = i18n.locale;
 
-  // const updateStateLessUI = (el, path) => {
-  //   const newStateLessUI = { ...statelessUI };
-  //   newStateLessUI = {
-  //     ...newStateLessUI,
-  //     [path]: {
-  //       ...newStateLessUI[path],
-  //       [currentLang]: el,
-  //     }
-  //   };
-  //   // update the stateless ui
-  //   setStatelessUI(newStateLessUI);
-  // }
-  // // helper checker
-  // const isStateless = ({
-  //   stateless,
-  //   cloneable,
-  //   multilingual,
-  // }) => (stateless || cloneable) && multilingual;
-
-  // const isMultilingalStateLess = ({
-  //   path
-  // }) => _.get(statelessUI, `${path}.${currentLang}`);
   let {
     // Required Fields
     elements=[],
@@ -209,22 +179,13 @@ const FormElemental = props => {
     values: form,
     currentLang,
     mode,
-    cloudinary: _.get(info, 'cloudinary'),
+    cloudinary: _.get(info, 'nextnode.cloudinary'),
   };
 
   // console.log(elements, fields);
-  elements = elements.slice(0, 29);
   // create all of elements from uiElements
   const fieldDoms = _.reduce(elements, (accum, element, index) => {
     const { field, type, content } = element;
-    // if (
-    //   nameField
-    //   && field === nameField.path
-    //   && nameFieldIsFormHeader
-    // ) {
-    //   return el;
-    // // heading type
-    // } else 
     if (type === 'heading') {
       prevHeader = content;
       const heading = React.createElement(FormHeading, getFormHeadingProps({
@@ -264,39 +225,6 @@ const FormElemental = props => {
           onChange,
         });
         ele = (<Component { ...fieldProps } key={key} />);
-        // if (!statelessUIRef.current[path]) {
-        // // console.log(type, fieldProps);
-        //   element = React.createElement(Fields[type], { ...fieldProps });
-        // } else {
-        //   element = React.cloneElement(
-        //     statelessUIRef.current[path],
-        //     {
-        //       ...fieldProps,
-        //     },
-        //   );
-        // }
-        // if (isStateless(f) && isMultilingalStateLess(f)) {
-        //   const {
-        //     cloneable,
-        //     path,
-        //   } = f;
-        //   const current = _.get(statelessUI, `${path}.${currentLang}`);
-        //   if (current) {
-        //     // clone the target stateless element
-        //     if (cloneable) {
-        //       element = React.cloneElement(
-        //         current,
-        //         fieldProps,
-        //       );
-        //     } else {
-        //       // use the current stateless ui element
-        //       element = current || element;
-        //     }
-        //   }
-
-        //   updateStateLessUI();
-
-        // }
       }
       accum = {
         ...accum,
@@ -305,10 +233,6 @@ const FormElemental = props => {
           ele,
         ],
       };
-      // statelessUIRef.current = {
-      //   ...statelessUIRef.current,
-      //   [path]: element,
-      // };
     }
 
     return accum;
