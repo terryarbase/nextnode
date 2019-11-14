@@ -27,18 +27,32 @@ import FilterTool from "./Filter";
 import ColumnTool from "./Column";
 import SearchBar from "./Search";
 import MessageBox from './../../Shared/MessageBox';
+import LanguageSelection from './../../Shared/LanguageSelection';
 
 // hooks,
 import {
   useToggle,
 } from './../../../hook/list';
 
+// context
+import {
+  useUserState,
+} from "./../../../store/user/context";
+
 const NormalToolbar = props => {
+   // global
+  const {
+    language,
+  } = useUserState();
   // const classes = useStyles();
   const {
     tableLabel,
     keyword,
     searchable,
+    onLanguageChanged,
+    currentList: {
+      multilingual,
+    },
   } = props;
 
   return (
@@ -46,6 +60,14 @@ const NormalToolbar = props => {
       {
         !!searchable && <React.Fragment>
           <SearchBar {...props} keyword={keyword} tableLabel={tableLabel} />
+          {
+            !!multilingual && <LanguageSelection
+              title={i18n.t('common.changeContentLanguageLabel')}
+              language={language}
+              inline
+              type='contentLanguage'
+            />
+          }
           <FilterTool {...props} tableLabel={tableLabel} />
         </React.Fragment>
       }

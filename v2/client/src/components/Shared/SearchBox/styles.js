@@ -10,7 +10,7 @@ export default makeStyles(theme => ({
   },
   input: {
     padding: 10,
-    paddingTop: 20,
+    // paddingTop: 20,
     paddingBottom: 7,
     flex: 1,
     width: '100%',

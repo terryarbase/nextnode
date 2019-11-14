@@ -3,7 +3,7 @@ export default {
 		greeding: '欢迎您',
 		dashboard: '主控制台',
 		changeUILanguageLabel: '切换屏幕语言',
-		changeContentLanguageLabel: '切换内容语言版本',
+		changeContentLanguageLabel: '编辑内容语言版本',
 		error404: "找不到网页",
 	},
 	footer: {
@@ -218,6 +218,7 @@ export default {
 		number:'号码',
 		poBoxShop:'邮政信箱/商店',
 		name:'名称',
+		defaultLang: '默认',
 		buildingName:'建筑名称',
 		street1:'街道1',
 		streetAddress1:'街道地址',

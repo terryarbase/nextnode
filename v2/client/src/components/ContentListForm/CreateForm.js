@@ -40,9 +40,9 @@ import {
 import LanguageSelection from './../../components/Shared/LanguageSelection';
 import LanguageTab from './../../components/Shared/LanguageTab';
 // context
-import {
-  useUserState,
-} from "./../../store/user/context";
+// import {
+//   useUserState,
+// } from "./../../store/user/context";
 // configs
 // import {
 //   storageName,
@@ -60,7 +60,14 @@ const Transition = forwardRef(function(props, ref) {
 
 const CreateForm = props => {
   // state
-  const [formValues, whenChanged, submitForm] = useSubmitForm(props.currentList);
+  const [
+    formValues,
+    whenChanged,
+    submitForm,
+    currentLang,
+    whenLanguageChanged,
+  ] = useSubmitForm(props.currentList);
+  // const formRef = createRef();
   const {
     open,
     handleClose,
@@ -68,12 +75,14 @@ const CreateForm = props => {
     currentList: {
       initialFields,
       uiElements,
+      multilingual,
     },
+ 
   } = props;
   // global
-  const {
-    language,
-  } = useUserState();
+  // let {
+  //   language,
+  // } = useUserState();
 
   const classes = useRootStyle();
 
@@ -82,6 +91,8 @@ const CreateForm = props => {
   const createText = i18n.t('list.create');
   return (
     <Dialog
+      disableEscapeKeyDown
+      disableBackdropClick
       fullScreen open={open}
       className={classes.root}
       onClose={handleClose}
@@ -95,23 +106,32 @@ const CreateForm = props => {
           <Typography variant="h6" className={classes.title}>
             {i18n.t('list.createANew', { listName: title })}
           </Typography>
-          <Fab variant="extended" color="secondary" aria-label={createText}>
+          <Fab
+            variant="extended"
+            color="secondary"
+            onClick={submitForm}
+            aria-label={createText}
+          >
             <AddIcon />
             {createText}
           </Fab>
         </Toolbar>
       </AppBar>
       <DialogContent className={classes.contentContainer}>
-        <form onSubmit={submitForm}>
-          <LanguageTab
-            title={i18n.t('common.changeContentLanguageLabel')}
-            language={language}
-          />
+        <form>
+          {
+            !!multilingual && <LanguageTab
+              title={i18n.t('common.changeContentLanguageLabel')}
+              language={currentLang}
+              onChangeLanguage={whenLanguageChanged}
+            />
+          }
           <FormElemental
             {...props}
             mode='create'
             onChange={whenChanged}
             form={formValues}
+            language={currentLang}
             elements={elements}
           />
         </form>

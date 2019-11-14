@@ -211,7 +211,6 @@ const loadList = async(dispatch, layoutDispatch, list) => {
 
   // turn on the global loader
   changeCoreLoading(layoutDispatch, true);
-
   try {
     // get the current query string
     const query = list.buildQueryString();

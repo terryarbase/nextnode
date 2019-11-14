@@ -13,6 +13,7 @@ export default makeStyles(theme => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
+    top: 64,
     whiteSpace: "wrap",
     overflowX: 'hidden',
   },
@@ -26,12 +27,14 @@ export default makeStyles(theme => ({
   },
   drawerOpen: {
     width: drawerWidth,
+    top: 64,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
   drawerClose: {
+    top: 64,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,

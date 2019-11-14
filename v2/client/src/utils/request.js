@@ -67,9 +67,9 @@ const request = ({
     }, body) => {
       // unauth redirect handling
       if (statusCode === 403) {
-        window.console.warn('Redirect to Login.');
+        // window.console.warn('Redirect to Login.');
         // true: force redirect to login with the current url forwarding
-        pretendSignout(history, true);
+        // pretendSignout(history, true);
       } else if (statusCode === 200) {
         // if v2 api will be return the info under data field
         done(body.data || body);

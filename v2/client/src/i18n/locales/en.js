@@ -3,7 +3,7 @@ export default {
 		greeding: 'Welcome You',
 		dashboard: 'Dashboard',
 		changeUILanguageLabel: 'Switch the screen language',
-		changeContentLanguageLabel: 'Content Version',
+		changeContentLanguageLabel: 'Edit Content Version',
 		error404: "Not Found",
 	},
 	paging: {
@@ -73,6 +73,7 @@ export default {
       doNotEndWith: 'do NOT begin with',
       doNotContains: 'do NOT contain',
       '__default__': 'Basic Information',
+      defaultLang: 'Default',
       isExactly: 'is exactly',
       areNotExactly: 'are exactly',
       linkedTo: 'Linked To',

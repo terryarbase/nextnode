@@ -36,6 +36,7 @@ export default function LanguageSelection(props) {
     language,
     title,
     type,
+    inline,
   } = props;
 
   const {
@@ -45,7 +46,7 @@ export default function LanguageSelection(props) {
         defaultLanguage,
       },
     },
-    profileLoading,
+    // profileLoading,
   } = useUserState();
 
   const userDispatch = useUserDispatch();
@@ -97,6 +98,7 @@ export default function LanguageSelection(props) {
       <DropdownMenu
         list={dropdownList} 
         info={info}
+        inline={inline}
         onChanged={handleChangeLanguage}
       />
     );

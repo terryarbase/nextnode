@@ -189,6 +189,7 @@ const userReducer = (state=initialState, action) => {
       return {
         ...state,
         info,
+        defaultLanguage: _.get(info, 'nextnode.defaultLanguage'),
         user: _.get(info, 'nextnode.user'),
         userLoading: false,
         isAuthenticated: true,
@@ -209,14 +210,25 @@ const userReducer = (state=initialState, action) => {
         profileLoading: true,
       };
     case UPDATEPROFILELANG_SUCCESS:
+      const {
+        data,
+        field,
+      } = action;
       // only update the local storage
-      postLoginUserLanguageInfo(action.data);
+      postLoginUserLanguageInfo(data);
+      let store = 'uiLanguage';
+      const target = data[field];
+      if (field === 'contentLanguage') {
+        store = 'language';
+      }
+      // console.log(field, store, target);
       return {
         ...state,
         user: {
           ...state.user,
-          ...action.data,
+          ...data,
         },
+        [store]: target,
         profileLoading: false,
       };
     case UPDATEPROFILELANG_FAILURE: 
@@ -422,6 +434,7 @@ const updateProfileLanguage = async(dispatch, layoutDispatch, field, language) =
     dispatch({
       type: UPDATEPROFILELANG_SUCCESS,
       data: result,
+      field,
     });
 
   } catch (err) {

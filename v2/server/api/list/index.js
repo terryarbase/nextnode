@@ -1,5 +1,5 @@
-// const profile 			= require('./profile');
+const create 			= require('./create');
 
 module.exports = {
-
+	create,
 };

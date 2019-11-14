@@ -20,7 +20,9 @@ const registerListRoutes = ({
 	const v1ServerMiddlewarePath = `${v1ServerPath}/middleware`;
 	const checkPermission = require(`${v1ServerMiddlewarePath}/checkPermission`);
 	const initDataPermission = require(`${v1ServerMiddlewarePath}/initDataPermission`);
-	
+	const {
+		list: listAPI,
+	} = api;
 	// router.all([
 	// 	'/app/v2/content/*'
 	// ], includeList, initDataPermission);
@@ -43,22 +45,22 @@ const registerListRoutes = ({
 		'/app/v2/session/content/:listId',
 		includeList,
 		checkPermission(2),
-		require(`${v1ServerPath}/api/list/create`),
+		(req, res) => listAPI.create({ nextnode, req, res }),
 	);
-	router.put(
-		'/app/v2/session/content/:listId',
-		includeList,
-		checkPermission(2),
-		initDataPermission,
-		require(`${v1ServerPath}/api/list/update`),
-	);
-	router.delete(
-		'/app/v2/session/content/:listId',
-		includeList, 
-		checkPermission(2),
-		initDataPermission,
-		require(`${v1ServerPath}/api/list/delete`),
-	);
+	// router.put(
+	// 	'/app/v2/session/content/:listId',
+	// 	includeList,
+	// 	checkPermission(2),
+	// 	initDataPermission,
+	// 	require(`${v1ServerPath}/api/list/update`),
+	// );
+	// router.delete(
+	// 	'/app/v2/session/content/:listId',
+	// 	includeList, 
+	// 	checkPermission(2),
+	// 	initDataPermission,
+	// 	require(`${v1ServerPath}/api/list/delete`),
+	// );
 };
 
 module.exports = registerListRoutes;

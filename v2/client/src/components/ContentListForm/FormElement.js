@@ -142,7 +142,7 @@ const FormElemental = props => {
   const {
     info={},
   } = useUserState();
-  const currentLang = i18n.locale;
+  const currentLang = props.language;
 
   let {
     // Required Fields

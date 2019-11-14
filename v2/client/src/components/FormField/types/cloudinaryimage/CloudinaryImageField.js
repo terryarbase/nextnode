@@ -77,18 +77,23 @@ export default Field.create({
 	componentWillReceiveProps (nextProps) {
 		// console.log('CloudinaryImageField nextProps:', nextProps);
 	},
-	// componentWillUpdate (nextProps) {
+	componentWillUpdate (nextProps) {
+		const {
+			value,
+		} = this.props;
+		const {
+			value: nextValue,
+		} = nextProps;
 	// 	// Reset the action state when the value changes
 	// 	// TODO: We should add a check for a new item ID in the store
 	// 	// if (this.props.value.public_id !== nextProps.value.public_id) {
-	// 		if ((this.props.value && !nextProps.value) || 
-	// 			(this.props.value && nextProps.value && this.props.value.public_id !== nextProps.value.public_id)) {
-	// 		this.setState({
-	// 			removeExisting: false,
-	// 			userSelectedFile: null,
-	// 		});
-	// 	}
-	// },
+		if ((value && !nextValue) || (
+				_.get(value, 'public_id') !== _.get(nextValue, 'public_id')
+			)) {
+			const state = buildInitialState(nextProps);
+			this.setState(state);
+		}
+	},
 
 	// ==============================
 	// HELPERS
@@ -218,9 +223,10 @@ export default Field.create({
 	handleRemove (e) {
 		var state = {};
 
-		if (this.props.userSelectedFile) {
-			state.userSelectedFile = null;
-		} else if (this.hasExisting()) {
+		// if (this.props.userSelectedFile) {
+		// 	state.userSelectedFile = null;
+		// } else 
+		if (this.hasExisting()) {
 			state.removeExisting = true;
 		}
 

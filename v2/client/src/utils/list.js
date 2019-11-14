@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import listToArray from 'list-to-array';
 import qs from 'query-string';
+import moment from 'moment';
 
 // FieldTypes
 import Fields from '../components/FormField/types/fields';
@@ -170,41 +171,67 @@ class List {
   ** Terry Chan
   ** 12/11/2018
   */
-  getFormData = function({ formData, values }) {
+  setFormData(field, formData, key, value) {
+    const type = _.get(field, 'type');
+    switch (type) {
+      case 'datetime': 
+        const {
+          paths,
+          dateFormat,
+          timeFormat,
+        } = field;
+        const date = moment(value);
+        formData.set(paths.date, date.format(dateFormat));
+        formData.set(paths.time, date.format(timeFormat));
+        break;
+      // case 'name':
+      //   const {
+      //     paths,
+      //   } = field;
+      //   formData.set(paths.first, value.first);
+      //   formData.set(paths.)
+      //   formData.delete(key);
+      //   break;
+      default:
+        formData.set(key, value);
+    }
+  }
+  getFormData(formData, values) {
     const fields = this.fields;
     try {
-      for (const pair of formData.entries()) {
-        const key = pair[0];
+      _.forOwn(values, (value, key) => {
         const shouldMultilingual = this.isLocale && _.get(fields, `${key}.multilingual`);
+        const field = fields[key];
+        const keys = _.keys(value);
         if (shouldMultilingual) {
-          if (typeof values[key] === 'object') {
-            const keys = _.keys(values[key]);
-            if (keys.length) {
-              formData.set(key, JSON.stringify(values[key]));
+          if (typeof value === 'object') {
+            if (_.get(value, 'constructor') === File) {
+              this.setFormData(field, formData, key, value);
+            } else if (keys) {
+              this.setFormData(field, formData, key, JSON.stringify(value));
             }
           }
-        } else if (Array.isArray(values[key])) {
+        } else if (_.isArray(value)) {
           formData.delete(key);
-          formData.set(key, JSON.stringify(values[key]));
-        } else if (typeof values[key] === 'object') {
-          const keys = _.keys(values[key]);
-          if (keys.length) {
+          this.setFormData(field, formData, key, JSON.stringify(value));
+        } else if (typeof value === 'object') {
+          if (_.get(value, 'constructor') === File) {
+            this.setFormData(field, formData, key, value);
+          } else if (keys.length) {
             // delete orginal formdata attr
             formData.delete(key);
+
             // use object declarion instead
-            keys.forEach(function(k) {
-              formData.set(`${key}.${k}`, values[key][k]);
-            });
+            _.forEach(keys, k => this.setFormData(field, formData, `${key}.${k}`, value[k]));
           }
+        } else {
+          this.setFormData(field, formData, key, value);
         }
-      }
+      });
     } catch (err) {
       console.log('Error to parse formdata: ', err);
     }
-    //  finally {
-    //   return formData;
-    // }
-  };
+  }
 
   /*
   ** Reset all of query related fields for this List

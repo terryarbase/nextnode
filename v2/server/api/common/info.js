@@ -36,6 +36,10 @@ class ConfigInfoHandler extends APIInterface{
 		** Localization
 		*/
 		if (this.req.locales && this.req.locales.localization) {
+			// const localization = _.chain(_.get(this, 'req.locales.localization'))
+			// 		.sortBy(l => l.delegated)
+			// 		.keyBy('value')
+			// 		.value();
 			nextnodeData = {
 				...nextnodeData,
 				...(

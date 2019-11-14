@@ -48,6 +48,7 @@ const ListPage = props => {
 	const {
 		listsByPath={},
 	} = useUserState();
+	const user = useUserState();
 	props = {
 		...props,
 		listsByPath, 

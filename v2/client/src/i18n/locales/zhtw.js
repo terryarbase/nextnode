@@ -3,7 +3,7 @@ export default {
 		greeding: '歡迎您',
 		dashboard: '主控制台',
 		changeUILanguageLabel: '切換屏幕語言',
-		changeContentLanguageLabel: '切換內容語言版本',
+		changeContentLanguageLabel: '編輯內容語言版本',
 		error404: "找不到網頁",
 	},
 	footer: {
@@ -192,6 +192,7 @@ export default {
 		'__default__': '基本信息',
 		searchPlaceholder:'{{name}}關鍵字',
 		key:'序號',
+		defaultLang: '預設',
 		keyPlaceholder: '識別文字',
 		text: '內容',
 		atLeast:'最少{{qty}}个{{listName}}',

@@ -20,6 +20,11 @@ import {
   listPrefix,
 } from "./../../../config/constants.json";
 
+// context
+import {
+  useUserState,
+} from "./../../../store/user/context";
+
 // components
 import NextFieldColumns from './../../FormField/types/columns';
 
@@ -44,9 +49,15 @@ const TableCeller = props => {
     currentList,
   } = props;
 
+  let {
+    language: currentLang,
+  } = useUserState();
+
+  currentLang = currentLang || i18n.locale;
+
   const isRestricted = (field, { delegated }) => field && !!(field.restrictDelegated) && delegated;
   
-  const currentLang = i18n.locale;
+  // const currentLang = i18n.locale;
   return (
     <React.Fragment>
       {
@@ -62,6 +73,7 @@ const TableCeller = props => {
           const isMultilingual = field && field.multilingual;
           // special for multilingual
           if (isMultilingual) {
+            console.log('>>>>>>>>> ', currentLang);
             // get the default language if the value of the current lang is undefined
             currentValue = _.get(currentValue, currentLang) || _.get(currentValue, i18n.defaultLocale);
             newItem = {

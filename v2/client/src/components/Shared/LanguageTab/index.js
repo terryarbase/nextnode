@@ -40,19 +40,14 @@ export default function LanguageTab(props) {
   const {
     onChangeLanguage,
     language,
+    title,
   } = props;
-  const handleChange = (event, newValue) => {
-    onChangeLanguage(newValue);
+  const handleChange = (e, lang) => {
+    onChangeLanguage(lang);
   };
 
-  let languageInfo = getCurrentLanguageInfo({
-    localization,
-    defaultLanguage,
-    language,
-  });
-
   const tabList = _.keys(localization).map(lang => {
-    languageInfo = getCurrentLanguageInfo({
+    const info = getCurrentLanguageInfo({
       language: lang,
       localization, 
       defaultLanguage,
@@ -61,22 +56,35 @@ export default function LanguageTab(props) {
       value,
       label,
     } = localization[lang];
+
+    let newLabel = label;
+    if (value === defaultLanguage) {
+      newLabel = `${newLabel} (${i18n.t('list.defaultLang')})`;
+    }
     return (
-      <Tab value={value} label={label} key={value} icon={<LanguageFlagImg info={languageInfo} />} />
+      <Tab value={value} label={newLabel} key={value} icon={<LanguageFlagImg info={info} />} />
     );
   });
 
+  const languageInfo = getCurrentLanguageInfo({
+    localization,
+    defaultLanguage,
+    language,
+  });
+  // console.log(language);
   return (
     <Grid container
       direction="row"
       justify="flex-start"
       alignItems="center"
     >
-      <Grid item>
-        <Typography variant="h5" color="secondary" className={classes.languageTabTitle}>
-          {i18n.t('common.changeContentLanguageLabel')}:
-        </Typography>
-      </Grid>
+      {
+        !!title && <Grid item>
+          <Typography variant="h5" color="secondary" className={classes.languageTabTitle}>
+            {title}:
+          </Typography>
+        </Grid>
+      }
       <Grid item>
         <Tabs
           value={languageInfo.value}

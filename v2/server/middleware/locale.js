@@ -142,7 +142,6 @@ const includeLocale = async function (req, res, next) {
 
     req.appLanguage = await getStaticAppLanguageSectionFile();
     req.menuLanguage = await getStaticNavLanguageSectionFile();
-
     nextnode.set('langf', req.locales.langf);
     nextnode.set('langd', req.locales.langd);
     nextnode.set('language pack', req.locales.localization);

@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
+import grey from '@material-ui/core/colors/grey';
 
 export default makeStyles(theme => ({
   link: {
@@ -32,12 +33,13 @@ export default makeStyles(theme => ({
   },
   linkText: {
     padding: 0,
-    color: theme.palette.text.secondary + "CC",
+    color: grey[800],
     transition: theme.transitions.create(["opacity", "color"]),
     fontSize: 13,
   },
   linkTextActive: {
-    color: theme.palette.text.primary,
+    color: grey[900],
+    fontWeight: 'bolder',
   },
   linkTextHidden: {
     opacity: 0,

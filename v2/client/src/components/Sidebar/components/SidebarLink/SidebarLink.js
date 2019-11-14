@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import _ from 'lodash';
 import {
   Collapse,
@@ -32,7 +32,7 @@ import {
   isActiveLink,
 } from "./../../../../utils/misc";
 
-export default function SidebarLink({
+const SidebarLink = forwardRef(({
   link,
   icon,
   label,
@@ -44,7 +44,7 @@ export default function SidebarLink({
   type,
   setParentIsOpen,
   isActive,
-}) {
+}, activeRef) => {
   const classes = useStyles();
   // local
   const [isOpen, setIsOpen] = useState(isSidebarOpened);
@@ -53,6 +53,12 @@ export default function SidebarLink({
   // if (isLinkActive && nested && setParentIsOpen) {
   //   setParentIsOpen(true);
   // }
+  const toggleCollapse = e => {
+    if (isSidebarOpened) {
+      e.preventDefault();
+      setIsOpen(!isOpen);
+    }
+  }
   const isParentMatch = !keyword || (
     keyword && new RegExp(_.toLower(keyword)).test(_.toLower(label))
   );
@@ -68,9 +74,9 @@ export default function SidebarLink({
     );
 
   if (type === "divider") return <Divider className={classes.divider} />;
-
+  let listChildren = null;
   if (!children) {
-    return (
+    listChildren = (
       <ListItem
         button
         component={link && Link}
@@ -103,78 +109,86 @@ export default function SidebarLink({
         />
       </ListItem>
     );
-  }
+  } else {
 
-  const isAllSubMisMatch = _.reduce(children, (a, { label }) => {
-    if (a && (!keyword || keyword && new RegExp(_.toLower(keyword)).test(_.toLower(label)))) {
-      return false;
-    }
-    return a;
-  }, true);
-  return (
-    <>
-      <ListItem
-        button
-        component={link && Link}
-        onClick={toggleCollapse}
-        className={classes.link}
-        className={
-          !isParentMatch && isAllSubMisMatch ? classes.misMatchKeyword : null
+    const isAllSubMisMatch = _.reduce(children, (a, { label }) => {
+      if (a && (!keyword || keyword && new RegExp(_.toLower(keyword)).test(_.toLower(label)))) {
+        return false;
+      }
+      return a;
+    }, true);
+
+    listChildren = (
+      <React.Fragment>
+        <ListItem
+          button
+          component={link && Link}
+          onClick={toggleCollapse}
+          className={classes.link}
+          className={
+            !isParentMatch && isAllSubMisMatch ? classes.misMatchKeyword : null
+          }
+          to={link}
+          disableRipple
+        >
+          <ListItemIcon
+            className={classnames(classes.linkIcon, {
+              [classes.linkIconActive]: isLinkActive,
+            })}
+          >
+            {icon ? icon : <MaterialIcons>Inbox</MaterialIcons>}
+          </ListItemIcon>
+          <ListItemText
+            classes={{
+              primary: classnames(classes.linkText, {
+                [classes.linkTextActive]: isLinkActive,
+                [classes.linkTextHidden]: !isSidebarOpened,
+              }),
+            }}
+            primary={label}
+          />
+          {!isSidebarOpened ? null : (isOpen && isSidebarOpened  ? <ExpandLess /> : <ExpandMore />)}
+        </ListItem>
+        {
+          children && (
+            <Collapse
+              in={(isOpen && isSidebarOpened) || !isAllSubMisMatch || isParentMatch}
+              timeout="auto"
+              unmountOnExit
+              className={classes.nestedList}
+            >
+              <List component="div" disablePadding>
+                {children.map(childrenLink => (
+                  <SidebarLink
+                    key={childrenLink && childrenLink.link}
+                    location={location}
+                    isSidebarOpened={isSidebarOpened}
+                    classes={classes}
+                    nested
+                    ref={activeRef}
+                    setParentIsOpen={setIsOpen}
+                    {...childrenLink}
+                    // if the parent item not matched, should be pass keyword to filter later on
+                    keyword={!isParentMatch ? keyword : null}
+                  />
+                ))}
+              </List>
+            </Collapse>
+          )
         }
-        to={link}
-        disableRipple
-      >
-        <ListItemIcon
-          className={classnames(classes.linkIcon, {
-            [classes.linkIconActive]: isLinkActive,
-          })}
-        >
-          {icon ? icon : <MaterialIcons>Inbox</MaterialIcons>}
-        </ListItemIcon>
-        <ListItemText
-          classes={{
-            primary: classnames(classes.linkText, {
-              [classes.linkTextActive]: isLinkActive,
-              [classes.linkTextHidden]: !isSidebarOpened,
-            }),
-          }}
-          primary={label}
-        />
-        {!isSidebarOpened ? null : (isOpen && isSidebarOpened  ? <ExpandLess /> : <ExpandMore />)}
-      </ListItem>
-      {children && (
-        <Collapse
-          in={(isOpen && isSidebarOpened) || !isAllSubMisMatch || isParentMatch}
-          timeout="auto"
-          unmountOnExit
-          className={classes.nestedList}
-        >
-          <List component="div" disablePadding>
-            {children.map(childrenLink => (
-              <SidebarLink
-                key={childrenLink && childrenLink.link}
-                location={location}
-                isSidebarOpened={isSidebarOpened}
-                classes={classes}
-                nested
-                setParentIsOpen={setIsOpen}
-                {...childrenLink}
-                // if the parent item not matched, should be pass keyword to filter later on
-                keyword={!isParentMatch ? keyword : null}
-              />
-            ))}
-          </List>
-        </Collapse>
-      )}
-    </>
-  );
-
-  // ###########################################################
-
-  function toggleCollapse(e) {
-    if (isSidebarOpened) {
-      e.preventDefault();
-      setIsOpen(!isOpen);
-    }
+      </React.Fragment>
+    );
   }
-}
+
+  if (isLinkActive) {
+    return (
+      <div ref={activeRef}>
+        {listChildren}
+      </div>
+    );
+  }
+
+  return listChildren;
+});
+
+export default SidebarLink;

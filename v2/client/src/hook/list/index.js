@@ -11,9 +11,9 @@ import {
 	loadList,
 	createListItem,
 } from '../../store/list/context';
-// import {
-// 	createListItem,
-// } from '../../store/user/context';
+import {
+	useUserState,
+} from '../../store/user/context';
 import {
   	useLayoutDispatch,
 } from "../../store/layout/context";
@@ -65,7 +65,7 @@ const useContentList = ({ match, history, listsByPath={} }) => {
 		};
 		fetchTheList(targetList, search);
 	// dependency on target List
-	}, [listDispatch, layoutDispatch, search, targetList]);
+	}, [listDispatch, layoutDispatch, search, list]);
 
 	return [
 		loading,
@@ -102,19 +102,16 @@ const useErrorDidChange = () => {
 
 // form value changed
 const useFormValues = (list, initial) => {
+	const {
+		// language,
+		defaultLanguage: language,
+	} = useUserState();
 	const initialValues = { ...initial };
-	const currentLang = i18n.locale;
-	// if no given initial values, and the behavior is an item creation
-	// get the default value for each of field
-	// if (!initial) {
-	// 	initialValues = list.getDefaultValue({ currentLang });
-	// 	console.log('>>>>>>> ', initialValues);
-	// }
 	// stateful content
 	const [values, setValues] = useState(initialValues);
+	const [currentLang, setLanguage] = useState(language || i18n.locale);
 	// when the values changed
 	const handleChanged = ({ path, value, attachment }) => {
-			// console.log('>>>>>> ', path, value, attachment);
 		// grab the values with the multilingual factor
 		setValues(list.getProperlyChangedValue({
 			currentLang,
@@ -124,29 +121,28 @@ const useFormValues = (list, initial) => {
 			currentValue: values,
 		}));
 	}
-
-	return [ values, handleChanged ];
+	return [ values, handleChanged, currentLang, setLanguage ];
 }
 
 const useSubmitForm = list => {
-	const [values, whenChanged] = useFormValues(list);
+	const [values, whenChanged, currentLang, whenLanguageChanged] = useFormValues(list);
 	// global
 	const listDispatch = useListDispatch();
 	const layoutDispatch = useLayoutDispatch();
 
-	const handleSubmit = useCallback(e => {
-		e.preventDefault();
-		const formData = new FormData(e.target);
+	const handleSubmit = useCallback(() => {
+		// e.preventDefault();
+		const formData = new FormData();
 		// adjust formData
-		list.getFormData({
-			formData,
-			values,
-		});
+		list.getFormData(formData, values);
 
+		// for (var pair of formData.entries()) {
+		//     console.log(pair[0]+ ', ' + pair[1]); 
+		// }
 		createListItem(listDispatch, layoutDispatch, formData, list);
 	});
 
-	return [values, whenChanged, handleSubmit];
+	return [values, whenChanged, handleSubmit, currentLang, whenLanguageChanged];
 }
 
 export {

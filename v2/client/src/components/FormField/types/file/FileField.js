@@ -67,15 +67,21 @@ export default Field.create({
 		return this.props.collapse && !this.hasExisting();
 	},
 	componentWillUpdate (nextProps) {
+		const {
+			value,
+		} = this.props;
+		const {
+			value: nextValue,
+		} = nextProps;
 		// Show the new filename when it's finished uploading
 		// console.log('old: ', this.props.value);
 		// console.log('new: ', nextProps.value);
-		// if ((this.props.value && !nextProps.value) || 
-		// 	this.props.value.filename !== nextProps.value.filename ||
-		// 	this.props.value.name !== nextProps.value.name) {
-		// 	const state = buildInitialState(nextProps);
-		// 	this.setState(state);
-		// }
+		if ((value && !nextValue) || 
+			_.get(value, 'filename') !== _.get(nextValue, 'filename') ||
+			_.get(value, 'name') !== _.get(nextValue, 'name')) {
+			const state = buildInitialState(nextProps);
+			this.setState(state);
+		}
 
 		// if ((this.props.value && !nextProps.value)) {
 		// 	this.setState(buildInitialState(nextProps));

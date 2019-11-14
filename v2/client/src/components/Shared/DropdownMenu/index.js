@@ -9,6 +9,7 @@ import {
   Paper,
   MenuList,
   Popper,
+  Button,
 } from "@material-ui/core";
 import {
   ArrowDropDown as ArrowDropDownIcon,
@@ -82,20 +83,34 @@ export default function DropdownMenu(props) {
     list,
     info: {
       title,
+      label,
+      // icon,
     },
+    inline,
     // onChanged,
   } = props;
   return (
     <React.Fragment>
-      <IconButton
-        ref={anchorRef}
-        aria-controls="menu-list-grow"
-        aria-haspopup="true"
-        onClick={handleToggle}
-      >
-         <DropdownMenuButton { ...props } />
-      </IconButton>
-      <Popper open={open} anchorEl={anchorRef.current} transition disablePortal>
+      {
+        !inline ? <IconButton
+          ref={anchorRef}
+          aria-controls="menu-list-grow"
+          aria-haspopup="true"
+          onClick={handleToggle}
+        >
+           <DropdownMenuButton { ...props } />
+        </IconButton> : <Button
+          variant="contained"
+          ref={anchorRef}
+          color="secondary"
+          className={classes.inlineDropper}
+          onClick={handleToggle}
+          endIcon={<ArrowDropDownIcon className={classes.dropDownButtonIcon} />}
+        >
+          {label}
+        </Button>
+      }
+      <Popper open={open} className={classes.popper} anchorEl={anchorRef.current} transition disablePortal>
         {({ TransitionProps, placement }) => (
           <Grow
             {...TransitionProps}

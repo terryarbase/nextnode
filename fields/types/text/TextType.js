@@ -27,7 +27,6 @@ text.prototype.validateInput = function (data, callback) {
 	var min = this.options.min;
 	var regex = this.options.regex;
 	var value = this.getValueFromData(data);
-
 	/*
 	** casting to string, prevent input number directly
 	** Terry Chan
@@ -35,7 +34,6 @@ text.prototype.validateInput = function (data, callback) {
 	*/ 
 	value = String(value);
 	var result = value === undefined || value === null || typeof value === 'string';
-
 	/*
 	** Logical Concern for less and equals than
 	** Terry Chan
@@ -52,7 +50,6 @@ text.prototype.validateInput = function (data, callback) {
 	if (regex && typeof value === 'string') {
 		result = new RegExp(regex).test(value);
 	}
-
 	utils.defer(callback, result);
 };
 

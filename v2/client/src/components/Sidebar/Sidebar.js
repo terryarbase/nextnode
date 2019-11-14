@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createRef } from "react";
 import _ from "lodash";
 import { Drawer, IconButton, List } from "@material-ui/core";
 // dynamic render for the icon
@@ -50,6 +50,17 @@ const SidebarItems = ({
   isSidebarOpened,
   keyword,
 }) => {
+  const activeRef = createRef();
+  // auto scroll to the target active menu item when the component didmount
+  useEffect(() => {
+    if (activeRef.current) {
+      activeRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }
+  }, []);
+
   const items = menuSection.map(s => {
     let {
       icon,
@@ -78,6 +89,7 @@ const SidebarItems = ({
       <SidebarLink
         id={s.key}
         key={s.key}
+        ref={activeRef}
         keyword={keyword}
         label={translateSection(s.key)}
         location={location}
@@ -90,6 +102,7 @@ const SidebarItems = ({
   const dashboardItem = (
     <SidebarLink
       id='_dashboard'
+      ref={activeRef}
       label={i18n.t('common.dashboard')}
       link={main}
       icon={(<MaterialIcons>home</MaterialIcons>)}
@@ -103,7 +116,7 @@ const SidebarItems = ({
     dashboardItem,
     ...items,
   ];
-}
+};
 
 function Sidebar(props) {
   const classes = useStyles();
@@ -146,7 +159,6 @@ function Sidebar(props) {
       }}
       open={isSidebarOpened}
     >
-      <div className={classes.toolbar} />
     {
       /*      
       <div className={classes.mobileBackButton}>
