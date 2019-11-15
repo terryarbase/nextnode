@@ -4,30 +4,7 @@ import React from 'react';
 // import { Editor } from '@tinymce/tinymce-react';
 import Editor from 'react-tinymce';
 // import tinymce from 'tinymce';
-import { FormInput } from '../../elemental';
-import evalDependsOn from '../../utils/evalDependsOn';
-
-
-// import i18n from './../../../../i18n';
-/**
- * TODO:
- * - Remove dependency on underscore
- */
-
-// const lastId = 0;
-
-// function getId () {
-// 	return 'keystone-html-' + lastId++;
-// }
-
-// // Workaround for #2834 found here https://github.com/tinymce/tinymce/issues/794#issuecomment-203701329
-// function removeTinyMCEInstance (editor) {
-// 	const oldLength = tinymce.editors.length;
-// 	tinymce.remove(editor);
-// 	if (oldLength === tinymce.editors.length) {
-// 		tinymce.editors.remove(editor);
-// 	}
-// }
+import { FormInput, FormField } from '../../elemental';
 
 export default Field.create({
 
@@ -35,79 +12,6 @@ export default Field.create({
 	statics: {
 		type: 'Html',
 	},
-
-	// getInitialState () {
-	// 	const { value } = this.props;
-	// 	// this._currentValue = value;
-	// 	return {
-	// 		// id: getId(),
-	// 		isFocused: false,
-	// 		wysiwygActive: false,
-	// 		value,
-	// 	};
-	// },
-
-	// initWysiwyg () {
-	// 	if (!this.props.wysiwyg) return;
-
-	// 	const self = this;
-	// 	const opts = this.getOptions();
-
-	// 	opts.setup = function (editor) {
-	// 		self.editor = editor;
-	// 		editor.on('change', self.valueChanged);
-	// 		editor.on('focus', self.focusChanged.bind(self, true));
-	// 		editor.on('blur', self.focusChanged.bind(self, false));
-	// 	};
-	// 	// console.log('initWysiwyg: ', this.props.value);
-	// 	this._currentValue = this.props.value;
-	// 	// console.log('opts: ', opts);
-	// 	tinymce.init(opts);
-	// 	if (evalDependsOn(this.props.dependsOn, this.props.values)) {
-	// 		this.setState({ wysiwygActive: true });
-	// 	}
-	// },
-
-	// removeWysiwyg (state) {
-	// 	removeTinyMCEInstance(tinymce.get(state.id));
-	// 	this.setState({ wysiwygActive: false });
-	// },
-
-	// componentDidUpdate (prevProps, prevState) {
-	// 	if (prevState.isCollapsed && !this.state.isCollapsed) {
-	// 		this.initWysiwyg();
-	// 	}
-
-	// 	// if (this.editor && this._currentValue !== this.props.value) {
-	// 	// 	this.editor.setContent(this.props.value);
-	// 	// } else 
-	// 	if (this.props.wysiwyg) {
-	// 		if (evalDependsOn(this.props.dependsOn, this.props.values)) {
-	// 			if (!this.state.wysiwygActive) {
-	// 				this.initWysiwyg();
-	// 			}
-	// 		} else if (this.state.wysiwygActive) {
-	// 			this.removeWysiwyg(prevState);
-	// 		}
-	// 	}
-	// 	// console.log(prevProps.value, ">>>>>>>", this.props.value);
-	// },
-
-	// componentDidMount () {
-	// 	this.initWysiwyg();
-	// },
-
-	// componentWillReceiveProps (nextProps) {
-	// 	if (this.editor && this._currentValue !== nextProps.value) {
-	// 		this.editor.setContent(nextProps.value);
-	// 	}
-	// },
-
-	// focusChanged (focused) {
-	// 	this.setState({
-	// 		isFocused: focused,
-	// 	});
-	// },
 
 	valueChanged ({ target }) {
 		// const content;
@@ -208,9 +112,9 @@ export default Field.create({
 		const {
 			path,
 			value,
-			label,
+			// label,
 		} = this.props;
-		const name = this.getInputName(path);
+		// const name = this.getInputName(path);
 		// console.log(value);
 		return (
 			<Editor
@@ -227,6 +131,10 @@ export default Field.create({
 				{this.props.value}
 			</FormInput>
 		);
+	},
+
+	renderUI() {
+		return this.renderWithErrorUI();
 	},
 
 });

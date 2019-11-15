@@ -157,7 +157,7 @@ file.prototype.isModified = function (item) {
 
 function validateInput (value) {
 	// undefined, null and empty values are always valid
-	if (value === undefined || value === null || value === '') return true;
+	// if (value === undefined || value === null || value === '') return true;
 	// If a string is provided, check it is an upload or delete instruction
 	if (typeof value === 'string' && /^(upload\:)|(delete$)|(remove$)|(reset$)/.test(value)) return true;
 	// If the value is an object with a filename property, it is a stored value
@@ -182,10 +182,11 @@ file.prototype.validateInput = function (data, callback) {
  */
 file.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getValueFromData(data);
+	const newItem = (item.get && item.get(this.path)) || item[this.path];
 	// TODO: We need to also get the `files` argument, so we can check for
 	// uploaded files. without it, this will return false negatives so we
 	// can't actually validate required input at the moment.
-	var result = value || item;
+	var result = validateInput(value) || newItem;
 	// var value = this.getValueFromData(data);
 	// debug('[%s.%s] Validating required input: ', this.list.key, this.path, value);
 	// TODO: Need to actually check a dynamic path based on the adapter

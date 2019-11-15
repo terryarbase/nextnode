@@ -43,4 +43,7 @@ export default Field.create({
 		return DateInput;
 	},
 
+	renderUI() {
+		return this.renderWithErrorUI();
+	},
 });

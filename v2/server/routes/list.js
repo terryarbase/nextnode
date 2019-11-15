@@ -24,8 +24,8 @@ const registerListRoutes = ({
 		list: listAPI,
 	} = api;
 	// router.all([
-	// 	'/app/v2/content/*'
-	// ], includeList, initDataPermission);
+	// 	'/app/v2/session/content/*'
+	// ], includeList);
 
 	router.get(
 		'/app/v2/session/content/:listId',

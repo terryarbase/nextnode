@@ -22,10 +22,48 @@ const useStyles = makeStyles(theme => ({
   	// overflow: 'auto',
 
   },
+  errormsg: {
+  	border: '1px solid red',
+  	borderRadius: 5,
+  	padding: 10,
+  	// paddingTop: 0,
+  	background: '#f7f0f0',
+  },
+  errormsgText: {
+  	color: 'red',
+  	marginTop: 8,
+  	fontSize: '0.75rem',
+  	lineHeight: '1em',
+  	fontWeight: 500,
+  },
 }));
 
-const FormField = ({ note, label, children }) => {
+const FormField = ({ note, label, errorMessage, children }) => {
 	const classes = useStyles();
+	let noteElement = null;
+	if (note) {
+		noteElement = (
+			<Note note={note} />
+		);
+	}
+	let element = (
+		<React.Fragment>
+			{children}
+			{noteElement}
+		</React.Fragment>
+	);
+
+	if (!!errorMessage) {
+		element = (
+			<div className={classes.errormsg}>
+				{children}
+				<div className={classes.errormsgText}>
+					{errorMessage}
+				</div>
+				{noteElement}
+			</div>
+		);
+	}
 	return (
 		<Grid
 			className={classes.root}
@@ -45,13 +83,7 @@ const FormField = ({ note, label, children }) => {
 				xs
 				className={classes.content}
 			>
-				{
-					!!note ? <React.Fragment>
-						{children} 
-						<Note note={note} />
-					</React.Fragment> : 
-					children
-				}
+				{element}
 			</Grid>
 		</Grid>
 	);

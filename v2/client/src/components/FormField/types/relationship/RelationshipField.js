@@ -505,6 +505,7 @@ export default Field.create({
 						Option: this.customizedOptions,
 						MultiValueLabel: this.customizedSelections,
 						MultiValueRemove: this.customizedRemove,
+						SingleValue: this.customizedSelections,
 						DropdownIndicator: this.customizedDropdownIndicator,
 					}}
 					value={this.state.value}
@@ -558,5 +559,7 @@ export default Field.create({
 			return this.renderSelect(false);
 		}
 	},
-
+	renderUI() {
+		return this.renderWithErrorUI();
+	},
 });

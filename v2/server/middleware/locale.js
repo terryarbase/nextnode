@@ -128,7 +128,7 @@ const includeLocale = async function (req, res, next) {
     req.t = nextnode.get('i18n');
     // console.log(uiLanguage);
     // all of message handling should use the ui-language by default
-    req.t.setLocale(uiLanguage);
+    req.t.setLocale(req, uiLanguage);
     req.locales = {
         // localization language set
         localization,

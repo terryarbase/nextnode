@@ -4,7 +4,7 @@ import React from 'react';
 import {
 	Grid,
 	Typography,
-	Button,
+	// Button,
 	Fab,
 	// FormControl,
 	// InputLabel,
@@ -14,7 +14,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import grey from '@material-ui/core/colors/grey';
 
 import Field from '../Field';
-import CollapsedFieldLabel from '../../components/CollapsedFieldLabel';
+// import CollapsedFieldLabel from '../../components/CollapsedFieldLabel';
 // import NestedFormField from '../../components/NestedFormField';
 import {
 	FormField,
@@ -75,6 +75,7 @@ const GridForm = props => {
 								</Grid>
 								<Grid item xs>
 									<FormInput
+										errorMessage={props.errorMessage}
 										onChange={onChange(t)}
 										placeholder={label}
 										value={value || ''}
@@ -307,10 +308,10 @@ export default Field.create({
 			: null;
 		/* eslint-enable */
 
-		const { path, required, noAddress, note } = this.props;
+		const { path, required, noAddress, note, errorMessage } = this.props;
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		return (
-			<FormField label={label} note={note}>
+			<FormField label={label} note={note} errorMessage={errorMessage}>
 				{this.renderGeo()}
 				{this.renderField('number', i18n.t('list.poBoxShop'), true, true)}
 				{this.renderField('name', i18n.t('list.buildingName'), true)}

@@ -89,6 +89,7 @@ const ColorField = Field.create({
 					<Grid item>
 						<FormInput
 							size="full"
+							errorMessage={this.props.errorMessage}
 							autoComplete="off"
 							label={this.props.path}
 							name={this.getInputName(this.props.path)}

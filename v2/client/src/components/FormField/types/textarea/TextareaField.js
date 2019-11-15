@@ -40,6 +40,7 @@ export default Field.create({
 			<FormInput
 				autoComplete="off"
 				multiline
+				errorMessage={this.props.errorMessage}
 				label={label}
 				rows={height}
 				size="large"

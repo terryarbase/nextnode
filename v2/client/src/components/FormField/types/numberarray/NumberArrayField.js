@@ -14,5 +14,7 @@ export default Field.create({
 	isValid (input) {
 		return /^-?\d*\.?\d*$/.test(input);
 	},
-
+	renderUI () {
+		return this.renderWithErrorUI();
+	},
 });

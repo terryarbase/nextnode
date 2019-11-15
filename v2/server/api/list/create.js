@@ -14,16 +14,17 @@ const create = async ({
 		files: req.files,
 		ignoreNoEdit: true,
 		user: req.user,
-		__: req.t.__,
+		__: req.__,
 		lang: locales && locales.langd,
+		uiLang: locales && locales.langf,
 		isMultilingual: !!locales,
 		defaultLang: locales && locales.defaultLanguage,
 		supportLang: locales && locales.localization,
 	};
 	req.list.updateItem(item, newData, options, function (err) {
 		if (err) {
-			var status = err.error === 'validation errors' ? 400 : 500;
-			var error = err.error === 'database error' ? err.detail : err;
+			var status = err.status === 'validation errors' ? 406 : 500;
+			var error = err.status === 'database error' ? err.detail : err;
 			return res.apiError(status, err);
 		}
 		res.json(req.list.getData(item, undefined, null, options));

@@ -122,7 +122,7 @@ function Sidebar(props) {
   const classes = useStyles();
   const theme = useTheme();
   // global
-  // const { isSidebarOpened } = useLayoutState();
+  const { isSidebarOpened } = useLayoutState();
   const layoutDispatch = useLayoutDispatch();
   const {
     info: {
@@ -131,7 +131,7 @@ function Sidebar(props) {
       },
     },
   } = useUserState();
-  const isSidebarOpened = true; // always open
+  // const isSidebarOpened = true; // always open
   const menuSection = _.get(nav, 'sections', []);
   // local
   const [isPermanent, setPermanent] = useState(true);

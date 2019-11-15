@@ -170,11 +170,11 @@ KeyText.prototype.validateInput = function (data, callback) {
  */
 KeyText.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getValueFromData(data);
-	var result = true;
+	var result = !!value;
 	// If the value is undefined and we have something stored already, validate
 	if (value) {
 		// check for any missing text
-		result = !_.some(value, v => !v.text);
+		result = !_.some(value, v => !v.key || !v.value);
 	}
 	utils.defer(callback, result);
 };

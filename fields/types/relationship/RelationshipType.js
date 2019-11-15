@@ -4,7 +4,13 @@ var keystone = require('../../../');
 var util = require('util');
 var utils = require('keystone-utils');
 var definePrototypeGetters = require('../../utils/definePrototypeGetters');
-
+const {
+	mongoose: {
+		Types: {
+			ObjectId,
+		},
+	},
+} = keystone;
 /**
  * Relationship FieldType Constructor
  * @extends Field
@@ -150,25 +156,25 @@ relationship.prototype.validateInput = function (data, callback) {
 	var value = this.getValueFromData(data);
 	// console.log('> ', this.path, data, value);
 	var result = false;
-	if (value === undefined || value === null || value === '') {
-		result = true;
+	// if (value === undefined || value === null || value === '') {
+	// 	result = true;
+	// } else {
+	if (this.many) {
+		if (!Array.isArray(value) && typeof value === 'string' && value.length) {
+			value = [value];
+		}
+		if (_.isArray(value)) {
+			result = true;
+		}
 	} else {
-		if (this.many) {
-			if (!Array.isArray(value) && typeof value === 'string' && value.length) {
-				value = [value];
-			}
-			if (Array.isArray(value)) {
-				result = true;
-			}
-		} else {
-			if (typeof value === 'string' && value.length) {
-				result = true;
-			}
-			if (typeof value === 'object' && value.id) {
-				result = true;
-			}
+		if (typeof value === 'string' && value.length) {
+			result = true;
+		}
+		if (typeof value === 'object' && value.id) {
+			result = true;
 		}
 	}
+	// }
 	utils.defer(callback, result);
 };
 
@@ -177,20 +183,16 @@ relationship.prototype.validateInput = function (data, callback) {
  */
 relationship.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getValueFromData(data);
-	const newItem = (item.get && item.get(this.path)) || item[this.path] || [];
+	const newItem = (item.get && item.get(this.path)) || item[this.path];
 	var result = false;
 	if (value === undefined) {
 		if (this.many) {
-			if (newItem.length) {
-				result = true;
-			}
+			result = newItem && !!newItem.length;
 		} else {
-			if (newItem) {
-				result = true;
-			}
+			result = !!newItem;
 		}
 	} else if (this.many) {
-		if (!Array.isArray(value) && typeof value === 'string' && value.length) {
+		if (!_.isArray(value) && typeof value === 'string' && value.length) {
 			value = [value];
 		}
 		if (Array.isArray(value) && value.length) {

@@ -23,6 +23,17 @@ const useInputStyles = makeStyles(theme => ({
       outline: 'none',
     },
   },
+  // errorLabel: {
+  //   fontSize: 13,
+  //   fontWeight: 'bolder',
+  // },
+  error: {
+    border: '1px solid red',
+    backgroundColor: '#f7f0f0',
+    '&:hover, &$focused': {
+      backgroundColor: '#f7f0f0',
+    },
+  },
   focused: {},
 }));
 

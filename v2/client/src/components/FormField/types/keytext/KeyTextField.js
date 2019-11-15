@@ -219,4 +219,8 @@ export default Field.create({
 			</div>
 		);
 	},
+
+	renderUI () {
+		return this.renderWithErrorUI();
+	},
 });

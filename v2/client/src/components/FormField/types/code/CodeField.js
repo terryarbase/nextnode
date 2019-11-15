@@ -9,7 +9,7 @@ import {
 import React from 'react';
 // import { findDOMNode } from 'react-dom';
 import {
-	// FormInput,
+	FormField,
 } from '../../elemental';
 // import classnames from 'classnames';
 
@@ -94,7 +94,7 @@ export default Field.create({
 			value: value,
 		});
 	},
-	renderCodemirror () {
+	renderCodemirror (readOnly) {
 		const {
 			download,
 		} = this.props;
@@ -115,16 +115,20 @@ export default Field.create({
 			 			value={this.props.value}
 			 			onChange={this.valueChanged}
 			 			options={options}
+			 			readOnly={readOnly}
 			 			name={this.getInputName(this.props.path)}
 			 		/>
 		 		</div>
 			</React.Fragment>
 		);
 	},
-	renderValue () {
+	renderValue() {
+		return this.renderCodemirror(true);
+	},
+	renderField() {
 		return this.renderCodemirror();
 	},
-	renderField () {
-		return this.renderCodemirror();
+	renderUI () {
+		return this.renderWithErrorUI();
 	},
 });

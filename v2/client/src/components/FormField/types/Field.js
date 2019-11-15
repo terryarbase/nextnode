@@ -104,6 +104,7 @@ const Base = {
 			<FormInput 
 				{...{
 					...inputProps,
+					errorMessage: this.props.errorMessage,
 					autoFocus,
 					disabled,
 					path,
@@ -269,14 +270,23 @@ const Base = {
 		} = this.props;
 		return label ? `${label}${required ? ' *' : ''}` : null;
 	},
-	renderUI () {
+	renderWrapper (options={}) {
 		const { note, path } = this.props;
 		const label = this.getRequired();
 		return (
-			<FormField label={label} note={note}>
+			<FormField label={label} note={note} {...options}>
 				{this.shouldRenderField() ? this.renderField() : this.renderValue()}
 			</FormField>
 		);
+	},
+	renderWithErrorUI () {
+		const {
+			errorMessage,
+		} = this.props;
+		return this.renderWrapper({ errorMessage });
+	},
+	renderUI () {
+		return this.renderWrapper();
 	},
 };
 

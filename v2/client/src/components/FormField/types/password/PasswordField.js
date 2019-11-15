@@ -173,4 +173,8 @@ export default Field.create({
 		);
 	},
 
+	renderUI () {
+		return this.renderWithErrorUI();
+	},
+
 });

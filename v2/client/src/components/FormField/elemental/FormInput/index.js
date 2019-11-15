@@ -66,6 +66,7 @@ const FormInput = props => {
 		variant,
 		type='text',
 		onClick,
+		errorMessage,
 	} = props;
 
 	let options = {
@@ -123,10 +124,11 @@ const FormInput = props => {
 			<InputBase { ...options } />
 		);
 	}
-
   	return (
   		<TextField
   			{ ...options }
+  			error={!!errorMessage}
+  			helperText={errorMessage}
   		/>
   	);
 }

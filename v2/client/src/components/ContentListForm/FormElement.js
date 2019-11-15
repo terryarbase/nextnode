@@ -38,7 +38,9 @@ import {
 import {
   requestHeader,
 } from './../../utils/request';
-
+import {
+  pickError,
+} from './../../utils/misc';
 // styles
 import {
   ExpansionPanel,
@@ -73,6 +75,7 @@ const getFormFieldProps = options => {
     cloudinary,
     onChange,
     values,
+    errorMessage,
     // currentTarget,
     mode,
     requestHeader,
@@ -90,6 +93,7 @@ const getFormFieldProps = options => {
     ...currentList.bindAttachment({ values, value }),
     currentList,
     value,
+    errorMessage,
     requestHeader,
     restrictDelegated: field.restrictDelegated,
     values,
@@ -152,6 +156,7 @@ const FormElemental = props => {
   const {
     currentList,
     inline,
+    entityError,
     currentList: {
       fields: listFields,
     },
@@ -223,6 +228,12 @@ const FormElemental = props => {
           ...elementProps,
           field: f,
           onChange,
+          // grab the error if create error
+          errorMessage: pickError({
+            path, 
+            error: entityError,
+            language: currentLang,
+          }),
         });
         ele = (<Component { ...fieldProps } key={key} />);
       }

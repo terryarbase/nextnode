@@ -32,6 +32,7 @@ export default Field.create({
 		return (
 			<FormInput
 				autoComplete="off"
+				errorMessage={this.props.errorMessage}
 				name={this.getInputName(this.props.path)}
 				onChange={this.valueChanged}
 				type="url"

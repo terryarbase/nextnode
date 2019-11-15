@@ -45,7 +45,7 @@ export default Field.create({
 		const { indent, label, path, note, value } = this.props;
 		return (
 			<div data-field-name={path} data-field-type="boolean">
-				<FormField>
+				<FormField errorMessage={this.props.errorMessage}>
 					<FormControlLabel
 						control={
 							<Checkbox

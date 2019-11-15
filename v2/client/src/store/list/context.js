@@ -15,6 +15,7 @@ import {
   CREATELISTITEM,
   CREATELISTITEM_SUCCESS,
   CREATELISTITEM_FAILURE,
+  CLEARERROR,
 } from './type';
 
 import {
@@ -48,6 +49,7 @@ const initialState = {
   },
   currentList: null,
   form: null,
+  entityError: null,
 };
 
 const listReducer = (state=initialState, action) => {
@@ -105,12 +107,19 @@ const listReducer = (state=initialState, action) => {
         error: action.err,
       };
     case LOADLISTDETAILS: 
-    case CREATELISTITEM:
       return {
         ...state,
         loading: true,
         error: null,
         form: null,
+      };
+    case CREATELISTITEM:
+      return {
+        ...state,
+        loading: true,
+        form: null,
+        error: null,
+        entityError: null,
       };
     case LOADLISTDETAILS_SUCCESS:
     case CREATELISTITEM_SUCCESS:
@@ -120,11 +129,23 @@ const listReducer = (state=initialState, action) => {
         loading: false,
       };
     case LOADLISTDETAILS_FAILURE: 
-    case CREATELISTITEM_FAILURE:
       return {
         ...state,
         loading: false,
         error: action.err,
+      };
+    case CREATELISTITEM_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        entityError: action.err,
+        error: action.message,
+      };
+    case CLEARERROR: 
+      return {
+        ...state,
+        entityError: null,
+        error: null,
       };
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -167,6 +188,12 @@ const selectList = async(dispatch, data) => {
     data,
   });
 };
+
+const clearError = async(dispatch) => {
+  dispatch({
+    type: CLEARERROR,
+  });
+}
 
 const deleteListRows = async(dispatch, layoutDispatch, list, ids) => {
   dispatch({
@@ -258,6 +285,7 @@ const createListItem = async(dispatch, layoutDispatch, data, list) => {
     dispatch({
       type: CREATELISTITEM_FAILURE,
       err: err.error,
+      message: err.message,
     });
   } finally {
     // turn on the global loader
@@ -299,6 +327,7 @@ export {
   useListDispatch,
   useListState,
   loadList,
+  clearError,
   loadListDetails,
   selectList,
   deleteListRows,

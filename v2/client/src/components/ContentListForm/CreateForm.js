@@ -40,9 +40,14 @@ import {
 import LanguageSelection from './../../components/Shared/LanguageSelection';
 import LanguageTab from './../../components/Shared/LanguageTab';
 // context
-// import {
-//   useUserState,
-// } from "./../../store/user/context";
+import {
+  useListState,
+  clearError,
+  useListDispatch,
+} from "./../../store/list/context";
+import {
+  useUserState,
+} from "./../../store/user/context";
 // configs
 // import {
 //   storageName,
@@ -80,13 +85,23 @@ const CreateForm = props => {
  
   } = props;
   // global
-  // let {
-  //   language,
-  // } = useUserState();
+  let {
+    entityError,
+    loading,
+  } = useListState();
+  const {
+    language,
+  } = useUserState();
 
   const classes = useRootStyle();
+  const listDispatch = useListDispatch();
 
   const elements = _.filter(uiElements, ({ field }) => _.indexOf(initialFields, field) !== -1);
+
+  const onCloseWindow = () => {
+    clearError(listDispatch);
+    handleClose();
+  }
 
   const createText = i18n.t('list.create');
   return (
@@ -95,12 +110,18 @@ const CreateForm = props => {
       disableBackdropClick
       fullScreen open={open}
       className={classes.root}
-      onClose={handleClose}
+      onClose={onCloseWindow}
       TransitionComponent={Transition}
     >
       <AppBar className={classes.appBar}>
         <Toolbar>
-          <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+          <IconButton
+            edge="start"
+            color="inherit"
+            onClick={onCloseWindow}
+            aria-label="close"
+            disabled={loading}
+          >
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
@@ -109,6 +130,7 @@ const CreateForm = props => {
           <Fab
             variant="extended"
             color="secondary"
+            disabled={loading}
             onClick={submitForm}
             aria-label={createText}
           >
@@ -131,8 +153,9 @@ const CreateForm = props => {
             mode='create'
             onChange={whenChanged}
             form={formValues}
-            language={currentLang}
+            language={language}
             elements={elements}
+            entityError={entityError}
           />
         </form>
       </DialogContent>

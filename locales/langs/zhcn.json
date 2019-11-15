@@ -15,14 +15,17 @@
 	"msg_user_invalidRefreshToken": "刷新令牌与给定的会话令牌不匹配！请重新登录",
 
 
-	"msg_required_field": "{{lang}}: 栏位{{field}}资料是必须填写",
-	"msg_invalid_field": "{{lang}}: 栏位{{field}}资料填写不正确",
+	"msg_required_field": "请填入资料",
+	"msg_invalid_field": "请确保所填写的资料正确",
+	"msg_forbidden_field": "您无权更改此资料",
+
 
 	"msg_drilldown_invalid": "{{key}}无效：路径{{path}}上的字段没有数据关系。",
 	"msg_nodelete_permission": "无法删除列表",
 	"msg_delete_yourself": "你不应该删除自己的唯一数据",
 	"msg_permission_denied": "你没有被允许",
 	"msg_invalid_path_update": "在列表{{key}}中更新{{fields}}指定的路径无效",
+	"msg_duplication_value": "{{field}}资料「{{value}}」已经存在，请更改另一个。",
 
 	"title_notallowed": "不允許",
 	"title_validation_error": "验证错误",

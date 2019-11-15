@@ -13,6 +13,27 @@ import {
 // locales
 import i18n from "./../i18n";
 
+export const pickError = ({
+	error,
+	language,
+	path,
+}) => {
+	let errorMessage = _.get(error, path);
+	// deal with no matter it is object
+	const multilingualError = _.get(errorMessage, language);
+	if (errorMessage && multilingualError) {
+		errorMessage = multilingualError;
+	}
+
+	if (typeof errorMessage === 'object') {
+		const keys = _.keys(errorMessage);
+		if (!!keys.length) {
+			errorMessage = errorMessage[keys[0]];
+		}
+	}
+	return errorMessage;
+}
+
 export const rejectWithRedirection = (history, redirect=false) => {
 	let url = signinRouteName;
 	if (redirect) {

@@ -81,5 +81,7 @@ export default Field.create({
 			</Grid>
 		);
 	},
-
+	renderUI() {
+		return this.renderWithErrorUI();
+	},
 });

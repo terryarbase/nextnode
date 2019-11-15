@@ -152,7 +152,7 @@ const SidebarLink = forwardRef(({
         {
           children && (
             <Collapse
-              in={(isOpen && isSidebarOpened) || !isAllSubMisMatch || isParentMatch}
+              in={(isOpen && isSidebarOpened) || ((!isAllSubMisMatch || isParentMatch) && isOpen)}
               timeout="auto"
               unmountOnExit
               className={classes.nestedList}

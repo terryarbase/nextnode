@@ -179,12 +179,10 @@ select.prototype.validateInput = function (data, callback) {
  */
 select.prototype.validateRequiredInput = function (item, data, callback) {
 	var value = this.getValueFromData(data);
-	const newItem = (item.get && item.get(this.path)) || item[this.path] || [];
+	const newItem = (item.get && item.get(this.path)) || item[this.path];
 	var result = false;
 	if (value === undefined) {
-		if (newItem) {
-			result = true;
-		}
+		result = !!newItem;
 	} else if (value) {
 		if (value !== '') {
 			// This is already checkind in validateInput, but it doesn't hurt

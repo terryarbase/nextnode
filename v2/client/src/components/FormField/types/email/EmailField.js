@@ -21,6 +21,7 @@ export default Field.create({
 	renderField () {
 		return (
 			<FormInput
+				errorMessage={this.props.errorMessage}
 				name={this.getInputName(this.props.path)}
 				label={this.props.label}
 				value={this.props.value}

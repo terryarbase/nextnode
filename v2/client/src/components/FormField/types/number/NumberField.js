@@ -21,6 +21,7 @@ export default Field.create({
 		return (
 			<FormInput
 				autoComplete="off"
+				errorMessage={this.props.errorMessage}
 				label={this.props.path}
 				name={this.getInputName(this.props.path)}
 				onChange={this.valueChanged}

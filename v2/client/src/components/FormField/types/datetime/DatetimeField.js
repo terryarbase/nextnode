@@ -176,8 +176,9 @@ export default Field.create({
 		}
 		return (
 			<FormField
-				note={this.props.notenote}
+				note={this.props.note}
 				label={this.getRequired()}
+				errorMessage={this.props.errorMessage}
 			>
 				{input}
 			</FormField>
