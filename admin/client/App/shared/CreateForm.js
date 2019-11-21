@@ -65,10 +65,10 @@ const CreateForm = React.createClass({
 	},
 	// Handle input change events
 	handleChange ({ path, value }) {
-		const { list, currentLang } = this.props;
+		const { list, isLocale, currentLang } = this.props;
 		const { values: currentValue } = this.state;
 		const values = list.getProperlyChangedValue({
-			isLocale: list.multilingual,
+			isLocale,
 			currentLang,
 			path,
 			value,
@@ -80,12 +80,12 @@ const CreateForm = React.createClass({
 	},
 	// Set the props of a field
 	getFieldProps (field) {
-		const { list, currentLang, t, i18n } = this.props;
+		const { list, isLocale, currentLang, t, i18n } = this.props;
 		const { values } = this.state;
 		// console.log(currentLang, values);
 		return {
 			...field,
-			value: list.getProperlyValue({ field, isLocale: isLocale: list.multilingual, currentLang, values }),
+			value: list.getProperlyValue({ field, isLocale: isLocale, currentLang, values }),
 			values,
 			t,
 			i18n,
@@ -284,12 +284,14 @@ const CreateForm = React.createClass({
 						];
 					});
 				} else {
-					if (!stateless) {
-						self.statelessUI[path] = element;
-					}
-					allComponents = [
-						(stateless || element),
-					];
+					// if (!stateless) {
+					// 	self.statelessUI[path] = element;
+					// }
+					// allComponents = [
+					// 	(stateless || element),
+					// ];
+
+					allComponents = [element];
 				}
 				form = [ 
 					...form,

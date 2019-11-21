@@ -81,7 +81,7 @@ var EditForm = React.createClass({
 		this.__isMounted = false;
 	},
 	getFieldProps (field) {
-		const { list, currentLang, t, i18n } = this.props;
+		const { list, isLocale, currentLang, t, i18n } = this.props;
 		const { values } = this.state;
 		const props = assign({}, field);
 		const alerts = this.state.alerts;
@@ -96,7 +96,7 @@ var EditForm = React.createClass({
 			}
 		}
 		props.list = list;
-		props.value = list.getProperlyValue({ field, isLocale: list.multilingual, currentLang, values });
+		props.value = list.getProperlyValue({ field, isLocale, currentLang, values });
 		props.values = values;
 		props.currentLang = currentLang;
 		props.onChange = this.handleChange;
@@ -135,10 +135,10 @@ var EditForm = React.createClass({
 	handleChange ({ path, value }) {
 		// const { path, value } = e;
 		// console.log(path, value);
-		const { list, currentLang } = this.props;
+		const { list, isLocale, currentLang } = this.props;
 		const { values: currentValue } = this.state;
 		const values = list.getProperlyChangedValue({
-			isLocale: list.multilingual,
+			isLocale,
 			currentLang,
 			path,
 			value,
@@ -490,12 +490,13 @@ var EditForm = React.createClass({
 							];
 						});
 					} else {
-						if (!stateless) {
-							self.statelessUI[path] = element;
-						}
-						allComponents = [
-							(stateless || element),
-						];
+						// if (!stateless) {
+						// 	self.statelessUI[path] = element;
+						// }
+						// allComponents = [
+						// 	(stateless || element),
+						// ];
+						allComponents = [element];
 					}
 					elements = [ 
 						...elements,
