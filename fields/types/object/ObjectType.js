@@ -3,6 +3,7 @@ var FieldType = require('../Type');
 var util = require('util');
 var utils = require('keystone-utils');
 var _map = require('lodash/map');
+const _ = require('lodash');
 
 var isReserved = require('../../../lib/list/isReserved');
 
@@ -149,9 +150,9 @@ object.prototype.addFilterToQuery = function (filter) { };
  * Asynchronously confirms that the provided value is valid
  */
 object.prototype.validateInput = function (data, callback) {
-	// TODO
-	var value = this.getValueFromData(data);
-	var result = true;
+	// var value = this.getValueFromData(data);
+	const result = true;
+	// TODO deep validate from each of field
 	utils.defer(callback, result);
 };
 
@@ -160,8 +161,10 @@ object.prototype.validateInput = function (data, callback) {
  */
 object.prototype.validateRequiredInput = function (item, data, callback) {
 	// TODO
-	var value = this.getValueFromData(data);
-	var result = true;
+	const value = this.getValueFromData(data);
+	const fieldLength = this.fieldsArray.length;
+	console.log('>>>>>>>>> ', this.fieldsArray, value);
+	const result = _.keys(value).length === fieldLength;
 	utils.defer(callback, result);
 };
 

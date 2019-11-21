@@ -1,6 +1,8 @@
 var async = require('async');
+const _ = require('lodash');
 var FieldType = require('../Type');
 var util = require('util');
+const keystone = require('./../../../');
 var utils = require('keystone-utils');
 
 var isReserved = require('../../../lib/list/isReserved');
@@ -144,9 +146,27 @@ list.prototype.addFilterToQuery = function (filter) { };
  * Asynchronously confirms that the provided value is valid
  */
 list.prototype.validateInput = function (data, callback) {
-	// TODO
-	// var value = this.getValueFromData(data);
+	var value = this.getValueFromData(data);
 	var result = true;
+	// If the value is null, undefined or an empty string
+	// bail early since updateItem sanitizes that just fine
+	if (!!value) {
+		// If the value is not an array, convert it to one
+		// e.g. if textarr = 'somestring' (which is valid)
+		if (!_.isArray(value)) {
+			value = [value];
+		}
+		let invalidContent = true;
+		for (let i = 0; i < value.length; i++) {
+			let thisValue = value[i];
+			// If even a single item is not a string or an empty string, invalidate
+			if (!thisValue) {
+				invalidContent = false;
+				break;
+			}
+		}
+		result = !invalidContent;
+	}
 	utils.defer(callback, result);
 };
 
@@ -154,9 +174,28 @@ list.prototype.validateInput = function (data, callback) {
  * Asynchronously confirms that the a value is present
  */
 list.prototype.validateRequiredInput = function (item, data, callback) {
-	// TODO
-	// var value = this.getValueFromData(data);
-	var result = true;
+	var value = this.getValueFromData(data);
+	var result = false;
+	const newItem = (item.get && item.get(this.path)) || item[this.path] || [];
+	// If the value is undefined and we have something stored already, validate
+	if (value === undefined) {
+		if (newItem.length) {
+			result = true;
+		}
+	}
+	// If it's a string that's not empty, validate
+	if (_.isArray(value)) {
+		let invalidContent = true;
+		for (let i = 0; i < value.length; i++) {
+			let thisValue = value[i];
+			// If even a single item is not a string or an empty string, invalidate
+			if (!thisValue) {
+				invalidContent = false;
+				break;
+			}
+		}
+		result = !invalidContent;
+	}
 	utils.defer(callback, result);
 };
 

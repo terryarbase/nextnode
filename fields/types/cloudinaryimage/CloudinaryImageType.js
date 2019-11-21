@@ -396,9 +396,9 @@ cloudinaryimage.prototype.isModified = function (item) {
 };
 
 
-function validateInput (value) {
+function validateInput (value, force) {
 	// undefined values are always valid
-	if (value === undefined || value === null || value === '') return true;
+	if (!force && (value === undefined || value === null || value === '')) return true;
 	// If a string is provided, check it is an upload or delete instruction
 	// TODO: This should really validate files as well, but that's not pased to this method
 	if (typeof value === 'string' && /^(upload\:)|(delete$)|(data:[a-z\/]+;base64)|(https?\:\/\/)/.test(value)) return true;
@@ -421,10 +421,12 @@ cloudinaryimage.prototype.validateInput = function (data, callback) {
  * Validates that input has been provided
  */
 cloudinaryimage.prototype.validateRequiredInput = function (item, data, callback) {
+	var value = this.getValueFromData(data);
+	const newItem = (item.get && item.get(this.path)) || item[this.path];
 	// TODO: We need to also get the `files` argument, so we can check for
 	// uploaded files. without it, this will return false negatives so we
 	// can't actually validate required input at the moment.
-	var result = true;
+	var result = validateInput(value, true) || !!newItem;
 	// var value = this.getValueFromData(data);
 	// var result = (value || item.get(this.path).public_id) ? true : false;
 	utils.defer(callback, result);

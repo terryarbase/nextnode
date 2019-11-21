@@ -19,6 +19,22 @@
 	"msg_invalid_field": "請確保所填寫的資料正確",
 	"msg_forbidden_field": "您無權更改此資料",
 
+	"msg_required_file_field": "請選擇文件",
+	"msg_invalid_file_field": "請確保文件正確",
+	"msg_forbidden_file_field": "不允许您更改文件",
+	"msg_required_date_field": "請選擇日期",
+	"msg_invalid_date_field": "請確保日期正確",
+	"msg_forbidden_date_field": "不允许您更改日期",
+	"msg_required_object_field": "請選擇任何項目",
+	"msg_invalid_object_field": "請確保項目正確",
+	"msg_forbidden_object_field": "不允许您更改項目",
+
+	"msg_required_item_field": "請添加項目",
+	"msg_invalid_item_field": "請確保項目正確",
+	"msg_forbidden_item_field": "不允许您更改項目",
+
+	"msg_update_error": "此項目無法更新",
+
 	"msg_drilldown_invalid": "{{key}}無效：路徑{{path}}上的字段沒有數據關係。",
 	"msg_nodelete_permission": "無法刪除列表",
 	"msg_delete_yourself": "你不應該刪除自己的唯一數據",

@@ -19,6 +19,21 @@
 	"msg_invalid_field": "请确保所填写的资料正确",
 	"msg_forbidden_field": "您无权更改此资料",
 
+	"msg_required_file_field": "请选择文件",
+	"msg_invalid_file_field": "请确保文件正确",
+	"msg_forbidden_file_field": "不允许您更改文件",
+	"msg_required_date_field": "请选择日期",
+	"msg_invalid_date_field": "请确保日期正确",
+	"msg_forbidden_date_field": "不允许您更改日期",
+	"msg_required_object_field": "请选择任何项目",
+	"msg_invalid_object_field": "请确保项目正确",
+	"msg_forbidden_object_field": "不允许您更改项目",
+
+	"msg_required_item_field": "请添加项目",
+	"msg_invalid_item_field": "请确保项目正确",
+	"msg_forbidden_item_field": "不允许您更改项目",
+
+	"msg_update_error": "此项目无法更新",
 
 	"msg_drilldown_invalid": "{{key}}无效：路径{{path}}上的字段没有数据关系。",
 	"msg_nodelete_permission": "无法删除列表",
