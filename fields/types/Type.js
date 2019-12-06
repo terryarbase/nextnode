@@ -154,9 +154,9 @@ Field.prototype.getOptions = function () {
 			optionKeys = optionKeys.concat(this._properties);
 		}
 		optionKeys.forEach(function (key) {
-			if (this[key]) {
+			if (_.has(this, key)) {
 				this.__options[key] = this[key];
-			} else if (this.options[key]) {
+			} else if (_.has(this.options, key)) {
 				this.__options[key] = this.options[key];
 			}
 		}, this);

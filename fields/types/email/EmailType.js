@@ -12,6 +12,9 @@ var utils = require('keystone-utils');
 function email (list, path, options) {
 	this._nativeType = String;
 	this._underscoreMethods = ['gravatarUrl'];
+	this._properties = [
+		'mask',
+	];
 	this.typeDescription = 'email address';
 	email.super_.call(this, list, path, options);
 }

@@ -156,22 +156,23 @@ relationship.prototype.validateInput = function (data, callback) {
 	var value = this.getValueFromData(data);
 	// console.log('> ', this.path, data, value);
 	var result = false;
-	// if (value === undefined || value === null || value === '') {
-	// 	result = true;
-	// } else {
-	if (this.many) {
-		if (!Array.isArray(value) && typeof value === 'string' && value.length) {
-			value = [value];
-		}
-		if (_.isArray(value)) {
-			result = true;
-		}
+	if (!value) {
+		result = true;
 	} else {
-		if (typeof value === 'string' && value.length) {
-			result = true;
-		}
-		if (typeof value === 'object' && value.id) {
-			result = true;
+		if (this.many) {
+			if (!Array.isArray(value) && typeof value === 'string' && value.length) {
+				value = [value];
+			}
+			if (_.isArray(value)) {
+				result = true;
+			}
+		} else {
+			if (typeof value === 'string' && value.length) {
+				result = true;
+			}
+			if (typeof value === 'object' && value.id) {
+				result = true;
+			}
 		}
 	}
 	// }

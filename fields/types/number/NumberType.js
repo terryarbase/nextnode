@@ -12,7 +12,15 @@ var utils = require('keystone-utils');
 function number (list, path, options) {
 	this._nativeType = Number;
 	this._fixedSize = 'small';
-	this._underscoreMethods = ['format'];
+	this._underscoreMethods = [
+		'format',
+	];
+	this._properties = [
+		'min',
+		'max',
+		'step',
+		'precision',
+	];
 	this.formatString = (options.format === false) ? false : (options.format || '0,0[.][000000000000]');
 	if (this.formatString && typeof this.formatString !== 'string') {
 		throw new Error('FieldType.Number: options.format must be a string.');
@@ -23,7 +31,10 @@ function number (list, path, options) {
 		'maximum',
 		'normal',
 	];
-	number.super_.call(this, list, path, options);
+	const newOptions = {
+		...options,
+	};
+	number.super_.call(this, list, path, newOptions);
 }
 number.properName = 'Number';
 util.inherits(number, FieldType);

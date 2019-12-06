@@ -20,6 +20,7 @@ function KeyText (list, path, options) {
 			id: String,
 		}
 	];
+	this._properties = ['mask'];
 	this._underscoreMethods = ['format'];
 	this.separator = options.separator || ' | ';
 	// representive the placeholder elements

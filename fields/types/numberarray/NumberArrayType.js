@@ -17,6 +17,13 @@ function numberarray (list, path, options) {
 	if (this._formatString && typeof this._formatString !== 'string') {
 		throw new Error('FieldType.NumberArray: options.format must be a string.');
 	}
+	this._properties = [
+		'totalLength',
+		'min',
+		'max',
+		'step',
+		'precision',
+	];
 	// representive the placeholder elements
 	this.placeholder = [
 		'minimum',
@@ -24,7 +31,10 @@ function numberarray (list, path, options) {
 		'normal',
 	];
 	this.separator = options.separator || ' | ';
-	numberarray.super_.call(this, list, path, options);
+	const newOptions = {
+		...options,
+	};
+	numberarray.super_.call(this, list, path, newOptions);
 }
 numberarray.properName = 'NumberArray';
 util.inherits(numberarray, FieldType);

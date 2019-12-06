@@ -10,6 +10,10 @@ var addPresenceToQuery = require('../../utils/addPresenceToQuery');
  */
 function textarray (list, path, options) {
 	this._nativeType = [String];
+	this._properties = [
+		'totalLength',
+		'mask',
+	];
 	this._underscoreMethods = ['format'];
 	this.separator = options.separator || ' | ';
 	// representive the placeholder elements
@@ -18,9 +22,7 @@ function textarray (list, path, options) {
 	];
 	const newOptions = {
 		...options,
-		...{
-			cloneable: true,	// for clone ui element everytime
-		},
+		cloneable: true,	// for clone ui element everytime
 	};
 	textarray.super_.call(this, list, path, newOptions);
 }

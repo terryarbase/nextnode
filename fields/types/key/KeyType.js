@@ -11,6 +11,7 @@ var utils = require('keystone-utils');
 function key (list, path, options) {
 	this._nativeType = String;
 	this._defaultSize = 'medium';
+	this._properties = ['mask'];
 	this.separator = options.separator || '-';
 	key.super_.call(this, list, path, options);
 }

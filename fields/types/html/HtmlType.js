@@ -17,9 +17,7 @@ function html (list, path, options) {
 
 	const newOptions = {
 		...options,
-		...{
-			cloneable: true,	// for clone ui element everytime
-		},
+		cloneable: true,	// for clone ui element everytime
 	};
 	html.super_.call(this, list, path, newOptions);
 }
