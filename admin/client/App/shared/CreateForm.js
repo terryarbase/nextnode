@@ -209,15 +209,20 @@ const CreateForm = React.createClass({
 			}
 			// Get the props for the input field
 			var fieldProps = this.getFieldProps(field);
+			const filters = this.props.list.getRelatedFilter(field, fieldProps.filters, this.props, this.state);
+			if (filters) {
+				fieldProps = {
+					...fieldProps,
+					filters,
+				};
+			}
 			fieldProps = {
 				...fieldProps,
-				...{
-					label: getTranslatedLabel(t, {
-						listKey: list.key, 
-						prefix: 'field', 
-						content: _.camelCase(fieldProps.path),
-					}),	
-				},
+				label: getTranslatedLabel(t, {
+					listKey: list.key, 
+					prefix: 'field', 
+					content: _.camelCase(fieldProps.path),
+				}),
 			};
 			if (fieldProps.note) {
 				fieldProps = {
