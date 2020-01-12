@@ -289,12 +289,16 @@ const CreateForm = React.createClass({
 						];
 					});
 				} else {
-					if (!stateless) {
-						self.statelessUI[path] = element;
+					if (field.multilingual) {
+						if (!stateless) {
+							self.statelessUI[path] = element;
+						}
+						allComponents = [
+							(stateless || element),
+						];
+					} else {
+						allComponents = [ element ];
 					}
-					allComponents = [
-						(stateless || element),
-					];
 				}
 				form = [ 
 					...form,

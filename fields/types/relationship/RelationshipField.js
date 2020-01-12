@@ -186,12 +186,8 @@ module.exports = Field.create({
 		} else {
 			value = '';
 		}
-		// console.log('> split: ', value);
 		value = _.map(value, v => ({ value: String(v) }));
-		// console.log('>>>>> value: ', selections, value);
 		value = _.intersectionBy(selections, value, 'value');
-		// console.log('>>>>> value: ', value);
-		// console.log(results, selected, value);
 		if (!many && value.length) {
 			value = value[0];
 		}

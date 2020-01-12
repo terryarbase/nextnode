@@ -1,5 +1,5 @@
-var ExMatch = require('expression-match'); // Matches objects with expressions
-
+var ExMatch 	= require('expression-match'); // Matches objects with expressions
+const _ 		= require('lodash');
 /**
  * Checks if something is an object
  *
@@ -22,6 +22,16 @@ module.exports = function evalDependsOn (dependsOn, values) {
 	if (!isObject(dependsOn) || !Object.keys(dependsOn).length) {
 		return true;
 	}
+
+	// let newDependsOn = _.assign({}, dependsOn);
+	// _.forOwn(newDependsOn, (v='', f='') => {
+	// 	if (f.startsWith('$')) {
+	// 		newDependsOn = {
+	// 			...newDependsOn,
+	// 			[f]: values[``]
+	// 		}
+	// 	}
+	// });
 
 	// Checks if the current field should be displayed, based on the values of
 	// other fields and the dependsOn configuration of this field
