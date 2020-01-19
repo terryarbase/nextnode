@@ -3,6 +3,14 @@ import {
 	LOAD_COUNTS,
 	COUNTS_LOADING_SUCCESS,
 	COUNTS_LOADING_ERROR,
+
+	LOAD_GENDER_STATISTIC,
+	LOAD_GENDER_STATISTIC_SUCCESS,
+	LOAD_GENDER_STATISTIC_ERROR,
+
+	LOAD_JOIN_STATISTIC,
+	LOAD_JOIN_STATISTIC_SUCCESS,
+	LOAD_JOIN_STATISTIC_ERROR,
 } from './constants';
 import { NETWORK_ERROR_RETRY_DELAY } from '../../../constants';
 
@@ -62,5 +70,89 @@ export function countsLoadingError (error) {
 		setTimeout(() => {
 			dispatch(loadCounts());
 		}, NETWORK_ERROR_RETRY_DELAY);
+	};
+}
+
+
+
+// dashbarod event
+export function loadGenderStatistic () {
+	return (dispatch) => {
+		dispatch({
+			type: LOAD_GENDER_STATISTIC,
+		});
+		xhr({
+			url: `${Keystone.adminPath}/api/init/dashboard/gender`,
+		}, (err, resp, body) => {
+			if (err) {
+				dispatch(loadGenderStatisticError(err));
+				return;
+			}
+			try {
+				body = JSON.parse(body);
+				dispatch(genderStatisticLoaded(body));
+			} catch (e) {
+				console.log('Error parsing results json:', e, body);
+				dispatch(loadGenderStatisticError(e));
+				return;
+			}
+		});
+	};
+}
+
+export function genderStatisticLoaded (data) {
+	return {
+		type: LOAD_GENDER_STATISTIC_SUCCESS,
+		data,
+	};
+}
+
+export function loadGenderStatisticError (error) {
+	return (dispatch, getState) => {
+		dispatch({
+			type: LOAD_GENDER_STATISTIC_ERROR,
+			error,
+		});
+	};
+}
+
+
+export function loadJoinStatistic () {
+	return (dispatch) => {
+		dispatch({
+			type: LOAD_JOIN_STATISTIC,
+		});
+		xhr({
+			url: `${Keystone.adminPath}/api/init/dashboard/join`,
+		}, (err, resp, body) => {
+			if (err) {
+				dispatch(loadJoinStatisticError(err));
+				return;
+			}
+			try {
+				body = JSON.parse(body);
+				dispatch(joinStatisticLoaded(body));
+			} catch (e) {
+				console.log('Error parsing results json:', e, body);
+				dispatch(loadJoinStatisticError(e));
+				return;
+			}
+		});
+	};
+}
+
+export function joinStatisticLoaded (data) {
+	return {
+		type: LOAD_JOIN_STATISTIC_SUCCESS,
+		data,
+	};
+}
+
+export function loadJoinStatisticError (error) {
+	return (dispatch, getState) => {
+		dispatch({
+			type: LOAD_JOIN_STATISTIC_ERROR,
+			error,
+		});
 	};
 }

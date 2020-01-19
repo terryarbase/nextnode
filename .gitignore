@@ -27,6 +27,7 @@ static/locale.json*
 lib-cov
 src*
 build*
+data/*
 
 docs/_dist
 admin/public/styles/auth.css

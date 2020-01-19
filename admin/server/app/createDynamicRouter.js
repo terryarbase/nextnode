@@ -107,6 +107,11 @@ module.exports = function createDynamicRouter (keystone) {
 	router.post('/api/register', require('../api/common/register'));
 	// }
 
+	// dashboard api
+	// TODO: use dashboard model to control all of statistic pipeline
+	router.get('/api/init/dashboard/gender', require('../api/dashboard/gender'));
+	router.get('/api/init/dashboard/join', require('../api/dashboard/join'));
+
 	router.get(
 		'/api/:list',
 		initList,
@@ -144,6 +149,8 @@ module.exports = function createDynamicRouter (keystone) {
 			new Account(req, res).updateMyProfile();
 		}
 	);
+
+
 	// realtime save
 	// router.post('/api/:list/realtime',
 	// 	initList,

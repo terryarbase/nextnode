@@ -27,6 +27,20 @@ const locales = {
       msg:'您的个人资料已成功更改。 您可以在下次登录时获取最新的个人资料。',
 
    },
+   dashboard: {
+      memberStatisitc: '会员统计信息',
+      restaurantStatistic: '餐馆统计信息',
+      genderTitle: '性别比例',
+      genderFemale: '女',
+      genderMale: '男',
+      genderNotToTell: '沒有透露',
+      genderUnknown: '不詳',
+      joinTitle: '会员加入',
+      joinSubTitle: '会员加入总数',
+      restaurantTitle: "最受欢迎餐厅",
+      restaurantTypeTitle: "最受欢迎的餐厅类型",
+      restaurantType: "餐厅类型",
+   },
    message: {
       noItemMerchantId: '沒有項目匹配ID',
       goBackTo: '回去',
