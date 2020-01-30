@@ -1,0 +1,3 @@
+export const LOAD_SUMMARY = 'app/Custom/LOAD_SUMMARY';
+export const SUMMARY_LOADING_SUCCESS = 'app/Custom/SUMMARY_LOADING_SUCCESS';
+export const SUMMARY_LOADING_ERROR = 'app/Custom/SUMMARY_LOADING_ERROR';

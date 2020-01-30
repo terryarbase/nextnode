@@ -9,6 +9,8 @@ import { Link } from 'react-router';
 import { css } from 'glamor';
 import { connect } from 'react-redux';
 
+import Custom from './screens/Custom';
+
 import MobileNavigation from './components/Navigation/Mobile';
 import AdminMenuNav from './components/Navigation/AdminMenu/AdminMenuNav';
 import PrimaryNavigation from './components/Navigation/Primary';
@@ -27,30 +29,35 @@ const classes = {
 };
 
 const App = (props) => {
-	// console.log(props);
 	const listsByPath = require('../utils/lists').listsByPath;
 	let children = props.children;
 	// Determine show the nav, excluding dashboard
-	const { params: { listId } } = props;
+	const { params: { listId, itemId } } = props;
 	var isShowNav = !!listId;
 	// If we're on either a list or an item view
 	let currentList, currentSection;
 	if (props.params.listId) {
-		currentList = listsByPath[props.params.listId];
-		// If we're on a list path that doesn't exist (e.g. /keystone/gibberishasfw34afsd) this will
-		// be undefined
-		if (!currentList) {
+		if (props.params.listId === 'custom') {
 			children = (
-				<Container>
-					<p>List not found!</p>
-					<Link to={`${Keystone.adminPath}`}>
-						Go back home
-					</Link>
-				</Container>
-			);
+				<Custom {...props} customKey={itemId}/>
+			)
 		} else {
-			// Get the current section we're in for the navigation
-			currentSection = Keystone.nav.by.list[currentList.key];
+			currentList = listsByPath[props.params.listId];
+			// If we're on a list path that doesn't exist (e.g. /keystone/gibberishasfw34afsd) this will
+			// be undefined
+			if (!currentList) {
+				children = (
+					<Container>
+						<p>List not found!</p>
+						<Link to={`${Keystone.adminPath}`}>
+							Go back home
+						</Link>
+					</Container>
+				);
+			} else {
+				// Get the current section we're in for the navigation
+				currentSection = Keystone.nav.by.list[currentList.key];
+			}
 		}
 	}
 	// console.log('Keystone: ', Keystone);

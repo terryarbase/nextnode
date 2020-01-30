@@ -8,6 +8,7 @@ import listsReducer from './screens/List/reducers/main';
 import activeReducer from './screens/List/reducers/active';
 import itemReducer from './screens/Item/reducer';
 import homeReducer from './screens/Home/reducer';
+import customReducer from './screens/Custom/reducer';
 
 import rootSaga from './sagas';
 
@@ -19,6 +20,7 @@ const reducers = combineReducers({
 	item: itemReducer,
 	home: homeReducer,
 	routing: routerReducer,
+	custom: customReducer,
 });
 
 const sagaMiddleware = createSagaMiddleware();

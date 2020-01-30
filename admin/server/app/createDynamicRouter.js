@@ -91,6 +91,7 @@ module.exports = function createDynamicRouter (keystone) {
 
 	// lists
 	router.all('/api/counts', initDataPermission, require('../api/counts'));
+
 	// if (serviceWorker) {
 	/*
 	** register for the current login user (e.g. browser device id)
