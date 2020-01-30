@@ -32,6 +32,7 @@ ReactDOM.render(
 		<Router history={history}>
 			<Route path={Keystone.adminPath} component={App}>
 				<IndexRoute component={Home} />
+				<Route path="sys/:listId/:itemId" component={Home} />
 				<Route path=":listId" component={List} />
 				<Route path=":listId/:itemId" component={Item} />
 			</Route>

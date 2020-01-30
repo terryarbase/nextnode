@@ -289,6 +289,8 @@ const locales = {
          'field-updatedAt':'最後更新於',
          'heading-meta':'資訊內容',
          'field-delegated': '系統預設',
+         'table_analytics': '數據分析',
+         'ctrl_analytics': '數據分析',
       },
       ...((Keystone.appLanguage && Keystone.appLanguage.zhtw) || {}),
    },

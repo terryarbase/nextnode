@@ -4,6 +4,7 @@
  */
 
 import React from 'react';
+import _ from 'lodash';
 import { Container } from './elemental';
 import { Link } from 'react-router';
 import { css } from 'glamor';
@@ -34,29 +35,66 @@ const App = (props) => {
 	const { params: { listId } } = props;
 	var isShowNav = !!listId;
 	// If we're on either a list or an item view
-	let currentList, currentSection;
+	let currentList;
+	let currentSection;
 	if (props.params.listId) {
-		currentList = listsByPath[props.params.listId];
-		// If we're on a list path that doesn't exist (e.g. /keystone/gibberishasfw34afsd) this will
-		// be undefined
-		if (!currentList) {
-			children = (
-				<Container>
-					<p>List not found!</p>
-					<Link to={`${Keystone.adminPath}`}>
-						Go back home
-					</Link>
-				</Container>
-			);
+		if (listId !== 'ctrl') {
+			currentList = listsByPath[props.params.listId];
+			// If we're on a list path that doesn't exist (e.g. /keystone/gibberishasfw34afsd) this will
+			// be undefined
+			if (!currentList) {
+				children = (
+					<Container>
+						<p>List not found!</p>
+						<Link to={`${Keystone.adminPath}`}>
+							Go back home
+						</Link>
+					</Container>
+				);
+			} else {
+				// Get the current section we're in for the navigation
+				currentSection = Keystone.nav.by.list[currentList.key];
+			}
 		} else {
-			// Get the current section we're in for the navigation
-			currentSection = Keystone.nav.by.list[currentList.key];
+			const {
+				params: {
+					itemId,
+				},
+			} = props;
+
+			currentSection = {
+				key: `ctrl_${itemId}`,
+			};
 		}
 	}
 	// console.log('Keystone: ', Keystone);
 	// Default current section key to dashboard
 	const currentSectionKey = (currentSection && currentSection.key) || 'dashboard';
 	const { style: { nav } } = Keystone;
+	const newSections = {
+		promotion: [
+			{
+		        label: 'Analytics',
+		        key: 'analytics',
+		        path: 'sys/ctrl/analytics',
+		    },
+		],
+	};
+	const menuSections = _.reduce(Keystone.nav.sections, (a, s) => {
+		if (newSections[s.key]) {
+			return [
+				...a,
+				{
+					...s,
+					lists: [
+						...s.lists,
+						...newSections[s.key],
+					],
+				},
+			];
+		}
+		return [ ...a, s ];
+	}, []);
 	return (
 		<div className={css(classes.wrapper)}>
 			{isShowNav ?
@@ -65,7 +103,7 @@ const App = (props) => {
 					currentSectionKey={currentSectionKey}
 					currentListKey={props.params.listId}
 					brand={Keystone.brand}
-					sections={Keystone.nav.sections}
+					sections={menuSections}
 					signoutUrl={Keystone.signoutUrl}
 					User={Keystone.User}
 					user={Keystone.user}
@@ -79,7 +117,7 @@ const App = (props) => {
 						brand={Keystone.brand}
 						currentListKey={props.params.listId}
 						currentSectionKey={currentSectionKey}
-						sections={Keystone.nav.sections}
+						sections={menuSections}
 						signoutUrl={Keystone.signoutUrl}
 						User={Keystone.User}
 						user={Keystone.user}
@@ -88,7 +126,7 @@ const App = (props) => {
 					<PrimaryNavigation
 						currentSectionKey={currentSectionKey}
 						brand={Keystone.brand}
-						sections={Keystone.nav.sections}
+						sections={menuSections}
 						signoutUrl={Keystone.signoutUrl}
 						User={Keystone.User}
 						user={Keystone.user}

@@ -6,6 +6,7 @@ const locales = {
          signOut:'Sign Out',
          language:'Language',
          cancel:'Cancel',
+         
       },
       ...((Keystone.menuLanguage && Keystone.menuLanguage.en) || {}),
    },
@@ -287,6 +288,8 @@ const locales = {
          'field-createdBy':'First Created By',
          'field-updatedAt':'Last Updated',
          'heading-meta':'Meta Info',
+         'table_analytics': 'Analytics',
+         'ctrl_analytics': 'Analytics',
          'field-delegated': 'Delegated',
       },
       ...((Keystone.appLanguage && Keystone.appLanguage.en) || {}),
