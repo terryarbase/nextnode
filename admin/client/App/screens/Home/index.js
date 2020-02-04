@@ -11,6 +11,7 @@ import { translate } from "react-i18next";
 import Lists from './components/Lists';
 import Section from './components/Section';
 import AlertMessages from '../../shared/AlertMessages';
+import Summary from '../Custom/summary';
 import {
 	loadCounts,
 } from './actions';
@@ -46,6 +47,7 @@ var HomeView = React.createClass({
 						<div className="dashboard-heading">{Keystone.brand}</div>
 					</div> */
 				}
+				<Summary {...this.props}/>
 				<div className="dashboard-groups">
 					{(this.props.error) && (
 						<AlertMessages
