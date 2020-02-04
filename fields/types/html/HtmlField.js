@@ -56,7 +56,6 @@ module.exports = Field.create({
 		};
 		// console.log('initWysiwyg: ', this.props.value);
 		this._currentValue = this.props.value;
-		// console.log('opts: ', opts);
 		tinymce.init(opts);
 		if (evalDependsOn(this.props.dependsOn, this.props.values)) {
 			this.setState({ wysiwygActive: true });
@@ -127,7 +126,7 @@ module.exports = Field.create({
 				Keystone.wysiwyg.options,
 				this.props.wysiwyg
 			);
-		var toolbar = options.overrideToolbar ? '' : 'bold italic | alignleft aligncenter alignright | bullist numlist | outdent indent | removeformat | link ';
+		var toolbar = options.overrideToolbar ? options.overrideToolbar : 'bold italic | alignleft aligncenter alignright | bullist numlist | outdent indent | removeformat | link ';
 		var i;
 
 		if (options.enableImages) {
@@ -190,6 +189,13 @@ module.exports = Field.create({
 		if (options.additionalOptions) {
 			Object.assign(opts, options.additionalOptions);
 		}
+
+		// Object.assign(opts, {
+		// 	images_upload_handler: function (blobInfo, success, failure) {
+
+		// 		success("data:" + blobInfo.blob().type + ";base64," + blobInfo.base64());
+		// 	}
+		// });
 
 		return opts;
 	},

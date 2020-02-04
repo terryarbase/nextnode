@@ -15,7 +15,7 @@ export function loadSummary () {
 			type: LOAD_SUMMARY,
 		});
 		xhr({
-			url: `/api/summary`,
+			url: `/api/internal/summary`,
 		}, (err, resp, body) => {
 			if (err) {
 				dispatch(summaryLoadingError(err));
