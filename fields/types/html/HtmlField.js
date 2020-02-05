@@ -134,6 +134,11 @@ module.exports = Field.create({
 			toolbar += ' | image';
 		}
 
+		if (options.enableLocalImagesUploads) {
+			plugins.push('uploadloaclimage');
+			toolbar += ' | uploadloaclimage';
+		}
+
 		if (options.enableCloudinaryUploads || options.enableS3Uploads) {
 			plugins.push('uploadimage');
 			toolbar += options.enableImages ? ' uploadimage' : ' | uploadimage';
@@ -175,6 +180,7 @@ module.exports = Field.create({
 		};
 
 		if (this.shouldRenderField()) {
+			opts.uploadlocalimage_form_url = options.enableLocalImagesUploads ? options.uploadlocalimage_form_url : null
 			opts.uploadimage_form_url = options.enableS3Uploads ? Keystone.adminPath + '/api/s3/upload' : Keystone.adminPath + '/api/cloudinary/upload';
 		} else {
 			Object.assign(opts, {

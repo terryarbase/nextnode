@@ -1,18 +1,13 @@
 (function() {
 	tinymce.create('tinymce.plugins.uploadloaclimage', {
 		init: function(ed, url) {
-			console.log('> url', url)
 			// Register commands
 			ed.addCommand('mceUploadImage', function() {
-
-				var displayImage = function( base64 ) {
-					if ( ! base64 ) {
-						return false;
-					}
-
+                var upload_url = ed.settings.uploadlocalimage_form_url
+				var displayImage = function(src) {
 					var tpl = '<img src="%s" />';
 
-					ed.insertContent(tpl.replace('%s', base64));
+					ed.insertContent(tpl.replace('%s', src));
 
 					ed.focus();
 
@@ -31,26 +26,56 @@
 				 *
 				 * @return {Function}          The callback function result.
 				 */
-				var getBase64FromInput = function( input, callback ) {
+				// var getBase64FromInput = function( input, callback ) {
 
-					var filesSelected = document.getElementById( input ).files;
+				// 	var filesSelected = document.getElementById( input ).files;
 
-					if ( filesSelected.length > 0 )
-					{
-						var fileToLoad = filesSelected[0],
-							fileReader = new FileReader();
+				// 	if ( filesSelected.length > 0 )
+				// 	{
+				// 		var fileToLoad = filesSelected[0],
+				// 			fileReader = new FileReader();
 
-						fileReader.readAsDataURL(fileToLoad);
+				// 		fileReader.readAsDataURL(fileToLoad);
 
-						fileReader.onload = function(fileLoadedEvent) {
+				// 		fileReader.onload = function(fileLoadedEvent) {
 
-							return callback( fileLoadedEvent.target.result );
+				// 			return callback( fileLoadedEvent.target.result );
+				// 		};
+				// 	}
+				// 	else
+				// 	{
+				// 		return callback( false );
+				// 	}
+                // };
+                
+                var uploadImageFromInput = function(input, callback) {
+
+                    var filesSelected = document.getElementById(input).files;
+                    
+                    if ( filesSelected.length > 0 ) {
+                        var fileToLoad = filesSelected[0]
+                        var xhr, formData;
+
+                        xhr = new XMLHttpRequest();
+                        xhr.withCredentials = false;
+                        xhr.open('POST', upload_url);
+
+                        xhr.onload = function() {
+							try {
+								var json = JSON.parse(xhr.responseText);
+								if (json.src) {
+									callback(json.src)
+								}
+							} catch(err) {
+								console.log('upload local image error:', err)
+							}
 						};
-					}
-					else
-					{
-						return callback( false );
-					}
+
+                        formData = new FormData();
+                        formData.append('image', fileToLoad);
+
+                        xhr.send(formData);
+                    }
 				};
 
 				ed.windowManager.open({
@@ -61,15 +86,13 @@
 							'<div class="mce-container" hidefocus="1" tabindex="-1">' +
 								'<div class="mce-container-body">' +
 									'<label>Select a file<br />' +
-									'<input type="file" name="file" id="upload-image" accept="image/*" class="mce-textbox mce-placeholder" hidefocus="true">' +
+									'<input type="file" name="file" id="upload-local-image" accept="image/*" class="mce-textbox mce-placeholder" hidefocus="true">' +
 								'</label></div>' +
 							'</div>' +
 						'</form>'
 					}],
-					onSubmit: function(){
-
-						getBase64FromInput( 'upload-image', displayImage );
-
+					onSubmit: function() {
+                        uploadImageFromInput('upload-local-image', displayImage);
 						return false;
 					}
 				});
@@ -96,4 +119,3 @@
 
 	tinymce.PluginManager.add('uploadloaclimage', tinymce.plugins.uploadloaclimage);
 })();
-
