@@ -70,7 +70,8 @@ var ListImportForm = React.createClass({
 				<ListHeaderButton
 					active={this.state.isOpen}
 					id="listHeaderImportButton"
-					glyph="cloud-download"
+					glyph="cloud-import"
+					color="success"
 					label={t('label')}
 					onClick={() => this.togglePopout(!this.state.isOpen)}
 				/>

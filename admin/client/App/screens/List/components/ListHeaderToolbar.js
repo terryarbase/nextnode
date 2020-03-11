@@ -177,7 +177,7 @@ function ListHeaderToolbar ({
 						</ButtonDivider>
 					</Section>}
 					{
-						!noimport ? 
+						createIsAvailable && !noimport ? 
 						<Section cssStyles={classes.import}>
 							<ListImportForm
 								currentLang={isLocale ? currentLang : null}
