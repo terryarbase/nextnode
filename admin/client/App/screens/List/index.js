@@ -344,6 +344,7 @@ const ListView = React.createClass({
 			nocreate,
 			plural,
 			singular,
+			noimport,
 			nodownload,
 			nofilter,
 			noscale,
@@ -404,6 +405,7 @@ const ListView = React.createClass({
 					columnsAvailable={this.props.currentList.columns}
 
 					// button flags
+					noimport={noimport}
 					nodownload={nodownload}
 					nofilter={nofilter}
 					noscale={noscale}

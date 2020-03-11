@@ -151,6 +151,12 @@ module.exports = function createDynamicRouter (keystone) {
 		initDataPermission,
 		require('../api/list/delete'),
 	);
+	router.post(
+		'/api/:list/import',
+		initList, checkPermission(2),
+		initDataPermission,
+		require('../api/list/import'),
+	);
 	// router.post('/api/:list/delete', initList, checkPermission(2), require('../api/list/delete'));
 	// items
 	router.get(

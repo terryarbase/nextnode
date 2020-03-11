@@ -10,6 +10,7 @@ import theme from '../../../../theme';
 
 import ListColumnsForm from './ListColumnsForm';
 import ListDownloadForm from './ListDownloadForm';
+import ListImportForm from './ListImportForm';
 import ListHeaderSearch from './ListHeaderSearch';
 import LocalizationSelector from '../../../components/Localization';
 
@@ -75,6 +76,7 @@ function ListHeaderToolbar ({
 	columnsAvailable,
 	columnsActive,
 
+	noimport,
 	nodownload,
 	nofilter,
 	noscale,
@@ -174,6 +176,18 @@ function ListHeaderToolbar ({
 							/>
 						</ButtonDivider>
 					</Section>}
+					{
+						!noimport ? 
+						<Section cssStyles={classes.import}>
+							<ListImportForm
+								currentLang={isLocale ? currentLang : null}
+								activeColumns={columnsActive}
+								dispatch={dispatch}
+								list={list}
+								t={t}
+							/>
+						</Section> : null
+					}
 				</Group>
 			</Section>
 		</Group>

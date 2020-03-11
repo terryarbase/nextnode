@@ -13,6 +13,7 @@
 	"msg_delete_yourself": "你不应该删除自己的唯一数据",
 	"msg_permission_denied": "你没有被允许",
 	"msg_invalid_path_update": "在列表{{key}}中更新{{fields}}指定的路径无效",
+	"msg_noimport_permission": "无法汇入列表",
 
 	"title_notallowed": "不允許",
 	"title_validation_error": "验证错误",
