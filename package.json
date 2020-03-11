@@ -39,6 +39,7 @@
     "connect-flash": "0.1.1",
     "cookie-parser": "1.4.3",
     "csvexport": "^1.1.0",
+    "csv-parser": "^2.3.2",
     "debug": "^3.1.0",
     "display-name": "0.1.0",
     "dumb-passwords": "^0.2.1",
