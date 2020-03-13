@@ -1,9 +1,17 @@
 const _        = require('lodash');
 const fs       = require('fs');
 const csv      = require('csv-parser');
+const Promise  = require('bluebird');
 
-function toModelData(data) {
-	const item = {}
+function toModelData(keystone, data) {
+	const {
+		Types:{
+			ObjectId,
+		},
+	} = keystone.mongoose
+	const item = {
+		_id: ObjectId(),
+	}
 	_.forEach(data, (value, path) => {
 		let v = value
 		if (v === 'TRUE' || v === 'true') {
@@ -22,8 +30,13 @@ function toModelData(data) {
 }
 
 module.exports = async function (req, res) {
-	console.log('> api call success', req.files)
 	const keystone = req.keystone;
+	const {
+		Types:{
+			ObjectId,
+		},
+	} = keystone.mongoose
+
 	if (!keystone.security.csrf.validate(req)) {
 		console.log('Refusing to delete ' + req.list.key + ' items; CSRF failure');
 		return res.apiError(403, req.t.__('msg_invalid_csrf'));
@@ -40,8 +53,7 @@ module.exports = async function (req, res) {
 		let readCSV = fs.createReadStream(importFile.path, 'utf8')
         .pipe(csv())
         .on('data', data => {
-			const modelData = toModelData(data);
-			console.log('modelData', modelData);
+			const modelData = toModelData(keystone, data);
 			itemArray.push(modelData);
 		});
 
@@ -55,20 +67,28 @@ module.exports = async function (req, res) {
 	}
 
     try {
-		const session = await keystone.mongoose.startSession();
-        session.startTransaction();
-		const insertResult = await req.list.model.insertMany(itemArray, { session });
-        await session.commitTransaction();
-		session.endSession();
-		
+		console.log(`> [File Import] start insert ${itemArray.length} entry`)
+		// Save data for 20 process each round
+		const insertResult = await Promise.mapSeries(itemArray, async item => {
+			const entry = new req.list.model(item)
+			return await entry.save()
+		}, { concurrency: 20 })
+
+		console.log(`> [File Import] completed with ${insertResult.length} entry`)
 		return res.json({
 			success: true,
 			count: insertResult.length,
 		});
     } catch (err) {
-        console.log('> [File Import] insert error', err);
-        await session.abortTransaction();
-		session.endSession();
+		console.log('> [File Import] insert error', err);
+		// rollback
+		const ids = _.map(itemArray, item => item._id)
+		console.log('> [File Import] rollback ids', ids);
+		await req.list.model.deleteMany({
+			_id: {
+				$in: ids
+			}
+		});
 		return res.apiError(req.t.__('msg_db_error_withoutReason'), err);
 	}
 };
