@@ -460,12 +460,13 @@ var EditForm = React.createClass({
 							];
 						});
 					} else {
-						if (!stateless) {
-							self.statelessUI[path] = element;
-						}
-						allComponents = [
-							(stateless || element),
-						];
+						// if (!stateless) {
+						// 	self.statelessUI[path] = element;
+						// }
+						allComponents = [ element ];
+						// [
+						// 	(stateless || element),
+						// ];
 					}
 					elements = [ 
 						...elements,

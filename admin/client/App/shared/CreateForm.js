@@ -284,12 +284,13 @@ const CreateForm = React.createClass({
 						];
 					});
 				} else {
-					if (!stateless) {
-						self.statelessUI[path] = element;
-					}
-					allComponents = [
-						(stateless || element),
-					];
+					// if (!stateless) {
+					// 	self.statelessUI[path] = element;
+					// }
+					// allComponents = [
+					// 	(stateless || element),
+					// ];
+					allComponents = [ element ];
 				}
 				form = [ 
 					...form,

@@ -47,10 +47,12 @@ module.exports = function IndexRoute (req, res, isRender) {
 		// but if it's undefined, default it to "/"
 		backUrl = keystone.get('front url') || '/';
 	}
+	
 	if (keystone.get('rbac') && req.user) {
 		// console.log(keystone.get('nav'));
 		const newNav = keystone.mergeNavOptionWithReservedCollections();
 		keystone.nav = keystone.initNav(newNav, req.roleList);
+
 		Object.keys(lists).forEach(key => {
 			const listKey = lists[key].key;
 			if (req.roleList[listKey]) {
