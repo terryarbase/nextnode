@@ -153,6 +153,13 @@ const locales = {
       selectNone:'Select None',
 
    },
+   import:{  
+      label:'Import',
+      fileUpload:'CSV :',
+      upload:'Upload',
+      change:'Change File',
+      cancel:'Cancel',
+   },
    manage:{  
       label:'Manage',
       page:'Page ',
