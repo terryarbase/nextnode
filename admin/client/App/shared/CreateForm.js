@@ -94,6 +94,7 @@ const CreateForm = React.createClass({
 			onChange: this.handleChange,
 			mode: 'create',
 			key: field.path,
+			defaultLang: this.props.defaultLang,
 		};
 	},
 	renderLanguageSelector() {

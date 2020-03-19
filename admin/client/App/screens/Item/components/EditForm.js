@@ -99,6 +99,7 @@ var EditForm = React.createClass({
 		props.value = this.props.list.getProperlyValue({ field, isLocale, currentLang, values });
 		props.values = values;
 		props.currentLang = currentLang;
+		props.defaultLang = this.props.defaultLang;
 		props.onChange = this.handleChange;
 		props.mode = 'edit';
 		props.isCore = this.props.list.isCore;
