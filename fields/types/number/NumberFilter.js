@@ -42,13 +42,13 @@ var NumberFilter = React.createClass({
 		const self = this;
 		return function handleChange (e) {
 			const { filter, onChange } = self.props;
-
+			const number = _.toNumber(e.target.value)
 			switch (type) {
 				case 'minValue':
 					onChange({
 						mode: filter.mode,
 						value: {
-							min: e.target.value,
+							min: number,
 							max: filter.value.max,
 						},
 					});
@@ -58,14 +58,14 @@ var NumberFilter = React.createClass({
 						mode: filter.mode,
 						value: {
 							min: filter.value.min,
-							max: e.target.value,
+							max: number,
 						},
 					});
 					break;
 				case 'value':
 					onChange({
 						mode: filter.mode,
-						value: e.target.value,
+						value: number,
 					});
 			}
 		};
@@ -99,6 +99,7 @@ var NumberFilter = React.createClass({
 							placeholder="Min."
 							ref="focusTarget"
 							type="number"
+							value={this.props.filter.value.min}
 						/>
 					</Grid.Col>
 					<Grid.Col>
@@ -106,6 +107,7 @@ var NumberFilter = React.createClass({
 							onChange={this.handleChangeBuilder('maxValue')}
 							placeholder="Max."
 							type="number"
+							value={this.props.filter.value.max}
 						/>
 					</Grid.Col>
 				</Grid.Row>
@@ -117,6 +119,7 @@ var NumberFilter = React.createClass({
 					placeholder={placeholder}
 					ref="focusTarget"
 					type="number"
+					value={this.props.filter.value}
 				/>
 			);
 		}
