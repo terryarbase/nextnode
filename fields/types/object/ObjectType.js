@@ -2,7 +2,7 @@ var async = require('async');
 var FieldType = require('../Type');
 var util = require('util');
 var utils = require('keystone-utils');
-var _map = require('lodash/map');
+var _ = require('lodash');
 
 var isReserved = require('../../../lib/list/isReserved');
 
@@ -55,7 +55,7 @@ object.prototype.addToSchema = function (schema) {
 
 	if (typeof fieldsSpec !== 'object' || !Object.keys(fieldsSpec).length) {
 		throw new Error(
-			'List field ' + field.list.key + '.' + field.path
+			'Object field ' + field.list.key + '.' + field.path
 			+ ' must be configured with `fields`.'
 		);
 	}
@@ -134,10 +134,12 @@ object.prototype.getProperties = function (item, separator) {
 /**
  * Formats the field value
  */
-object.prototype.format = function (item, separator) {
-	// TODO: How should we format nested items? Returning length for now.
-	var items = item.get(this.path) || [];
-	return utils.plural(items.length, '* Value', '* Values');
+object.prototype.format = function (item, options) {
+	let data = _.get(item.get(this.path), '_doc', {});
+	const pickList = _.difference(_.keys(data), [
+		'_id',
+	])
+	return _.pick(data, pickList);
 };
 
 // TODO: How should we filter object values?
@@ -170,7 +172,7 @@ object.prototype.getData = function (item) {
 	const fieldsArray = this.fieldsArray;
 
 	let data = { id: value._id };
-	_map(fieldsArray, field => {
+	_.map(fieldsArray, field => {
 		data[field.path] = field.getData(value);
 	})
 	return data;
