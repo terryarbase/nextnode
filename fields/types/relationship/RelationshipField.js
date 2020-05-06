@@ -163,19 +163,26 @@ module.exports = Field.create({
 	// NOTE: this seems like the wrong way to add options to the Select
 	loadOptionsCallback: {},
 	afterLoadOptions(results, selected, callback) {
-		const { display, many, mode, noedit } = this.props;
+		const { display, many, mode, noedit, currentLang, defaultLang } = this.props;
 		// let { value } = this.props;
 		let value = selected;
 		const selections = _.map(results, ({ id, name, fields }) => {
 			let label = name;
 			if (!!display && fields && fields[display]) {
-				label = fields[display].url;
+				const refField = fields[display];
+				label = refField.url;
+				if (typeof refField === 'object') {
+					const target = refField[currentLang] || refField[defaultLang];
+					if (target) {
+						label = target.url;
+					}
+				}
 			}
 			return {
 				label,
 				value: id,
 				name,
-				image: display === 'image',
+				image: (label || '').match(/\.(jpeg|jpg|gif|png)$/) !== null,
 				isDisabled: mode === 'edit' && noedit
 			}
 		});

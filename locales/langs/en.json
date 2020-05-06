@@ -91,4 +91,13 @@
 	"select_option_nextnode_textarray": "TextArray",
 	"select_option_nextnode_url": "URL",
 
+	"select_option_fromapi": "API",
+	"select_option_fromcms": "CMS",
+	"select_option_fromwebsite": "Website",
+	"select_option_frommobileapp": "Mobile Application",
+
+	"select_option_actionremove": "Remove",
+	"select_option_actionupdate": "Update",
+	"select_option_actioncreate": "Create",
+
 }

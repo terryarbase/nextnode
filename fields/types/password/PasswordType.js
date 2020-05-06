@@ -187,7 +187,6 @@ var validate = password.validate = function (password, confirm, min, max, comple
 		&& pass !== confirm) {
 		messages.push('Passwords must match.');
 	}
-
 	if (min && typeof pass === 'string' && pass.length < min) {
 		messages.push('Password must be longer than ' + min + ' characters.');
 	}
@@ -195,12 +194,14 @@ var validate = password.validate = function (password, confirm, min, max, comple
 	if (max && typeof pass === 'string' && pass.length > max) {
 		messages.push('Password must not be longer than ' + max + ' characters.');
 	}
-
-	for (var prop in complexity) {
-		if (complexity[prop] && typeof pass === 'string') {
-			var complexityCheck = (regexChunk[prop]).test(pass);
-			if (!complexityCheck) {
-				messages.push(detailMsg[prop]);
+	
+	if (pass === 'string') {
+		for (var prop in complexity) {
+			if (complexity[prop] && typeof pass === 'string') {
+				var complexityCheck = (regexChunk[prop]).test(pass);
+				if (!complexityCheck) {
+					messages.push(detailMsg[prop]);
+				}
 			}
 		}
 	}
