@@ -1,5 +1,33 @@
 # Next-nodecms Changelog
 
+## 1.0.22
+## 1.0.21
+## 1.0.20
+## 1.0.19
+## 1.0.18
+## 1.0.17
+## 1.0.16
+## 1.0.15
+### Hotfix remove multiple Role selection for the delegated system users
+### Hotfix Types.Code validation bugs
+### Migrate to Mongoose ^5.6.11
+
+List Enhancements:
+* Added Model List Model
+* Added Model List Item Model
+* Added NextNode Data Types List Options
+* Removed LocalFile, LocalFiles and S3File types
+
+List Improvements:  
+* Added download feature for Types.Code
+* Fixed Types.Code code normalization
+
+## 1.0.14
+### Hotfix Localization AdminUI use System User's language by default
+### Hotfix Localization image bugs (base64image)
+### Hotfix System User's Identity delegation restriction
+
+## 1.0.13
 ## 1.0.12 
 ### Hotfix use system user prefer language setting (frontend)
 ### Hotfix Types.KeyText add button display incorrectly
@@ -52,10 +80,11 @@ Data Enhancements:
 * Added Advanced User Model's definations for the delegrated User model ('advanced user model')
 * Added Advanced Role Permission list to individual model ('advanced role permissions')
 
-## 1.0.5
+
 ## 1.0.4
-hot fix realtime edit
-copyable fields
+## 1.0.5
+* Hotfix realtime edit
+* Hotfix copyable fields
 
 ## 1.0.3
 ### About Critical hotfix issues, Missing Multilingual Parts
@@ -64,7 +93,7 @@ Common Improvements:
 * Added download as a text file format
 * Fixed Column Type.Email, Type.Url target blank
 * Fixed Multilingual label for name field in Create Form and Edit Form
-* Fixed Multilingual value for customized options list in Column View
+* Fixed browserify require js bugs for customized Field.Types (KeyText)
 
 List Improvements:
 * Added disable listview option

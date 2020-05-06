@@ -166,17 +166,7 @@ Keystone.prototype.prefixModel = function (key) {
 };
 
 Keystone.prototype.isReservedCollection = function (key, options) {
-	const reservedPaths = [
-		// reserved collection name
-		// 'role',
-		'user',
-		'locale',
-		'systemIdentity',
-		'permission',
-		'permissionListField',
-		'applicationLanguage',
-		'navigationLanguage'
-	];
+	const reservedPaths = reservedCollectionName;
 	return !options.isCore && reservedPaths.indexOf(_.toLower(key)) !== -1;
 };
 
@@ -364,6 +354,32 @@ keystone.List = require('./lib/list')(keystone);
 keystone.Storage = require('./lib/storage');
 keystone.View = require('./lib/view');
 
+/*
+** Store all of reversed collections
+** Terry Chan
+** 24/09/2019
+*/
+const reservedCollectionName = [
+	// reserved collection name
+	'role',
+	'user',
+	'locale',
+	'systemIdentity',
+	'permission',
+	'permissionListField',
+	'applicationLanguage',
+	'navigationLanguage',
+	'modelList',
+	'modelListItem',
+];
+if (keystone.get('advanced country model')) {
+	reservedCollectionName = [
+		...reservedCollectionName,
+		'country',
+	];
+}
+keystone.reservedCollectionName = reservedCollectionName;
+
 // Customized Plugins
 keystone.Plugins = {
 	ImageCompressor: require('./plugins/utils/image/base64Resize'),
@@ -425,3 +441,15 @@ keystone.version = require('./package.json').version;
 
 // Expose Modules
 keystone.session = require('./lib/session');
+
+/*
+** [Improvement]
+** Bundle the Field Types Components React Code to here,
+** when the library is starting from the client project 
+** Prevent bundle the file and response output the bundle file on every time serves in the static router
+** Terry Chan
+** 02/10/2019
+*/
+// AdminUI
+// require('./admin/server/app/v2/createStaticClient').createStaticClient(keystone);
+// require('./admin/server/app/v2/createStaticFieldTypes')(keystone);

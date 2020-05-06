@@ -192,6 +192,7 @@ const locales = {
          today:'Today',
          title:'Title',
          downloadqrCode: 'Download QR Code',
+         downloadCode: 'Download Code File',
          profileSuccessMsg:'Your profile have been changed successfully. You are able to get the latest profile in the next login.',
          search:'Search',
          searchPlaceholder:'Search Keyword',

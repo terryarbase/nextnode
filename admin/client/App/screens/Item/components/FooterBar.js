@@ -93,7 +93,7 @@ var FooterBar = React.createClass({
 			top: this.state.top,
 			width: this.state.width,
 			height: this.state.height,
-			zIndex: 0,
+			zIndex: 1,
 		});
 		return (
 			<div ref="wrapper" style={wrapperStyle}>

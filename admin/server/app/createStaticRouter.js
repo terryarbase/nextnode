@@ -167,7 +167,7 @@ module.exports = function createStaticRouter (keystone) {
 	router.get('/js/fields.js', bundles.fields.serve);
 	router.get('/js/signin.js', bundles.signin.serve);
 	router.get('/js/admin.js', bundles.admin.serve);
-
+	// router.get('/js/FieldTypes.js', path.resolve(__dirname + '../../../build/static/js/FieldTypes.js'));
 
 	/*
 	** Add support service worker file from the customized path
@@ -178,12 +178,12 @@ module.exports = function createStaticRouter (keystone) {
 		router.get('/js/sw.js', (req, res) => {
 			res.type('text/javascript');
 			const swContent = fs.readFileSync(serviceWorker, 'utf8');
-			console.log(swContent);
+			// console.log(swContent);
 			res.send(swContent);
 		});
 	}
 	// router.get('/js/login.js', bundles.login.serve);
 	router.use(express.static(path.resolve(__dirname + '/../../public')));
-
+	router.use(express.static(path.resolve(__dirname + '../../../build/static')));
 	return router;
 };

@@ -3,7 +3,10 @@ import CodeMirror from 'codemirror';
 import Field from '../Field';
 import React from 'react';
 import { findDOMNode } from 'react-dom';
-import { FormInput } from '../../../admin/client/App/elemental';
+import {
+	FormInput,
+	Button,
+} from '../../../admin/client/App/elemental';
 import classnames from 'classnames';
 
 /**
@@ -63,6 +66,12 @@ module.exports = Field.create({
 			isFocused: focused,
 		});
 	},
+	downloadCode() {
+		const {
+			fileExtension,
+		} = this.props;
+		
+	},
 	codemirrorValueChanged (doc, change) {
 		var newValue = doc.getValue();
 		this._currentCodemirrorValue = newValue;
@@ -72,12 +81,23 @@ module.exports = Field.create({
 		});
 	},
 	renderCodemirror () {
+		const {
+			t,
+			download,
+		} = this.props;
 		const className = classnames('CodeMirror-container', {
 			'is-focused': this.state.isFocused && this.shouldRenderField(),
 		});
 
 		return (
 			<div className={className}>
+				{
+					download && <div className='CodeMirror-download-container'>
+						<Button variant="link" onClick={this.downloadCode}>
+							{t('downloadCode')}
+						</Button>
+					</div>
+				}
 				<FormInput
 					autoComplete="off"
 					multiline

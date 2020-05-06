@@ -21,7 +21,7 @@ const ItemDom = ({  name, id, onRemove, children, t }) => (
 		borderTop: '2px solid #eee',
 		paddingTop: 15,
 	}}>
-		{name && <input type="hidden" name={name} value={id}/>}
+		{name && <input type="hidden" name={name} value={id} />}
 		
 		{React.Children.map(children, child => {
 			return React.cloneElement(child, {
@@ -128,6 +128,7 @@ module.exports = Field.create({
 			// 		props.currentDependencies[dep] = this.state.values[dep];
 			// 	});
 			// }
+			console.log(props);
 			return React.createElement(Fields[field.type], props);
 		}, this);
 	},
@@ -138,7 +139,9 @@ module.exports = Field.create({
 			<div>
 				{value.map((value, index) => {
 					const { id, _isNew } = value;
+
 					const name = !_isNew && `${path}[${index}][id]`;
+					console.log(name, value);
 					const onRemove = e => this.removeItem(index);
 
 					return (
