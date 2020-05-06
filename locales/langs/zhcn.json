@@ -92,4 +92,12 @@
 	"select_option_nextnode_textarray": "TextArray",
 	"select_option_nextnode_url": "URL",
 
+	"select_option_fromapi": "应用程式介面 (API)",
+	"select_option_fromcms": "后台管理系统 (CMS)",
+	"select_option_fromwebsite": "前台網站",
+	"select_option_frommobileapp": "手機應用程式 (APP)",
+
+	"select_option_actionremove": "移除",
+	"select_option_actionupdate": "更新",
+	"select_option_actioncreate": "创建",
 }

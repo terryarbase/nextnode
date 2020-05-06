@@ -81,7 +81,7 @@ var EditForm = React.createClass({
 		this.__isMounted = false;
 	},
 	getFieldProps (field) {
-		const { list, isLocale, currentLang, t, i18n } = this.props;
+		const { isLocale, currentLang, t, i18n } = this.props;
 		const { values } = this.state;
 		const props = assign({}, field);
 		const alerts = this.state.alerts;
@@ -95,49 +95,25 @@ var EditForm = React.createClass({
 				props.isValid = false;
 			}
 		}
-		props.list = list;
-		props.value = list.getProperlyValue({ field, isLocale, currentLang, values });
+		props.list = this.props.list;
+		props.value = this.props.list.getProperlyValue({ field, isLocale, currentLang, values });
 		props.values = values;
 		props.currentLang = currentLang;
+		props.defaultLang = this.props.defaultLang;
 		props.onChange = this.handleChange;
 		props.mode = 'edit';
-		props.isCore = list.isCore;
-		props.listKey = list.key;
+		props.isCore = this.props.list.isCore;
+		props.listKey = this.props.list.key;
 		props.t = t;
 		props.i18n = i18n;
 		return props;
 	},
-	/*
-	** check field permission for UI
-	** Fung Lee
-	** 20/06/2019
-	*/
-	checkFieldPermission(props) {
-		const { user, permission } = this.props;
-		if (user.delegated) return props;	// ignore checking
-
-		switch(permission[props.path]) {
-			case 0:
-				// No View
-				return;
-			case 1: 
-				// View Only
-				props.noedit = true;
-				return props;
-			case 2:
-				// Edit
-				return props;
-			default:
-				// still render for no permission set
-				return props;
-		}
-	},
 	handleChange ({ path, value }) {
 		// const { path, value } = e;
 		// console.log(path, value);
-		const { list, isLocale, currentLang } = this.props;
+		const { isLocale, currentLang } = this.props;
 		const { values: currentValue } = this.state;
-		const values = list.getProperlyChangedValue({
+		const values = this.props.list.getProperlyChangedValue({
 			isLocale,
 			currentLang,
 			path,
@@ -403,11 +379,6 @@ var EditForm = React.createClass({
 				let props = this.getFieldProps(field);
 				const filters = this.props.list.getRelatedFilter(field, props.filters, this.props, this.state);
 				const { path } = field;
-
-				props = this.checkFieldPermission(props);
-				// No permission, no render
-				if (!props) return;
-
 				props = {
 					...props,
 					restrictDelegated: field.restrictDelegated,
@@ -493,10 +464,10 @@ var EditForm = React.createClass({
 						// if (!stateless) {
 						// 	self.statelessUI[path] = element;
 						// }
-						// allComponents = [
+						allComponents = [ element ];
+						// [
 						// 	(stateless || element),
 						// ];
-						allComponents = [element];
 					}
 					elements = [ 
 						...elements,

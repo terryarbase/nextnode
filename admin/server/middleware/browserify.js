@@ -31,7 +31,10 @@ module.exports = function (opts) {
 	var expose = opts.expose;
 	var file = opts.file;
 	var hash = opts.hash;
+	var location = opts.location;
 	var writeToDisk = opts.writeToDisk;
+	// auto output to the target destination, without using __dirname
+	const directToDisk = opts.directToDisk;
 
 	var b;
 	var building = false;
@@ -41,20 +44,37 @@ module.exports = function (opts) {
 
 	var logName = file.replace(/^\.\/|\..\//, '');
 	var fileName = opts.out || logName;
-	var outputFilename =  path.resolve(path.join(__dirname, '../../bundles/js', hash + '-' + fileName));
+	var bundlePath = '../../bundles/js';
+	if (location) {
+		bundlePath = location;
+	}
+	if (hash) {
+		fileName = hash + '-' + fileName;
+	}
+	var outputFilename = path.resolve(path.join(__dirname, bundlePath, fileName));
+	if (directToDisk) {
+		outputFilename = path.resolve(path.join(bundlePath, fileName));
+	}
+	const afterBundle = (err, message) => {
+		if (opts.callback) {
+			opts.callback(err, message);
+		}
+	}
+
 	function updateBundle (newSrc) {
 		src = newSrc;
 		etag = crypto.createHash('md5').update(src).digest('hex').slice(0, 6);
 	}
 
 	function writeBundle (buff) {
-		console.log('> AdminUI Bundle: ', outputFilename);
+		// console.log('\x1b[32m%s\x1b[0m', `> AdminUI Other Bundle: ${outputFilename}.`);
 		if (devWriteBundles || writeToDisk) {
 			fs.outputFile(outputFilename, buff, 'utf8', function (err) {
 				if (err) {
+					afterBundle(err);
 					return logError(fileName, err);
 				}
-
+				afterBundle(null, outputFilename);
 			});
 		}
 
@@ -62,8 +82,10 @@ module.exports = function (opts) {
 			var discFile = fileName.replace('.js', '.html');
 			require('disc').bundle(buff, function (err, html) {
 				if (err) {
+					afterBundle(err);
 					logError(discFile, err);
 				} else {
+					afterBundle(null, discFile);
 					// fs.outputFile(path.resolve(path.join(__dirname, '../../bundles/disc', discFile)), html, 'utf8');
 					console.log(ts() + chalk.green('wrote disc for ' + chalk.underline(file)));
 				}

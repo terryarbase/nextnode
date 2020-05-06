@@ -118,16 +118,17 @@ module.exports = async function (req, res, next, nextNode) {
 	/*
 	** Use system user prefer language first
 	** Terry Chan
-	** 11/06/2019
+	** 08/10/2019
 	*/
 	const preferLanguage = req.user && req.user.language;
+	const contentLanguage = req.user && req.user.language;
 	req.locales = {
 		// localization language set
 		localization,
 		// default language to pickup the data
 		defaultLanguage,
 		// adminUI current data language, serve the any requested lang first before cookie lang
-		langd: req.headers.langd || req.query.langd || req.body.langd || dataCookie,
+		langd: contentLanguage || req.headers.langd || req.query.langd || req.body.langd || dataCookie,
 		// adminUI current layout language
 		langf: preferLanguage,
 	};

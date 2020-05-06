@@ -19,11 +19,14 @@ npm-debug.log
 pids
 results
 coverage
+build/*
 coverage.html
 .cover*
 admin/bundles*
 static/locale.json*
 lib-cov
+src*
+build*
 
 docs/_dist
 admin/public/styles/auth.css

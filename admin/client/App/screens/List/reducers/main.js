@@ -67,13 +67,11 @@ var initialState = {
 if (Keystone.localization) {
 	initialState = {
 		...initialState,
-		...{
-			locale: {
-				current: Keystone.currentLanguage,
-				currentUILang: Keystone.currentUILanguage,
-				default: Keystone.defaultLanguage,
-				active: true,
-			},
+		locale: {
+			current: Keystone.currentLanguage,
+			currentUILang: Keystone.currentUILanguage,
+			default: Keystone.defaultLanguage,
+			active: true,
 		},
 	}
 }

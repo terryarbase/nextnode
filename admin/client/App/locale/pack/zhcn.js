@@ -201,6 +201,7 @@ const locales = {
          removeImage:'删除相片',
          today:'今天',
          title:'标题',
+         downloadCode: '下载代码文件',
          nowLabel: '现在',
          searchPlaceholder:'关键字',
          search:'搜查',

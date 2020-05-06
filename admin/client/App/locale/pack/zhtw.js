@@ -191,6 +191,7 @@ const locales = {
          create:'新增',
          relationship: '關聯連結',
          select: '請選擇...',
+         downloadCode: '下載代碼文件',
          selectWithListname: '請選擇{{listName}}...',
          fileReaderNotSupport:'瀏覽器不支援文件讀取器',
          fileFormatNotSupport:'不支援的文件類型。支援的格式有:GIF, PNG, JPG, BMP, ICO, PDF, TIFF, EPS, PSD, SVG',
