@@ -8,16 +8,29 @@ import {
 	SET_ACTIVE_LIST,
 	SELECT_FILTER,
 } from '../constants';
-
+import { setCurrentPage } from './index';
 
 /**
  * Active actions
  */
 
+/*
+** simple fix incorrect paging at search/filter change in ListView
+** TODO: disable ItemsTable reload old list on reset paging
+** Fung Lee
+** 2020-05-12
+*/
 export function setActiveSearch (searchString) {
-	return {
-		type: SET_ACTIVE_SEARCH,
-		searchString,
+	// return {
+	// 	type: SET_ACTIVE_SEARCH,
+	// 	searchString,
+	// };
+	return (dispatch, getState) => {
+		dispatch(setCurrentPage(1));
+		dispatch({
+			type: SET_ACTIVE_SEARCH,
+			searchString,
+		});
 	};
 }
 
@@ -48,22 +61,42 @@ export function setActiveList (list, id) {
  */
 
 export function clearFilter (path) {
-	return {
-		type: CLEAR_FILTER,
-		path,
+	// return {
+	// 	type: CLEAR_FILTER,
+	// 	path,
+	// };
+	return (dispatch, getState) => {
+		dispatch(setCurrentPage(1));
+		dispatch({
+			type: CLEAR_FILTER,
+			path,
+		});
 	};
 }
 
 export function clearAllFilters () {
-	return {
-		type: CLEAR_ALL_FILTERS,
+	// return {
+	// 	type: CLEAR_ALL_FILTERS,
+	// };
+	return (dispatch, getState) => {
+		dispatch(setCurrentPage(1));
+		dispatch({
+			type: CLEAR_ALL_FILTERS,
+		});
 	};
 }
 
 export function setFilter (path, value, langd) {
-	return {
-		type: SELECT_FILTER,
-		filter: { path, value, langd },
+	// return {
+	// 	type: SELECT_FILTER,
+	// 	filter: { path, value, langd },
+	// };
+	return (dispatch, getState) => {
+		dispatch(setCurrentPage(1));
+		dispatch({
+			type: SELECT_FILTER,
+			filter: { path, value, langd },
+		});
 	};
 }
 
