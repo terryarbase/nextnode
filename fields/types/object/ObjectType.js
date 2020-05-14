@@ -176,8 +176,13 @@ const _getData = (value, field) => {
 		_.forEach(field.fieldsArray, nestedField => {
 			// TODO: how to handle nested 'Object' type when value be undefined instead of Document Object
 			// create Document Object? but how?
+			// for now ignore the error
 			const v = nestedField.type === 'object' ? value[nestedField.path] : value
-			objectData[nestedField.path] = _getData(v, nestedField);
+			try {
+				objectData[nestedField.path] = _getData(v, nestedField);
+			} catch(err) {
+				// trigger on non Document Object value
+			}
 		});
 		data = objectData
 	} else {
