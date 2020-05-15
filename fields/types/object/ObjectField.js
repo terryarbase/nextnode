@@ -4,7 +4,7 @@ import assign from 'object-assign';
 import { css, StyleSheet } from 'aphrodite/no-important';
 import React from 'react';
 import Field from '../Field';
-import _map from 'lodash/map';
+import _ from 'lodash';
 
 import { Fields } from 'FieldTypes';
 import InvalidFieldType from '../../../admin/client/App/shared/InvalidFieldType';
@@ -45,7 +45,7 @@ module.exports = Field.create({
 		onChange({ path, value });
 	},
 	renderSubFields (value) {
-		return _map(Object.keys(this.props.fields), path => {
+		return _.map(Object.keys(this.props.fields), path => {
 			const field = this.props.fields[path];
 			if (typeof Fields[field.type] !== 'function') {
 				return React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path });
@@ -58,9 +58,15 @@ module.exports = Field.create({
 			props.onChange = this.handleFieldChange;
 			props.mode = 'edit';
 			props.currentLang = this.props.currentLang;
-			props.inputNamePrefix = `${this.props.path}`;
+			props.nestedPath = [
+				...this.props.nestedPath || [],
+				this.props.path,
+			];
+			props.inputNamePrefix = _.map(props.nestedPath, (path, index) => {
+				return index === 0 ? path: `[${path}]`;
+			}).join('');
 			props.key = field.path;
-
+			
 			// TODO ?
 			// if (props.dependsOn) {
 			// 	props.currentDependencies = {};
@@ -73,10 +79,8 @@ module.exports = Field.create({
 	},
 	renderField () {
 		const { value, path, t } = this.props;
-		console.log('>>> value', value, path);
 		const { id } = value;
 		const name = `${path}[id]`;
-
 		return (
 			<ObjectField key={id} {...{ id, name, t }}>
 				{this.renderSubFields(value)}
@@ -84,7 +88,6 @@ module.exports = Field.create({
 		);
 	},
 	renderUI () {
-		console.log('>>> Object Types this.props', this.props);
 		const { required } = this.props;
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		return (
