@@ -257,27 +257,38 @@ Keystone.prototype.reservedRoleListCollections = function () {
 ** Fung Lee
 ** 12/07/2019
 */
-Keystone.prototype.reservedPermissionField = function () {
-	return [
-		'_id',
-		'_list',
-	]
+Keystone.prototype.reservedPermissionKeyList = function () {
+	const {
+		permissionKey: {
+			list
+		}
+	} = this.list('Permission').options
+	return ['_id', ...list];
 };
 
-Keystone.prototype.pickFieldPermission = function (permission) {
-	const reservedField = this.reservedPermissionField();
-	if (typeof permission.toObject === 'function') {
-		permissionn = permission.toObject();
+Keystone.prototype.reservedPermissionKeyField = function () {
+	const {
+		permissionKey: {
+			field
+		},
+	} = this.list('Permission').options
+	return ['_id', ...field];
+};
+
+Keystone.prototype.pickFieldPermission = function (listPermission) {
+	const reservedField = this.reservedPermissionKeyList();
+	if (typeof listPermission.toObject === 'function') {
+		listPermission = listPermission.toObject();
 	}
-	return _.pickBy(permission, (p, field) => !_.includes(reservedField, field));
+	return _.pickBy(listPermission, (p, field) => !_.includes(reservedField, field));
 };
 
-Keystone.prototype.pickListPermission = function (permission) {
+Keystone.prototype.pickListPermission = function (userPermission) {
 	const lists = _.keys(this.lists);
-	if (typeof permission.toObject === 'function') {
-		permission = permission.toObject();
+	if (typeof userPermission.toObject === 'function') {
+		userPermission = userPermission.toObject();
 	}
-	return _.pick(permission, lists);
+	return _.pick(userPermission, lists);
 };
 
 /* Attach core functionality to Keystone.prototype */

@@ -28,25 +28,19 @@ function combineSinglePermission(nextNode, userPermission) {
     ** Transform to older number permission version before frontend revamp
     ** 2020-05-15
     */
-    const Permission = nextNode.list('Permission');
-    const {
-        permissionKey: {
-            list: permissionKeyList,
-        }
-    } = Permission.options
-    const numberValue = _.reduce(booleanValue, (value, permission, list) => {
-        const listObject = value[list] || (value[list] = {})
-        listObject._list = permission._update ? 2 : (permission._view ? 1 : 0)
+    // const numberValue = _.reduce(booleanValue, (value, lp, list) => {
+    //     const listObject = value[list] || (value[list] = {})
+    //     listObject._list = lp._update ? 2 : (lp._view ? 1 : 0)
         
-        const fieldPermission = pickElse(permission, ['_id', ...permissionKeyList])
-        _.forOwn(fieldPermission, (fp, fk) => {
-            listObject[fk] = fp.update ? 2 : (fp.view ? 1 : 0)
-        })
-        return value
-    }, {});
+    //     const fieldPermission = nextNode.pickFieldPermission(lp);
+    //     _.forOwn(fieldPermission, (fp, fk) => {
+    //         listObject[fk] = fp.update ? 2 : (fp.view ? 1 : 0)
+    //     })
+    //     return value
+    // }, {});
 
     return {
-        value: numberValue,
+        value: booleanValue,
         key: userPermission.permisionKey,
     }
 }

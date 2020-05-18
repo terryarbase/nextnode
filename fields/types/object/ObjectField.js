@@ -103,8 +103,10 @@ module.exports = Field.create({
 const classes = StyleSheet.create({
 	container: {
 		marginTop: '2em',
+		marginBottom: '1.5em',
 		background: '#f8f8f8',
-	    padding: 10,
-    	boxShadow: '0px 1px 3px 0px rgba(0, 0, 0, 0.1)',
+	    padding: '10px 15px 1px 15px',
+		boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.2)',
+		borderLeft: '3px solid #c3c3c3',
 	},
 });

@@ -58,7 +58,7 @@ function ListHeaderToolbar ({
 	expandOnClick,
 
 	// list
-	createIsAvailable,
+	allowCreate,
 	createListName,
 	createOnClick,
 
@@ -76,8 +76,10 @@ function ListHeaderToolbar ({
 	columnsAvailable,
 	columnsActive,
 
-	noimport,
-	nodownload,
+	allowImport,
+	allowDownload,
+	// noimport,
+	// nodownload,
 	nofilter,
 	noscale,
 	
@@ -131,7 +133,7 @@ function ListHeaderToolbar ({
 						/>
 					</Section>
 					{
-						!nodownload ? 
+						allowDownload ? 
 						<Section cssStyles={classes.download}>
 							<ListDownloadForm
 								currentLang={isLocale ? currentLang : null}
@@ -166,7 +168,7 @@ function ListHeaderToolbar ({
 							</ButtonDivider>
 						</Section> : null
 					}
-					{createIsAvailable && <Section cssStyles={classes.create}>
+					{allowCreate && <Section cssStyles={classes.create}>
 						<ButtonDivider>
 							<CreateButton
 								listName={createListName}
@@ -177,7 +179,7 @@ function ListHeaderToolbar ({
 						</ButtonDivider>
 					</Section>}
 					{
-						createIsAvailable && !noimport ? 
+						allowImport ? 
 						<Section cssStyles={classes.import}>
 							<ListImportForm
 								currentLang={isLocale ? currentLang : null}
@@ -197,7 +199,7 @@ function ListHeaderToolbar ({
 ListHeaderToolbar.propTypes = {
 	columnsActive: PropTypes.array,
 	columnsAvailable: PropTypes.array,
-	createIsAvailable: PropTypes.bool,
+	allowCreate: PropTypes.bool,
 	createListName: PropTypes.string,
 	createOnClick: PropTypes.func.isRequired,
 	dispatch: PropTypes.func.isRequired,
