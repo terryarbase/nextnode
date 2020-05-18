@@ -263,33 +263,20 @@ Keystone.prototype.reservedPermissionKeyList = function () {
 			list
 		}
 	} = this.list('Permission').options
-	return ['_id', ...list];
+	return list;
 };
-
 Keystone.prototype.reservedPermissionKeyField = function () {
 	const {
 		permissionKey: {
 			field
 		},
 	} = this.list('Permission').options
-	return ['_id', ...field];
+	return field;
 };
-
-Keystone.prototype.pickFieldPermission = function (listPermission) {
-	const reservedField = this.reservedPermissionKeyList();
-	if (typeof listPermission.toObject === 'function') {
-		listPermission = listPermission.toObject();
-	}
-	return _.pickBy(listPermission, (p, field) => !_.includes(reservedField, field));
-};
-
-Keystone.prototype.pickListPermission = function (userPermission) {
-	const lists = _.keys(this.lists);
-	if (typeof userPermission.toObject === 'function') {
-		userPermission = userPermission.toObject();
-	}
-	return _.pick(userPermission, lists);
-};
+Keystone.prototype.filterFieldsPermission = require('./lib/core/filterFieldsPermission');
+Keystone.prototype.filterListsPermission = require('./lib/core/filterListsPermission');
+Keystone.prototype.pickFieldPermission = require('./lib/core/pickFieldPermission');
+Keystone.prototype.pickListPermission = require('./lib/core/pickListPermission');
 
 /* Attach core functionality to Keystone.prototype */
 

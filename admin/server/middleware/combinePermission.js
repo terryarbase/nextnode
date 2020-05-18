@@ -5,25 +5,31 @@ module.exports = function combinePermission(req, res) {
     let userPermission = req.user.permission.toObject();
 
     let permission = {};
-    console.log('> userPermission', userPermission)
+    
     if (_.isArray(userPermission)) {
         permission = combineMultiplePermission(nextNode, userPermission);
     } else {
         permission = combineSinglePermission(nextNode, userPermission);
     }
 
+    console.log('> permission', permission.value)
     // req.permission = compatiblePermissionToRole(permission.value);
     req.permission = permission.value;
     req.permissionKey = permission.key;
 }
 
-const pickElse = (item, diff) => {
-    const pickList = _.difference(_.keys(item), diff)
-    return _.pick(item, pickList)
-}
-
 function combineSinglePermission(nextNode, userPermission) {
-    const booleanValue = nextNode.pickListPermission(userPermission)
+    // pick the exist permission key in all list and field
+    const booleanValue = _.reduce(nextNode.filterListsPermission(userPermission), (lpCombined, lp, lk) => ({
+        ...lpCombined,
+        [lk]: {
+            ...nextNode.pickListPermission(lp),
+            ..._.reduce(nextNode.filterFieldsPermission(lp), (fpCombined, fp, fk) => ({
+                ...fpCombined,
+                [fk]: nextNode.pickFieldPermission(fp),
+            }), {}),
+        },
+    }), {})
     /*
     ** Transform to older number permission version before frontend revamp
     ** 2020-05-15
@@ -32,7 +38,7 @@ function combineSinglePermission(nextNode, userPermission) {
     //     const listObject = value[list] || (value[list] = {})
     //     listObject._list = lp._update ? 2 : (lp._view ? 1 : 0)
         
-    //     const fieldPermission = nextNode.pickFieldPermission(lp);
+    //     const fieldPermission = nextNode.filterFieldsPermission(lp);
     //     _.forOwn(fieldPermission, (fp, fk) => {
     //         listObject[fk] = fp.update ? 2 : (fp.view ? 1 : 0)
     //     })
@@ -47,41 +53,44 @@ function combineSinglePermission(nextNode, userPermission) {
 
 function combineMultiplePermission(nextNode, userPermission) {
     const permissionKey = [];
-    
+
     let combineList = [];
     // Format permission to comparator object
     _.forEach(userPermission, singlePermission => {
-        const permission = combineSinglePermission(nextNode, singlePermission);
-        permissionKey.push(permission.key);
+        const p = combineSinglePermission(nextNode, singlePermission);
+        permissionKey.push(p.key);
 
         // Transform to comparator object
-        _.forOwn(permission.value, (fields, list) => {
-            delete fields._id;
-            _.forOwn(fields, (p, field) => {
+        _.forOwn(p.value, (lp, lk) => {
+            _.forOwn(nextNode.pickListPermission(lp), (lpv, lpk) => {
                 combineList.push({
-                    list,
-                    field,
-                    permission: p,
-                });
+                    path: `${lk}.${lpk}`,
+                    value: lpv,
+                })
+            })
+            _.forOwn(nextNode.filterFieldsPermission(lp), (fp, fk) => {
+                _.forOwn(fp, (fpv, fpk) => {
+                    combineList.push({
+                        path: `${lk}.${fk}.${fpk}`,
+                        value: fpv,
+                    })
+                })
             })
         });
     });
-
-    // Sorting comparator object by path then permission with DESC
-    combineList = _.sortBy(combineList, ['list', 'field', 'permission']).reverse();
+    
+    // Sorting comparator object by path then permission value with DESC
+    combineList = _.sortBy(combineList, ['path', 'value']).reverse();
 
     // Unique comparator object by path thus filter the max permission in combineList
     combineList = _.uniqWith(combineList, (item1, item2) => (
-        item1.list === item2.list && item1.field === item2.field
+        item1.path === item2.path
     ))
 
     // Rebuild to original permision object format
     let combined = {};
-    _.forEach(combineList, item => {
-        combined[item.list] = {
-            ...combined[item.list],
-            [item.field]: item.permission,
-        }
+    _.forEach(combineList, ({ path, value }) => {
+        _.set(combined, path, value)
     });
 
     return {
