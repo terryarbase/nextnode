@@ -24,6 +24,7 @@ import Pagination from '../../elemental/Pagination';
 import ListFilters from './components/Filtering/ListFilters';
 import ListHeaderTitle from './components/ListHeaderTitle';
 import ListHeaderToolbar from './components/ListHeaderToolbar';
+import ListImportForm from './components/ListImportForm';
 import ListManagement from './components/ListManagement';
 
 import NoListView from './components/NoListView';
@@ -344,6 +345,7 @@ const ListView = React.createClass({
 			nocreate,
 			plural,
 			singular,
+			noimport,
 			nodownload,
 			nofilter,
 			noscale,
@@ -404,6 +406,7 @@ const ListView = React.createClass({
 					columnsAvailable={this.props.currentList.columns}
 
 					// button flags
+					noimport={noimport}
 					nodownload={nodownload}
 					nofilter={nofilter}
 					noscale={noscale}
@@ -630,7 +633,7 @@ const ListView = React.createClass({
 	renderBlankState () {
 		// if nolist, use other noListView instead
 		if (!this.showBlankState()) return null;
-		const { t, currentList } = this.props;
+		const { t, currentList, isLocale, currentLanguage, dispatch } = this.props;
 
 		if (currentList.nolist) return this.renderNoListView();
 
@@ -640,11 +643,36 @@ const ListView = React.createClass({
 			: this.openCreateModal;
 
 		// display the button if create allowed
-		const button = !currentList.nocreate ? (
-			<GlyphButton color="success" glyph="plus" position="left" onClick={onClick} data-e2e-list-create-button="no-results">
-				{t('create')}
-			</GlyphButton>
-		) : null;
+		// const button = !currentList.nocreate ? (
+		// 	<GlyphButton color="success" glyph="plus" position="left" onClick={onClick} data-e2e-list-create-button="no-results">
+		// 		{t('create')}
+		// 	</GlyphButton>
+		// ) : null;
+		const button = <div
+			style={{
+				display: 'flex',
+				justifyContent: 'center',
+			}}
+		>
+			{!currentList.nocreate ? (
+				<GlyphButton color="success" glyph="plus" position="left" onClick={onClick} data-e2e-list-create-button="no-results">
+					{t('create')}
+				</GlyphButton>
+			) : null}
+			{!currentList.nocreate && !currentList.noimport ? (
+				<div style={{
+					width: '100px',
+					paddingLeft: '0.75em',
+				}}>
+					<ListImportForm
+						currentLang={isLocale ? currentLanguage : null}
+						dispatch={dispatch}
+						list={currentList}
+						t={t}
+					/>
+				</div>
+			) : null}
+		</div>
 
 		return (
 			<Container>

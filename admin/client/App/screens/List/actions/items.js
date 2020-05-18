@@ -137,3 +137,21 @@ export function deleteItems (ids) {
 		});
 	};
 }
+
+/**
+ * Create List item by file
+ */
+export function importItems (file) {
+	return (dispatch, getState) => {
+		const list = getState().lists.currentList;
+		list.importItems(file, (err, data) => {
+			if (!err) {
+				// TODO: show the success count on UI
+				dispatch(loadItems());
+			} else {
+				// TODO: show the error on UI
+				dispatch(loadItems());
+			}
+		});
+	};
+}

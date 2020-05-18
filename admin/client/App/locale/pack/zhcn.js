@@ -154,6 +154,13 @@ const locales = {
       selectNone:'取消选取',
 
    },
+   import:{  
+      label:'汇入',
+      fileUpload:'CSV :',
+      upload:'上载',
+      change:'更改文件',
+      cancel:'取消',
+   },
    manage:{  
       label:'管理',
       page:'页面 ',

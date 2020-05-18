@@ -43,6 +43,7 @@
     "connect-flash": "0.1.1",
     "connect-mongo": "^3.0.0",
     "cookie-parser": "1.4.3",
+    "csv-parser": "^2.3.2",
     "csvexport": "^1.1.0",
     "debug": "^3.1.0",
     "display-name": "0.1.0",
@@ -149,6 +150,7 @@
   },
   "devDependencies": {
     "@ljharb/eslint-config": "^11.0.0",
+    "bluebird": "^3.7.2",
     "browserify-middleware": "7.1.0",
     "codeclimate-test-reporter": "0.5.0",
     "core-assert": "0.2.1",
