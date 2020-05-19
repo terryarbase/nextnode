@@ -809,6 +809,7 @@ const ListView = React.createClass({
 				{this.renderBlankState()}
 				{this.renderActiveState()}
 				<CreateForm
+					permission={this.props.permission[this.props.currentList.key]}
 					dispatch={this.props.dispatch}
 					err={Keystone.createFormErrors}
 					isOpen={this.state.showCreateForm}

@@ -61,6 +61,11 @@ function combineMultiplePermission(nextNode, userPermission) {
         permissionKey.push(p.key);
 
         // Transform to comparator object
+        // l -> list
+        // f -> field
+        // k -> key
+        // v -> value
+        // p -> permission
         _.forOwn(p.value, (lp, lk) => {
             _.forOwn(nextNode.pickListPermission(lp), (lpv, lpk) => {
                 combineList.push({

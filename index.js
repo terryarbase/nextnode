@@ -257,21 +257,32 @@ Keystone.prototype.reservedRoleListCollections = function () {
 ** Fung Lee
 ** 12/07/2019
 */
-Keystone.prototype.reservedPermissionKeyList = function () {
-	const {
-		permissionKey: {
-			list
-		}
-	} = this.list('Permission').options
-	return list;
+Keystone.prototype.reservedPermissionField = function () {
+	return [
+        'delegated',
+        'createdAt',
+        'createdBy',
+        'updatedAt',
+		'updatedBy',
+		'updatedFrom',
+    ]
 };
-Keystone.prototype.reservedPermissionKeyField = function () {
-	const {
-		permissionKey: {
-			field
-		},
-	} = this.list('Permission').options
-	return field;
+Keystone.prototype.reservedListPermissionKey = function () {
+	return [
+		'_view',
+		'_update',
+		'_create',
+		'_import',
+		'_download',
+		'_delete',
+	];
+};
+Keystone.prototype.reservedFieldPermissionKey = function () {
+	return [
+		'view',
+		'create',
+		'update',
+	];
 };
 Keystone.prototype.filterFieldsPermission = require('./lib/core/filterFieldsPermission');
 Keystone.prototype.filterListsPermission = require('./lib/core/filterListsPermission');
