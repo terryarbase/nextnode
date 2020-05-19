@@ -204,7 +204,7 @@ object.prototype.getData = function (item) {
 ** Fung Lee
 ** 2020-05-14
 */
-const _prepareValue = (value, field) => {
+object.prototype._prepareValue = function (value, field) {
 	if (field.type === 'object') {
 		// make sure value of 'Object' type must be object
 		if (!value) {
@@ -212,8 +212,14 @@ const _prepareValue = (value, field) => {
 		}
 		// traverse subfields and do same thing
 		_.forEach(field.fieldsArray, nestedField => {
-			value[nestedField.path] = _prepareValue(value[nestedField.path], nestedField);
+			value[nestedField.path] = this._prepareValue(value[nestedField.path], nestedField);
 		});
+	}
+	
+	// handle another field type
+	if (field.type === 'relationship') {
+		const ObjectId = this.list.keystone.mongoose.Types.ObjectId;
+		value = ObjectId.isValid(value) ? value : undefined;
 	}
 	return value;
 }
@@ -229,7 +235,7 @@ object.prototype.updateItem = function (item, data, files, callback, isNested) {
 
 	// for performance, only prepare whole value in the outermost nested 'Object' type
 	if (!isNested) {
-		value = _prepareValue(value, field);		
+		value = this._prepareValue(value, field);		
 	}
 	
 	if (objectData) {
