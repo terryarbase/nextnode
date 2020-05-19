@@ -39,8 +39,14 @@ module.exports = Field.create({
 		path: React.PropTypes.string.isRequired,
 		value: React.PropTypes.object,
 	},
+	getValue () {
+		const { value } = this.props;
+		// initial value be object if not set
+		return value ? value : {};
+	},
 	handleFieldChange (fieldInfo) {
-		const { value, path, onChange } = this.props;
+		const { path, onChange } = this.props;
+		const value = this.getValue();
 		value[fieldInfo.path] = fieldInfo.value,
 		onChange({ path, value });
 	},
@@ -78,7 +84,8 @@ module.exports = Field.create({
 		});
 	},
 	renderField () {
-		const { value, path, t } = this.props;
+		const { path, t } = this.props;
+		const value = this.getValue();
 		const { id } = value;
 		const name = `${path}[id]`;
 		return (
