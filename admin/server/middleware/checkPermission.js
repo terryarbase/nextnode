@@ -1,10 +1,55 @@
-const combinePermission = require('../middleware/combinePermission');
+const _ = require('lodash');
 
-module.exports = function checkPermission(requiredLevel, options) {
+const checkListPermission = (nextNode, req, requiredPermission, options) => {
+    if (!requiredPermission.length) return true;
+    return nextNode.isPermissionAllow(req.listPermission, requiredPermission);
+}
+
+const checkFieldPermission = (nextNode, req, requiredPermission, options) => {
+    if (!requiredPermission.length) return;
+    const {
+        fieldsPermission,
+        body
+    } = req;
+    const {
+        excludeTarget = '',
+    } = options;
+
+    // set allow fields to req for custom handle needed
+    req.permissionAllowFields = _.chain(fieldsPermission)
+        .pickBy(fp => nextNode.isPermissionAllow(fp, requiredPermission))
+        .keys()
+        .value();
+    
+    switch(req.method) {
+        case 'GET': {
+            const input = _.get(req, excludeTarget);
+            if (!input) break;
+            // exclude not allow fields in target string
+            const excluded = _.chain(input)
+                .split(',')
+                .filter(field => _.includes(req.permissionAllowFields, field))
+                .join(',')
+                .value();
+            _.set(req, excludeTarget, excluded);
+            break;
+        }
+        case 'POST': {
+            // exclude not allow fields in body
+            req.body = _.pick(body, req.permissionAllowFields);  
+            break;
+        }
+    }
+}
+
+module.exports = function checkPermission(requiredPermission = {}, options) {
     options = Object.assign({}, { allowBasic: false }, options);
+    const {
+        list: requiredListPermission = [],
+        field: requiredFieldPermission = [],
+    } = requiredPermission;
     return function(req, res, next) {
-        var keystone = req.keystone;
-        if (!keystone.get('rbac')) {
+        if (!req.permission) {
             return next();
         }
 
@@ -12,11 +57,18 @@ module.exports = function checkPermission(requiredLevel, options) {
             return next();
         }
 
-        combinePermission(req, res);
-        
-        if (req.permission[req.list.key] < requiredLevel) {
+        // prepare current list permission
+        const nextNode = req.keystone;
+        const currentListPermission = req.permission[req.list.key];
+        req.listPermission = nextNode.pickListPermission(currentListPermission);
+        req.fieldsPermission = nextNode.filterFieldsPermission(currentListPermission);
+
+        const isListAllow = checkListPermission(nextNode, req, requiredListPermission, options);
+        if (!isListAllow) {
             return res.status(403).json({ error: req.t.__('msg_permission_denied') });
         }
+
+        checkFieldPermission(nextNode, req, requiredFieldPermission, options);
 
         next();
     };

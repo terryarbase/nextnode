@@ -36,6 +36,7 @@ module.exports = function (req, res, next) {
 		...where,
 		...req.permissionQuery,
 	};
+	// TODO: exclude not allow fields via req.permissionAllowFields
 	
 	var query = req.list.model.find(where);
 	if (req.query.populate) {

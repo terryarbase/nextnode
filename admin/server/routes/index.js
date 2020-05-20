@@ -54,25 +54,35 @@ module.exports = function IndexRoute (req, res, isRender) {
 		keystone.nav = keystone.initNav(newNav, req.permission);
 		Object.keys(lists).forEach(key => {
 			const listKey = lists[key].key;
+			const listPermission = keystone.pickListPermission(req.permission[listKey]);
 			if (req.permission[listKey]) {
-				switch (req.permission[listKey]) {
-					// view-only
-					case 1: {
-						lists[key].noedit = true;
-						lists[key].nocreate = true;
-						lists[key].nodelete = true;
-						break;
-					}
+				if (!listPermission._view) {
 					// no permission
-					case 0: {
-						// User list is used in admin client and cannot be deleted
-						if (listKey === UserList.key) {
-							lists[key].hidden = true;
-						} else {
-							delete lists[key];
-						}
+					// User list is used in admin client and cannot be deleted
+					if (listKey === UserList.key) {
+						lists[key].hidden = true;
+					} else {
+						delete lists[key];
 					}
 				}
+				// switch (req.permission[listKey]._) {
+				// 	// view-only
+				// 	case 1: {
+				// 		lists[key].noedit = true;
+				// 		lists[key].nocreate = true;
+				// 		lists[key].nodelete = true;
+				// 		break;
+				// 	}
+				// 	// no permission
+				// 	case 0: {
+				// 		// User list is used in admin client and cannot be deleted
+				// 		if (listKey === UserList.key) {
+				// 			lists[key].hidden = true;
+				// 		} else {
+				// 			delete lists[key];
+				// 		}
+				// 	}
+				// }
 			}
 		});
 	}

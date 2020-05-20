@@ -1,9 +1,12 @@
 const _          = require('lodash');
 
-module.exports = function combinePermission(req, res) {
+module.exports = function combinePermission(req, res, next) {
     const nextNode = req.keystone;
-    let userPermission = req.user.permission.toObject();
+    if (!nextNode.get('rbac')) {
+        return next();
+    }
 
+    let userPermission = req.user.permission.toObject();
     let permission = {};
     
     if (_.isArray(userPermission)) {
@@ -12,24 +15,13 @@ module.exports = function combinePermission(req, res) {
         permission = combineSinglePermission(nextNode, userPermission);
     }
 
-    console.log('> permission', permission.value)
-    // req.permission = compatiblePermissionToRole(permission.value);
     req.permission = permission.value;
     req.permissionKey = permission.key;
+    
+    next();
 }
 
 function combineSinglePermission(nextNode, userPermission) {
-    // pick the exist permission key in all list and field
-    const booleanValue = _.reduce(nextNode.filterListsPermission(userPermission), (lpCombined, lp, lk) => ({
-        ...lpCombined,
-        [lk]: {
-            ...nextNode.pickListPermission(lp),
-            ..._.reduce(nextNode.filterFieldsPermission(lp), (fpCombined, fp, fk) => ({
-                ...fpCombined,
-                [fk]: nextNode.pickFieldPermission(fp),
-            }), {}),
-        },
-    }), {})
     /*
     ** Transform to older number permission version before frontend revamp
     ** 2020-05-15
@@ -46,7 +38,7 @@ function combineSinglePermission(nextNode, userPermission) {
     // }, {});
 
     return {
-        value: booleanValue,
+        value: nextNode.filterListsPermission(userPermission),
         key: userPermission.permisionKey,
     }
 }
@@ -102,21 +94,4 @@ function combineMultiplePermission(nextNode, userPermission) {
         value: combined,
         key: permissionKey,
     }
-}
-
-function compatiblePermissionToRole(rolePermision) {
-    /*
-    ** Transform one layer Object of 'Role' (list only) in old version
-    ** to two layer nested 'Permission' Object (list and field)
-    ** for compatible 'Permission' in old version
-    ** Fung Lee
-    ** 12/07/2019
-    */
-    const permission = {};
-    _.forOwn(permision, (p, list) => {
-        permission[list] = {
-            _list: p,
-        }
-    });
-    return permission;
 }

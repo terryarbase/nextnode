@@ -284,10 +284,11 @@ Keystone.prototype.reservedFieldPermissionKey = function () {
 		'update',
 	];
 };
-Keystone.prototype.filterFieldsPermission = require('./lib/core/filterFieldsPermission');
-Keystone.prototype.filterListsPermission = require('./lib/core/filterListsPermission');
-Keystone.prototype.pickFieldPermission = require('./lib/core/pickFieldPermission');
-Keystone.prototype.pickListPermission = require('./lib/core/pickListPermission');
+Keystone.prototype.isPermissionAllow = require('./lib/core/permission/isPermissionAllow');
+Keystone.prototype.filterFieldsPermission = require('./lib/core/permission/filterFieldsPermission');
+Keystone.prototype.filterListsPermission = require('./lib/core/permission/filterListsPermission');
+Keystone.prototype.pickFieldPermission = require('./lib/core/permission/pickFieldPermission');
+Keystone.prototype.pickListPermission = require('./lib/core/permission/pickListPermission');
 
 /* Attach core functionality to Keystone.prototype */
 

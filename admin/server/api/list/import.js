@@ -12,6 +12,8 @@ function toModelData(keystone, data) {
 	const item = {
 		_id: ObjectId(),
 	}
+	// TODO: exclude not allow fields via req.permissionAllowFields
+	// TODO: transform data with field type 
 	_.forEach(data, (value, path) => {
 		let v = value
 		if (v === 'TRUE' || v === 'true') {
