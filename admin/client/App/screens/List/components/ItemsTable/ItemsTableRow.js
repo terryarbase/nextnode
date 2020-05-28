@@ -59,6 +59,10 @@ const ItemsRow = React.createClass({
 			// if the record is restricted by the delegated field, then no realtime edit is allowed.
 			const restrictDelegated = isRestricted(col, item);
 			const isMultilingual = col.field && col.field.multilingual;
+			if (isMultilingual && !value) {
+				value = {};
+				currentValue = value;
+			}
 			/*
 			** if realtime action is triggered
 			*/

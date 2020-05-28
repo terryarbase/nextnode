@@ -7,6 +7,13 @@ const checkListPermission = (nextNode, req, requiredPermission, options) => {
 
 const checkFieldPermission = (nextNode, req, requiredPermission, options) => {
     if (!requiredPermission.length) return;
+
+    // all field be allow in 'Permission' list
+    if (req.list.key === 'Permission') {
+        req.permissionAllowFields = _.keys(req.list.fields);
+        return;
+    }
+
     const {
         fieldsPermission,
         body
@@ -14,7 +21,7 @@ const checkFieldPermission = (nextNode, req, requiredPermission, options) => {
     const {
         excludeTarget = '',
     } = options;
-
+    
     // set allow fields to req for custom handle needed
     req.permissionAllowFields = _.chain(fieldsPermission)
         .pickBy(fp => nextNode.isPermissionAllow(fp, requiredPermission))
