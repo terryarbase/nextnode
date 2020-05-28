@@ -5,6 +5,7 @@ import { css, StyleSheet } from 'aphrodite/no-important';
 import React from 'react';
 import Field from '../Field';
 import _ from 'lodash';
+import flatten  from 'flat';
 
 import { Fields } from 'FieldTypes';
 import InvalidFieldType from '../../../admin/client/App/shared/InvalidFieldType';
@@ -59,7 +60,10 @@ module.exports = Field.create({
 
 			const props = assign({}, field);
 			props.value = value[field.path];
-			props.values = value;
+			// flatten values to one layer object for support 'dependsOn' feature to nested object
+			props.values = flatten(this.props.values, {
+				safe: true
+			});
 			props.values.delegated = !!this.props.values.delegated;
 			props.onChange = this.handleFieldChange;
 			props.mode = 'edit';
@@ -72,14 +76,6 @@ module.exports = Field.create({
 				return index === 0 ? path: `[${path}]`;
 			}).join('');
 			props.key = field.path;
-			
-			// TODO ?
-			// if (props.dependsOn) {
-			// 	props.currentDependencies = {};
-			// 	Object.keys(props.dependsOn).forEach(dep => {
-			// 		props.currentDependencies[dep] = this.state.values[dep];
-			// 	});
-			// }
 			return React.createElement(Fields[field.type], props);
 		});
 	},
