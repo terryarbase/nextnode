@@ -97,7 +97,12 @@ module.exports = function createDynamicRouter (keystone) {
 	const initList = require('../middleware/initList');
 	const initDataPermission = require('../middleware/initDataPermission');
 	// lists
-	router.all('/api/counts', initDataPermission, require('../api/counts'));
+	router.all(
+		'/api/counts',
+		combinePermission,
+		initDataPermission,
+		require('../api/counts')
+	);
 	// if (serviceWorker) {
 	/*
 	** register for the current login user (e.g. browser device id)

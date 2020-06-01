@@ -284,6 +284,28 @@ Keystone.prototype.reservedFieldPermissionKey = function () {
 		'update',
 	];
 };
+Keystone.prototype.filterPermissionQuery = function (userPermission) {
+	const nextNode = this;
+	const allQueryKeys = _.map(_.keys(nextNode.lists), list => `${list}Query`);
+	return _.pick(userPermission, allQueryKeys)
+};
+Keystone.prototype.getPermissionQuery = function (userPermission, list) {
+	const {
+		isPopulate,
+		populate,
+		_populateField,
+		_field,
+		_value,
+	} = userPermission[`${list}Query`] || {};
+	return {
+		hasQuery: !!_value,
+		isPopulate: isPopulate && populate && _populateField,
+		populate,
+		populateField: _populateField,
+		field: _field,
+		value: _value,
+	}
+};
 Keystone.prototype.isPermissionAllow = require('./lib/core/permission/isPermissionAllow');
 Keystone.prototype.filterFieldsPermission = require('./lib/core/permission/filterFieldsPermission');
 Keystone.prototype.filterListsPermission = require('./lib/core/permission/filterListsPermission');

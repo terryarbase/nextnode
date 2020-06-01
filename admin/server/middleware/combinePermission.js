@@ -1,12 +1,12 @@
 const _          = require('lodash');
 
-module.exports = function combinePermission(req, res, next) {
+module.exports = async function combinePermission(req, res, next) {
     const nextNode = req.keystone;
     if (!nextNode.get('rbac')) {
         return next();
     }
 
-    let userPermission = req.user.permission.toObject();
+    const userPermission = req.user.permission.toObject()
     let permission = {};
     
     if (_.isArray(userPermission)) {
@@ -17,6 +17,7 @@ module.exports = function combinePermission(req, res, next) {
 
     req.permission = permission.value;
     req.permissionKey = permission.key;
+    req.permissionQueries = permission.query;
     
     next();
 }
@@ -38,19 +39,24 @@ function combineSinglePermission(nextNode, userPermission) {
     // }, {});
 
     return {
-        value: nextNode.filterListsPermission(userPermission),
         key: userPermission.permisionKey,
+        value: nextNode.filterListsPermission(userPermission),
+        query: nextNode.filterPermissionQuery(userPermission),
     }
 }
 
 function combineMultiplePermission(nextNode, userPermission) {
     const permissionKey = [];
+    let permissionQuery = null;
 
     let combineList = [];
     // Format permission to comparator object
     _.forEach(userPermission, singlePermission => {
         const p = combineSinglePermission(nextNode, singlePermission);
         permissionKey.push(p.key);
+        if (!permissionQuery) {
+            permissionQuery = p.query
+        }
 
         // Transform to comparator object
         // l -> list
@@ -91,7 +97,8 @@ function combineMultiplePermission(nextNode, userPermission) {
     });
 
     return {
-        value: combined,
         key: permissionKey,
+        value: combined,
+        query: permissionQuery,
     }
 }
