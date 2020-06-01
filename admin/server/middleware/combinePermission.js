@@ -5,7 +5,6 @@ module.exports = function combinePermission(req, res) {
     let userPermission = req.user.permission.toObject();
 
     let permission = {};
-    console.log('> userPermission', userPermission)
     if (_.isArray(userPermission)) {
         permission = combineMultiplePermission(nextNode, userPermission);
     } else {
