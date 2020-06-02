@@ -298,7 +298,7 @@ Keystone.prototype.getPermissionQuery = function (userPermission, list) {
 		_value,
 	} = userPermission[`${list}Query`] || {};
 	return {
-		hasQuery: !!_value,
+		hasQuery: !!_value && !!_field,
 		isPopulate: isPopulate && populate && _populateField,
 		populate,
 		populateField: _populateField,
