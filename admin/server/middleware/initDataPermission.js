@@ -2,12 +2,12 @@ const _ 	= require('lodash');
 
 const preparePermissionQuery = async (nextNode, permissionQueries, user, list) => {
 	const {
-		hasQuery,
-		isPopulate,
-		populate,
-		populateField,
-		field,
-		value,
+		hasQuery,		// is exercise permission search
+		isPopulate,		// is search with associative table
+		populate,		// which associative table wanna search
+		populateField,	// which field wanna match in associative table
+		field,			// which field related to associative table
+		value,			// match value fetched from user data
 	} = nextNode.getPermissionQuery(permissionQueries, list.key);
 	// console.log('> permissionQuery debug', {
 	//     hasQuery,
@@ -20,12 +20,13 @@ const preparePermissionQuery = async (nextNode, permissionQueries, user, list) =
 	let query = {}
 	if (hasQuery) {
 		if (isPopulate) {
-			const listModel = nextNode.list(populate).model
 			/*
 			** [Beta]
-			** TODO? How to quickly query in massive entry associative table
-			** create index?
+			** get the matched id list from associative table to search the target table
+			** TODO? How to quickly query in associative table with massive entry 
+			** create index? or another way?
 			*/
+			const listModel = nextNode.list(populate).model
 			const matchEntry = await listModel.find({
 				[populateField]: user[value]
 			})
