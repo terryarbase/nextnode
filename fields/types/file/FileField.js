@@ -15,6 +15,7 @@ import {
 import FileChangeMessage from '../../components/FileChangeMessage';
 import HiddenFileInput from '../../components/HiddenFileInput';
 import ImageThumbnail from '../../components/ImageThumbnail';
+import _ from 'lodash';
 
 let uploadInc = 1000;
 
@@ -56,14 +57,18 @@ module.exports = Field.create({
 	},
 	componentWillUpdate (nextProps) {
 		// Show the new filename when it's finished uploading
-		// console.log('old: ', this.props.value);
-		// console.log('new: ', nextProps.value);
-		if ((this.props.value && !nextProps.value) || 
-			this.props.value.filename !== nextProps.value.filename ||
-			this.props.value.name !== nextProps.value.name) {
+		// console.log('old: ', this.props);
+		// console.log('new: ', nextProps);
+		const curtValue = _.get(this.prop, 'value', {});
+		const nextvalue = _.get(nextProps, 'value', {});
+		// console.log('old: ', curtValue);
+		// console.log('new: ', nextvalue);
+		if ((curtValue && !nextvalue) || 
+			curtValue.filename !== nextvalue.filename ||
+			curtValue.name !== nextvalue.name) {
 			const state = buildInitialState(nextProps);
 			this.setState(state);
-		}
+		} 
 
 		// if ((this.props.value && !nextProps.value)) {
 		// 	this.setState(buildInitialState(nextProps));
