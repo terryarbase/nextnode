@@ -128,7 +128,7 @@ module.exports = Field.create({
 			// 		props.currentDependencies[dep] = this.state.values[dep];
 			// 	});
 			// }
-			console.log(props);
+			// console.log(props);
 			return React.createElement(Fields[field.type], props);
 		}, this);
 	},
@@ -141,7 +141,7 @@ module.exports = Field.create({
 					const { id, _isNew } = value;
 
 					const name = !_isNew && `${path}[${index}][id]`;
-					console.log(name, value);
+					// console.log(name, value);
 					const onRemove = e => this.removeItem(index);
 
 					return (
