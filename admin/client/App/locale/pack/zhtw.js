@@ -146,6 +146,7 @@ const locales = {
    },
    download:{  
       label:'下載',
+      item: '下載{{name}}',
       fileFormat:'文件格式:',
       column:'欄位:',
       useCrrentSelect:'使用現在已選取的欄位',
@@ -202,6 +203,7 @@ const locales = {
          cancelUpload:'取消上傳',
          deleteFile:'刪除文件',
          removeFile:'移除文件',
+         downloadItem: '下載{{name}}',
          latitude:'緯度',
          longitude:'經度',
          searchPlaceholder:'關鍵字',
@@ -288,6 +290,15 @@ const locales = {
    //    },
    //    ...(Keystone.appLanguage && Keystone.appLanguage.zhtw) || {},
    // }
+   v2: {
+      page: {
+         media: {
+            center: {
+               title: '媒體中心',
+            },
+         },
+      },
+   },
 };
 
 export default locales;

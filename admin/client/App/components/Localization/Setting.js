@@ -4,6 +4,8 @@
 */
 
 import React from 'react';
+import { translate } from "react-i18next";
+import PropTypes from 'prop-types';
 import assign from 'object-assign';
 import _ from 'lodash';
 import { Fields } from 'FieldTypes';

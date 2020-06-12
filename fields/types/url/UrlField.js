@@ -1,6 +1,6 @@
 import React from 'react';
 import Field from '../Field';
-import { GlyphButton, FormInput } from '../../../admin/client/App/elemental';
+import { GlyphButton, FormInput, Button } from '../../../admin/client/App/elemental';
 
 module.exports = Field.create({
 	displayName: 'URLField',
@@ -17,7 +17,10 @@ module.exports = Field.create({
 	},
 	renderLink () {
 		if (!this.props.value) return null;
-
+		const { downable } = this.props;
+		if (downable) {
+			return this.renderDownloadButton();
+		}
 		return (
 			<GlyphButton
 				className="keystone-relational-button"
@@ -29,6 +32,10 @@ module.exports = Field.create({
 		);
 	},
 	renderField () {
+		const { downable } = this.props;
+		if (downable) {
+			return this.renderDownloadButton();
+		}
 		return (
 			<FormInput
 				autoComplete="off"
@@ -48,8 +55,23 @@ module.exports = Field.create({
 			</div>
 		);
 	},
+	renderDownloadButton() {
+		const {
+			label, 
+			value,
+			t,
+		} = this.props;
+		return (
+			<Button variant="link" onClick={value && this.openValue}>
+				{t('downloadItem', { name: label })}
+			</Button>
+		);
+	},
 	renderValue () {
-		const { value } = this.props;
+		const { value, label, downable } = this.props;
+		if (downable) {
+			return this.renderDownloadButton();
+		}
 		return (
 			<FormInput noedit onClick={value && this.openValue}>
 				{value}

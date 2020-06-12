@@ -1,4 +1,6 @@
 import React from 'react';
+import { translate } from "react-i18next";
+import PropTypes from 'prop-types';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 // Cookies Section
 import {

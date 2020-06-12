@@ -11,6 +11,7 @@ var util = require('util');
 function url (list, path, options) {
 	this._nativeType = String;
 	this._underscoreMethods = ['format'];
+	this._properties = ['downable'];
 	url.super_.call(this, list, path, options);
 }
 url.properName = 'Url';

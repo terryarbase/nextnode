@@ -70,7 +70,7 @@ module.exports = function createDynamicRouter (keystone) {
 		}
 		router.all('/signin', SigninRoute);
 		router.all('/signout', SignoutRoute);
-		router.all('/api*', keystone.session.keystoneAuth);
+		router.use(keystone.session.keystoneAuth);
 	} else if (typeof keystone.get('auth') === 'function') {
 		router.use(keystone.get('auth'));
 	}
@@ -187,11 +187,21 @@ module.exports = function createDynamicRouter (keystone) {
 	);
 
 	// #6: List Routes
-	router.all('/*', function(req, res) {
+	router.all('/:list/:page([0-9]{1,5})?', function(req, res) {
 		const render = true;
 		combinePermission(req, res);
 		return IndexRoute(req, res, render);
 	});
+	router.all('/:list/:item', function(req, res) {
+		const render = true;
+		combinePermission(req, res);
+		return IndexRoute(req, res, render);
+	});
+	// router.all('/*', function(req, res) {
+	// 	const render = true;
+	// 	combinePermission(req, res);
+	// 	return IndexRoute(req, res, render);
+	// });
 	// router.all('/:list/:item', function(req, res) {
 	// 	const render = true;
 	// 	return IndexRoute(req, res, render);

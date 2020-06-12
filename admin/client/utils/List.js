@@ -165,6 +165,12 @@ List.prototype.getRelatedFilter = (field, initFilters={}, props, state) => {
 			// while the filter value is mapping field being with colun
 			if (/^:/i.test(value)) {
 				targetField = value.replace(/^:/, '');
+				if (targetField === '_id') {
+					return {
+						...accum,
+						_id: values._id,
+					}
+				}
 				return {
 					...accum,
 					[field]: getValueFrom({

@@ -145,6 +145,7 @@ const locales = {
    },
    download:{  
       label:'Download',
+      item: 'Download {{name}}',
       fileFormat:'File format:',
       column:'Columns:',
       useCrrentSelect:'Use currently selected',
@@ -193,6 +194,7 @@ const locales = {
          title:'Title',
          downloadqrCode: 'Download QR Code',
          downloadCode: 'Download Code File',
+         downloadItem: 'Download {{name}}',
          profileSuccessMsg:'Your profile have been changed successfully. You are able to get the latest profile in the next login.',
          search:'Search',
          searchPlaceholder:'Search Keyword',
@@ -287,6 +289,16 @@ const locales = {
    //    },
    //    ...(Keystone.appLanguage && Keystone.appLanguage.en) || {},
    // }
+   // Enhancement v2 component
+   v2: {
+      page: {
+         media: {
+            center: {
+               title: 'Media Center',
+            },
+         },
+      },
+   },
 };
 
 export default locales;

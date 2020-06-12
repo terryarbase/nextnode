@@ -210,6 +210,7 @@ const CreateForm = React.createClass({
 			}
 			// Get the props for the input field
 			var fieldProps = this.getFieldProps(field);
+			const filters = list.getRelatedFilter(field, this.props.filters, this.props, this.state);
 			fieldProps = {
 				...fieldProps,
 				...{
@@ -220,6 +221,12 @@ const CreateForm = React.createClass({
 					}),	
 				},
 			};
+			if (filters) {
+					fieldProps = {
+						...fieldProps,
+						filters,
+					};
+				}
 			if (fieldProps.note) {
 				fieldProps = {
 					...fieldProps,
