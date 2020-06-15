@@ -9,7 +9,6 @@ import {
 import {
 	setCurrentLanguage,
 } from '../../screens/List/actions';
-import { translate } from "react-i18next";
 
 var LocalizationSelector = React.createClass({
 	displayName: 'LocalizationSelector',

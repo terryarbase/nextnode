@@ -30,7 +30,7 @@ module.exports = [
 	'react-addons-css-transition-group',
 	'react-alt-text',
 	'react-copy-to-clipboard',
-	'prop-types',
+
 	'react-day-picker',
 	'react-color',
 	'react-bootstrap',
