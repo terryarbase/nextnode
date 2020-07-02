@@ -24,6 +24,7 @@ import Pagination from '../../elemental/Pagination';
 import ListFilters from './components/Filtering/ListFilters';
 import ListHeaderTitle from './components/ListHeaderTitle';
 import ListHeaderToolbar from './components/ListHeaderToolbar';
+import ListImportForm from './components/ListImportForm';
 import ListManagement from './components/ListManagement';
 
 import NoListView from './components/NoListView';
@@ -199,6 +200,9 @@ const ListView = React.createClass({
 			},
 		});
 	},
+	getListPermission () {
+		return this.props.permission[this.props.currentList.key];
+	},
 	getRealTimeFormDate () {
 		// var { realTimeCol = {} } = this.state;
 		const { realTimeInfo } = this.state;
@@ -296,6 +300,7 @@ const ListView = React.createClass({
 	renderManagement () {
 		const { checkedItems, manageMode, selectAllItemsLoading } = this.state;
 		const { currentList } = this.props;
+		const listPermission = this.getListPermission();
 		return (
 			<ListManagement
 				checkedItemCount={Object.keys(checkedItems).length}
@@ -308,8 +313,8 @@ const ListView = React.createClass({
 				realTimeCol={this.state.realTimeCol}
 				itemCount={this.props.items.editCount}
 				itemsPerPage={this.props.lists.page.size}
-				nodelete={currentList.nodelete}
-				noedit={currentList.noedit}
+				nodelete={!listPermission._delete}
+				noedit={!listPermission._update}
 				isRealTimeSaveMode={!!currentList.realtimeEditFields.length}
 				selectAllItemsLoading={selectAllItemsLoading}
 			/>
@@ -341,16 +346,18 @@ const ListView = React.createClass({
 		const items = this.props.items;
 		const {
 			autocreate,
-			nocreate,
+			// nocreate,
 			plural,
 			singular,
-			nodownload,
+			// noimport,
+			// nodownload,
 			nofilter,
 			noscale,
 		} = this.props.currentList;
 
 		// console.log(singular, plural);
 		const list = listsByPath[this.props.params.listId];
+		const listPermission = this.getListPermission();
 		return (
 			<Container style={{ paddingTop: '2em' }}>
 				<ListHeaderTitle
@@ -381,7 +388,7 @@ const ListView = React.createClass({
 
 
 					// create
-					createIsAvailable={!nocreate}
+					allowCreate={listPermission._create}
 					createListName={singular}
 					createOnClick={autocreate
 						? this.createAutocreate
@@ -404,7 +411,8 @@ const ListView = React.createClass({
 					columnsAvailable={this.props.currentList.columns}
 
 					// button flags
-					nodownload={nodownload}
+					allowImport={listPermission._import}
+					allowDownload={listPermission._download}
 					nofilter={nofilter}
 					noscale={noscale}
 				/>
@@ -630,7 +638,8 @@ const ListView = React.createClass({
 	renderBlankState () {
 		// if nolist, use other noListView instead
 		if (!this.showBlankState()) return null;
-		const { t, currentList } = this.props;
+		const { t, currentList, isLocale, currentLanguage, dispatch } = this.props;
+		const listPermission = this.getListPermission();
 
 		if (currentList.nolist) return this.renderNoListView();
 
@@ -640,11 +649,36 @@ const ListView = React.createClass({
 			: this.openCreateModal;
 
 		// display the button if create allowed
-		const button = !currentList.nocreate ? (
-			<GlyphButton color="success" glyph="plus" position="left" onClick={onClick} data-e2e-list-create-button="no-results">
-				{t('create')}
-			</GlyphButton>
-		) : null;
+		// const button = !currentList.nocreate ? (
+		// 	<GlyphButton color="success" glyph="plus" position="left" onClick={onClick} data-e2e-list-create-button="no-results">
+		// 		{t('create')}
+		// 	</GlyphButton>
+		// ) : null;
+		const button = <div
+			style={{
+				display: 'flex',
+				justifyContent: 'center',
+			}}
+		>
+			{listPermission._create ? (
+				<GlyphButton color="success" glyph="plus" position="left" onClick={onClick} data-e2e-list-create-button="no-results">
+					{t('create')}
+				</GlyphButton>
+			) : null}
+			{listPermission._import ? (
+				<div style={{
+					width: '100px',
+					paddingLeft: '0.75em',
+				}}>
+					<ListImportForm
+						currentLang={isLocale ? currentLanguage : null}
+						dispatch={dispatch}
+						list={currentList}
+						t={t}
+					/>
+				</div>
+			) : null}
+		</div>
 
 		return (
 			<Container>
@@ -675,6 +709,7 @@ const ListView = React.createClass({
 			containerStyle.maxWidth = '100%';
 		}
 		const { t } = this.props;
+		const listPermission = this.getListPermission();
 		return (
 			<div>
 				{this.renderHeader()}
@@ -719,7 +754,8 @@ const ListView = React.createClass({
 								currentLang={this.props.currentLanguage}
 								currentPage={this.props.lists.page.index}
 								pageSize={this.props.lists.page.size}
-								noedit={this.props.currentList.noedit}
+								allowUpdate={listPermission._update}
+								allowDelete={listPermission._delete}
 								drag={this.props.lists.drag}
 								dispatch={this.props.dispatch}
 							/>
@@ -773,6 +809,7 @@ const ListView = React.createClass({
 				{this.renderBlankState()}
 				{this.renderActiveState()}
 				<CreateForm
+					permission={this.props.permission[this.props.currentList.key]}
 					dispatch={this.props.dispatch}
 					err={Keystone.createFormErrors}
 					isOpen={this.state.showCreateForm}

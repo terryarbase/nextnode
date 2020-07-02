@@ -109,7 +109,12 @@ const App = (props) => {
 					{/* <div className="block"></div> */}
 				</header>
 				<main className={css(classes.body)}>
-					{children}
+					{React.Children.map(children, child => {
+						return React.cloneElement(child, {
+							user: Keystone.user,
+							permission: Keystone.permission,
+						});
+					})}
 				</main>
 				<Footer
 					appversion={Keystone.appversion}

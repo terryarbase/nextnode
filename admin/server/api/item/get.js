@@ -19,6 +19,11 @@ module.exports = function (req, res) {
 	if (fields && !Array.isArray(fields)) {
 		return res.status(401).json({ error: req.t.__('msg_request_filed_invalid') });
 	}
+
+	// exclude not allow fields
+	fields = fields ? fields : _.keys(req.list.fields);
+	fields = _.filter(fields, f => _.includes(req.permissionAllowFields, f))
+
 	query.exec(function (err, item) {
 
 		if (err) return res.status(500).json({

@@ -61,6 +61,7 @@ import {
 	itemLoadingPermissionDenied,
 	deleteItems,
 	downloadItems,
+	importItems,
 } from './items';
 
 import {
@@ -97,6 +98,7 @@ export {
 	setRowAlert,
 	moveItem,
 	downloadItems,
+	importItems,
 	realtimeSave,
 	setCurrentLanguage,
 	setCurrentUILanguage,

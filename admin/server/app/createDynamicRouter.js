@@ -3,7 +3,6 @@ var express = require('express');
 var multer = require('multer');
 
 const requestMiddleware = require('../middleware/request');
-const combinePermission = require('../middleware/combinePermission');
 
 module.exports = function createDynamicRouter (keystone) {
 	// ensure keystone nav has been initialised
@@ -70,7 +69,7 @@ module.exports = function createDynamicRouter (keystone) {
 		}
 		router.all('/signin', SigninRoute);
 		router.all('/signout', SignoutRoute);
-		router.use(keystone.session.keystoneAuth);
+		router.all('/api*', keystone.session.keystoneAuth);
 	} else if (typeof keystone.get('auth') === 'function') {
 		router.use(keystone.get('auth'));
 	}
@@ -94,10 +93,16 @@ module.exports = function createDynamicRouter (keystone) {
 	}
 
 	// #5: Core Lists API
+	const combinePermission = require('../middleware/combinePermission');
 	const initList = require('../middleware/initList');
 	const initDataPermission = require('../middleware/initDataPermission');
 	// lists
-	router.all('/api/counts', initDataPermission, require('../api/counts'));
+	router.all(
+		'/api/counts',
+		combinePermission,
+		initDataPermission,
+		require('../api/counts')
+	);
 	// if (serviceWorker) {
 	/*
 	** register for the current login user (e.g. browser device id)
@@ -110,27 +115,48 @@ module.exports = function createDynamicRouter (keystone) {
 	router.get(
 		'/api/:list',
 		initList,
-		checkPermission(1, { allowBasic: true }),
+		combinePermission,
+		checkPermission({
+			list: ['_view'],
+			field: ['view'],
+		}, {
+			allowBasic: true,
+			excludeTarget: 'query.fields',
+		}),
 		initDataPermission,
 		require('../api/list/get'),
 	);
 	router.get(
 		'/api/:list/:format(export.excel|export.json|export.txt)',
 		initList,
-		checkPermission(1),
+		combinePermission,
+		checkPermission({
+			list: ['_download'],
+			field: ['view'],
+		}, {
+			excludeTarget: 'query.select',
+		}),
 		initDataPermission,
 		require('../api/list/download'),
 	);
 	router.post(
 		'/api/:list/create',
 		initList,
-		checkPermission(2),
+		combinePermission,
+		checkPermission({
+			list: ['_create'],
+			field: ['create'],
+		}),
 		require('../api/list/create'),
 	);
 	router.post(
 		'/api/:list/update',
 		initList,
-		checkPermission(2),
+		combinePermission,
+		checkPermission({
+			list: ['_update'],
+			field: ['update'],
+		}, { allowBasic: true }),
 		initDataPermission,
 		require('../api/list/update'),
 	);
@@ -138,7 +164,11 @@ module.exports = function createDynamicRouter (keystone) {
 	router.post(
 		'/api/:list/updateMyProfile',
 		initList,
-		checkPermission(2),
+		combinePermission,
+		checkPermission({
+			list: ['_update'],
+			field: ['update'],
+		}),
 		(req, res) => {
 			const Account = require('../api/account');
 			new Account(req, res).updateMyProfile();
@@ -154,54 +184,93 @@ module.exports = function createDynamicRouter (keystone) {
 	// );
 	router.post(
 		'/api/:list/delete',
-		initList, checkPermission(2),
+		initList,
+		combinePermission,
+		checkPermission({
+			list: ['_delete'],
+		}),
 		initDataPermission,
 		require('../api/list/delete'),
+	);
+	router.post(
+		'/api/:list/import',
+		initList,
+		combinePermission,
+		checkPermission({
+			list: ['_import'],
+			// field: ['create'],
+			// TODO: filter out non-allow field in import file
+		}),
+		initDataPermission,
+		require('../api/list/import'),
 	);
 	// router.post('/api/:list/delete', initList, checkPermission(2), require('../api/list/delete'));
 	// items
 	router.get(
 		'/api/:list/:id',
 		initList,
-		checkPermission(1, { allowBasic: true }),
+		combinePermission,
+		checkPermission({
+			list: ['_view'],
+			field: ['view'],
+		}, { allowBasic: true }),
 		initDataPermission,
 		require('../api/item/get'),
 	);
 	router.post(
 		'/api/:list/:id',
 		initList,
-		checkPermission(2),
+		combinePermission,
+		checkPermission({
+			list: ['_update'],
+			field: ['update'],
+		}),
 		initDataPermission,
 		require('../api/item/update'),
 	);
 	router.post(
 		'/api/:list/:id/delete',
-		initList, checkPermission(2),
+		initList,
+		combinePermission,
+		checkPermission(),	// where call? non found in UI
 		initDataPermission,
 		require('../api/list/delete'),
 	);
 	router.post(
 		'/api/:list/:id/sortOrder/:sortOrder/:newOrder',
-		initList, checkPermission(2),
+		initList,
+		combinePermission,
+		checkPermission({
+			list: ['_view'],
+		}),	// where call? found in UI, still using?
 		require('../api/item/sortOrder'),
 	);
 
 	// #6: List Routes
-	router.all('/:list/:page([0-9]{1,5})?', function(req, res) {
-		const render = true;
-		combinePermission(req, res);
-		return IndexRoute(req, res, render);
-	});
-	router.all('/:list/:item', function(req, res) {
-		const render = true;
-		combinePermission(req, res);
-		return IndexRoute(req, res, render);
-	});
-	// router.all('/*', function(req, res) {
+	// router.all('/:list/:page([0-9]{1,5})?', function(req, res) {
 	// 	const render = true;
 	// 	combinePermission(req, res);
 	// 	return IndexRoute(req, res, render);
 	// });
+	// router.all('/:list/:item', function(req, res) {
+	// 	const render = true;
+	// 	combinePermission(req, res);
+	// 	return IndexRoute(req, res, render);
+	// });
+	// // router.all('/*', function(req, res) {
+	// // 	const render = true;
+	// // 	combinePermission(req, res);
+	// // 	return IndexRoute(req, res, render);
+	// // });
+
+	router.all('/*',
+		combinePermission,
+		function(req, res) {
+			const render = true;
+			return IndexRoute(req, res, render);
+		}
+	);
+	
 	// router.all('/:list/:item', function(req, res) {
 	// 	const render = true;
 	// 	return IndexRoute(req, res, render);
