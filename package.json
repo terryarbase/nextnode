@@ -121,11 +121,7 @@
     "react-images": "0.5.6",
     "react-markdown": "2.5.0",
     "react-redux": "5.0.6",
-<<<<<<< HEAD
     "react-router": "^3.2.0",
-=======
-    "react-router": "3.0.2",
->>>>>>> master_permission
     "react-router-dom": "^5.1.2",
     "react-router-redux": "4.0.8",
     "react-scripts": "^3.1.2",
