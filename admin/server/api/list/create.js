@@ -1,14 +1,14 @@
 const _ = require('lodash');
 
-module.exports = function (req, res) {
+module.exports = async function (req, res) {
 	var keystone = req.keystone;
 	if (!keystone.security.csrf.validate(req)) {
 		return res.apiError(403, req.t.__('msg_invalid_csrf'));
 	}
 	const { body, locales, list: { options: { multilingual, nolist }, fields } } = req;
 	req.list.prepareDataPermission(req, body);
-	const newData = req.list.prepareCorrectParam(body);
-		
+	let newData = req.list.prepareCorrectParam(body);
+	
 	const item = new req.list.model();
 	const options = {
 		files: req.files,
@@ -20,12 +20,37 @@ module.exports = function (req, res) {
 		defaultLang: locales && locales.defaultLanguage,
 		supportLang: locales && locales.localization,
 	};
-	req.list.updateItem(item, newData, options, function (err) {
+
+	// trigger before create list hook
+	const [bsError] = await req.list.applyHook('beforeSave', item, newData, { req });
+	if (bsError) return res.apiError(406, 'database error', bsError);
+
+	const [bcError] = await req.list.applyHook('beforeCreate', item, newData, { req });
+	if (bcError) return res.apiError(406, 'database error', bcError);
+
+	req.list.updateItem(item, newData, options, async function (err) {
 		if (err) {
 			var status = err.error === 'validation errors' ? 400 : 500;
-			var error = err.error === 'database error' ? err.detail : err;
-			return res.apiError(status, err);
+			let error = err;
+			if (err.error === 'database error' && err.detail && err.detail.errors) {
+				error = {
+					...err,
+					detail: _.map(err.detail.errors, e => {
+						return `[${e.path}] : ${e.message}`;
+					}).join(', ')
+				}
+			}
+
+			return res.apiError(status, error);
 		}
+
+		// trigger after create list hook
+		const [asError] = await req.list.applyHook('afterSave', item, { req });
+		if (asError) return res.apiError(406, 'database error', asError);
+
+		const [acError] = await req.list.applyHook('afterCreate', item, newData, { req });
+		if (acError) return res.apiError(406, 'database error', acError);
+
 		res.json(req.list.getData(item, undefined, null, options));
 	});
 };

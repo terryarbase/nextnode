@@ -156,7 +156,10 @@ module.exports = function createDynamicRouter (keystone) {
 		checkPermission({
 			list: ['_update'],
 			field: ['update'],
-		}, { allowBasic: true }),
+		}, {
+			allowBasic: true,
+			exclude: false,
+		}),
 		initDataPermission,
 		require('../api/list/update'),
 	);

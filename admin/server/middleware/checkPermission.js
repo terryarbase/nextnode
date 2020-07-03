@@ -7,7 +7,7 @@ const checkListPermission = (nextNode, req, requiredPermission, options) => {
 
 const checkFieldPermission = (nextNode, req, requiredPermission, options) => {
     if (!requiredPermission.length) return;
-
+    
     // all field be allow in 'Permission' list
     if (req.list.key === 'Permission') {
         req.permissionAllowFields = _.keys(req.list.fields);
@@ -20,6 +20,7 @@ const checkFieldPermission = (nextNode, req, requiredPermission, options) => {
     } = req;
     const {
         excludeTarget = '',
+        exclude = true,
     } = options;
     
     // set allow fields to req for custom handle needed
@@ -27,30 +28,32 @@ const checkFieldPermission = (nextNode, req, requiredPermission, options) => {
         .pickBy(fp => nextNode.isPermissionAllow(fp, requiredPermission))
         .keys()
         .value();
-    
-    switch(req.method) {
-        case 'GET': {
-            const input = _.get(req, excludeTarget);
-            if (!input) break;
-            // exclude not allow fields in target string
-            const excluded = _.chain(input)
-                .split(',')
-                .filter(field => _.includes(req.permissionAllowFields, field))
-                .join(',')
-                .value();
-            _.set(req, excludeTarget, excluded);
-            break;
-        }
-        case 'POST': {
-            // exclude not allow fields in body
-            req.body = _.pick(body, req.permissionAllowFields);  
-            break;
+
+    if (exclude) {
+        switch(req.method) {
+            case 'GET': {
+                const input = _.get(req, excludeTarget);
+                if (!input) break;
+                // exclude not allow fields in target string
+                const excluded = _.chain(input)
+                    .split(',')
+                    .filter(field => _.includes(req.permissionAllowFields, field))
+                    .join(',')
+                    .value();
+                _.set(req, excludeTarget, excluded);
+                break;
+            }
+            case 'POST': {
+                // exclude not allow fields in body
+                req.body = _.pick(body, req.permissionAllowFields);  
+                break;
+            }
         }
     }
 }
 
 module.exports = function checkPermission(requiredPermission = {}, options) {
-    options = Object.assign({}, { allowBasic: false }, options);
+    options = _.assign({}, { allowBasic: false }, options);
     const {
         list: requiredListPermission = [],
         field: requiredFieldPermission = [],
