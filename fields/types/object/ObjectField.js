@@ -4,7 +4,8 @@ import assign from 'object-assign';
 import { css, StyleSheet } from 'aphrodite/no-important';
 import React from 'react';
 import Field from '../Field';
-import _map from 'lodash/map';
+import _ from 'lodash';
+import flatten  from 'flat';
 
 import { Fields } from 'FieldTypes';
 import InvalidFieldType from '../../../admin/client/App/shared/InvalidFieldType';
@@ -39,13 +40,19 @@ module.exports = Field.create({
 		path: React.PropTypes.string.isRequired,
 		value: React.PropTypes.object,
 	},
+	getValue () {
+		const { value } = this.props;
+		// initial value be object if not set
+		return value ? value : {};
+	},
 	handleFieldChange (fieldInfo) {
-		const { value, path, onChange } = this.props;
+		const { path, onChange } = this.props;
+		const value = this.getValue();
 		value[fieldInfo.path] = fieldInfo.value,
 		onChange({ path, value });
 	},
 	renderSubFields (value) {
-		return _map(Object.keys(this.props.fields), path => {
+		return _.map(Object.keys(this.props.fields), path => {
 			const field = this.props.fields[path];
 			if (typeof Fields[field.type] !== 'function') {
 				return React.createElement(InvalidFieldType, { type: field.type, path: field.path, key: field.path });
@@ -53,30 +60,30 @@ module.exports = Field.create({
 
 			const props = assign({}, field);
 			props.value = value[field.path];
-			props.values = value;
+			// flatten values to one layer object for support 'dependsOn' feature to nested object
+			props.values = flatten(this.props.values, {
+				safe: true
+			});
 			props.values.delegated = !!this.props.values.delegated;
 			props.onChange = this.handleFieldChange;
 			props.mode = 'edit';
 			props.currentLang = this.props.currentLang;
-			props.inputNamePrefix = `${this.props.path}`;
+			props.nestedPath = [
+				...this.props.nestedPath || [],
+				this.props.path,
+			];
+			props.inputNamePrefix = _.map(props.nestedPath, (path, index) => {
+				return index === 0 ? path: `[${path}]`;
+			}).join('');
 			props.key = field.path;
-
-			// TODO ?
-			// if (props.dependsOn) {
-			// 	props.currentDependencies = {};
-			// 	Object.keys(props.dependsOn).forEach(dep => {
-			// 		props.currentDependencies[dep] = this.state.values[dep];
-			// 	});
-			// }
 			return React.createElement(Fields[field.type], props);
 		});
 	},
 	renderField () {
-		const { value, path, t } = this.props;
-		console.log('>>> value', value, path);
+		const { path, t } = this.props;
+		const value = this.getValue();
 		const { id } = value;
 		const name = `${path}[id]`;
-
 		return (
 			<ObjectField key={id} {...{ id, name, t }}>
 				{this.renderSubFields(value)}
@@ -84,7 +91,6 @@ module.exports = Field.create({
 		);
 	},
 	renderUI () {
-		console.log('>>> Object Types this.props', this.props);
 		const { required } = this.props;
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		return (
@@ -100,8 +106,10 @@ module.exports = Field.create({
 const classes = StyleSheet.create({
 	container: {
 		marginTop: '2em',
+		marginBottom: '1.5em',
 		background: '#f8f8f8',
-	    padding: 10,
-    	boxShadow: '0px 1px 3px 0px rgba(0, 0, 0, 0.1)',
+	    padding: '10px 15px 1px 15px',
+		boxShadow: '0px 1px 4px 0px rgba(0, 0, 0, 0.2)',
+		borderLeft: '3px solid #c3c3c3',
 	},
 });

@@ -4,12 +4,13 @@
 */
 
 import React from 'react';
+import { translate } from "react-i18next";
+import PropTypes from 'prop-types';
 import assign from 'object-assign';
 import _ from 'lodash';
 import { Fields } from 'FieldTypes';
 import xhr from 'xhr';
 import { Button, Form, Modal } from '../../elemental';
-import { translate } from "react-i18next";
 import { setUILanguage, getUILanguage } from '../../../utils/cookie';
 
 const schema = 'User';

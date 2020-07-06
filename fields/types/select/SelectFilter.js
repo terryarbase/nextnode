@@ -90,15 +90,21 @@ class SelectFilter extends Component {
 		if (navigator.appVersion.includes('X11')) osName = 'UNIX';
 		if (navigator.appVersion.includes('Linux')) osName = 'Linux';
 
-		this.setState({ osName });
+		let metaKey = '<control>';
+		let metaKeyLabel = 'ctrl';
+		if (osName === 'MacOS') {
+			metaKey = '<meta>';
+			metaKeyLabel = 'cmd';
+		}
+		
+		this.setState({ osName, metaKey, metaKeyLabel });
 	}
 	handleKeyDown (e) {
-		if (vkey[e.keyCode] !== '<meta>') return;
-
+		if (vkey[e.keyCode] !== this.state.metaKey) return;
 		this.setState({ metaDown: true });
 	}
 	handleKeyUp (e) {
-		if (vkey[e.keyCode] !== '<meta>') return;
+		if (vkey[e.keyCode] !== this.state.metaKey) return;
 
 		this.setState({ metaDown: false });
 	}
@@ -169,10 +175,6 @@ class SelectFilter extends Component {
 		const { field, filter, t, list } = this.props;
 		const indeterminate = filter.value.length < field.ops.length;
 
-		const metaKeyLabel = this.state.osName === 'MacOS'
-			? 'cmd'
-			: 'ctrl';
-
 		const fieldStyles = {
 			alignItems: 'center',
 			borderBottom: '1px dashed rgba(0,0,0,0.1)',
@@ -204,7 +206,7 @@ class SelectFilter extends Component {
 						{indeterminate ? t('all') : t('nothing')}
 					</Button>
 					<FormNote style={{ margin: 0 }}>
-						{t('sort:hold')} <Kbd>{metaKeyLabel}</Kbd> {t('sort:multiMsg')}
+						{t('sort:hold')} <Kbd>{this.state.metaKeyLabel}</Kbd> {t('sort:multiMsg')}
 					</FormNote>
 				</div>
 				{this.renderOptions()}

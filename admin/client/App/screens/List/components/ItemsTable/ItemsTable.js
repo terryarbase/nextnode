@@ -23,7 +23,8 @@ const ItemsTable = React.createClass({
 		realTimeInfo: PropTypes.object.isRequired,
 		realTimeCol: PropTypes.object.isRequired,
 		list: PropTypes.object.isRequired,
-		noedit: PropTypes.bool.isRequired,
+		allowUpdate: PropTypes.bool.isRequired,
+		allowDelete: PropTypes.bool.isRequired,
 		manageMode: PropTypes.bool.isRequired,
 		rowAlert: PropTypes.object.isRequired,
 		// isLocale={this.props.isLocale}
@@ -35,7 +36,7 @@ const ItemsTable = React.createClass({
 		));
 
 		// add delete col when available
-		if (!this.props.list.nodelete) {
+		if (this.props.allowDelete) {
 			cols.unshift(
 				<col width={TABLE_CONTROL_COLUMN_WIDTH} key="delete" />
 			);
@@ -58,11 +59,11 @@ const ItemsTable = React.createClass({
 		let listControlCount = 0;
 
 		if (this.props.list.sortable) listControlCount++;
-		if (!this.props.list.nodelete) listControlCount++;
+		if (this.props.allowDelete) listControlCount++;
 
 		// set active sort
 		const activeSortPath = this.props.activeSort.paths[0];
-		const { manageMode, noedit, items, realTimeCol } = this.props;
+		const { manageMode, allowUpdate, items, realTimeCol } = this.props;
 		// pad first col when controls are available
 		const cellPad = listControlCount ? (
 			<th colSpan={listControlCount} />
@@ -81,10 +82,10 @@ const ItemsTable = React.createClass({
 			/*
 			** disable if 
 			** manage mode is on
-			** noedit is turned off
+			** allowUpdate is true
 			** at least one item result
 			*/
-			const isRealTimeCol = !noedit 
+			const isRealTimeCol = allowUpdate 
 							&& ColumnType.displayName
 							&& _.includes(RealTimeCol, ColumnType.displayName)
 							&& items.results && items.results.length;
@@ -108,7 +109,7 @@ const ItemsTable = React.createClass({
 								list={this.props.list}
 								col={col}
 								data={items[0]}
-								noedit={manageMode || noedit}
+								noedit={manageMode || !allowUpdate}
 								isPure={true}
 								currentValue={currentValue}
 								onChange={value => {
@@ -150,7 +151,8 @@ const ItemsTable = React.createClass({
 		const {
 			items,
 			realTimeInfo,
-			noedit,
+			allowUpdate,
+			allowDelete,
 			realTimeCol,
 			manageMode,
 			isRestricted,
@@ -175,7 +177,8 @@ const ItemsTable = React.createClass({
 							currentLang={this.props.currentLang}
 							item={item}
 							isRestricted={isRestricted}
-							noedit={noedit}
+							allowUpdate={allowUpdate}
+							allowDelete={allowDelete}
 							// currentValue={realTimeInfo && realTimeInfo[item.id]}
 							{...this.props}
 						/>

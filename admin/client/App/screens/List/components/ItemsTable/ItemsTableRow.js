@@ -22,7 +22,7 @@ const ItemsRow = React.createClass({
 		index: React.PropTypes.number,
 		items: React.PropTypes.object,
 		list: React.PropTypes.object,
-		noedit: React.PropTypes.bool,
+		allowUpdate: React.PropTypes.bool,
 		currentValue: React.PropTypes.object,
 		onChange: React.PropTypes.func,
 		realTimeCol: React.PropTypes.object,
@@ -46,7 +46,7 @@ const ItemsRow = React.createClass({
 			'ItemList__row--success': this.props.rowAlert.success === itemId,
 			'ItemList__row--failure': this.props.rowAlert.fail === itemId,
 		});
-		const { noedit, realTimeCol, realTimeInfo, manageMode, isRestricted, currentLang } = this.props;
+		const { allowUpdate, realTimeCol, realTimeInfo, manageMode, isRestricted, currentLang } = this.props;
 		// console.log('this.props.columns: ', this.props.columns);
 		// item fields
 		var cells = this.props.columns.map((col, i) => {
@@ -59,6 +59,10 @@ const ItemsRow = React.createClass({
 			// if the record is restricted by the delegated field, then no realtime edit is allowed.
 			const restrictDelegated = isRestricted(col, item);
 			const isMultilingual = col.field && col.field.multilingual;
+			if (isMultilingual && !value) {
+				value = {};
+				currentValue = value;
+			}
 			/*
 			** if realtime action is triggered
 			*/
@@ -97,7 +101,7 @@ const ItemsRow = React.createClass({
 				col={col}
 				data={newItem}
 				currentLang={currentLang}
-				noedit={manageMode || noedit || restrictDelegated}
+				noedit={manageMode || !allowUpdate || restrictDelegated}
 				currentValue={currentValue}
 				linkTo={linkTo}
 				onChange={v => {
@@ -130,7 +134,7 @@ const ItemsRow = React.createClass({
 		}
 
 		// add delete/check icon when applicable
-		if (!this.props.list.nodelete) {
+		if (this.props.allowDelete) {
 			cells.unshift(this.props.manageMode && !item.delegated ? (
 				<ListControl key="_check" type="check" active={this.props.checkedItems[itemId]} />
 			) : (

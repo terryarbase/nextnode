@@ -146,6 +146,7 @@ const locales = {
    },
    download:{  
       label:'下載',
+      item: '下載{{name}}',
       fileFormat:'文件格式:',
       column:'欄位:',
       useCrrentSelect:'使用現在已選取的欄位',
@@ -153,6 +154,13 @@ const locales = {
       selectAll:'全部選取',
       selectNone:'取消選取',
 
+   },
+   import:{  
+      label:'匯入',
+      fileUpload:'CSV :',
+      upload:'上載',
+      change:'更改文件',
+      cancel:'取消',
    },
    manage:{  
       label:'管理',
@@ -185,6 +193,7 @@ const locales = {
          relationship: '關聯連結',
          select: '請選擇...',
          downloadCode: '下載代碼文件',
+         downloadItem: '下载{{name}}',
          selectWithListname: '請選擇{{listName}}...',
          fileReaderNotSupport:'瀏覽器不支援文件讀取器',
          fileFormatNotSupport:'不支援的文件類型。支援的格式有:GIF, PNG, JPG, BMP, ICO, PDF, TIFF, EPS, PSD, SVG',
@@ -288,6 +297,15 @@ const locales = {
    //    },
    //    ...(Keystone.appLanguage && Keystone.appLanguage.zhtw) || {},
    // }
+   v2: {
+      page: {
+         media: {
+            center: {
+               title: '媒體中心',
+            },
+         },
+      },
+   },
 };
 
 export default locales;

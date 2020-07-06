@@ -183,20 +183,19 @@ password.prototype.validateInput = function (data, callback) {
 var validate = password.validate = function (password, confirm, min, max, complexity, rejectCommon) {
 	var messages = [];
 	const pass = String(password);
-	if (password !== undefined || confirm !== undefined) {
-		if (confirm !== undefined
-			&& pass !== confirm) {
-			messages.push('Passwords must match.');
-		}
+	if (confirm !== undefined
+		&& pass !== confirm) {
+		messages.push('Passwords must match.');
+	}
+	if (min && typeof pass === 'string' && pass.length < min) {
+		messages.push('Password must be longer than ' + min + ' characters.');
+	}
 
-		if (min && typeof pass === 'string' && pass.length < min) {
-			messages.push('Password must be longer than ' + min + ' characters.');
-		}
-
-		if (max && typeof pass === 'string' && pass.length > max) {
-			messages.push('Password must not be longer than ' + max + ' characters.');
-		}
-
+	if (max && typeof pass === 'string' && pass.length > max) {
+		messages.push('Password must not be longer than ' + max + ' characters.');
+	}
+	
+	if (pass === 'string') {
 		for (var prop in complexity) {
 			if (complexity[prop] && typeof pass === 'string') {
 				var complexityCheck = (regexChunk[prop]).test(pass);

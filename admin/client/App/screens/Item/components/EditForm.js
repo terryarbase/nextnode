@@ -99,6 +99,7 @@ var EditForm = React.createClass({
 		props.value = this.props.list.getProperlyValue({ field, isLocale, currentLang, values });
 		props.values = values;
 		props.currentLang = currentLang;
+		props.defaultLang = this.props.defaultLang;
 		props.onChange = this.handleChange;
 		props.mode = 'edit';
 		props.isCore = this.props.list.isCore;
@@ -106,6 +107,20 @@ var EditForm = React.createClass({
 		props.t = t;
 		props.i18n = i18n;
 		return props;
+	},
+	/*
+	** check field permission for UI
+	** Fung Lee
+	** 20/06/2019
+	*/
+	checkFieldPermission(props) {
+		const { permission } = this.props;
+		const allowView = _.get(permission, `${props.path}.view`, true);
+		const allowUpdate = _.get(permission, `${props.path}.update`, true);
+		if (!allowUpdate) {
+			props.noedit = true;
+		}
+		return allowView;
 	},
 	handleChange ({ path, value }) {
 		// const { path, value } = e;
@@ -268,6 +283,11 @@ var EditForm = React.createClass({
 			);
 		} else if (nameFieldIsFormHeader) {
 			var nameFieldProps = this.getFieldProps(nameField);
+			if (!this.checkFieldPermission(nameFieldProps)) {
+				return (
+					<h2>{`(${t('noNameLabel')})`}</h2>
+				)
+			};
 			nameFieldProps.label = null;
 			nameFieldProps.size = 'full';
 			nameFieldProps.autoFocus = true;
@@ -289,9 +309,12 @@ var EditForm = React.createClass({
 					},
 				};
 			}
-			return wrapNameField(
+			let elem = nameFieldProps.noedit ? (
+				<h2>{nameFieldProps.value || `(${t('noNameLabel')})`}</h2>
+			) : (
 				React.createElement(Fields[nameField.type], nameFieldProps)
-			);
+			)
+			return wrapNameField(elem);
 		} else {
 			// Support Type.Name with empty value
 			let name = this.props.data.name;
@@ -382,6 +405,10 @@ var EditForm = React.createClass({
 				let props = this.getFieldProps(field);
 				const filters = this.props.list.getRelatedFilter(field, props.filters, this.props, this.state);
 				const { path } = field;
+
+				// No permission, no render
+				if (!this.checkFieldPermission(props)) return;
+
 				props = {
 					...props,
 					restrictDelegated: field.restrictDelegated,
@@ -464,12 +491,13 @@ var EditForm = React.createClass({
 							];
 						});
 					} else {
-						if (!stateless) {
-							self.statelessUI[path] = element;
-						}
-						allComponents = [
-							(stateless || element),
-						];
+						// if (!stateless) {
+						// 	self.statelessUI[path] = element;
+						// }
+						allComponents = [ element ];
+						// [
+						// 	(stateless || element),
+						// ];
 					}
 					elements = [ 
 						...elements,
@@ -491,7 +519,7 @@ var EditForm = React.createClass({
 		if (this.props.list.noedit && this.props.list.nodelete) {
 			return null;
 		}
-		const { t } = this.props;
+		const { t, permission } = this.props;
 		const { loading, values: { delegated } } = this.state;
 		const loadingButtonText = loading ? t('saving') : t('save');
 		// Padding must be applied inline so the FooterBar can determine its
@@ -500,7 +528,7 @@ var EditForm = React.createClass({
 		return (
 			<FooterBar style={styles.footerbar}>
 				<div style={styles.footerbarInner}>
-					{!this.props.list.noedit && (
+					{permission._update && (
 						<LoadingButton
 							color="primary"
 							disabled={loading}
@@ -511,7 +539,7 @@ var EditForm = React.createClass({
 							{loadingButtonText}
 						</LoadingButton>
 					)}
-					{!this.props.list.noedit && (
+					{permission._update && (
 						<Button disabled={loading} onClick={this.toggleResetDialog} variant="link" color="cancel" data-button="reset">
 							<ResponsiveText
 								hiddenXS={t('resetChanges')}
@@ -519,7 +547,7 @@ var EditForm = React.createClass({
 							/>
 						</Button>
 					)}
-					{!this.props.list.nodelete && !delegated && (
+					{permission._delete && !delegated && (
 						<Button disabled={loading} onClick={this.toggleDeleteDialog} variant="link" color="delete" style={styles.deleteButton} data-button="delete">
 							<ResponsiveText
 								hiddenXS={`${t('deleteWithList', { listName: t(`table_${this.props.list.key}`) })}`}

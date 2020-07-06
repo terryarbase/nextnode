@@ -156,7 +156,7 @@ module.exports = function (opts) {
 
 		fs.readFile(outputFilename, function (err, data) {
 			if (data) {
-				// fs.removeSync(outputFilename);
+				fs.removeSync(outputFilename);
 				updateBundle(data);
 				if (devMode) {
 					build();

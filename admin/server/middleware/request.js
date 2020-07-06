@@ -142,7 +142,7 @@ module.exports = async function (req, res, next, nextNode) {
 	nextNode.set('langf', req.locales.langf);
 	nextNode.set('langd', req.locales.langd);
 	nextNode.set('language pack', req.locales.localization);
-
+	nextNode.set('systemUser', req.user);
 	/*
 	** update the user prefer language if it is being changed
 	** 11/06/2019

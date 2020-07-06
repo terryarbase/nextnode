@@ -2,61 +2,35 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var multer = require('multer');
 
-const cors = require('cors');
-
 const requestMiddleware = require('../middleware/request');
-const combinePermission = require('../middleware/combinePermission');
 
-module.exports = function createDynamicRouter (nextnode) {
-	// ensure nextnode nav has been initialised
+module.exports = function createDynamicRouter (keystone) {
+	// ensure keystone nav has been initialised
 	// TODO: move this elsewhere (on demand generation, or client-side?)
-	// console.log('nextnode: ', nextnode.get('name'), nextnode.get('nav style'));
+	// console.log('keystone: ', keystone.get('name'), keystone.get('nav style'));
 	// if rbac is enabled, nav will be initialized on demand
-	if (!nextnode.get('rbac') && !nextnode.nav) {
-		nextnode.nav = nextnode.initNav();
+	if (!keystone.get('rbac') && !keystone.nav) {
+		keystone.nav = keystone.initNav();
 	}
 
 	var router = express.Router();
 	var IndexRoute = require('../routes/index');
 	var SigninRoute = require('../routes/signin');
 	var SignoutRoute = require('../routes/signout');
-
 	// Use bodyParser and multer to parse request bodies and file uploads
 	router.use(bodyParser.json({}));
 	router.use(bodyParser.urlencoded({ extended: true }));
-	router.use(nextnode.get('i18n').init);
-	if (nextnode.get('stage') === 2) {
-		router.use(cors());
-		router.options('*', cors());
-	}
-	
+	router.use(keystone.get('i18n').init);
 	router.use(multer({ includeEmptyFields: true }));
-	// Bind the request to the nextnode instance
+
+	// Bind the request to the keystone instance
 	router.use(function (req, res, next) {
-		requestMiddleware(req, res, next, nextnode);
-		// req.nextnode = nextnode;
+		requestMiddleware(req, res, next, keystone);
+		// req.keystone = keystone;
 	});
 
-	/*
-	** [V2 Enhancement]
-	** Prepare all of essential v2 routes
-	** Terry Chan
-	** 10/10/2019
-	*/
-	if (nextnode.get('stage') === 2) {
-		const {
-			routes: RoutesV2,
-		} = nextnode.get('nextnode v2');
-		// prepare all of v2 routings
-		RoutesV2({
-			nextnode,
-			router,
-		});
-	}
-
-
-	if (nextnode.get('healthchecks')) {
-		router.use('/server-health', require('./createHealthchecksHandler')(nextnode));
+	if (keystone.get('healthchecks')) {
+		router.use('/server-health', require('./createHealthchecksHandler')(keystone));
 	}
 
 	// Init API request helpers
@@ -65,9 +39,16 @@ module.exports = function createDynamicRouter (nextnode) {
 
 	// #0 rbac middleware
 	var checkPermission = require('../middleware/checkPermission');
+	/*
+	** [V2 Enhancement]
+	** Get the static locals config using rest api
+	** Terry Chan
+	** 08/10/2019
+	*/
+	router.get('/app/config', checkPermission(0), require('../api/config'));
 
 	// #1: Session API
-	// TODO: this should respect nextnode auth options
+	// TODO: this should respect keystone auth options
 	router.get('/api/session', require('../api/session/get'));
 	router.post('/api/session/signin', require('../api/session/signin'));
 	router.post('/api/session/signout', require('../api/session/signout'));
@@ -75,26 +56,22 @@ module.exports = function createDynamicRouter (nextnode) {
 	// #2: Session Routes
 	// Bind auth middleware (generic or custom) to * routes, allowing
 	// access to the generic signin page if generic auth is used
-	if (nextnode.get('auth') === true) {
+	if (keystone.get('auth') === true) {
 		// TODO: poor separation of concerns; settings should be defaulted elsewhere
-		if (!nextnode.get('signout url')) {
-			nextnode.set('signout url', '/' + nextnode.get('admin path') + '/signout');
+		if (!keystone.get('signout url')) {
+			keystone.set('signout url', '/' + keystone.get('admin path') + '/signout');
 		}
-		if (!nextnode.get('signin url')) {
-			nextnode.set('signin url', '/' + nextnode.get('admin path') + '/signin');
+		if (!keystone.get('signin url')) {
+			keystone.set('signin url', '/' + keystone.get('admin path') + '/signin');
 		}
-		if (!nextnode.nativeApp || !nextnode.get('session')) {
-			router.all('*', nextnode.session.persist);
+		if (!keystone.nativeApp || !keystone.get('session')) {
+			router.all('*', keystone.session.persist);
 		}
 		router.all('/signin', SigninRoute);
 		router.all('/signout', SignoutRoute);
-		if (nextnode.get('stage') !== 2) {
-			router.use(nextnode.session.keystoneAuth);
-		} else {
-			router.all('/api*', nextnode.session.keystoneAuth);
-		}
-	} else if (typeof nextnode.get('auth') === 'function') {
-		router.use(nextnode.get('auth'));
+		router.all('/api*', keystone.session.keystoneAuth);
+	} else if (typeof keystone.get('auth') === 'function') {
+		router.use(keystone.get('auth'));
 	}
 
 	// #3: Home route
@@ -106,20 +83,26 @@ module.exports = function createDynamicRouter (nextnode) {
 	
 	// #4: Cloudinary and S3 specific APIs
 	// TODO: poor separation of concerns; should / could this happen elsewhere?
-	if (nextnode.get('cloudinary config')) {
+	if (keystone.get('cloudinary config')) {
 		router.get('/api/cloudinary/get', require('../api/cloudinary').get);
 		router.get('/api/cloudinary/autocomplete', require('../api/cloudinary').autocomplete);
 		router.post('/api/cloudinary/upload', require('../api/cloudinary').upload);
 	}
-	if (nextnode.get('s3 config')) {
+	if (keystone.get('s3 config')) {
 		router.post('/api/s3/upload', require('../api/s3').upload);
 	}
 
 	// #5: Core Lists API
+	const combinePermission = require('../middleware/combinePermission');
 	const initList = require('../middleware/initList');
 	const initDataPermission = require('../middleware/initDataPermission');
 	// lists
-	router.all('/api/counts', initDataPermission, require('../api/counts'));
+	router.all(
+		'/api/counts',
+		combinePermission,
+		initDataPermission,
+		require('../api/counts')
+	);
 	// if (serviceWorker) {
 	/*
 	** register for the current login user (e.g. browser device id)
@@ -132,27 +115,51 @@ module.exports = function createDynamicRouter (nextnode) {
 	router.get(
 		'/api/:list',
 		initList,
-		checkPermission(1, { allowBasic: true }),
+		combinePermission,
+		checkPermission({
+			list: ['_view'],
+			field: ['view'],
+		}, {
+			allowBasic: true,
+			excludeTarget: 'query.fields',
+		}),
 		initDataPermission,
 		require('../api/list/get'),
 	);
 	router.get(
 		'/api/:list/:format(export.excel|export.json|export.txt)',
 		initList,
-		checkPermission(1),
+		combinePermission,
+		checkPermission({
+			list: ['_download'],
+			field: ['view'],
+		}, {
+			excludeTarget: 'query.select',
+		}),
 		initDataPermission,
 		require('../api/list/download'),
 	);
 	router.post(
 		'/api/:list/create',
 		initList,
-		checkPermission(2),
+		combinePermission,
+		checkPermission({
+			list: ['_create'],
+			field: ['create'],
+		}),
 		require('../api/list/create'),
 	);
 	router.post(
 		'/api/:list/update',
 		initList,
-		checkPermission(2),
+		combinePermission,
+		checkPermission({
+			list: ['_update'],
+			field: ['update'],
+		}, {
+			allowBasic: true,
+			exclude: false,
+		}),
 		initDataPermission,
 		require('../api/list/update'),
 	);
@@ -160,7 +167,11 @@ module.exports = function createDynamicRouter (nextnode) {
 	router.post(
 		'/api/:list/updateMyProfile',
 		initList,
-		checkPermission(2),
+		combinePermission,
+		checkPermission({
+			list: ['_update'],
+			field: ['update'],
+		}),
 		(req, res) => {
 			const Account = require('../api/account');
 			new Account(req, res).updateMyProfile();
@@ -176,46 +187,96 @@ module.exports = function createDynamicRouter (nextnode) {
 	// );
 	router.post(
 		'/api/:list/delete',
-		initList, checkPermission(2),
+		initList,
+		combinePermission,
+		checkPermission({
+			list: ['_delete'],
+		}),
 		initDataPermission,
 		require('../api/list/delete'),
+	);
+	router.post(
+		'/api/:list/import',
+		initList,
+		combinePermission,
+		checkPermission({
+			list: ['_import'],
+			// field: ['create'],
+			// TODO: filter out non-allow field in import file
+		}),
+		initDataPermission,
+		require('../api/list/import'),
 	);
 	// router.post('/api/:list/delete', initList, checkPermission(2), require('../api/list/delete'));
 	// items
 	router.get(
 		'/api/:list/:id',
 		initList,
-		checkPermission(1, { allowBasic: true }),
+		combinePermission,
+		checkPermission({
+			list: ['_view'],
+			field: ['view'],
+		}, { allowBasic: true }),
 		initDataPermission,
 		require('../api/item/get'),
 	);
 	router.post(
 		'/api/:list/:id',
 		initList,
-		checkPermission(2),
+		combinePermission,
+		checkPermission({
+			list: ['_update'],
+			field: ['update'],
+		}),
 		initDataPermission,
 		require('../api/item/update'),
 	);
 	router.post(
 		'/api/:list/:id/delete',
-		initList, checkPermission(2),
+		initList,
+		combinePermission,
+		checkPermission(),	// where call? non found in UI
 		initDataPermission,
 		require('../api/list/delete'),
 	);
 	router.post(
 		'/api/:list/:id/sortOrder/:sortOrder/:newOrder',
-		initList, checkPermission(2),
+		initList,
+		combinePermission,
+		checkPermission({
+			list: ['_view'],
+		}),	// where call? found in UI, still using?
 		require('../api/item/sortOrder'),
 	);
 
 	// #6: List Routes
-	if (nextnode.get('stage') !== 2) {
-		router.all('/*', function(req, res) {
+	// router.all('/:list/:page([0-9]{1,5})?', function(req, res) {
+	// 	const render = true;
+	// 	combinePermission(req, res);
+	// 	return IndexRoute(req, res, render);
+	// });
+	// router.all('/:list/:item', function(req, res) {
+	// 	const render = true;
+	// 	combinePermission(req, res);
+	// 	return IndexRoute(req, res, render);
+	// });
+	// // router.all('/*', function(req, res) {
+	// // 	const render = true;
+	// // 	combinePermission(req, res);
+	// // 	return IndexRoute(req, res, render);
+	// // });
+
+	router.all('/*',
+		combinePermission,
+		function(req, res) {
 			const render = true;
-			combinePermission(req, res);
+			if (!req.user) {
+				return SigninRoute(req, res, render);
+			}
 			return IndexRoute(req, res, render);
-		});
-	}
+		}
+	);
+	
 	// router.all('/:list/:item', function(req, res) {
 	// 	const render = true;
 	// 	return IndexRoute(req, res, render);

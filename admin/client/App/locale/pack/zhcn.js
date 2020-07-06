@@ -146,6 +146,7 @@ const locales = {
    },
    download:{  
       label:'下载',
+      item: '下载{{name}}',
       fileFormat:'文件格式:',
       column:'栏位:',
       useCrrentSelect:'使用现在已选取的栏位',
@@ -153,6 +154,13 @@ const locales = {
       selectAll:'全部选取',
       selectNone:'取消选取',
 
+   },
+   import:{  
+      label:'汇入',
+      fileUpload:'CSV :',
+      upload:'上载',
+      change:'更改文件',
+      cancel:'取消',
    },
    manage:{  
       label:'管理',
@@ -195,6 +203,7 @@ const locales = {
          today:'今天',
          title:'标题',
          downloadCode: '下载代码文件',
+         downloadItem: '下载{{name}}',
          nowLabel: '现在',
          searchPlaceholder:'关键字',
          search:'搜查',
@@ -288,6 +297,16 @@ const locales = {
    //    },
    //    ...(Keystone.appLanguage && Keystone.appLanguage.zhcn) || {},
    // }
+
+   v2: {
+      page: {
+         media: {
+            center: {
+               title: '媒体中心',
+            },
+         },
+      },
+   },
 };
 
 export default locales;

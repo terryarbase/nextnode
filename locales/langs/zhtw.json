@@ -41,6 +41,7 @@
 	"msg_permission_denied": "你沒有被允許",
 	"msg_invalid_path_update": "在列表{{key}}中更新{{fields}}指定的路徑無效",
 	"msg_duplication_value": "{{field}}資料「{{value}}」已經存在，請更改另一個。",
+	"msg_noimport_permission": "無法匯入列表",
 
 	"title_notallowed": "不允許",
 	"title_validation_error": "驗證錯誤",

@@ -40,6 +40,7 @@
 	"msg_permission_denied": "You are not permitted.",
 	"msg_invalid_path_update": "Invalid path specified in fields to update {{fields}} for list {{key}}.",
 	"msg_duplication_value": "The {{field}} information \"{{value}}\" is already existing. Please change the other one.",
+	"msg_noimport_permission": "The list cannot be import by file.",
 
 	"title_notallowed": "Not Allowed",
 	"title_validation_error": "Validation Errors",

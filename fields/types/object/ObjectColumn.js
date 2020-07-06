@@ -1,7 +1,7 @@
 import React from 'react';
+import _ from 'lodash';
 import ItemsTableCell from '../../components/ItemsTableCell';
 import ItemsTableValue from '../../components/ItemsTableValue';
-import { plural } from '../../../admin/client/utils/string';
 
 var ObjectColumn = React.createClass({
 	displayName: 'ObjectColumn',
@@ -10,11 +10,16 @@ var ObjectColumn = React.createClass({
 		data: React.PropTypes.object,
 	},
 	getValue () {
+		// TODO: How to display object data? Show json for now
 		var value = this.props.data.fields[this.props.col.path];
-		if (Array.isArray(value)) {
-			return plural(value.length, '* Value', '* Values');
-		} else {
-			return '';
+		try {
+			const pickList = _.difference(_.keys(value), [
+				'id',
+			])
+			const data = _.pick(value, pickList);
+			return JSON.stringify(data)
+		} catch(err) {
+			return ''
 		}
 	},
 	render () {

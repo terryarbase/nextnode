@@ -8,6 +8,7 @@ import { css } from 'glamor';
 import { Container } from '../../elemental';
 import theme from '../../../theme';
 import { translate } from "react-i18next";
+import PropTypes from 'prop-types';
 
 var Footer = React.createClass({
 	displayName: 'Footer',

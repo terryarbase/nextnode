@@ -2,8 +2,7 @@ var async = require('async');
 var FieldType = require('../Type');
 var util = require('util');
 var utils = require('keystone-utils');
-var _map = require('lodash/map');
-const _ = require('lodash');
+var _ = require('lodash');
 
 var isReserved = require('../../../lib/list/isReserved');
 
@@ -54,9 +53,9 @@ object.prototype.addToSchema = function (schema) {
 	var fieldsSpec = this.schemaOptions.fields;
 	var itemSchema = new mongoose.Schema();
 
-	if (typeof fieldsSpec !== 'object' || !Object.keys(fieldsSpec).length) {
+	if (typeof fieldsSpec !== 'object') {
 		throw new Error(
-			'List field ' + field.list.key + '.' + field.path
+			'Object field ' + field.list.key + '.' + field.path
 			+ ' must be configured with `fields`.'
 		);
 	}
@@ -75,7 +74,8 @@ object.prototype.addToSchema = function (schema) {
 				+ 'Did you misspell the field type?\n'
 			);
 		}
-		options.type = validateFieldType(field, path, options.type);
+		options.type = validateFieldType(field, path, options.type);	
+
 		// We need to tell the Keystone List that this field type is in use
 		field.list.fieldTypes[options.type.name] = options.type.properName;
 		// WYSIWYG HTML fields are special-cased
@@ -135,10 +135,12 @@ object.prototype.getProperties = function (item, separator) {
 /**
  * Formats the field value
  */
-object.prototype.format = function (item, separator) {
-	// TODO: How should we format nested items? Returning length for now.
-	var items = item.get(this.path) || [];
-	return utils.plural(items.length, '* Value', '* Values');
+object.prototype.format = function (item, options) {
+	let data = _.get(item.get(this.path), '_doc', {});
+	const pickList = _.difference(_.keys(data), [
+		'_id',
+	])
+	return _.pick(data, pickList);
 };
 
 // TODO: How should we filter object values?
@@ -150,9 +152,9 @@ object.prototype.addFilterToQuery = function (filter) { };
  * Asynchronously confirms that the provided value is valid
  */
 object.prototype.validateInput = function (data, callback) {
-	// var value = this.getValueFromData(data);
-	const result = true;
-	// TODO deep validate from each of field
+	// TODO
+	var value = this.getValueFromData(data);
+	var result = true;
 	utils.defer(callback, result);
 };
 
@@ -161,41 +163,86 @@ object.prototype.validateInput = function (data, callback) {
  */
 object.prototype.validateRequiredInput = function (item, data, callback) {
 	// TODO
-	const value = this.getValueFromData(data);
-	const fieldLength = this.fieldsArray.length;
-	console.log('>>>>>>>>> ', this.fieldsArray, value);
-	const result = _.keys(value).length === fieldLength;
+	var value = this.getValueFromData(data);
+	var result = true;
 	utils.defer(callback, result);
 };
 
-object.prototype.getData = function (item) {
-	const value = item.get(this.path);
-	const fieldsArray = this.fieldsArray;
-
-	let data = { id: value._id };
-	_map(fieldsArray, field => {
-		data[field.path] = field.getData(value);
-	})
+const _getData = (value, field) => {
+	let data = null;
+	if (field.type === 'object') {
+		let objectData = { id: _.get(value, '_id') };
+		// traverse subfields and do same thing
+		_.forEach(field.fieldsArray, nestedField => {
+			// TODO: how to handle nested 'Object' type when value be undefined instead of Document Object
+			// create Document Object? but how?
+			// for now ignore the error
+			const v = nestedField.type === 'object' ? value[nestedField.path] : value
+			try {
+				objectData[nestedField.path] = _getData(v, nestedField);
+			} catch(err) {
+				// trigger on non Document Object value
+			}
+		});
+		data = objectData
+	} else {
+		data = field.getData(value)
+	}
 	return data;
+}
+
+object.prototype.getData = function (item) {
+	const field = this;
+	const value = item.get(this.path);
+	return _getData(value, field);
 };
+
+/*
+** mongoose Document Object is needed in getDate()
+** we must save an object in db whichs type is 'Object' type
+** to make sure mongoose return a Document Object
+** Fung Lee
+** 2020-05-14
+*/
+object.prototype._prepareValue = function (value, field) {
+	if (field.type === 'object') {
+		// make sure value of 'Object' type must be object
+		if (!value) {
+			value = {};
+		}
+		// traverse subfields and do same thing
+		_.forEach(field.fieldsArray, nestedField => {
+			value[nestedField.path] = this._prepareValue(value[nestedField.path], nestedField);
+		});
+	}
+	
+	// handle another field type
+	if (field.type === 'relationship') {
+		const ObjectId = this.list.keystone.mongoose.Types.ObjectId;
+		value = ObjectId.isValid(value) ? value : undefined;
+	}
+	return value;
+}
 
 /**
  * Updates the value for this field in the item from a data object.
  * If the data object does not contain the value, then the value is set to empty object.
  */
-object.prototype.updateItem = function (item, data, files, callback) {
+object.prototype.updateItem = function (item, data, files, callback, isNested) {
 	const field = this;
 	let value = this.getValueFromData(data);
 	let objectData = item.get(this.path);
 
-	// Reset the value when null or an empty string is provided
-	if (value === undefined || value === null || value === '') {
-		value = {};
+	// for performance, only prepare whole value in the outermost nested 'Object' type
+	if (!isNested) {
+		value = this._prepareValue(value, field);		
 	}
-
+	
 	if (objectData) {
 		async.forEach(field.fieldsArray, function (nestedField, done) {
-			if (nestedField.type === 'file') {
+			if (nestedField.type === 'object') {
+				nestedField.updateItem(objectData, value, files, done, true);
+			} else if (nestedField.type === 'file') {
 				nestedField.updateItem(objectData, value, files, done);
 			} else {
 				nestedField.updateItem(objectData, value, done);
@@ -206,12 +253,7 @@ object.prototype.updateItem = function (item, data, files, callback) {
 			callback();
 		});
 	} else {
-		/*
-		** part of nested field need mongoose SingleNested Object
-		** however objectData is 'undefined' at method first call for creation
-		** Solution: save empty object at creation let mongoose create correct object
-		*/
-		item.set(field.path, {});
+		item.set(field.path, value);
 		callback();
 	}
 };

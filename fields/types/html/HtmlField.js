@@ -135,6 +135,11 @@ module.exports = Field.create({
 			toolbar += ' | image';
 		}
 
+		if (options.enableLocalImagesUploads) {
+			plugins.push('uploadloaclimage');
+			toolbar += ' | uploadloaclimage';
+		}
+
 		if (options.enableCloudinaryUploads || options.enableS3Uploads) {
 			plugins.push('uploadimage');
 			toolbar += options.enableImages ? ' uploadimage' : ' | uploadimage';
@@ -166,7 +171,7 @@ module.exports = Field.create({
 		if (!options.overrideToolbar) {
 			toolbar += ' | code';
 		}
-
+		console.log(options);
 		var opts = {
 			selector: '#' + this.state.id,
 			toolbar: toolbar,

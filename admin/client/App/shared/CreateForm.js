@@ -78,6 +78,15 @@ const CreateForm = React.createClass({
 			values,
 		});
 	},
+	/*
+	** check field permission for UI
+	** Fung Lee
+	** 2020-05-19
+	*/
+	checkFieldPermission(props) {
+		const { permission } = this.props;
+		return _.get(permission, `${props.path}.create`, true);
+	},
 	// Set the props of a field
 	getFieldProps (field) {
 		const { isLocale, currentLang, t, i18n } = this.props;
@@ -94,6 +103,7 @@ const CreateForm = React.createClass({
 			onChange: this.handleChange,
 			mode: 'create',
 			key: field.path,
+			defaultLang: this.props.defaultLang,
 		};
 	},
 	renderLanguageSelector() {
@@ -198,6 +208,7 @@ const CreateForm = React.createClass({
 		};
 		// console.log('list.initialFields: ', list.initialFields);
 		// Render inputs for all initial fields
+		
 		Object.keys(list.initialFields).forEach(key => {
 			var field = list.fields[list.initialFields[key]];
 			const { path } = field;
@@ -209,6 +220,11 @@ const CreateForm = React.createClass({
 			}
 			// Get the props for the input field
 			var fieldProps = this.getFieldProps(field);
+			const filters = list.getRelatedFilter(field, this.props.filters, this.props, this.state);
+			
+			// No permission, no render
+			if (!this.checkFieldPermission(fieldProps)) return;
+
 			fieldProps = {
 				...fieldProps,
 				...{
@@ -219,6 +235,12 @@ const CreateForm = React.createClass({
 					}),	
 				},
 			};
+			if (filters) {
+					fieldProps = {
+						...fieldProps,
+						filters,
+					};
+				}
 			if (fieldProps.note) {
 				fieldProps = {
 					...fieldProps,
@@ -284,12 +306,13 @@ const CreateForm = React.createClass({
 						];
 					});
 				} else {
-					if (!stateless) {
-						self.statelessUI[path] = element;
-					}
-					allComponents = [
-						(stateless || element),
-					];
+					// if (!stateless) {
+					// 	self.statelessUI[path] = element;
+					// }
+					// allComponents = [
+					// 	(stateless || element),
+					// ];
+					allComponents = [ element ];
 				}
 				form = [ 
 					...form,

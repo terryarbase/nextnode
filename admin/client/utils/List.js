@@ -165,6 +165,12 @@ List.prototype.getRelatedFilter = (field, initFilters={}, props, state) => {
 			// while the filter value is mapping field being with colun
 			if (/^:/i.test(value)) {
 				targetField = value.replace(/^:/, '');
+				if (targetField === '_id') {
+					return {
+						...accum,
+						_id: values._id,
+					}
+				}
 				return {
 					...accum,
 					[field]: getValueFrom({
@@ -620,5 +626,29 @@ List.prototype.reorderItems = function (item, oldSortOrder, newSortOrder, pageOp
 	});
 };
 
+/**
+ * Import items by file via the API
+ *
+ * @param  {FileList} file   The file of the items we want to import
+ * @param  {Function} callback
+ */
+List.prototype.importItems = function (file, callback) {
+	const url = Keystone.adminPath + '/api/' + this.path + '/import?ts='+Math.random();
+	const formData = new FormData();
+	formData.append('importFile', file);
+	xhr({
+		url,
+		method: 'POST',
+		headers: assign({}, Keystone.csrf.header),
+		body: formData,
+	}, (err, resp, body) => {
+		if (err) return callback(err);
+		if (resp.statusCode === 200) {
+			callback(null, body);
+		} else {
+			callback(body);
+		}
+	});
+};
 
 module.exports = List;

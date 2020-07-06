@@ -1,8 +1,8 @@
 function signout (req, res) {
 	var keystone = req.keystone;
-	if (!keystone.security.csrf.validate(req)) {
-		return res.apiError(403, 'invalid csrf');
-	}
+	// if (!keystone.security.csrf.validate(req)) {
+	// 	return res.apiError(403, 'invalid csrf');
+	// }
 	var user = req.user;
 	keystone.callHook(user, 'pre:signout', function (err) {
 		if (err) return res.status(500).json({ error: 'pre:signout error', detail: err });

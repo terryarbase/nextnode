@@ -21,9 +21,7 @@ function file (list, path, options) {
 	}
 	const newOptions = {
 		...options,
-		...{
-			stateless: true,	// for create ui element state
-		},
+		stateless: true,	// for create ui element state
 	};
 	this.storage = newOptions.storage;
 	file.super_.call(this, list, path, newOptions);
@@ -252,8 +250,6 @@ file.prototype.updateItem = function (item, data, files, callback) {
 		return utils.defer(callback);
 	}
 
-
-	
 	// Find an uploaded file in the files argument, either referenced in the
 	// data argument or named with the field path / field_upload path + suffix
 	if (typeof value === 'string' && value.substr(0, 7) === 'upload:') {
