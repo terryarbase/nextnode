@@ -270,6 +270,9 @@ module.exports = function createDynamicRouter (keystone) {
 		combinePermission,
 		function(req, res) {
 			const render = true;
+			if (!req.user) {
+				return SigninRoute(req, res, render);
+			}
 			return IndexRoute(req, res, render);
 		}
 	);

@@ -2,6 +2,10 @@ const _          = require('lodash');
 
 module.exports = async function combinePermission(req, res, next) {
     const nextNode = req.keystone;
+    if (!req.user) {
+        return next();
+    }
+
     if (!nextNode.get('rbac')) {
         return next();
     }
