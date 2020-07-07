@@ -9,14 +9,7 @@ const preparePermissionQuery = async (nextNode, permissionQueries, user, list) =
 		field,			// which field related to associative table
 		value,			// match value fetched from user data
 	} = nextNode.getPermissionQuery(permissionQueries, list.key);
-	// console.log('> permissionQuery debug', {
-	//     hasQuery,
-	//     isPopulate,
-	//     populate,
-	//     populateField,
-	//     field,
-	//     value,
-	// })
+
 	let query = {}
 	if (hasQuery) {
 		if (isPopulate) {
@@ -37,10 +30,20 @@ const preparePermissionQuery = async (nextNode, permissionQueries, user, list) =
 			}
 		} else {
 			query = {
-				[value]: user[value]
+				[field]: user[value]
 			}
 		}
 	}
+
+	// console.log('> permissionQuery debug', {
+	//     hasQuery,
+	//     isPopulate,
+	//     populate,
+	//     populateField,
+	//     field,
+	//     value,
+	// 	query,
+	// })
 	return query;
 	
 	/* old version use systemIdentity */
