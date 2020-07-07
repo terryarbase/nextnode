@@ -55,29 +55,16 @@ module.exports = Field.create({
 	shouldCollapse () {
 		return this.props.collapse && !this.hasExisting();
 	},
-	componentWillUpdate (nextProps) {
-		// Show the new filename when it's finished uploading
-		// console.log('old: ', this.props);
-		// console.log('new: ', nextProps);
-		const curtValue = _.get(this.prop, 'value', {});
-		const nextvalue = _.get(nextProps, 'value', {});
-		// console.log('old: ', curtValue);
-		// console.log('new: ', nextvalue);
-		if ((curtValue && !nextvalue) || 
-			curtValue.filename !== nextvalue.filename ||
-			curtValue.name !== nextvalue.name) {
-			const state = buildInitialState(nextProps);
-			this.setState(state);
-		} 
-
-		// if ((this.props.value && !nextProps.value)) {
-		// 	this.setState(buildInitialState(nextProps));
-		// } else if (this.props.value.filename !== nextProps.value.filename) {
-		// 	const state = buildInitialState(nextProps);
-		// 	// console.log('>>>>>>', state);
-		// 	this.setState(state);
-		// }
-	},
+	// componentWillUpdate (nextProps) {
+	// 	// Show the new filename when it's finished uploading
+	// 	if ((this.props.value && !nextProps.value)) {
+	// 		this.setState(buildInitialState(nextProps));
+	// 	} else if (this.props.value.filename !== nextProps.value.filename) {
+	// 		const state = buildInitialState(nextProps);
+	// 		// console.log('>>>>>>', state);
+	// 		this.setState(state);
+	// 	}
+	// },
 
 	// ==============================
 	// HELPERS

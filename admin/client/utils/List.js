@@ -135,11 +135,13 @@ const getValueFrom = function({ field, values, isLocale, currentLang }) {
 	if (isLocale && field && field.multilingual) {
 		if (current && typeof current !== 'string') {
 			current = current[currentLang] || '';
-		} else if (current){
-			current = {
-				[currentLang]: current,
-			};
 		}
+		/* Why return whole multilingual object in getter? */
+		// } else if (current){
+		// 	current = {
+		// 		[currentLang]: current,
+		// 	};
+		// }
 	}
 	return current;
 };
@@ -189,7 +191,6 @@ List.prototype.getRelatedFilter = (field, initFilters={}, props, state) => {
 List.prototype.getProperlyChangedValue = function({ currentValue, path, value, isLocale, currentLang }) {
 	const fields = this.fields;
 	var values = { ...currentValue };
-
 	if (isLocale && fields[path] && fields[path].multilingual) {
 		values = {
 			...values,
