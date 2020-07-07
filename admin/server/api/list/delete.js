@@ -40,7 +40,6 @@ module.exports = function (req, res) {
 		...req.permissionQuery,
 	}).where('_id').in(ids).exec(function (err, results) {
 		// console.log(req.t.locale);
-		return res.apiError(req.t.__('msg_db_error_withoutReason'), err);
 		if (err) {
 			console.log('Error deleting ' + req.list.key + ' items:', err);
 			return res.apiError(req.t.__('msg_db_error_withoutReason'), err);
