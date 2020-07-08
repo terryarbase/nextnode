@@ -22,7 +22,7 @@ let uploadInc = 1000;
 const buildInitialState = (props, forceInit) => ({
 	action: props.value === 'reset' ? props.value : null,
 	removeExisting: false,
-	uploadFieldPath: `File-${props.path}-${++uploadInc}`,
+	uploadFieldPath: `File-${props.path}-${props.currentLang}-${++uploadInc}`,
 	userSelectedFile: null,
 		// ((typeof props.value === 'object') ? null : props.value),
 		// prevent update model with uploaded object info 
@@ -35,19 +35,20 @@ module.exports = Field.create({
 		label: PropTypes.string,
 		note: PropTypes.string,
 		path: PropTypes.string.isRequired,
-		value: PropTypes.shape({
-			filename: PropTypes.string,
-			// TODO: these are present but not used in the UI,
-			//       should we start using them?
-			// filetype: PropTypes.string,
-			// originalname: PropTypes.string,
-			// path: PropTypes.string,
-			// size: PropTypes.number,
-		}),
+		value: PropTypes.string,
+		// value: PropTypes.shape({
+		// 	filename: PropTypes.string,
+		// 	// TODO: these are present but not used in the UI,
+		// 	//       should we start using them?
+		// 	// filetype: PropTypes.string,
+		// 	// originalname: PropTypes.string,
+		// 	// path: PropTypes.string,
+		// 	// size: PropTypes.number,
+		// }),
 	},
 	statics: {
 		type: 'File',
-		getDefaultValue: () => ({}),
+		getDefaultValue: () => '',
 	},
 	getInitialState () {
 		return buildInitialState(this.props);
@@ -106,7 +107,7 @@ module.exports = Field.create({
 		var state = {};
 		let action = '';
 		if (this.state.userSelectedFile) {
-			state = buildInitialState(this.props, true);
+			// state = buildInitialState(this.props, true);
 		} else if (this.hasExisting()) {
 			state.removeExisting = true;
 
@@ -132,7 +133,7 @@ module.exports = Field.create({
 		});
 	},
 	undoRemove () {
-		const rollbackState = buildInitialState(this.props);
+		// const rollbackState = buildInitialState(this.props);
 		this.setState(rollbackState);
 		this.props.onChange({
 			path: this.props.path,
@@ -244,6 +245,10 @@ module.exports = Field.create({
 		);
 	},
 	renderUI () {
+		console.log('> file', {
+			props: this.props,
+			state: this.state,
+		})
 		const { note, path, t, required } = this.props;
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		const buttons = (
@@ -279,6 +284,7 @@ module.exports = Field.create({
 					)}
 					{!!note && <FormNote html={note} />}
 				</FormField>
+				<div>props.value:{this.props.value}</div>
 			</div>
 		);
 	},

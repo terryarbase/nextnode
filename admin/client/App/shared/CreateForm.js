@@ -92,13 +92,14 @@ const CreateForm = React.createClass({
 		return _.get(permission, `${props.path}.create`, true);
 	},
 	// Set the props of a field
-	getFieldProps (field) {
+	getFieldProps (field, overrideLang) {
 		const { isLocale, currentLang, t, i18n } = this.props;
 		const { values } = this.state;
 		// console.log(currentLang, values);
+		let lang = overrideLang ? overrideLang : currentLang;
 		return {
 			...field,
-			value: this.props.list.getProperlyValue({ field, isLocale, currentLang, values }),
+			value: this.props.list.getProperlyValue({ field, isLocale, currentLang: lang, values }),
 			values,
 			t,
 			i18n,
@@ -274,6 +275,7 @@ const CreateForm = React.createClass({
 				const { localization } = Keystone;
 				const self = this;
 				let stateless = this.statelessUI[path];
+				let statelessElement = null;
 				let allComponents = [];
 				if (field.multilingual) {
 					if (!stateless) {
@@ -282,21 +284,30 @@ const CreateForm = React.createClass({
 					}
 					// console.log('>>> ', stateless);
 					_.keys(localization).forEach(language => {
-						// console.log(language);
 						if (!stateless[language]) {
-							stateless = React.cloneElement(
+							// get fieldProps with the correspond language, but meaningless because empty value in first render
+							// fieldProps = self.getFieldProps(field, language);
+							statelessElement = React.cloneElement(
 								element,
 								{
 									...fieldProps,
 									key: `${path}-${language}`,
 								}
 							);
-							self.statelessUI[path][language] = stateless;
+							self.statelessUI[path][language] = statelessElement;
 						} else {
-							stateless = React.cloneElement(
-								stateless[language],
-								fieldProps,
-							);
+							if (field.cloneable) {
+								// get fieldProps with the correspond language
+								fieldProps = self.getFieldProps(field, language);
+								statelessElement = React.cloneElement(
+									stateless[language],
+									{
+										...fieldProps,
+									}
+								);
+							} else {
+								statelessElement = stateless[language];
+							}
 						}
 						allComponents = [
 							...allComponents,
@@ -304,7 +315,7 @@ const CreateForm = React.createClass({
 								<div key={`${path}${language}`} style={{
 									display: language === currentLang ? 'block' : 'none'
 								}}>
-									{ stateless }
+									{ statelessElement }
 								</div>
 							)
 						];
