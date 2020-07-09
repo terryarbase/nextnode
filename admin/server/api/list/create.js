@@ -33,14 +33,22 @@ module.exports = async function (req, res) {
 			var status = err.error === 'validation errors' ? 400 : 500;
 			let error = err;
 			if (err.error === 'database error' && err.detail && err.detail.errors) {
+				/* mongoose error */
 				error = {
 					...err,
 					detail: _.map(err.detail.errors, e => {
 						return `[${e.path}] : ${e.message}`;
 					}).join(', ')
 				}
+			} else if (err.status === 'validation errors') {
+				/* nextnode validation error */
+				error = {
+					error: 'database error',
+					detail: _.map(err.error, (message, path) => {
+						return `[${path}] : ${message}`;
+					}).join(', ')
+				}
 			}
-
 			return res.apiError(status, error);
 		}
 
