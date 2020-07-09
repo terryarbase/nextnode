@@ -22,7 +22,7 @@ let uploadInc = 1000;
 const buildInitialState = (props, forceInit) => ({
 	action: props.value === 'reset' ? props.value : null,
 	removeExisting: false,
-	uploadFieldPath: `File-${props.path}-${props.currentLang}-${++uploadInc}`,
+	uploadFieldPath: `File-${props.path}-${++uploadInc}`,
 	userSelectedFile: null,
 		// ((typeof props.value === 'object') ? null : props.value),
 		// prevent update model with uploaded object info 
@@ -35,16 +35,15 @@ module.exports = Field.create({
 		label: PropTypes.string,
 		note: PropTypes.string,
 		path: PropTypes.string.isRequired,
-		value: PropTypes.string,
-		// value: PropTypes.shape({
-		// 	filename: PropTypes.string,
-		// 	// TODO: these are present but not used in the UI,
-		// 	//       should we start using them?
-		// 	// filetype: PropTypes.string,
-		// 	// originalname: PropTypes.string,
-		// 	// path: PropTypes.string,
-		// 	// size: PropTypes.number,
-		// }),
+		value: PropTypes.shape({
+			filename: PropTypes.string,
+			// TODO: these are present but not used in the UI,
+			//       should we start using them?
+			// filetype: PropTypes.string,
+			// originalname: PropTypes.string,
+			// path: PropTypes.string,
+			// size: PropTypes.number,
+		}),
 	},
 	statics: {
 		type: 'File',
@@ -284,7 +283,6 @@ module.exports = Field.create({
 					)}
 					{!!note && <FormNote html={note} />}
 				</FormField>
-				<div>props.value:{this.props.value}</div>
 			</div>
 		);
 	},
