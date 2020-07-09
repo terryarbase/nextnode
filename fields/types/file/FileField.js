@@ -244,10 +244,6 @@ module.exports = Field.create({
 		);
 	},
 	renderUI () {
-		console.log('> file', {
-			props: this.props,
-			state: this.state,
-		})
 		const { note, path, t, required } = this.props;
 		const label = this.props.label ? `${this.props.label}${required ? ' *' : ''}` : null;
 		const buttons = (
