@@ -156,12 +156,12 @@ list.prototype.validateInput = function (data, callback) {
 		if (!_.isArray(value)) {
 			value = [value];
 		}
-		let invalidContent = true;
+		let invalidContent = false;
 		for (let i = 0; i < value.length; i++) {
 			let thisValue = value[i];
 			// If even a single item is not a string or an empty string, invalidate
 			if (!thisValue) {
-				invalidContent = false;
+				invalidContent = true;
 				break;
 			}
 		}
