@@ -418,7 +418,7 @@ module.exports = Field.create({
 					components={{
 						Option: this.customizedOptions,
 						MultiValueLabel: this.customizedSelections,
-						SingleValue: this.customizedSelections,
+						SingleValue: this.customizedSelection,
 						MultiValueRemove: this.customizedRemove,
 						DropdownIndicator: this.customizedDropdownIndicator,
 					}}
