@@ -305,6 +305,23 @@ module.exports = Field.create({
 			</components.Option>
 		);
 	},
+	customizedSelection(props) {
+		const { data: { label, value, image } } = props;
+		const url = `${Keystone.adminPath}/${this.props.refList.path}/${value}`;
+		return (
+			<components.SingleValue {...props}>
+				<a href={url} target="_blank">
+				{
+					image ? 
+					<img src={label} alt={label} style={{
+						...optionsStyle,
+					}} />
+					: label
+				}
+				</a>
+			</components.SingleValue>
+		);
+	},
 	customizedSelections(props) {
 		const { data: { label, value, image } } = props;
 		const url = `${Keystone.adminPath}/${this.props.refList.path}/${value}`;
@@ -401,6 +418,7 @@ module.exports = Field.create({
 					components={{
 						Option: this.customizedOptions,
 						MultiValueLabel: this.customizedSelections,
+						SingleValue: this.customizedSelections,
 						MultiValueRemove: this.customizedRemove,
 						DropdownIndicator: this.customizedDropdownIndicator,
 					}}
