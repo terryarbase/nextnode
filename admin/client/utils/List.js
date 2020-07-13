@@ -228,6 +228,7 @@ List.prototype.getFormCreateData = function({ isLocale, formData, values }) {
 			if (values[key] && isLocale && fields[key].multilingual) {
 				
 				// formData.set(key, );
+
 				if (typeof values[key] === 'object') {
 					const keys = _.keys(values[key]);
 					if (keys.length) {
@@ -238,7 +239,7 @@ List.prototype.getFormCreateData = function({ isLocale, formData, values }) {
 
 			} else if (Array.isArray(values[key])) {
 				
-				formData.delete(key);
+				// formData.delete(key);
 				formData.set(key, JSON.stringify(values[key]));
 				
 			} else if (typeof values[key] === 'object') {
@@ -246,11 +247,12 @@ List.prototype.getFormCreateData = function({ isLocale, formData, values }) {
 				const keys = _.keys(values[key]);
 				if (keys.length) {
 					// delete orginal formdata attr
-					formData.delete(key);
+					
 					// use object declarion instead
 					keys.forEach(function(k) {
 						formData.set(key+'.'+k, values[key][k]);
 					});
+					// formData.delete(key);
 				}
 			}
 		}
