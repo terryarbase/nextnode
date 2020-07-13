@@ -20,6 +20,11 @@ const delegatedField = 'delegated';
  *
  * @return {Array}       The columns
  */
+function guardSigninResponse({ statusCode }) {
+	if (_.includes([401, 403], statusCode)) {
+		window.location.reload();
+	}
+}
 function getColumns (list) {
 	return list.uiElements.map((col) => {
 		if (col.type === 'heading') {
@@ -274,9 +279,11 @@ List.prototype.getIt = function (url, callback) {
 		url: `${Keystone.adminPath}${url}&ts=${Math.random()}`,
 		responseType: 'json',
 		method: 'GET',
-		headers: assign({}, Keystone.csrf.header),
+		headers: assign({ Accept: 'application/json' }, Keystone.csrf.header),
 		body: {},
 	}, (err, resp, data) => {
+		// must signin response
+		guardSigninResponse(resp);
 		if (err) callback(err);
 		// handle unexpected JSON string not parsed
 		data = typeof data === 'string' ? JSON.parse(data) : data;
@@ -303,9 +310,11 @@ List.prototype.postIt = function (url, formData, callback) {
 		url: `${Keystone.adminPath}${url}?ts=${Math.random()}`,
 		responseType: 'json',
 		method: 'POST',
-		headers: assign({}, Keystone.csrf.header),
+		headers: assign({ Accept: 'application/json' }, Keystone.csrf.header),
 		body: formData,
 	}, (err, resp, data) => {
+		// must signin response
+		guardSigninResponse(resp);
 		if (err) callback(err);
 		// handle unexpected JSON string not parsed
 		data = typeof data === 'string' ? JSON.parse(data) : data;
@@ -335,9 +344,12 @@ List.prototype.createItem = function (formData, options = {}, callback) {
 		headers: {
 			...Keystone.csrf.header,
 			...options.headers,
+			Accept: 'application/json',
 		},
 		body: formData,
 	}, (err, resp, data) => {
+		// must signin response
+		guardSigninResponse(resp);
 		if (err) callback(err);
 		// handle unexpected JSON string not parsed
 		data = typeof data === 'string' ? JSON.parse(data) : data;
@@ -365,9 +377,11 @@ List.prototype.updateItems = function (formData, callback) {
 		url: `${Keystone.adminPath}/api/${this.path}/update?ts=${Math.random()}`,
 		responseType: 'json',
 		method: 'POST',
-		headers: assign({}, Keystone.csrf.header),
+		headers: assign({ Accept: 'application/json' }, Keystone.csrf.header),
 		body: formData,
 	}, (err, resp, data) => {
+		// must signin response
+		guardSigninResponse(resp);
 		if (err) return callback(err);
 		// handle unexpected JSON string not parsed
 		data = typeof data === 'string' ? JSON.parse(data) : data;
@@ -391,9 +405,11 @@ List.prototype.updateItem = function (id, formData, callback) {
 		url: `${Keystone.adminPath}/api/${this.path}/${id}?ts=${Math.random()}`,
 		responseType: 'json',
 		method: 'POST',
-		headers: assign({}, Keystone.csrf.header),
+		headers: assign({ Accept: 'application/json' }, Keystone.csrf.header),
 		body: formData,
 	}, (err, resp, data) => {
+		// must signin response
+		guardSigninResponse(resp);
 		if (err) return callback(err);
 		// handle unexpected JSON string not parsed
 		data = typeof data === 'string' ? JSON.parse(data) : data;
@@ -501,7 +517,10 @@ List.prototype.loadItem = function (itemId, options, callback) {
 	xhr({
 		url: url,
 		responseType: 'json',
+		headers: { Accept: 'application/json' }
 	}, (err, resp, data) => {
+		// must signin response
+		guardSigninResponse(resp);
 		if (err) return callback(err);
         // handle unexpected JSON string not parsed
 		data = typeof data === 'string' ? JSON.parse(data) : data;
@@ -526,7 +545,10 @@ List.prototype.loadItems = function (options, callback) {
 	xhr({
 		url: url,
 		responseType: 'json',
+		headers: { Accept: 'application/json' }
 	}, (err, resp, data) => {
+		// must signin response
+		guardSigninResponse(resp);
 		if (err) callback(err);
         // handle unexpected JSON string not parsed
         data = typeof data === 'string' ? JSON.parse(data) : data;
@@ -590,11 +612,13 @@ List.prototype.deleteItems = function (itemIds, callback) {
 	xhr({
 		url: url,
 		method: 'POST',
-		headers: assign({}, Keystone.csrf.header),
+		headers: assign({ Accept: 'application/json' }, Keystone.csrf.header),
 		json: {
 			ids: itemIds,
 		},
 	}, (err, resp, body) => {
+		// must signin response
+		guardSigninResponse(resp);
 		if (err) return callback(err);
         // data = typeof data === 'string' ? JSON.parse(data) : data;
 		// Pass the body as result or error, depending on the statusCode
@@ -611,8 +635,10 @@ List.prototype.reorderItems = function (item, oldSortOrder, newSortOrder, pageOp
 	xhr({
 		url: url,
 		method: 'POST',
-		headers: assign({}, Keystone.csrf.header),
+		headers: assign({ Accept: 'application/json' }, Keystone.csrf.header),
 	}, (err, resp, body) => {
+		// must signin response
+		guardSigninResponse(resp);
 		if (err) return callback(err);
 		try {
 			body = JSON.parse(body);
@@ -642,9 +668,11 @@ List.prototype.importItems = function (file, callback) {
 	xhr({
 		url,
 		method: 'POST',
-		headers: assign({}, Keystone.csrf.header),
+		headers: assign({ Accept: 'application/json' }, Keystone.csrf.header),
 		body: formData,
 	}, (err, resp, body) => {
+		// must signin response
+		guardSigninResponse(resp);
 		if (err) return callback(err);
 		if (resp.statusCode === 200) {
 			callback(null, body);
