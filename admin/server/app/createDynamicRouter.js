@@ -146,6 +146,8 @@ module.exports = function createDynamicRouter (keystone) {
 		checkPermission({
 			list: ['_create'],
 			field: ['create'],
+		}, {
+			exclude: false,
 		}),
 		require('../api/list/create'),
 	);
@@ -227,6 +229,8 @@ module.exports = function createDynamicRouter (keystone) {
 		checkPermission({
 			list: ['_update'],
 			field: ['update'],
+		}, {
+			exclude: false,
 		}),
 		initDataPermission,
 		require('../api/item/update'),

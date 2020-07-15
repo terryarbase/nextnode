@@ -8,7 +8,7 @@ module.exports = function (req, res) {
 			param = req.list.convertJson(param);
 			req.list.prepareDataPermission(req, param);
 
-			let data = _.pick(param, req.permissionAllowFields);
+			// let data = _.pick(param, req.permissionAllowFields);
 
 			let doc = null
 			try {
