@@ -455,6 +455,7 @@ var EditForm = React.createClass({
 				if (field.stateless || field.cloneable) {
 					const { localization } = Keystone;
 					const self = this;
+					let statelessElement = null;
 					let stateless = this.statelessUI[path];
 					let statelessElement = null;
 					let allComponents = [];
@@ -471,7 +472,7 @@ var EditForm = React.createClass({
 								statelessElement = React.cloneElement(
 									element,
 									{
-										...fieldProps,
+										...props,
 										key: `${path}-${language}`,
 									}
 								);
@@ -479,7 +480,7 @@ var EditForm = React.createClass({
 							} else {
 								if (field.cloneable) {
 									// get fieldProps with the correspond language
-									fieldProps = self.getFieldProps(field, language);
+									const fieldProps = self.getFieldProps(field, language);
 									statelessElement = React.cloneElement(
 										stateless[language],
 										{
