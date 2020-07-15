@@ -80,11 +80,12 @@ var EditForm = React.createClass({
 	componentWillUnmount () {
 		this.__isMounted = false;
 	},
-	getFieldProps (field) {
+	getFieldProps (field, overrideLang) {
 		const { isLocale, currentLang, t, i18n } = this.props;
 		const { values } = this.state;
 		const props = assign({}, field);
 		const alerts = this.state.alerts;
+		let lang = overrideLang ? overrideLang : currentLang;
 		// Display validation errors inline
 		if (alerts && alerts.error) {
 			// && alerts.error.error === 'validation errors') {
@@ -96,7 +97,7 @@ var EditForm = React.createClass({
 			}
 		}
 		props.list = this.props.list;
-		props.value = this.props.list.getProperlyValue({ field, isLocale, currentLang, values });
+		props.value = this.props.list.getProperlyValue({ field, isLocale, currentLang: lang, values });
 		props.values = values;
 		props.currentLang = currentLang;
 		props.defaultLang = this.props.defaultLang;
@@ -402,59 +403,60 @@ var EditForm = React.createClass({
 			} else if (el.type === 'field') {
 				let field = this.props.list.fields[el.field];
 				
-				let props = this.getFieldProps(field);
-				const filters = this.props.list.getRelatedFilter(field, props.filters, this.props, this.state);
+				let fieldProps = this.getFieldProps(field);
+				const filters = this.props.list.getRelatedFilter(field, fieldProps.filters, this.props, this.state);
 				const { path } = field;
 
 				// No permission, no render
-				if (!this.checkFieldPermission(props)) return;
+				if (!this.checkFieldPermission(fieldProps)) return;
 
-				props = {
-					...props,
+				fieldProps = {
+					...fieldProps,
 					restrictDelegated: field.restrictDelegated,
 					label: getTranslatedLabel(t, {
 						listKey, 
 						prefix: 'field', 
-						content: _.camelCase(props.path),
-						altContent: props.label,
+						content: _.camelCase(fieldProps.path),
+						altContent: fieldProps.label,
 					}),
 				};
 
 				if (filters) {
-					props = {
-						...props,
+					fieldProps = {
+						...fieldProps,
 						filters,
 					};
 				}
 
-				if (props.note) {
-					props = {
-						...props,
+				if (fieldProps.note) {
+					fieldProps = {
+						...fieldProps,
 						note: getTranslatedLabel(t, {
 							listKey, 
 							prefix: 'note', 
-							content: _.camelCase(props.path),
-							altContent: props.note,
+							content: _.camelCase(fieldProps.path),
+							altContent: fieldProps.note,
 						}),
 					};
 				}
-				// console.log(props.label);
+				// console.log(fieldProps.label);
 				if (typeof Fields[field.type] !== 'function') {
 					elements = [ ...elements, React.createElement(InvalidFieldType, { type: field.type, path, key: path }) ];
 				}
-				props.key = `${path}-${currentLang}`;
+				fieldProps.key = `${path}-${currentLang}`;
 				if (index === 0 && this.state.focusFirstField) {
-					props.autoFocus = true;
+					fieldProps.autoFocus = true;
 				}
 
-				const element = React.createElement(Fields[field.type], props);
-				// console.log(field.type, path, props);
+				const element = React.createElement(Fields[field.type], fieldProps);
+				// console.log(field.type, path, fieldProps);
 
 				// prevent stateless file element to be rendered again, get from state
 				if (field.stateless || field.cloneable) {
 					const { localization } = Keystone;
 					const self = this;
 					let stateless = this.statelessUI[path];
+					let statelessElement = null;
 					let allComponents = [];
 					if (field.multilingual) {
 						if (!stateless) {
@@ -463,9 +465,10 @@ var EditForm = React.createClass({
 						}
 						// console.log('>>> ', stateless);
 						_.keys(localization).forEach(language => {
+							console.log('> language', language)
 							if (!stateless[language]) {
-								// get fieldProps with the correspond language, but meaningless because empty value in first render
-								// fieldProps = self.getFieldProps(field, language);
+								// get fieldProps with the correspond language
+								fieldProps = self.getFieldProps(field, language);
 								statelessElement = React.cloneElement(
 									element,
 									{
@@ -521,7 +524,8 @@ var EditForm = React.createClass({
 				
 			}
 		});
-
+		console.log('> statelessUI', this.statelessUI)
+		console.log('> form', elements)
 		return elements;
 	},
 	renderFooterBar () {
