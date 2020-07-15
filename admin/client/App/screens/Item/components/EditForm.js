@@ -457,7 +457,6 @@ var EditForm = React.createClass({
 					const self = this;
 					let statelessElement = null;
 					let stateless = this.statelessUI[path];
-					let statelessElement = null;
 					let allComponents = [];
 					if (field.multilingual) {
 						if (!stateless) {
@@ -472,7 +471,7 @@ var EditForm = React.createClass({
 								statelessElement = React.cloneElement(
 									element,
 									{
-										...props,
+										...fieldProps,
 										key: `${path}-${language}`,
 									}
 								);
@@ -480,7 +479,7 @@ var EditForm = React.createClass({
 							} else {
 								if (field.cloneable) {
 									// get fieldProps with the correspond language
-									const fieldProps = self.getFieldProps(field, language);
+									fieldProps = self.getFieldProps(field, language);
 									statelessElement = React.cloneElement(
 										stateless[language],
 										{
