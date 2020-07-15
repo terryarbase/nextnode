@@ -465,7 +465,6 @@ var EditForm = React.createClass({
 						}
 						// console.log('>>> ', stateless);
 						_.keys(localization).forEach(language => {
-							console.log('> language', language)
 							if (!stateless[language]) {
 								// get fieldProps with the correspond language
 								fieldProps = self.getFieldProps(field, language);
@@ -524,8 +523,6 @@ var EditForm = React.createClass({
 				
 			}
 		});
-		console.log('> statelessUI', this.statelessUI)
-		console.log('> form', elements)
 		return elements;
 	},
 	renderFooterBar () {
