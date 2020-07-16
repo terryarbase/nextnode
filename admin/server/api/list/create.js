@@ -21,7 +21,6 @@ module.exports = async function (req, res) {
 		defaultLang: locales && locales.defaultLanguage,
 		supportLang: locales && locales.localization,
 	};
-	console.log('fieldsArray', req.list.fieldsArray)
 
 	// trigger before create list hook
 	const [bsError] = await req.list.applyHook('beforeSave', item, newData, { req });
