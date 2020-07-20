@@ -32,7 +32,7 @@ var RelationshipColumn = React.createClass({
 				? Keystone.adminPath + '/' + refList.path + '/' + value[i].id
 				: null;
 			items.push(
-				<ItemsTableValue interior truncate={false} key={'anchor' + i} to={link}>
+				<ItemsTableValue interior truncate={false} key={'anchor' + i} to={to}>
 					{value[i].name}
 				</ItemsTableValue>
 			);
@@ -53,7 +53,7 @@ var RelationshipColumn = React.createClass({
 			? Keystone.adminPath + '/' + refList.path + '/' + value.id
 			: null;
 		return (
-			<ItemsTableValue to={link} padded interior field={this.props.col.type}>
+			<ItemsTableValue to={to} padded interior field={this.props.col.type}>
 				{value.name}
 			</ItemsTableValue>
 		);
