@@ -35,6 +35,8 @@ const ItemsRow = React.createClass({
 		connectDragSource: React.PropTypes.func,  // eslint-disable-line react/sort-prop-types
 		connectDropTarget: React.PropTypes.func,  // eslint-disable-line react/sort-prop-types
 		connectDragPreview: React.PropTypes.func, // eslint-disable-line react/sort-prop-types
+		listPermission: React.PropTypes.object,
+		permission: React.PropTypes.object,
 	},
 	renderRow (item) {
 		// const itemId = item.id;
@@ -46,7 +48,7 @@ const ItemsRow = React.createClass({
 			'ItemList__row--success': this.props.rowAlert.success === itemId,
 			'ItemList__row--failure': this.props.rowAlert.fail === itemId,
 		});
-		const { allowUpdate, realTimeCol, realTimeInfo, manageMode, isRestricted, currentLang } = this.props;
+		const { permission, listPermission, allowUpdate, realTimeCol, realTimeInfo, manageMode, isRestricted, currentLang } = this.props;
 		// console.log('this.props.columns: ', this.props.columns);
 		// item fields
 		var cells = this.props.columns.map((col, i) => {
@@ -56,6 +58,7 @@ const ItemsRow = React.createClass({
 			var value = item.fields[col.path];
 			var currentValue = value;
 			var newItem = { ...item };
+			const fieldPermission = listPermission[col.path];
 			// if the record is restricted by the delegated field, then no realtime edit is allowed.
 			const restrictDelegated = isRestricted(col, item);
 			const isMultilingual = col.field && col.field.multilingual;
@@ -96,6 +99,9 @@ const ItemsRow = React.createClass({
 			}
 			// console.log(col.path, currentValue);
 			return <ColumnType
+				permission={permission}
+				listPermission={listPermission}
+				fieldPermission={fieldPermission}
 				key={col.path}
 				list={this.props.list}
 				col={col}
