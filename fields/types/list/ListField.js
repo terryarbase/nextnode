@@ -6,6 +6,7 @@ import React from 'react';
 import Field from '../Field';
 import Domify from 'react-domify';
 import _cloneDeep from 'lodash/cloneDeep';
+import _ from 'lodash';
 
 import { Fields } from 'FieldTypes';
 import { Button, GlyphButton } from '../../../admin/client/App/elemental';
@@ -137,7 +138,7 @@ module.exports = Field.create({
 		const onAdd = this.addItem;
 		return (
 			<div>
-				{value.map((value, index) => {
+				{_.map(value, (value, index) => {
 					const { id, _isNew } = value;
 
 					const name = !_isNew && `${path}[${index}][id]`;

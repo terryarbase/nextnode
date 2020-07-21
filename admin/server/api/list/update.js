@@ -46,15 +46,15 @@ module.exports = function (req, res) {
 				error: buError,
 			});
 
-			req.list.updateItem(doc, data, {
+			req.list.updateItem(doc, param, {
 				ignoreNoEdit: true,
 				files: req.files,
 				user: req.user,
-				fields: _.keys(data).filter(f => f !== '_id'),
+				fields: _.keys(param).filter(f => f !== '_id'),
 				__: req.t.__,
 			}, async function (err) {
 				if (err) {
-					err.id = data.id;
+					err.id = param.id;
 					// validation errors send http 400; everything else sends http 500
 					err.statusCode = err.error === 'validation errors' ? 400 : 500;
 					return done(err);

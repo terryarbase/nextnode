@@ -284,6 +284,7 @@ const CreateForm = React.createClass({
 					}
 					// console.log('>>> ', stateless);
 					_.keys(localization).forEach(language => {
+						fieldProps = self.getFieldProps(field, language);
 						if (!stateless[language]) {
 							// get fieldProps with the correspond language, but meaningless because empty value in first render
 							// fieldProps = self.getFieldProps(field, language);
@@ -298,7 +299,7 @@ const CreateForm = React.createClass({
 						} else {
 							if (field.cloneable) {
 								// get fieldProps with the correspond language
-								fieldProps = self.getFieldProps(field, language);
+								// fieldProps = self.getFieldProps(field, language);
 								statelessElement = React.cloneElement(
 									stateless[language],
 									{
