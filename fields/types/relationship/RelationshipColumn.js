@@ -15,6 +15,10 @@ var RelationshipColumn = React.createClass({
 		col: React.PropTypes.object,
 		data: React.PropTypes.object,
 	},
+	canViewRefList () {
+		const refListPermission = this.props.permission[this.props.col.field.refList.key];
+		return refListPermission._view;
+	},
 	renderMany (value) {
 		if (!value || !value.length) return;
 		const refList = this.props.col.field.refList;
@@ -24,8 +28,11 @@ var RelationshipColumn = React.createClass({
 			if (i) {
 				items.push(<span key={'comma' + i}>, </span>);
 			}
+			const to = this.canViewRefList()
+				? Keystone.adminPath + '/' + refList.path + '/' + value[i].id
+				: null;
 			items.push(
-				<ItemsTableValue interior truncate={false} key={'anchor' + i} to={Keystone.adminPath + '/' + refList.path + '/' + value[i].id}>
+				<ItemsTableValue interior truncate={false} key={'anchor' + i} to={to}>
 					{value[i].name}
 				</ItemsTableValue>
 			);
@@ -42,8 +49,11 @@ var RelationshipColumn = React.createClass({
 	renderValue (value) {
 		if (!value) return;
 		const refList = this.props.col.field.refList;
+		const to = this.canViewRefList()
+			? Keystone.adminPath + '/' + refList.path + '/' + value.id
+			: null;
 		return (
-			<ItemsTableValue to={Keystone.adminPath + '/' + refList.path + '/' + value.id} padded interior field={this.props.col.type}>
+			<ItemsTableValue to={to} padded interior field={this.props.col.type}>
 				{value.name}
 			</ItemsTableValue>
 		);

@@ -26,6 +26,7 @@ module.exports = async function (req, res) {
 	const options = {
 		files: req.files,
 		user: req.user,
+		fields: req.permissionAllowFields,
 		lang: locales && locales.langd,
 		__: req.t.__,
 		isMultilingual: !!locales,

@@ -8,8 +8,6 @@ module.exports = function (req, res) {
 			param = req.list.convertJson(param);
 			req.list.prepareDataPermission(req, param);
 
-			// let data = _.pick(param, req.permissionAllowFields);
-
 			let doc = null
 			try {
 				doc = await req.list.model.findOne({
@@ -46,13 +44,16 @@ module.exports = function (req, res) {
 				error: buError,
 			});
 
-			req.list.updateItem(doc, param, {
+			const options = {
 				ignoreNoEdit: true,
 				files: req.files,
+				fields: req.permissionAllowFields,
 				user: req.user,
 				fields: _.keys(param).filter(f => f !== '_id'),
 				__: req.t.__,
-			}, async function (err) {
+			};
+
+			req.list.updateItem(doc, param, options, async function (err) {
 				if (err) {
 					err.id = param.id;
 					// validation errors send http 400; everything else sends http 500

@@ -8,19 +8,12 @@ module.exports = async function (req, res) {
 	const { body, locales, list: { options: { multilingual, nolist }, fields } } = req;
 	req.list.prepareDataPermission(req, body);
 	let newData = req.list.prepareCorrectParam(body);
-	/*
-	** How to check the field permission like this
-	{
-		redeemAt_date: '2020-07-10',
-		redeemAt_time: '6:14:10 pm',
-		redeemAt_tzOffset: '+08:00',
-	}
-	*/
-	// newData = _.pick(newData, req.permissionAllowFields);
+	
 	const item = new req.list.model();
 	const options = {
 		files: req.files,
 		ignoreNoEdit: true,
+		fields: req.permissionAllowFields,
 		user: req.user,
 		__: req.t.__,
 		lang: locales && locales.langd,

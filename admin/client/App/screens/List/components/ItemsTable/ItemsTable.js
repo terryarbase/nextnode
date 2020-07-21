@@ -27,6 +27,8 @@ const ItemsTable = React.createClass({
 		allowDelete: PropTypes.bool.isRequired,
 		manageMode: PropTypes.bool.isRequired,
 		rowAlert: PropTypes.object.isRequired,
+		listPermission: PropTypes.object,
+		permission: PropTypes.object,
 		// isLocale={this.props.isLocale}
 		// currentLang={this.props.currentLanguage}
 	},
@@ -153,6 +155,7 @@ const ItemsTable = React.createClass({
 			realTimeInfo,
 			allowUpdate,
 			allowDelete,
+			permission,
 			realTimeCol,
 			manageMode,
 			isRestricted,
@@ -179,6 +182,7 @@ const ItemsTable = React.createClass({
 							isRestricted={isRestricted}
 							allowUpdate={allowUpdate}
 							allowDelete={allowDelete}
+							permission={permission}
 							// currentValue={realTimeInfo && realTimeInfo[item.id]}
 							{...this.props}
 						/>

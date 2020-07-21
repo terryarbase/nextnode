@@ -756,6 +756,8 @@ const ListView = React.createClass({
 								pageSize={this.props.lists.page.size}
 								allowUpdate={listPermission._update}
 								allowDelete={listPermission._delete}
+								listPermission={listPermission}
+								permission={this.props.permission}
 								drag={this.props.lists.drag}
 								dispatch={this.props.dispatch}
 							/>
