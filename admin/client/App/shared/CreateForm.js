@@ -85,8 +85,8 @@ const CreateForm = React.createClass({
 	*/
 	checkFieldPermission(props) {
 		const { permission } = this.props;
-		// original Keystone 'hidden' option be the maximum priority
-		if (props.hidden) {
+		// original Keystone 'hidden' and 'initial' option be the maximum priority
+		if (props.hidden || !props.initial) {
 			return false;
 		}
 		return _.get(permission, `${props.path}.create`, true);
