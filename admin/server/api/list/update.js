@@ -19,7 +19,7 @@ module.exports = function (req, res) {
 					return done({
 						statusCode: 404,
 						error: req.t.__('msg_user_notfound'),
-						id: data.id,
+						id: param.id,
 					});
 				}
 			} catch (err) {
@@ -27,18 +27,18 @@ module.exports = function (req, res) {
 					statusCode: 500,
 					error: req.t.__('msg_db_error_withoutReason'),
 					detail: err,
-					id: data.id,
+					id: param.id,
 				});
 			}
 
 			// trigger before update list hook
-			const [bsError] = await req.list.applyHook('beforeSave', doc, data, { req });
+			const [bsError] = await req.list.applyHook('beforeSave', doc, param, { req });
 			if (bsError) return done({
 				statusCode: 406,
 				error: bsError,
 			});
 
-			const [buError] = await req.list.applyHook('beforeUpdate', doc, data, { req });
+			const [buError] = await req.list.applyHook('beforeUpdate', doc, param, { req });
 			if (buError) return done({
 				statusCode: 406,
 				error: buError,
