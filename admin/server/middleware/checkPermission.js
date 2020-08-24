@@ -24,10 +24,14 @@ const checkFieldPermission = (nextNode, req, requiredPermission, options) => {
     } = options;
     
     // set allow fields to req for custom handle needed
-    req.permissionAllowFields = _.chain(fieldsPermission)
-        .pickBy(fp => nextNode.isPermissionAllow(fp, requiredPermission))
-        .keys()
-        .value();
+    req.permissionAllowFields = [
+        ..._.chain(fieldsPermission)
+            .pickBy(fp => nextNode.isPermissionAllow(fp, requiredPermission))
+            .keys()
+            .value(),
+        // must be allow field
+        ...nextNode.reservedPermissionField(),
+    ]
 
     if (exclude) {
         switch(req.method) {
