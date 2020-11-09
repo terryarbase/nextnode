@@ -1,6 +1,6 @@
 const _          = require('lodash');
 
-module.exports = function combinePermission(req, res) {
+module.exports = function combinePermission(req, res, next) {
     const nextNode = req.keystone;
     if (req.user && req.user.permission) {
         let userPermission = req.user.permission.toObject();
