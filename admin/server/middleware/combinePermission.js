@@ -2,18 +2,21 @@ const _          = require('lodash');
 
 module.exports = function combinePermission(req, res) {
     const nextNode = req.keystone;
-    let userPermission = req.user.permission.toObject();
+    if (req.user && req.user.permission) {
+        let userPermission = req.user.permission.toObject();
 
-    let permission = {};
-    if (_.isArray(userPermission)) {
-        permission = combineMultiplePermission(nextNode, userPermission);
-    } else {
-        permission = combineSinglePermission(nextNode, userPermission);
+        let permission = {};
+        if (_.isArray(userPermission)) {
+            permission = combineMultiplePermission(nextNode, userPermission);
+        } else {
+            permission = combineSinglePermission(nextNode, userPermission);
+        }
+
+        // req.permission = compatiblePermissionToRole(permission.value);
+        req.permission = permission.value;
+        req.permissionKey = permission.key;
     }
-
-    // req.permission = compatiblePermissionToRole(permission.value);
-    req.permission = permission.value;
-    req.permissionKey = permission.key;
+    next();
 }
 
 const pickElse = (item, diff) => {
