@@ -197,6 +197,17 @@ module.exports = function createDynamicRouter (keystone) {
 		combinePermission(req, res);
 		return IndexRoute(req, res, render);
 	});
+
+	router.all('/*',
+        combinePermission,
+        function(req, res) {
+            const render = true;
+            if (!req.user) {
+                    return SigninRoute(req, res, render);
+            }
+            return IndexRoute(req, res, render);
+        }
+    );
 	// router.all('/*', function(req, res) {
 	// 	const render = true;
 	// 	combinePermission(req, res);
