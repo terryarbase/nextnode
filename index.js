@@ -200,7 +200,9 @@ Keystone.prototype.reservedCollections = function () {
 	const localization = this.get('localization');
 	return {
 		system: [
-			'Role',
+			// 'PermissionListField',
+			'Permission',
+			// 'Role',
 			'SystemIdentity',
 			'User',
 		],
@@ -239,7 +241,7 @@ Keystone.prototype.mergeNavOptionWithReservedCollections = function () {
 Keystone.prototype.reservedRoleListCollections = function () {
 	return {
 		...{
-			'Role': true,
+			// 'Role': true,
 			'User': true,
 		},
 		...(this.get('localization') ? { 'Locale': true } : {}),
@@ -249,6 +251,67 @@ Keystone.prototype.reservedRoleListCollections = function () {
 		},
 	};
 };
+
+/*
+** Below use for permission
+** Fung Lee
+** 12/07/2019
+*/
+Keystone.prototype.reservedPermissionField = function () {
+	return [
+        'delegated',
+        'createdAt',
+        'createdBy',
+        'updatedAt',
+		'updatedBy',
+		'updatedFrom',
+    ]
+};
+Keystone.prototype.reservedListPermissionKey = function () {
+	return [
+		'_view',
+		'_update',
+		'_create',
+		'_import',
+		'_download',
+		'_delete',
+	];
+};
+Keystone.prototype.reservedFieldPermissionKey = function () {
+	return [
+		'view',
+		'create',
+		'update',
+	];
+};
+Keystone.prototype.filterPermissionQuery = function (userPermission) {
+	const nextNode = this;
+	const allQueryKeys = _.map(_.keys(nextNode.lists), list => `${list}Query`);
+	return _.pick(userPermission, allQueryKeys)
+};
+Keystone.prototype.getPermissionQuery = function (userPermission, list) {
+	const {
+		isPopulate,
+		populate,
+		_populateField,
+		_field,
+		_value,
+	} = _.get(userPermission, `${list}Query`, {});
+	return {
+		hasQuery: !!_value && !!_field,
+		isPopulate: isPopulate && !!populate && !!_populateField,
+		populate,
+		populateField: _populateField,
+		field: _field,
+		value: _value,
+	}
+};
+Keystone.prototype.isPermissionAllow = require('./lib/core/permission/isPermissionAllow');
+Keystone.prototype.filterFieldsPermission = require('./lib/core/permission/filterFieldsPermission');
+Keystone.prototype.filterListsPermission = require('./lib/core/permission/filterListsPermission');
+Keystone.prototype.pickFieldPermission = require('./lib/core/permission/pickFieldPermission');
+Keystone.prototype.pickListPermission = require('./lib/core/permission/pickListPermission');
+
 /* Attach core functionality to Keystone.prototype */
 
 Keystone.prototype.createItems = require('./lib/core/createItems');
@@ -273,6 +336,8 @@ Keystone.prototype.createKeystoneHash = require('./lib/core/createKeystoneHash')
 ** Terry Chan
 ** 23/09/2019
 */
+Keystone.prototype.createPermission = require('./lib/core/delegation/createPermission');
+Keystone.prototype.createDelegatedAdmin = require('./lib/core/delegation/createDelegatedAdmin');
 Keystone.prototype.createRole = require('./lib/core/delegation/createRole');
 Keystone.prototype.createSystemIdentity = require('./lib/core/delegation/createSystemIdentity');
 Keystone.prototype.createLocalization = require('./lib/core/delegation/createLocalization');
@@ -332,6 +397,8 @@ const reservedCollectionName = [
 	'user',
 	'locale',
 	'systemIdentity',
+	'permission',
+	'permissionListField',
 	'applicationLanguage',
 	'navigationLanguage',
 	'modelList',

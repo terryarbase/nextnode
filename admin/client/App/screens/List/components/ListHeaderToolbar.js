@@ -10,6 +10,7 @@ import theme from '../../../../theme';
 
 import ListColumnsForm from './ListColumnsForm';
 import ListDownloadForm from './ListDownloadForm';
+import ListImportForm from './ListImportForm';
 import ListHeaderSearch from './ListHeaderSearch';
 import LocalizationSelector from '../../../components/Localization';
 
@@ -57,7 +58,7 @@ function ListHeaderToolbar ({
 	expandOnClick,
 
 	// list
-	createIsAvailable,
+	allowCreate,
 	createListName,
 	createOnClick,
 
@@ -75,7 +76,10 @@ function ListHeaderToolbar ({
 	columnsAvailable,
 	columnsActive,
 
-	nodownload,
+	allowImport,
+	allowDownload,
+	// noimport,
+	// nodownload,
 	nofilter,
 	noscale,
 	
@@ -129,7 +133,7 @@ function ListHeaderToolbar ({
 						/>
 					</Section>
 					{
-						!nodownload ? 
+						allowDownload ? 
 						<Section cssStyles={classes.download}>
 							<ListDownloadForm
 								currentLang={isLocale ? currentLang : null}
@@ -164,7 +168,7 @@ function ListHeaderToolbar ({
 							</ButtonDivider>
 						</Section> : null
 					}
-					{createIsAvailable && <Section cssStyles={classes.create}>
+					{allowCreate && <Section cssStyles={classes.create}>
 						<ButtonDivider>
 							<CreateButton
 								listName={createListName}
@@ -174,6 +178,18 @@ function ListHeaderToolbar ({
 							/>
 						</ButtonDivider>
 					</Section>}
+					{
+						allowImport ? 
+						<Section cssStyles={classes.import}>
+							<ListImportForm
+								currentLang={isLocale ? currentLang : null}
+								activeColumns={columnsActive}
+								dispatch={dispatch}
+								list={list}
+								t={t}
+							/>
+						</Section> : null
+					}
 				</Group>
 			</Section>
 		</Group>
@@ -183,7 +199,7 @@ function ListHeaderToolbar ({
 ListHeaderToolbar.propTypes = {
 	columnsActive: PropTypes.array,
 	columnsAvailable: PropTypes.array,
-	createIsAvailable: PropTypes.bool,
+	allowCreate: PropTypes.bool,
 	createListName: PropTypes.string,
 	createOnClick: PropTypes.func.isRequired,
 	dispatch: PropTypes.func.isRequired,

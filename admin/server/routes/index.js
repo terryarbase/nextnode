@@ -51,29 +51,38 @@ module.exports = function IndexRoute (req, res, isRender) {
 	if (keystone.get('rbac') && req.user) {
 		// console.log(keystone.get('nav'));
 		const newNav = keystone.mergeNavOptionWithReservedCollections();
-		keystone.nav = keystone.initNav(newNav, req.roleList);
-
+		keystone.nav = keystone.initNav(newNav, req.permission);
 		Object.keys(lists).forEach(key => {
 			const listKey = lists[key].key;
-			if (req.roleList[listKey]) {
-				switch (req.roleList[listKey]) {
-					// view-only
-					case 1: {
-						lists[key].noedit = true;
-						lists[key].nocreate = true;
-						lists[key].nodelete = true;
-						break;
-					}
+			const listPermission = keystone.pickListPermission(req.permission[listKey]);
+			if (req.permission[listKey]) {
+				if (!listPermission._view) {
 					// no permission
-					case 0: {
-						// User list is used in admin client and cannot be deleted
-						if (listKey === UserList.key) {
-							lists[key].hidden = true;
-						} else {
-							delete lists[key];
-						}
+					// User list is used in admin client and cannot be deleted
+					if (listKey === UserList.key) {
+						lists[key].hidden = true;
+					} else {
+						delete lists[key];
 					}
 				}
+				// switch (req.permission[listKey]._) {
+				// 	// view-only
+				// 	case 1: {
+				// 		lists[key].noedit = true;
+				// 		lists[key].nocreate = true;
+				// 		lists[key].nodelete = true;
+				// 		break;
+				// 	}
+				// 	// no permission
+				// 	case 0: {
+				// 		// User list is used in admin client and cannot be deleted
+				// 		if (listKey === UserList.key) {
+				// 			lists[key].hidden = true;
+				// 		} else {
+				// 			delete lists[key];
+				// 		}
+				// 	}
+				// }
 			}
 		});
 	}
@@ -83,7 +92,7 @@ module.exports = function IndexRoute (req, res, isRender) {
 	 */
 	var orphanedLists = [];
 	if (req.user) {
-		keystone.getOrphanedLists(req.roleList).map(function (list) {
+		keystone.getOrphanedLists(req.permission).map(function (list) {
 			return _.pick(list, ['key', 'label', 'path']);
 		});
 	}
@@ -108,7 +117,6 @@ module.exports = function IndexRoute (req, res, isRender) {
 			enableImages: keystone.get('wysiwyg images') ? true : false,
 			enableCloudinaryUploads: keystone.get('wysiwyg cloudinary images') ? true : false,
 			enableS3Uploads: keystone.get('wysiwyg s3 images') ? true : false,
-			enableLocalImagesUploads: keystone.get('wysiwyg local images') ? true : false,
 			additionalButtons: keystone.get('wysiwyg additional buttons') || '',
 			additionalPlugins: keystone.get('wysiwyg additional plugins') || '',
 			additionalOptions: keystone.get('wysiwyg additional options') || {},
@@ -148,26 +156,46 @@ module.exports = function IndexRoute (req, res, isRender) {
 	};
 
 	if (req.user) {
+		const user = _.omit(req.user.toObject(), [
+			'_id',
+			'password',
+			'lastLoginAt',
+			'incorrectPassword',
+			'lockedAt',
+			'isAdmin',
+			'delegated',
+			'permission',
+			'accountStatus',
+		]);
 		keystoneData.user = {
-			...(
-				_.omit(req.user, [
-					'_id',
-					'password',
-					'lastLoginAt',
-					'incorrectPassword',
-					'lockedAt',
-					'isAdmin',
-					'delegated',
-					'accountStatus',
-				])
-			),
+			...user,
 			id: req.user.id,
 			name: UserList.getDocumentName(req.user) || '(no name)',
 			// organization: req.user.organization,
 		};
-		if (req.roleList) {
-			keystoneData.roleKey = req.roleList.roleKey;
-		}
+		keystoneData.permission = req.permission;
+		keystoneData.permissionKey = req.permissionKey;
+
+		// keystoneData.user = {
+		// 	...(
+		// 		_.omit(req.user, [
+		// 			'_id',
+		// 			'password',
+		// 			'lastLoginAt',
+		// 			'incorrectPassword',
+		// 			'lockedAt',
+		// 			'isAdmin',
+		// 			'delegated',
+		// 			'accountStatus',
+		// 		])
+		// 	),
+		// 	id: req.user.id,
+		// 	name: UserList.getDocumentName(req.user) || '(no name)',
+		// 	// organization: req.user.organization,
+		// };
+		// if (req.permission) {
+		// 	keystoneData.permissionKey = req.permission.permissionKey;
+		// }
 	};
 	/*
 	** Localization

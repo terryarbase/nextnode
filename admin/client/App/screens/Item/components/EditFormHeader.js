@@ -145,12 +145,20 @@ export const EditFormHeader = React.createClass({
 		);
 	},
 	renderCreateButton () {
-		const { nocreate, nolist } = this.props.list;
-		if (nocreate || nolist) {
+		const {
+			t,
+			list: {
+				nolist,
+				autocreate,
+				singular,
+			},
+			permission: {
+				_create: allowCreate,
+			}
+		} = this.props;
+		if (!allowCreate || nolist) {
 			return null;
 		}
-		const { autocreate, singular } = this.props.list;
-		const { t } = this.props;
 		let props = {};
 		if (autocreate) {
 			props.href = '?new' + Keystone.csrf.query;

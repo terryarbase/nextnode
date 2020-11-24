@@ -163,6 +163,7 @@ var ItemView = React.createClass({
 					<div>
 						<Container>
 							<EditFormHeader
+								permission={this.props.permission[this.props.currentList.key]}
 								dispatch={this.props.dispatch}
 								list={this.props.currentList}
 								data={this.props.data}
@@ -172,6 +173,7 @@ var ItemView = React.createClass({
 								toggleCreate={this.toggleCreateModal}
 							/>
 							<CreateForm
+								permission={this.props.permission[this.props.currentList.key]}
 								dispatch={this.props.dispatch}
 								list={this.props.currentList}
 								isOpen={this.state.createIsOpen}
@@ -182,6 +184,7 @@ var ItemView = React.createClass({
 								onCreate={(item) => this.onCreate(item)}
 							/>
 							<EditForm
+								permission={this.props.permission[this.props.currentList.key]}
 								list={this.props.currentList}
 								data={this.props.data}
 								dispatch={this.props.dispatch}
