@@ -198,14 +198,12 @@ const CreateForm = React.createClass({
 			if (nameFieldProps.note) {
 				nameFieldProps = {
 					...nameFieldProps,
-					...{
-						note: getTranslatedLabel(t, {
-							listKey: list.key, 
-							prefix: 'note', 
-							content: _.camelCase(nameFieldProps.path),
-							altContent: nameFieldProps.note,
-						})
-					},
+					note: getTranslatedLabel(t, {
+						listKey: list.key, 
+						prefix: 'note', 
+						content: _.camelCase(nameFieldProps.path),
+						altContent: nameFieldProps.note,
+					})
 				};
 			}
 			form.push(React.createElement(Fields[nameField.type], nameFieldProps));
@@ -231,13 +229,11 @@ const CreateForm = React.createClass({
 			if (!this.checkFieldPermission(fieldProps)) return;
 			fieldProps = {
 				...fieldProps,
-				...{
-					label: getTranslatedLabel(t, {
-						listKey: list.key, 
-						prefix: 'field', 
-						content: _.camelCase(fieldProps.path),
-					}),	
-				},
+				label: getTranslatedLabel(t, {
+					listKey: list.key, 
+					prefix: 'field', 
+					content: _.camelCase(fieldProps.path),
+				}),	
 			};
 			if (filters) {
 					fieldProps = {
@@ -248,14 +244,12 @@ const CreateForm = React.createClass({
 			if (fieldProps.note) {
 				fieldProps = {
 					...fieldProps,
-					...{
-						note: getTranslatedLabel(t, {
-							listKey: list.key, 
-							prefix: 'note', 
-							content: _.camelCase(fieldProps.path),
-							altContent: fieldProps.note,
-						}),
-					},
+					note: getTranslatedLabel(t, {
+						listKey: list.key, 
+						prefix: 'note', 
+						content: _.camelCase(fieldProps.path),
+						altContent: fieldProps.note,
+					}),
 				};
 			}
 			// var element = React.createElement(Fields[field.type], fieldProps);
@@ -293,10 +287,18 @@ const CreateForm = React.createClass({
 							);
 							self.statelessUI[path][language] = stateless;
 						} else {
-							stateless = React.cloneElement(
-								stateless[language],
-								fieldProps,
-							);
+							if (field.cloneable) {
+                                // get fieldProps with the correspond language
+                                // fieldProps = self.getFieldProps(field, language);
+                                stateless = React.cloneElement(
+                                        stateless[language],
+                                        {
+                                            ...fieldProps,
+                                        }
+                                );
+                            } else {
+                               	stateless = stateless[language];
+                            }
 						}
 						allComponents = [
 							...allComponents,

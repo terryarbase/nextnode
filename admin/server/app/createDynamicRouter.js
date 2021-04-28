@@ -250,11 +250,11 @@ module.exports = function createDynamicRouter (keystone) {
 	router.all('/*',
         combinePermission,
         function(req, res) {
-                const render = true;
-                if (!req.user) {
-                        return SigninRoute(req, res, render);
-                }
-                return IndexRoute(req, res, render);
+            const render = true;
+            if (!req.user) {
+                return SigninRoute(req, res, render);
+            }
+            return IndexRoute(req, res, render);
         }
     );
 	// router.all('/:list/:item', function(req, res) {
