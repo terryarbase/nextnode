@@ -147,7 +147,7 @@
     "webpack": "^4.41.0",
     "webpack-dev-middleware": "^3.7.2",
     "xhr": "2.4.0",
-    "xlsx": "^0.13.3"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "@ljharb/eslint-config": "^11.0.0",
