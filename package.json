@@ -12,7 +12,7 @@
     "@material-ui/icons": "^4.4.3",
     "@material-ui/styles": "^4.4.3",
     "apexcharts": "^3.8.6",
-    "async": "2.5.0",
+    "async": "2.6.4",
     "asyncdi": "1.1.0",
     "aws-sdk": "^2.395.0",
     "axios": "^0.18.0",
